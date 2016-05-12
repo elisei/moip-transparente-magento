@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <MOIP_All>
+            <active>true</active>
+            <codePool>local</codePool>
+        </MOIP_All>
+    </modules>
+</config>

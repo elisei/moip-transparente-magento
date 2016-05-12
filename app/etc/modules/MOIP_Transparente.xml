@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <MOIP_Transparente>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Payment />
+            </depends>
+        </MOIP_Transparente>
+    </modules>
+</config>

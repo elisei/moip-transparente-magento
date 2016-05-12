@@ -1,0 +1,24 @@
+<?php $this->setDataMoip(); ?>
+<?php $href = $this->getDebitLinks(); ?>
+		<div class="method-type-payment grid12-12">
+			<h3>Quase lá! Por favor conclua a transação em seu banco.</h3>
+		</div>
+		<div class="method-type-action grid12-12">
+			<p>Você será redirecionado para o seu banco em <strong><span id="count">10</span>s</strong>, para concluir o pagamento</p>
+			<button type="button" title="Finalizar compra" class="button btn-checkout" onclick="window.location='<?php echo $href ?>'"><span><span>Ir ao Banco <i class="fa fa-arrow-right"></i></span></span></button>
+		</div>
+<script type="text/javascript">
+//<![CDATA[
+				jQuery(document).ready(function(){
+					var counter = 10;
+					setInterval(function() {
+					    counter--;
+					    if(counter < 0) {
+					       window.location = '<?php echo $href ?>';
+					    } else {
+					        document.getElementById("count").innerHTML = counter;
+					         }
+					}, 1000);
+				});
+//]]>
+</script>

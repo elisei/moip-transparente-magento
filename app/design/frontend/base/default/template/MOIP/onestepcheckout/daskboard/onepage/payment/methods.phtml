@@ -1,0 +1,30 @@
+<dl class="sp-methods" id="checkout-payment-method-load">
+<?php foreach ($this->getMethods() as $_method): $_code = $_method->getCode() ?>
+    <dt>
+
+    <?php if( sizeof($this->getMethods()) > 1 ): ?>
+        <input id="p_method_<?php echo $_code ?>" value="<?php echo $_code ?>" type="radio" name="payment[method]" title="Meio de Pagamento" onclick="payment.switchMethod('<?php echo $_code ?>');updatePaymentMethod();" class="radio payment_method_handle validate-one-required-by-name" />
+    <?php else: ?>
+        <span class="no-display"><input id="p_method_<?php echo $_code ?>" value="<?php echo $_code ?>" type="radio" name="payment[method]" checked="checked" class="radio payment_method_handle validate-one-required-by-name" onclick="payment.switchMethod('<?php echo $_code ?>');updatePaymentMethod();"  /></span>
+    <?php endif; ?>
+    <?php $img_name = "MOIP/transparente/imagem/{$_code}.png"; ?>
+        <label for="p_method_<?php echo $_code ?>"><img src="<?php echo$this->getSkinUrl($img_name, array('_secure'=>true)) ?>" class="image-method-payment" alt="<?php echo $_method->getTitle() ?>">
+        <?php echo $_method->getTitle() ?> <?php echo $this->getMethodLabelAfterHtml($_method) ?>
+
+        </label>
+    </dt>
+
+		<?php if ($html = $this->getPaymentMethodFormHtml($_method)): ?>
+			<dd>
+				<?php echo $html; ?>
+			</dd>
+		<?php endif; ?>
+
+	<div style="clear:both !important"></div>
+<?php endforeach; ?>
+</dl>
+<script type="text/javascript">
+//<![CDATA[
+<?php echo $this->getChildHtml('scripts'); ?>
+//]]>
+</script>

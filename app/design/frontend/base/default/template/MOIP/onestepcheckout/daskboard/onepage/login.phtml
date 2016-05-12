@@ -1,0 +1,98 @@
+		<div class="col1-set">
+			
+			<div >
+
+			
+
+				<form id="login-form-checkout" method="post">
+				<fieldset>
+					<div >
+						<ul class="form-list">
+							<li>
+								<label for="login-email" class="required" >E-mail<em>*</em></label>
+								<div class="input-box" style="float:left;">
+									<input type="text" class="input-text required-entry validate-email" id="login-email" name="login[username]" value="<?php echo $this->htmlEscape($this->getUsername()) ?>" />
+								</div>
+							</li>
+							<li>
+								<label for="login-password" class="required" >Senha<em style="position:static;float:none;color:#EB340A;font-style:normal;right:-8px;top:0;">*</em></label>
+								<div class="input-box" style="float:left;">
+									<input type="password"  class="input-text required-entry" id="login-password" name="login[password]" />
+								</div>
+							</li>
+							<li>
+								<a  href="#" data-toggle="modal" data-target="#EsqueceuSenha"  class="f-left link-recuperar-senha"><?php echo $this->__('Forgot your password?') ?></a>
+							</li>
+						</ul>
+					</div>
+					<div id="dados_incorretos" style="display:none; height:90px;position: relative">
+						<ul class="messages"> <li class="error-msg">Dados incorretos, por favor tente novamente.<li><ul>
+					</div>
+					<div class="logando_aguarde" style="display:none">
+						<span>Por favor, aguarde!</span>
+						    <p id="loading_mask_loader" class="loader"><img alt="Loading..." src="<?php echo $this->getSkinUrl('MOIP/onestepcheckout/images/ajax-loader-tr.gif')?>">.</p>
+
+					</div>
+
+						<div class="buttons-set">
+
+
+							<button type="button" class="button" onclick="onepageLogin(this)"><span ><span ><?php echo $this->__('Login') ?></span></span></button>
+
+
+
+						</div>
+
+				</fieldset>
+				</form>
+			</div>
+		</div>
+<script type="text/javascript">
+//<![CDATA[
+    var loginForm = new VarienForm('login-form-checkout', true);
+    $('login-email').observe('keypress', bindLoginPost);
+    $('login-password').observe('keypress', bindLoginPost);
+    function bindLoginPost(evt){
+        if (evt.keyCode == Event.KEY_RETURN) {
+		   return false;
+        }
+    }
+    function onepageLogin(button)
+    {
+        if(loginForm.validator && loginForm.validator.validate()){
+		   updateLogin(jQuery('#login-email').val(),jQuery('#login-password').val());
+        }
+		jQuery('#errorlogin').css('display','none');
+		return false;
+    }
+//]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+function updateLogin(email,password)
+{
+
+jQuery('.buttons-set .button').css('display','none');
+	jQuery.ajax({
+	type: "POST",
+	url: "<?php echo Mage::getUrl('onestepcheckout/index/updatelogin')?>",
+	data: "email="+email+"&"+"password="+password,
+	success: function(msg){
+		if(msg==0){
+			jQuery('.buttons-set .button').css('display','block');
+			jQuery('#login-please-wait').css('display','none');
+			jQuery('#dados_incorretos').css('display','block');
+			jQuery('#errorlogin').css('display','block');
+			jQuery('#login-email').addClass('validation-failed');
+			jQuery('#login-password').addClass('validation-failed');
+			}
+		else{
+			jQuery('.logando_aguarde').show();
+			var url="<?php echo Mage::getUrl('checkout/onepage'); ?>";
+				jQuery(location).attr('href',url);
+			}
+		}
+	});
+}
+//]]>
+</script>

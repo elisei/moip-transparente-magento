@@ -1,0 +1,28 @@
+<div class="discount-form">
+    <?php if(!$this->getCouponCode()): ?>
+  
+
+        <div>
+            <input type="hidden" name="remove" id="remove-coupone" value="0" />
+            <ul class="form-list">
+                <li class="wide">
+                    <label>Cupom de desconto:</label>
+                    <div class="input-box">
+                        <input class="input-text" title="cupom de desconto" id="coupon_code" name="coupon_code" value="<?php echo $this->htmlEscape($this->getCouponCode()) ?>"/>
+                    </div>        
+                </li>
+                
+            </ul>
+
+            <p class="small">O cupom é opcional. Você deverá informar apenas se tiver um, caso não tenha deixe o campo em branco.</p>
+            <div class="buttons-set" style="padding-bottom: 20px;">
+                <button type="button" title="<?php echo $this->__('Apply Coupon') ?>" class="button" onclick="if(!jQuery('#coupon_code').val()){alert('Por Favor, insira um cupom.')}else{updateCoupon();}" value="<?php echo $this->__('Apply Coupon') ?>"><span><span><?php echo $this->__('Apply Coupon') ?></span></span></button>
+               
+            </div>
+        </div>
+        <p id="loading_mask_loader" class="loader" style="display:none"><img alt="Loading..." src="<?php echo $this->getSkinUrl('MOIP/onestepcheckout/images/ajax-loader-tr.gif')?>"><br>Atualizando dados, por favor aguarde...</p>
+    <?php else: ?>
+            O "<?php echo $this->getCouponCode() ?>" foi aplicado.
+    <?php endif; ?>
+</div>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>

@@ -1,0 +1,115 @@
+<?php $myStatus = Mage::getSingleton('customer/session')->isLoggedIn();
+				if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+				    $customer = Mage::getSingleton('customer/session')->getCustomer();
+				    $fullname = $customer->getName();
+				    $firstname = $customer->getFirstname();
+				    $lastname = $customer->getLastname();
+				   	$region_select = $this->escapeHtml($this->getAddress()->getRegion());
+				    $taxvat = $customer->getTaxvat();
+				 }
+				 else
+				 {
+				 	$fullname = "";
+				    $firstname = "";
+				    $lastname = "";
+				   	$region_select = "";
+				    $taxvat = "";
+				 }
+?>
+			
+		
+<div id="shipping-new-address-form">
+	<input type="hidden" name="shipping[address_id]" value="<?php echo $this->getAddress()->getId() ?>" id="shipping:address_id" />				
+	<div id="moip_onstepcheckout_shipping_form">
+			<div class="customer-name">
+				<div class="field name-firstname">
+					<label for="shipping:firstname" class="required"><em>*</em>Nome</label>
+					<div class="input-box">
+						<input type="text" id="shipping:firstname" name="shipping[firstname]" value="<?php echo  $firstname; ?>" title="Nome" class="input-text required-entry" autocomplete="off">
+					</div>
+				</div>
+				<div class="field name-lastname">
+					<label for="shipping:lastname" class="required"><em>*</em>Sobrenome</label>
+					<div class="input-box">
+						<input type="text" id="shipping:lastname" name="shipping[lastname]" value="<?php echo  $lastname; ?>" title="Sobrenome" class="input-text required-entry" autocomplete="off">
+					</div>
+				</div>
+			</div>
+			<li class="wide">		
+				<li class="field">
+					<label for="shipping:telephone" class="required"><?php echo $this->__('Telephone') ?></label>
+					<div class="input-box">
+						<input type="text" name="shipping[telephone]" value="<?php echo $this->htmlEscape($this->getAddress()->getTelephone()) ?>" title="<?php echo $this->__('Telephone') ?>" class="input-text required-entry inputtext"  autocomplete="off" id="shipping:telephone" onchange="shipping.setSameAsshipping(false);" />
+					</div>
+				</li>
+			</li>
+			<li class="wide">		
+				<li class="fields">
+					<h2>Endereço</h2>
+				</li>
+			</li>
+			<li class="wide">	
+				<li class="field">
+					<label for="shipping:postcode" class="required"><em>*</em>CEP</label>
+					<div class="input-box">
+						<input type="text" title="CEP" name="shipping[postcode]" id="shipping:postcode" value="<?php echo $this->htmlEscape($this->getAddress()->getPostcode()) ?>"  class="input-text inputtext validate-zip-international  required-entry moipzip"  onchange="javascript: buscarEndereco('shipping');"  autocomplete="off" style="width: 100px;">
+					</div>
+				</li>
+				<li class="field">
+				
+				</li>
+			</li>
+			<li class="wide">
+				<label for="shipping:street1" class="required"><em>*</em>Endereço</label>
+				<div class="input-box">
+					<input type="text" title="Endereço da rua" name="shipping[street][]" id="shipping:street1" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(1)) ?>" class="input-text inputtext  required-entry" autocomplete="off">
+				</div>
+			</li>
+			<li class="wide">
+				<li class="field">
+					<label for="shipping:street2" class="required"><em>*</em>Número</label>
+					<div class="input-box">
+						<input type="text" title="Street Address 2" name="shipping[street][]" id="shipping:street2" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(2)) ?>" class="input-text inputtext  required-entry" autocomplete="off">
+					</div>
+				</li>
+				<li class="field">
+					<label for="shipping:street3" class="required">Complemento</label>
+					<div class="input-box">
+						<input type="text" title="Complemento" name="shipping[street][]" id="shipping:street3" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(3)) ?>" class="input-text inputtext" autocomplete="off">
+					</div>
+				</li>
+			</li>
+			<li class="wide">
+				<li class="field">
+					<label for="shipping:street4" class="required"><em>*</em>Bairro</label>
+					<div class="input-box">
+						<input type="text" title="Bairro" name="shipping[street][]" id="shipping:street4" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(4)) ?>" class="input-text inputtext required-entry" autocomplete="off">
+					</div>
+				</li>
+				<li class="field">
+					<label for="shipping:city" class="required"><em>*</em>Cidade</label>
+					<div class="input-box">
+						<input type="text" title="Cidade" name="shipping[city]" value="<?php echo $this->htmlEscape($this->getAddress()->getCity()) ?>"class="input-text inputtext  required-entry" id="shipping:city" autocomplete="off">
+					</div>
+				</li>
+			</li>
+			<li class="wide">
+				<li class="field">
+					<label for="shipping:region_id" class=""><em style="display: none;">*</em>Estado</label>
+					<div class="input-box">
+						<select id="shipping:region_id" name="shipping[region_id]" title="Estado" style="display: none;" defaultvalue="" class="validate-select">
+							<option value="">Por favor, selecione o estado</option>
+							</select>
+							<script type="text/javascript">$("shipping:region_id").setAttribute("defaultValue",  "");</script>
+							<input type="text" maxlength="2" id="shipping:region" name="shipping[region]"  value="<?php echo $this->escapeHtml($region_select) ?>"  title="Estado" class="input-text" style="" autocomplete="off">
+					</div>
+				</li>
+				<li class="field"  style="display:none;" >
+					<label for="shipping:country_id" class="required"><em></em>País</label>
+						<div class="input-box">
+							<?php echo $this->getCountryHtmlSelect('shipping') ?>
+						</div>
+				</li>
+			</li>
+	</div>
+</div>

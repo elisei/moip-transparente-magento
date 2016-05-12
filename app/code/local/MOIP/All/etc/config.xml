@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <MOIP_All>
+            <version>0.1.0</version>
+        </MOIP_All>
+    </modules>
+    <admin>
+        <routers>
+			<moipall>
+				 <moipall after="Mage_Adminhtml">All_Adminhtml</moipall>
+				<args>
+					<module>MOIP_All</module>
+					<frontName>moipall</frontName>
+				</args>
+			</moipall>
+        </routers>
+    </admin>
+    <adminhtml>
+		<acl>
+			<resources>
+				<all>
+					<title>Allow Everything</title>
+				</all>
+				<admin>
+					<children>
+						<MOIP_All>
+							<title>MOIP All Module</title>
+							<sort_order>10</sort_order>
+						</MOIP_All>
+
+					    <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <moipall translate="title" module="moipall">
+                                            <title>MOIP All Module</title>
+                                        </moipall>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+					</children>
+				</admin>
+			</resources>
+		</acl>
+    </adminhtml>
+    <global>
+        <helpers>
+            <moipall>
+                <class>MOIP_All_Helper</class>
+            </moipall>
+        </helpers>
+    </global>
+	<default>
+		<moipall>
+			<config>
+				<enabled>1</enabled>
+				<column_count>5</column_count>
+				<size>10</size>
+			</config>
+		</moipall>
+	</default>
+</config>

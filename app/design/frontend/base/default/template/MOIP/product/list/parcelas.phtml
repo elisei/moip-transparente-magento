@@ -1,0 +1,35 @@
+<?php    $_product = $this->getProduct(); ?>
+<?php if(!$_product->getIsRecurring()): ?>
+<?php $price =  $_product->getFinalPrice(); ?>
+<?php $parcial =  $this->getParcelamento($price, 'reduzido'); ?>
+<?php $integral = $this->getParcelamento($price, 'integral'); ?>
+<?php if($parcial): ?>
+	<div class="" id="parecelas-view-<?php echo $_product->getId() ?>" title="Parcelamento no Cartão de Crédito" data-container="body"  data-toggle="popover" data-placement="bottom" >em <?php echo $this->getParcelamento($price, 'reduzido'); ?></div>
+	
+<?php endif ?>
+<?php if($integral): ?>
+	
+	<div class="parcelas-integrais-content" style="display:none">
+		<div class="result-moip-parcelas">
+			<?php $_count = count($integral); ?>
+			<?php if($_count > 3 ) :?>
+				<ul id="parcelamento_integral" class="bullet">
+					<?php foreach ($integral as $key => $value): ?>
+						<li><?php echo $value; ?></li>
+					<?php endforeach ?>
+				</ul>
+			<?php endif ?>
+		</div>
+
+	</div>
+<?php endif ?>
+	<script type="text/javascript">decorateList('parcelamento_integral')
+	jQuery('#parecelas-view-<?php echo $_product->getId() ?>').popover({
+	    content: jQuery('.parcelas-integrais-content').html(),
+	    html: true,
+	    template: '<div class="popover"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div><div class="popover-footer"><div class="images-moip-parcelas"><ul class="product_view_bandeiras"><li><img src="<?php echo $this->getVisaImage(); ?>" id="Moip_Visa" alt="Visa" border="0"></li><li><img src="<?php echo $this->getMastercardImage(); ?>"  id="Moip_Mastercard" alt="Mastercard" border="0" ></li><li><img src="<?php echo $this->getAmericanExpressImage(); ?>"  id="Moip_AmericanExpress"  alt="AmericanExpress" border="0" ></li><li><img src="<?php echo $this->getDinersImage(); ?>" id="Moip_Diners" alt="Diners" border="0" ></li><li><img src="<?php echo $this->getEloImage(); ?>" id="Moip_Elo" alt="Elo" border="0"  ></li><li><img src="<?php echo $this->getHiperImage(); ?>" id="Moip_Hiper" alt="Hiper" border="0"  ></li><li><img src="<?php echo $this->getHipercardImage(); ?>" id="Moip_Hipercard" alt="Hipercard" border="0"  ></li></ul></div></div></div>' 
+	});
+	</script>
+<?php endif ?>
+
+

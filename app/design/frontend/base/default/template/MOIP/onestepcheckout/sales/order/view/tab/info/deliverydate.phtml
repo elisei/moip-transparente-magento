@@ -1,0 +1,28 @@
+<?php 
+
+$_order = Mage::registry('current_order');
+$orderid=$_order->getId();
+$orders=Mage::getModel('onestepcheckout/onestepcheckout')->getCollection()->addFieldToFilter('sales_order_id',$orderid);
+$class_orders=get_class($orders);	
+$o ='';
+
+foreach($orders as $order)	
+{
+	$o = $order; break;		
+}
+?>
+
+<div class="box-right">
+	<div class="entry-edit">
+		<div class="entry-edit-head">
+			<h4 class="icon-head head-shipping-method"><?php echo $this->helper('onestepcheckout')->__('Delivery Date') ?></h4>
+		</div>
+		<fieldset>
+		<?php if($o):?>
+		<?php echo $this->__('Delivery Date:')?><span style="font-weight:bold;"> <?php echo $o->getMwDeliverydateDate();//$order->getMwCustomercommentInfo() ;//$_order->getMwCustomercomment() ?></span><br>
+		<?php echo $this->__('Delivery Time:')?><span style="font-weight:bold;"> <?php echo $o->getMwDeliverydateTime();?></span>
+		<?php endif?>
+		</fieldset>
+	</div>
+</div>
+<?php

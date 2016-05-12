@@ -1,0 +1,33 @@
+<?php $_shippingRateGroups = $this->getShippingRates(); ?>
+<?php if (!$_shippingRateGroups): ?>
+    <p><?php echo $this->__('Sorry, no quotes are available for this order at this time.') ?></p>
+<?php else: ?>
+<div id="onclick-shipping">
+    <?php $_sole = count($this->getShippingRates()) == 1; foreach ($this->getShippingRates() as $code => $_rates): ?>
+        <p> <?php echo $this->getCarrierName($code); ?></p>
+       
+            <?php $_sole = $_sole && count($_rates) == "1"; foreach ($_rates as $_rate): ?>
+                
+                   
+			               <?php if ($_sole) : ?>
+			                	<span class="no-display"><input name="shipping_method" type="radio" title="Meio de Envio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>" checked="checked" class="validate-one-required-by-name radio-inline"/></span>
+			                	
+			               <?php else: ?>
+			               		<input name="shipping_method"  type="radio" value="<?php echo $_rate->getCode() ?>" title="Meio de Envio" id="s_method_<?php echo $_rate->getCode() ?>" class="radio shipping_method_handle validate-one-required-by-name radio-inline" />
+			               <?php endif; ?>
+			               <label for="s_method_<?php echo $_rate->getCode() ?>"  id="s_method_<?php echo $_rate->getCode() ?>" value="<?php echo $_rate->getPrice() ?>">
+			                        	<?php echo $_rate->getMethodTitle() ?>
+				                        <?php $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
+				                        <?php $_incl = $this->getShippingPrice($_rate->getPrice(), true); ?>
+				                        <?php echo $_excl; ?>
+				                        <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+				                            (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+				                        <?php endif; ?>
+	                    	</label>
+                
+            <?php endforeach; ?>
+           
+    <?php endforeach; ?>
+    <p>* O Prazo de envio inicia após a confirmação automática do pagamento.</p>
+</div>
+<?php endif; ?>

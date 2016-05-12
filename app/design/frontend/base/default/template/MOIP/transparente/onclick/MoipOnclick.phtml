@@ -1,0 +1,62 @@
+<form role="form" action="<?php echo Mage::getUrl('Transparente/index/MoipOnclick', array('_secure' => true )) ?>" method="post" id="onclick_proccess">
+  <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+  <div class="progress" style="display:none;">
+    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+     	Estamos processando o seu pagamento!
+    </div>
+  </div>
+  <div class="form-post-loading">
+         <div class="loading">
+        
+          <div class="col-xs-12 col-sm-6 col-md-6">
+              <div class="form-group">
+                <h2  class="onclick-title"><span class="glyphicon glyphicon-road"></span> Meio de Envio</h2>
+             		 <?php echo $this->getChildHtml('moip.onclick.shipping.methods') ?>
+              </div>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-6">
+              <div class="form-group">
+                <h2 class="onclick-title"><span class="glyphicon glyphicon-user"></span> Enviado Para</h2>
+                <?php echo $this->getChildHtml('moip.onclick.shipping.address') ?>
+              </div>
+          </div>
+         
+          <?php echo $this->getChildHtml('moip.onclick.payment.method') ?>
+         
+         </div>
+  </div>
+</form>
+<script type="text/javascript">
+//<![CDATA[
+  
+      var onclick_proccess_form = new VarienForm('onclick_proccess');
+
+      onclick_proccess_form.submit = function (button, url) {
+          if (this.validator.validate()) {
+              var form = this.form;
+             
+              var data = jQuery('#onclick_proccess').serialize();
+             
+              try {
+              	jQuery(".form-post-loading").hide();
+              	jQuery(".progress").show();
+                  jQuery.ajax({
+                        url: form.action,
+                        dataType: 'json',
+                        type : 'post',
+                        data: data,
+                        success: function(data){
+                        	 
+                        		window.location.href = data.url_redirect;
+                        	
+                        }
+                  });
+              } catch (e) {
+              }
+          }
+      }.bind(onclick_proccess_form);
+  
+//]]>
+</script>
+
+

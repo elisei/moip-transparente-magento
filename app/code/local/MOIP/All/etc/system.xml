@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+	<tabs>
+        <moip translate="label" module="moipall">
+            <label>MOIP.COM.BR</label>
+            <sort_order>100</sort_order>
+        </moip>
+    </tabs>
+</config>

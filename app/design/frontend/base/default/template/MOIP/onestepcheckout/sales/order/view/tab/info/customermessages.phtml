@@ -1,0 +1,31 @@
+<?php 
+
+$_order = Mage::registry('current_order');
+$orderid=$_order->getId();
+$orders=Mage::getModel('onestepcheckout/onestepcheckout')->getCollection()->addFieldToFilter('sales_order_id',$orderid);
+$class_orders=get_class($orders);
+$o ='';
+
+foreach($orders as $order)
+{
+	$o = $order; break;	
+}
+?>
+<?php
+//echo $orderid;die();
+//echo '<pre>';var_dump($_order->getCollection()->getData());die();
+ ?>
+<div class="clear"></div>
+<div class="box-left">
+	<div class="entry-edit">
+		<div class="entry-edit-head">
+			<h4 class="icon-head head-shipping-method"><?php echo $this->helper('onestepcheckout')->__('Comentários') ?></h4>
+		</div>
+		<fieldset>
+		<?php if($o):?>
+			<?php echo $o->getMwCustomercommentInfo();/ ?>
+		<?php endif?>
+		</fieldset>
+	</div>
+</div>
+<?php

@@ -1,0 +1,355 @@
+<?php $color = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor'); ?>
+<?php $botao_color = "#".Mage::getStoreConfig('onestepcheckout/layout/botao_cor');?>
+<?php $style_cor_background = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor_background');?>
+<?php $style_cor_header = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor_header');?>
+<?php $style_cor_step = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor_step');?>
+<?php $islogin=0; if(Mage::getSingleton('customer/session')->isLoggedIn()) $islogin=1; ?>
+<style type="text/css">
+	#loginbox, #btn_logar,.btn-update-qty{background:<?php echo $botao_color;?>;padding: 5px 10px;color:#fff;text-decoration: none;border-radius: 5px;text-align: center;width: 90%; cursor: pointer;}
+
+	p.moip-osc-block-title{color:<?php echo $color;?>;}
+	.moip-osc-block-title>h3 {color: <?php echo $color;?>;}
+	.wrapper {background: <?php echo $style_cor_background;?>}
+	.header {background: <?php echo $style_cor_header;?>}
+	.full-container {background: <?php echo $style_cor_header;?>}
+	<?php if($islogin): ?>
+		#review_info {display: none;}
+		#review_collum > .moip-osc-block > .moip-osc-block-content,  #first_collun  > .moip-osc-block-content {background: #FBFBFB; color: #ccc;}
+		#first_collun  > .moip-osc-block-content .form-list .input-box input, #first_collun  > .moip-osc-block-content .form-list .input-box select{background: #FBFBFB; color: #ccc;}
+		 #first_collun  > .moip-osc-block-content:hover .form-list .input-box input, #first_collun  > .moip-osc-block-content:hover .form-list .input-box select{background: #FFF; color: #000;}
+		#review_collum > .moip-osc-block > .moip-osc-block-content:hover,  #first_collun  > .moip-osc-block-content:hover {background: #FFF; color: #000;}
+		#first_collun  > .moip-osc-block-content .form-list label { display: none;}
+		#first_collun > .moip-osc-block-content .form-list .control label {display: block}
+	<?php  endif;?>
+</style>
+<?php if(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==2){
+	$class_address_user = "col-sm-12 col-lg-4";
+	$class_set_midle_coll = "col-sm-12 col-lg-8";
+	$class_Shippingcollun = "no-set-coll";
+	$class_Paymentcollun = "no-set-coll";
+	$class_Review = "col-lg-4 col-sm-12";
+	
+} elseif(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==3){
+	$class_address_user = "col-sm-12 col-lg-4";
+	$class_set_midle_coll = "no-set-coll";
+	$class_Shippingcollun = "col-lg-4 col-sm-12";
+	$class_Paymentcollun = "col-lg-4 col-sm-12";
+} elseif(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==4){
+	
+	$class_address_user = "col-sm-12 col-lg-4";
+	$class_set_midle_coll = "col-sm-12 col-lg-4";
+	$class_Shippingcollun = "no-set-coll";
+	$class_Paymentcollun = "no-set-coll";
+	$class_Review = "col-lg-4 col-sm-12";
+ } else {
+		$class_address_user = "col-sm-12 col-lg-4";
+	 	$class_Shippingcollun = "col-lg-4 col-sm-12";
+		$class_Paymentcollun = "col-lg-4 col-sm-12";
+		$class_Review = "";
+
+  } ?>
+
+
+<div class="container body-wrapper">
+<div class="row">
+	<form id="onestep_form" autocomplete="off" action="<?php echo $this->getUrl('onestepcheckout/index/updateordermethod') ?>" method="POST" class="scaffold-form">
+		<?php echo $this->getBlockHtml('formkey') ?>
+		
+				<div class="moip-osc-column <?php echo $class_address_user; ?>" id="first_collun">
+					<div class="moip-osc-block-title">
+						<h3><?php echo $this->__('Dados de Cadastro');?></h3>
+					</div>
+					<div class="moip-osc-block-content force-none-float">
+						<div class="billing_start">
+							<div id="cadastrar"><?php echo $this->getChildHtml('billing',false,true);?></div>
+						</div>
+					</div>
+					<?php if(!Mage::helper('onestepcheckout')->onlyProductDownloadable()):	?>
+						<?php if(Mage::getStoreConfig('onestepcheckout/config/allowshippingotheraddress')):?>
+						<div style="display:none;" id="shipping_show">
+							<div class="moip-osc-block-title">
+								<h3><?php echo $this->__('Shipping address');?></h3>
+							</div>
+							<div class="moip-osc-block-content">
+								<div>
+									<?php echo $this->getChildHtml('shipping',false,true);?>
+								</div>
+							</div>
+						</div>
+						<?php endif; ?>
+					<?php endif;?>
+					<?php if(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==5 || Mage::getStoreConfig('onestepcheckout/layout/page_layout')==2): ?>
+							<div class="panel-group">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" href="#review">Revisão dos Itens</a>
+							        </h4>
+							      </div>
+							      <div id="review" class="panel-collapse collapse">
+							        <div class="panel-body"><?php echo $this->getChildHtml('review',false,true);?></div>
+							        
+							      </div>
+							    </div>
+						  	</div>
+						  	<div class="panel-group">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" href="#coupon">Tem um Cupom?</a>
+							        </h4>
+							      </div>
+							      <div id="coupon" class="panel-collapse collapse">
+							        <div class="panel-body"><?php echo $this->getChildHtml('coupon',false,true);?></div>
+							        
+							      </div>
+							    </div>
+						  	</div>
+						  
+						
+					<?php endif; ?>
+
+				</div>
+
+				<?php if(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==4 || Mage::getStoreConfig('onestepcheckout/layout/page_layout')==2): ?>
+						<div class="<?php echo $class_set_midle_coll ?>">
+				<?php endif; ?>
+				
+					<div class="<?php echo $class_Shippingcollun ?>">
+						<div class="moip-osc-block" >
+							<div class="moip-osc-block-title">
+											<h3> <?php echo $this->__('Entrega');?> </h3>
+							</div>
+
+							<div class="moip-osc-block-content">
+								
+									<?php if(!Mage::helper('onestepcheckout')->onlyProductDownloadable()):?>
+
+
+											
+												<?php echo $this->getChildHtml('shipping_method',false,true);?>
+												<?php if(Mage::helper('onestepcheckout')->enableGiftMessage()):?>
+													<?php echo $this->getChildHtml('additional',false,true) ?>
+												<?php endif; ?>
+											
+
+
+										<?php endif?>	
+								
+							</div>
+						</div>
+					</div>
+					
+
+					<div class="<?php echo $class_Paymentcollun ?>">
+						<div class="moip-osc-block" >
+							<div class="moip-osc-block-title">
+								<h3> <?php echo $this->__('Pagamento');?> </h3>
+							</div>
+							<div class="moip-osc-block-content">
+								<?php if(!$class_nodisplay): ?>
+									<?php echo $this->getChildHtml('payment',false,true);?>
+								<?php endif; ?>
+								
+								<div class="buttons-set">
+						                <?php $islogin=0; if(Mage::getSingleton('customer/session')->isLoggedIn()) $islogin=1; ?>
+						                <?php if(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==5 ){
+						                    if(!$islogin){
+						                        $notenable = 1;
+						                    } else{
+						                        $notenable = "";
+						                    }
+						                } else {
+						                        $notenable = "";
+						                }
+
+						                ?>
+						                    <?php if(!$notenable): ?>
+
+
+						                      <div id="checkout-review-terms">
+						                            <?php   if(Mage::getStoreConfig('onestepcheckout/modaluse/termos')):?>
+						                                <div class="onestepcheckout-enable-terms" style="postion:relative;">
+						                                    <ul class="form-list">
+						                                        <li  class="control">
+						                                             <input class="required-entry checkbox" type="checkbox" id="id_accept_terms" name="accept_terms" value="1" checked="checked" s />
+						                                            <label for="termos"><?php echo $this->__('Eu aceito o');?> <a id="onestepcheckout-toc-link"  data-toggle="modal" data-target="#termos_modal"  href="#"><?php echo $this->__('Contrato de compra e os Termos de uso do site.');?></a></label>
+						                                        </li>
+						                                    </ul>
+						                                </div>
+						                            <?php endif ?>
+						                        </div>
+						                       <?php if(Mage::getStoreConfig('onestepcheckout/addfield/usenews')==1):?>
+						                            <?php if(Mage::helper('onestepcheckout')->issubscribed()):?>
+						                                <ul class="form-list">
+						                                    <li  class="control">
+						                                        <input type="checkbox" name="subscribe_newsletter" value="0" title="<?php echo $this->__('Receber novidades') ?>" id="subscribe_newsletter" class="checkbox"> <label for="subscribe_newsletter"><?php echo $this->__('Receber novidades') ?></label>
+						                                    </li>
+						                                </ul>
+						                            <?php endif?>
+						                        <?php endif ?>
+
+						                        <?php if(Mage::getStoreConfig('onestepcheckout/addfield/usenews')==2):?>
+						                            <?php if(Mage::helper('onestepcheckout')->issubscribed()):?>
+						                                <ul class="form-list">
+						                                    <li  class="control">
+						                                        <input type="checkbox" name="subscribe_newsletter"  value="1" checked="checked" title="<?php echo $this->__('Receber novidades') ?>" id="subscribe_newsletter" class="checkbox"> <label for="subscribe_newsletter" style="float:none;"><?php echo $this->__('Receber novidades') ?></label>
+						                                    </li>
+						                                </ul>
+						                            <?php endif?>
+						                        <?php endif?>
+
+
+
+
+						                            <div id="onestepcheckout_place_order_button">
+						                                <button type="button" title="<?php echo $this->__('Place Order') ?>" class="btn-checkout btn btn-success btn-lg btn-block" id="checkout-onepage-buttom">
+						                                    <span><span><?php echo $this->__('Place Order') ?> <i class="fa fa-arrow-right"></i></span></span></button>
+						                            </div>
+
+						                        <?php if(Mage::getStoreConfig('onestepcheckout/modaluse/use_secure')){ ?>
+							                        
+						                        <?php } ?>
+
+
+
+						                        <?php if(Mage::helper('onestepcheckout')->showComment()):?>
+						                            <div class="onestepcheckout-comments">
+						                                <label for="id_comments"><?php echo $this->__('Comentários do Pedido:');?></label><br/>
+						                                <textarea id="id_comments" name="onestepcheckout_comments" cols="40" rows="4"></textarea>
+						                            </div>
+						                        <?php endif;?>
+
+						                <?php endif; ?>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php if(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==4 || Mage::getStoreConfig('onestepcheckout/layout/page_layout')==2): ?>
+						</div>
+					<?php endif; ?>
+					<?php if(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==3 || Mage::getStoreConfig('onestepcheckout/layout/page_layout')==4): ?>
+						<div class="<?php echo $class_Review ?>">
+								<div class="moip-osc-block" >
+									<div class="moip-osc-block-title">
+										<h3><?php echo $this->__('Revisão');?></h3>
+									</div>
+
+									<div class="moip-osc-block-content">
+								      <div id="review">
+								        <div class="panel-body"><?php echo $this->getChildHtml('review',false,true);?></div>
+								        
+								      </div>
+								    </div>
+							  </div>
+						</div>
+					<?php endif; ?>
+	</form>
+</div>
+</div>
+	
+<div id="loading-mask">
+    <div id="loading_mask_loader" class="loader">
+    	<img alt="Loading..." class="loading_img" src="<?php echo $this->getSkinUrl('MOIP/onestepcheckout/images/ajax-loader-tr.gif')?>">
+    	<p><span>Atualizando dados, por favor aguarde...</span></p>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="modal fade" id="ErrosFinalizacao" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="false">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Ops, encontramos erros nos campos abaixo:</h4>
+      </div>
+      <div class="modal-body">
+        		<div class="erros_cadastro">
+					<ul class="erros_cadastro_valores"></ul>
+				</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="button btn btn-default" data-dismiss="modal">Ok, entendi!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php if(!$islogin):?>
+
+<div class="modal fade" id="loginModel" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Entrar</h4>
+      </div>
+      <div class="modal-body">
+        		<?php echo $this->getChildHtml('login',false,true);?>
+      </div>
+      <div class="modal-footer">
+	            <button type="button" class="button btn btn-default" data-dismiss="modal">Fechar</button>
+         	      </div>
+    </div>
+  </div>
+</div>
+
+<?php endif; ?>
+
+<?php if(!$islogin):?>
+
+<div class="modal fade" id="EsqueceuSenha" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Recuperar Senha</h4>
+      </div>
+      <div class="modal-body">
+        		<?php echo $this->getChildHtml('forgotpassword',false,true);?>
+      </div>
+      <div class="modal-footer">
+	            <button type="button" class="button btn btn-default" data-dismiss="modal">Fechar</button>
+         	      </div>
+    </div>
+  </div>
+</div>
+
+<?php endif; ?>
+
+<div class="modal fade" id="store_secure_content" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Loja Segura</h4>
+      </div>
+      <div class="modal-body">
+        		<?php echo $this->__(Mage::getStoreConfig('onestepcheckout/modaluse/secure'));?>
+      </div>
+      <div class="modal-footer">
+            <button type="button" class="button btn btn-default" data-dismiss="modal">Fechar</button>
+         </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="termos_modal" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+	      <div class="modal-header">
+	        <h4 class="modal-title" id="myModalLabel">Termos e Condições</h4>
+	      </div>
+	      <div class="modal-body">
+	        		<?php echo $this->__(Mage::getStoreConfig('onestepcheckout/modaluse/content_options'));?>
+	      </div>
+	      <div class="modal-footer">
+	            <button type="button" class="button btn btn-default" data-dismiss="modal">Fechar</button>
+         	      </div>
+    </div>
+  </div>
+</div>
+
+

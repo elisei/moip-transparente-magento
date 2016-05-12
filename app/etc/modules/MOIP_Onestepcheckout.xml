@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <MOIP_Onestepcheckout>
+            <active>true</active>
+            <codePool>local</codePool>
+        </MOIP_Onestepcheckout>
+    </modules>
+</config>

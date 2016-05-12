@@ -1,0 +1,35 @@
+<?php $this->setDataMoip(); ?>
+
+<?php $url_boleto = $this->getBoletoLinks().'/print'; ?>
+
+		<div class="method-type-payment grid12-12">
+			<h3><?php echo $this->__('Quase lá! Agora só falta pagar o boleto.') ?></h3>
+		</div>
+		<div class="method-type-action grid12-12">
+			<div class="grid12-6">
+				<h3><?php echo $this->__('Código de Barra') ?></h3>
+				<div>
+					
+					<div class="input-box">
+			            <input type="text" name="codigo-barra" id="bar-code" value="<?php echo $this->getBoletoCode() ?>" title="Código de Barra" class="input-text required-entry">
+			        </div>
+				</div>
+			</div>
+			<div class="grid12-6">
+				<h3><?php echo $this->__('Visualizar Boleto') ?></h3>
+				<button class="button btn-checkout"  data-toggle="modal" data-target="#largeModal" ><span><span><i class="fa fa-print"></i> Visualizar Boleto</span></span></button>	
+			</div>
+			
+
+
+		</div>
+
+<script type="text/javascript">
+//<![CDATA[
+		jQuery('body').append('<div class="modal fade animated" id="largeModal" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">      <div class="modal-dialog modal-lg">        <div class="modal-content">          <div class="modal-header">            <h4 class="modal-title" id="myModalLabel">Boleto Bancário</h4>          </div>          <div class="modal-body">		<iframe  width="800"  onload="this.height=screen.height;" scrolling= "no" frameBorder="0" allowtransparency="true" src="<?php echo $url_boleto ?>"> </iframe>          </div>          <div class="modal-footer">            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>          </div>        </div>      </div>    </div>');
+		jQuery('#largeModal').modal('toggle');
+//]]>
+</script>
+
+
+

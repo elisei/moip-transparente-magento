@@ -1,0 +1,24 @@
+<?php $_code=$this->getMethodCode() ?>
+<ul id="payment_form_<?php echo $_code ?>" style="display:none">
+			<div class="recommendation">
+				<ul class="checkout-info-boleto">
+					<li class="checkout-info-item"><p class="checkout-info-text">É Obrigatório ter o TOKEN do banco em mãos.</p></li>
+					<li class="checkout-info-item"><p class="checkout-info-text">Pagamento somente à vista.</p></li>
+				</ul>
+			</div>
+			<ul>
+				<li>
+					<label for="<?php echo $_code ?>_banknumber" class="required"><em>*</em><?php echo $this->__('Banco para Transferência On-line') ?></label>
+					<div class="input-box">
+						<select name="payment[<?php echo $_code ?>_banknumber]" class="input-box required-entry validate-select" id="bamk-of-tef" title="Banco Para Transferência">
+								<option value="" select>Selecione o seu banco.</option>
+								<option value="001">Banco do Brasil</option>
+								<option value="237">Brandesco</option>
+								<option value="341">Itaú</option>
+								<option value="041">Banrisul</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+			
+</ul>

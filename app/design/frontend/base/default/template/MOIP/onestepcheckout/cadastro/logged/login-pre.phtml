@@ -1,0 +1,57 @@
+			<ul class="form-list">
+				<li class="wide">
+					<label for="login-email" class="required" >Email</label>
+					<div class="input-box" >
+						 <input type="text"  name="checked-logi-email" id="checked-login-email"  title="Endereço de e-mail"   class=" form-control input-text validate-email" placeholder="Digite seu e-mail">
+					</div>
+				</li>
+				<li class="wide">
+					<label for="login-password" class="required" >Senha</label>
+					<div class="input-box">
+						 <input  type="password"  class="form-control input-text" placeholder="Digite sua senha" id="login-password-pre">
+					</div>
+				</li>
+				<li>
+					<a  href="#" data-toggle="modal" data-target="#EsqueceuSenha"  class="f-left link-recuperar-senha"><?php echo $this->__('Forgot your password?') ?></a>
+				</li>
+			</ul>
+			<div class="buttons-set">
+				<button class="btn btn-secondary btn-success"  title="Entrar" onclick="onepageLoginPre(this)" type="button" name="pre-login"><span><span>Entrar</span></span></button>
+			</div>
+
+			
+			<div id="dados_incorretos" style="display:none; height:90px;position: relative">
+								<ul class="messages"> <li class="error-msg">Dados incorretos, por favor tente novamente.<li><ul>
+			</div>
+			<div class="logando_aguarde" style="display:none">
+						<span>Por favor, aguarde!</span>
+						    <p id="loading_mask_loader" class="loader"><img alt="Loading..." src="<?php echo $this->getSkinUrl('MOIP/onestepcheckout/images/ajax-loader-tr.gif')?>">.</p>
+
+			</div>
+
+				
+
+<script type="text/javascript">
+//<![CDATA[
+	function onepageLoginPre(email,password)
+	{
+		jQuery('#dados_incorretos').hide('fast');
+		jQuery.ajax({
+			type: "POST",
+			url: "<?php echo Mage::getUrl('onestepcheckout/index/updatelogin')?>",
+			data: "email="+jQuery('#checked-login-email').val()+"&"+"password="+jQuery('#login-password-pre').val(),
+			success: function(msg){
+				if(msg==0){
+					
+					jQuery('#dados_incorretos').show('slow');
+					
+				} else {
+					jQuery('.logando_aguarde').show();
+					var url="<?php echo Mage::getUrl('checkout/onepage'); ?>";
+						jQuery(location).attr('href',url);
+					}
+				}
+		});
+	}
+//]]>
+</script>

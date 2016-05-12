@@ -1,0 +1,82 @@
+<script type="text/javascript">
+//<![CDATA[
+	var shipaddbook=1;
+	jQuery("#shipping\\:save_in_address_book").click(function(){
+				if(this.value != shipaddbook){
+					temp=shipaddbook;
+					shipaddbook = this.value;
+					jQuery("#shipping\\:save_in_address_book").attr("value",temp);
+				}
+	});
+	function updateShippingForm(address_id,clearform)
+	{
+		if(address_id=="")
+		{
+			if(clearform==true)
+			{
+				jQuery('#shipping-new-address-form').clearForm();
+			}
+			else
+			{
+				updateShippingType();
+			}
+		}
+		else
+		{
+
+			jQuery.ajax({
+					type: "POST",
+					url: "<?php echo Mage::getUrl('onestepcheckout/index/updateshippingform')?>",
+					data:jQuery("#onestep_form").serialize(),
+					success: function(msg){
+								jQuery('#moip_onstepcheckout_shipping_form').html(msg);
+								updateShippingType();
+							}
+			});
+		}
+	}
+//]]>
+</script>
+
+		<div id="co-shipping-form">
+			<ul class="form-list">
+						 <li class="wide">
+						   <label for="shipping-address-select" style="_width:250px;"><?php echo $this->__('Select a shipping address from your address book or enter a new address.') ?></label>
+						   <div class="input-box">
+							   <?php echo $this->getAddressesHtmlSelect('shipping') ?>
+						   </div>
+					   </li>
+						<?php echo $this->getChildHtml('shipping_form');?>
+						<ul class="form-list" style="float:none;clear:both">
+							<?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses() && Mage::helper('onestepcheckout')->showAddressBook()):?>
+								<li class="control">
+									<input type="checkbox" style="_float:left;" name="shipping[save_in_address_book]" value="1" title="<?php echo $this->__('Save in address book') ?>" id="shipping:save_in_address_book" onchange="shipping.setSameAsBilling(false);"<?php if ($this->getAddress()->getSaveInAddressBook()):?> checked="checked"<?php endif;?> class="checkbox" /><label for="shipping:save_in_address_book" style="_width:150px;"><?php echo $this->__('Save in address book') ?></label>
+								</li>
+							<?php elseif ($this->isCustomerLoggedIn() && $this->customerHasAddresses() && !Mage::helper('onestepcheckout')->showAddressBook()):?>
+								<li class="no-display">
+									<input type="hidden" name="shipping[save_in_address_book]" value="0" />
+								</li>
+							<?php else:?>
+								<li class="no-display">
+									<input type="hidden" name="shipping[save_in_address_book]" value="1" />
+								</li>
+							<?php endif;?>
+							<li class="control">
+								<div class="btn button" onclick="SendShippingForBilling()"><span><span><?php echo $this->__('Enviar para endereço de cobrança') ?></span></span></div>
+                                <input type="hidden" name="shipping[same_as_billing]"  value="1"  title="<?php echo $this->__('Use Billing Address') ?>" id="ship_to_same_address" >
+
+								
+							</li>
+						</ul>
+			</ul>
+		</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+    var shipping = new Shipping('co-shipping-form', '<?php echo $this->getUrl("checkout/onepage/getAddress") ?>address/', '<?php echo $this->getUrl("checkout/onepage/saveShipping") ?>','<?php echo $this->getUrl("checkout/onepage/shippingMethod") ?>');
+    var shippingForm = new VarienForm('co-shipping-form');
+    shippingForm.extraChildParams = ' onchange="shipping.setSameAsBilling(false);"';
+    var shippingRegionUpdater = new RegionUpdater('shipping:country_id', 'shipping:region', 'shipping:region_id', countryRegions, undefined, 'shipping:postcode');
+//]]>
+</script>

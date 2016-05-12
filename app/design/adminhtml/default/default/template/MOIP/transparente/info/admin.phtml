@@ -1,0 +1,12 @@
+<?php $info = $this->_prepareInfo(); ?>
+
+		<div class="box-content">
+				<p>Pedido Realizado via admin para pagar escolha os métodos abaixo</p>
+				<p>Para Pagar por Cartão de Crédito:</p>
+				<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['link_cc']  ?>"  target="_blank" style="
+    max-width: 200px;">Pagar Por Cartão</a></p>
+				<p>Para Pagar por Boleto</p>
+				<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['link_boleto']  ?>"  target="_blank" style="
+    max-width: 200px;">Pagar Por Boleto</a></p>
+
+		</div>

@@ -1,0 +1,60 @@
+li.cofre label {
+  width: 100%;
+  padding: 0px !important;
+  height: 55px !important;
+}
+li.cofre {
+	width: 30%;
+float: left;
+border: 1px solid #ccc;
+border-radius: 5px;
+
+}
+.image_cofre {
+	width: 30%;
+	float: left;
+}
+.image_cofre > img{
+  width: 100%;
+  float: left;
+  padding: 5px;
+}
+.cofre_number {
+
+	
+
+}
+p.brand_title {
+  padding-top: 5px;
+}
+
+.radio_cofre {
+	  float: left;
+  background: #ccc;
+    padding: 10px;
+  height: 55px;
+  max-height: 55px;
+  min-height: 55px;
+
+}
+input#cartao_salvo {
+	float: left;
+  height: 35px;
+}
+
+ul.form-list-cofre {
+width: 100%;
+float: left;
+}
+
+input#cartao_remove {
+	float: left;
+	min-height: 40px;
+}
+
+.action_remove {
+width: 100%;
+text-align: right;
+border-top: 1px solid #ccc;
+float: left;
+}

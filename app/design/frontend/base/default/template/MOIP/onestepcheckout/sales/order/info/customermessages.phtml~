@@ -1,0 +1,20 @@
+<?php
+$_order = Mage::registry('current_order');
+//$_order = $this->getOrder() ;
+$orderid=$_order->getId();
+$orders=Mage::getModel('onestepcheckout/onestepcheckout')->getCollection()->addFieldToFilter('sales_order_id',$orderid);
+$class_orders=get_class($orders);	//cha ve name class cua doi tuong
+$o ='';
+
+foreach($orders as $order)	//$orders chua nhieu doi tuong. va` chi lay dc doi tuong con qua foreach
+{
+	$o = $order; break;		//vi` record nam o doi tuong dau tien, nen chi can lay doi tuong dau tien
+}
+?>
+
+<div class="col2-set generic-box">
+    <div class="">
+        <h4><?php echo $this->__('My Comment for this order') ?></h4>
+        <span><?php if($o):?><?php echo $o->getOtiCustomercommentInfo(); ?><?php endif?></span>
+    </div>
+</div>

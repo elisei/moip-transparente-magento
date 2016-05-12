@@ -1,0 +1,431 @@
+.sub-title-method {
+  clear: both;
+}
+
+.checkout-onepage-index .col-main { width: 100% !important}
+
+.moip-osc-checkoutcontainer .moip-osc-block-title h3 { margin: 0; padding: 5px; line-height: 1.50; }
+.moip-osc-page-tittle {margin-top: 43px;line-height: 10px;}
+
+
+
+.onestepcheckout-numbers {background-repeat:no-repeat;float: left;height: 35px;width: 30px;background-position: 14px 6px;font-weight:normal;}
+.onestepcheckout-numbers-1{background-image:url("../images/01.png") !important;background-repeat: no-repeat !important;}
+.onestepcheckout-numbers-2{background-image:url("../images/02.png") !important;background-repeat: no-repeat !important;}
+.onestepcheckout-numbers-3{background-image:url("../images/03.png") !important;background-repeat: no-repeat !important;}
+.onestepcheckout-numbers-4{background-image:url("../images/04.png") !important;background-repeat: no-repeat !important;}
+.onestepcheckout-numbers-5{background-image:url("../images/05.png") !important;background-repeat: no-repeat !important;}
+.onestepcheckout-numbers-6{background-image:url("../images/bkg-step-review.png") !important;background-repeat: no-repeat !important;}
+.onestepcheckout-numbers{background-position: 1px 6px !important;}
+
+/
+.force-nodisplay{
+	display: none !important;
+}
+
+
+input.validation-passed{background-image:url("../images/passed-icon.jpg") !important;background-repeat: no-repeat !important; background-position: right !important;}
+input.validation-failed{background-image:url("../images/error-icon.jpg") !important;background-repeat: no-repeat !important; background-position: right !important;}
+input.radio.validation-failed {-webkit-appearance: none;background: none !important;border-radius: 100%;border: 4px solid #FF0000 !important;display: inline-block;height: 10px;margin-bottom: 0;position: relative;padding: 5px;width: 12px;}
+#advice-validate-one-required-by-name-debito_instituicao, #advice-validate-one-required-by-name-cartao_salvo {position: relative;min-width: 191px;}
+
+
+textarea#gift-message-whole-message {width: 250px;}
+
+
+
+
+/* form list */
+fieldset {border: 0;clear: both;}
+.form-list .field { float: left !important; width: 48% !important;margin-right: 2%;}
+.form-list .field.odd { margin-left: 5%; }
+.form-list .wide,
+.form-list .fields { width: 100%; clear: both; }
+.form-list label {
+  font-weight: normal;
+}
+.form-list label em { display: none; }
+.form-list .input-box { width: 93% !important; }
+.form-list .input-box input,
+.form-list .input-box select { width: 100% !important; border-radius: 3px; padding: 5px; }
+.form-list .input-box input[type="checkbox"],
+.form-list .input-box input[type="radio"] { width: auto !important; float: left; clear: none; margin-right: 5px; }
+.dados-pj { display: none }
+.customer-dob .dob-day,
+.customer-dob .dob-month { margin: 0; max-width: 35px !important; min-width: 35px !important; }
+.form-list .wide {float: left;clear: both;width: 102%;}
+.form-list .customer-dob .dob-day .validation-passed, .form-list .customer-dob .dob-month .validation-passed, .form-list .customer-dob .dob-month .validation-failed, .form-list .customer-dob .dob-day .validation-failed {
+  background: none !important; 
+}
+.form-list .customer-dob .dob-year {width: 76px !important;margin: 0 !important;padding: 0 !important;float: left;min-width: 65px !important;}
+.form-list .customer-dob .dob-day, .form-list .customer-dob .dob-month {width: 45px  !important;padding: 0 !important;margin-right: 0px  !important;}
+.form-list .customer-dob .dob-day input.input-text, .form-list .customer-dob .dob-month input.input-text {
+      width: 30px !important;
+}
+.form-list .control label {float: none;width: 100% !important;}
+
+ul.erros_cadastro_valores {text-align: left;color: red;}
+h2.endereco_title, h3.como_comprar_title, h3.dados_pessoais {clear: both;}
+.moip-osc-block-content.force-none-float {
+    float: none !important;
+}
+
+#loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  left: 0px;
+  min-height: 710px;
+  display: none;
+  top: 0px;
+}
+#loading-mask #loading_mask_loader {
+  background: none repeat scroll 0 0 #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  display: block;
+  left: 42%;
+  line-height: 20px;
+  margin-top: 0;
+  padding: 20px;
+  position: absolute;
+  text-align: center;
+  top: 32%;
+  width: 300px;
+  right: 50%;
+}
+img.loading_img {margin: 0 auto;}
+img.Loading {margin: 0 auto;}
+
+.update_shipping,.update_payment { width: 100%; text-align: center; font-size: 14px; min-height: 115px; padding-top: 50px; }
+.sp-methods .form-list { padding-left: 0px !important; }
+
+.erro_cep{padding: 0 10px;font-weight: bold;}
+.com_cep {color: red;padding: 10px;}
+
+.btn-update-qty { width: 45px !important; }
+
+label.label_pf_pj {float: none;}
+
+
+
+.dados-pj, .dados-titular {display: none;}
+.erro_frete, .erro_frete_sem_cep {display: none;}
+
+
+.moip-osc-checkoutcontainer .moip-osc-block-title h3 {
+  margin: 0;
+  padding: 5px;
+  line-height: 1.5;
+  font-size: 16px;
+}
+
+
+.form-list .control label, .sp-methods dt label, #checkout-shipping-method-load .sp-methods dd label, #co-shipping-method-form .sp-methods dd label, .product-options ul.options-list label {
+  width: 100% !important;
+}
+.alinha_form {
+min-height: 108px;
+}
+#criar_loga {
+min-height: 255px;
+height: 255px;
+}
+.discount-form {
+  margin-top: 15px;
+  padding-top: 15px;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    float: left;
+    margin: 0;
+    margin-right: 10px;
+}
+
+.btn-update-qty {cursor: pointer; float: right;}
+
+.nav-tabs > li > a {
+	font-size: 15px !important;
+}
+
+.sp-methods dt label {
+  font-weight: bold;
+}
+
+.sp-methods dt {
+  font-size: 18px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+ 
+}
+
+.buttons-set {
+  margin: 0 !important;
+}
+
+
+#advice-validar_cpf {
+  float: left;
+  width: 100%;
+  position: relative !important;
+}
+/*
+
+input[name="billing[firstname]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f007  "; color: #000 }
+input[name="billing[firstname]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f007  "; color: #000 }
+input[name="billing[firstname]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f007  "; color: #000 }
+input[name="billing[firstname]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f007  "; color: #000 }
+
+input[name="billing[lastname]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f007  "; color: #000 }
+input[name="billing[lastname]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f007  "; color: #000 }
+input[name="billing[lastname]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f007  "; color: #000 }
+input[name="billing[lastname]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f007  "; color: #000 }
+
+
+input[name="billing[email]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f0e0  "; color: #000 }
+input[name="billing[email]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f0e0  "; color: #000 }
+input[name="billing[email]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f0e0  "; color: #000 }
+input[name="billing[email]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f0e0  "; color: #000 }
+
+input[name="billing[customer_password]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f070  "; color: #000 }
+input[name="billing[customer_password]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f070  "; color: #000 }
+input[name="billing[customer_password]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f070  "; color: #000 }
+input[name="billing[customer_password]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f070  "; color: #000 }
+
+input[name="billing[confirm_password]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f070  "; color: #000 }
+input[name="billing[confirm_password]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f070  "; color: #000 }
+input[name="billing[confirm_password]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f070  "; color: #000 }
+input[name="billing[confirm_password]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f070  "; color: #000 }
+
+
+input[name="billing[taxvat]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f1ea  "; color: #000 }
+input[name="billing[taxvat]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f1ea  "; color: #000 }
+input[name="billing[taxvat]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f1ea  "; color: #000 }
+input[name="billing[taxvat]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f1ea  "; color: #000 }
+
+input[name="billing[telephone]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f10b  "; color: #000 }
+input[name="billing[telephone]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f10b  "; color: #000 }
+input[name="billing[telephone]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f10b  "; color: #000 }
+input[name="billing[telephone]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f10b  "; color: #000 }
+
+
+input[name="billing[postcode]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[postcode]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[postcode]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[postcode]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+
+input[name="billing[street][0]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][0]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][0]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][0]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+
+input[name="billing[street][1]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][1]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][1]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][1]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+
+input[name="billing[street][2]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][2]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][2]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][2]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+
+input[name="billing[street][3]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][3]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][3]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[street][3]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+
+
+
+input[name="billing[city]"]::-webkit-input-placeholder::before { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[city]"]::-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[city]"]:-ms-input-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+input[name="billing[city]"]::input:-moz-placeholder::before  { font-family: FontAwesome; content:"\f124  "; color: #000 }
+icones... placeholder */
+
+.onestepcheckout-comments {
+    text-align: left;
+    margin-top: 10px;
+}
+
+
+.form-list li.control label {
+    float: none;
+    display: block;
+    text-align: left;
+}
+
+
+.moip-osc-block-content { 
+  border-radius: 0 0 5px 5px;
+  margin-bottom: 20px;
+  background: none repeat scroll 0 0 #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+}
+
+.main.container {
+  padding: 10px 0 !important;
+}
+h3.product-name {
+  font-size: 12px;
+}
+
+.subtitle-checkout{
+  text-align: left;
+}
+
+.data-table {
+  width: 100%;
+  table-layout: fixed;
+}
+.page-title h1, .page-title h2, .product-name h1, .product-name .h1 {
+  font-size: 16px !important;
+}
+
+.discount-form h2 {
+  font-size: 16px !important;
+}
+.sp-methods dt label, #checkout-shipping-method-load .sp-methods dd label, #co-shipping-method-form .sp-methods dd label {
+    width: 90% !important
+}
+
+.sp-methods .price {
+    float: right;
+}
+.hide-zip-code {
+    visibility: hidden;
+}
+
+
+#loginbox {
+    width: 100%;
+    clear: both;
+    float: left;
+    padding: 13px;
+    margin-bottom: 20px;
+}
+
+.gift-messages-form .item .details {
+  margin-left: 0px !important
+}
+.gift-messages-form .item .product-img-box {
+      float: left;
+    width: 100%;
+}
+.gift-messages-form .item .details .form-list li.wide textarea {
+  width: 250px !important;
+}
+#checkout-payment-method-load dt label {
+    line-height: 40px;
+}
+
+.moip-osc-block-title >h3, .sub-title-method{
+    line-height: 32px;
+}
+
+
+
+.moip-osc-block-content {
+    border-radius: 5px !important;
+}
+button.btn-checkout span {
+    background: none;
+}
+input:-webkit-autofill, select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
+
+.hide-zip-code {
+    height: 0;
+    margin: 0;
+}
+.field.get-cep {
+    padding-top: 30px;
+    cursor: pointer;
+}
+
+.bs-wizard {    margin-top: 20px;    }
+.bs-wizard > .bs-wizard-step {padding: 0; position: relative;}
+.bs-wizard > .bs-wizard-step + .bs-wizard-step {}
+.bs-wizard > .bs-wizard-step .bs-wizard-stepnum {color: #447a18; font-size: 16px; margin-bottom: 5px;}
+.bs-wizard > .bs-wizard-step .bs-wizard-info {color: #999; font-size: 14px;}
+.bs-wizard > .bs-wizard-step > .bs-wizard-dot {position: absolute; width: 30px; height: 30px; display: block; background: #8dc63f; top: 45px; left: 50%;  margin-left: -15px; border-radius: 50%;} 
+.bs-wizard > .bs-wizard-step > .bs-wizard-dot:after {content: ' '; width: 14px; height: 14px; background: #447a18; border-radius: 50px; position: absolute; top: 8px; left: 8px; } 
+.bs-wizard > .bs-wizard-step > .progress {position: relative; border-radius: 0px; height: 8px; box-shadow: none; margin: 35px 0;}
+.bs-wizard > .bs-wizard-step > .progress > .progress-bar {width:0px; box-shadow: none; background: #8dc63f;}
+.bs-wizard > .bs-wizard-step.complete > .progress > .progress-bar {width:100%;}
+.bs-wizard > .bs-wizard-step.active > .progress > .progress-bar {width:50%;}
+.bs-wizard > .bs-wizard-step:first-child.active > .progress > .progress-bar {width:0%;}
+.bs-wizard > .bs-wizard-step:last-child.active > .progress > .progress-bar {width: 100%;}
+.bs-wizard > .bs-wizard-step.disabled > .bs-wizard-dot {background-color: #E3E3E3;}
+.bs-wizard > .bs-wizard-step.disabled > .bs-wizard-dot:after {opacity: 0;}
+.bs-wizard > .bs-wizard-step:first-child  > .progress {left: 50%; width: 50%;}
+.bs-wizard > .bs-wizard-step:last-child  > .progress {width: 50%;}
+.bs-wizard > .bs-wizard-step.disabled a.bs-wizard-dot{ pointer-events: none; }
+
+.header {
+      width: 100%;
+    float: left;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+h1.checkout-title-header {
+    font-size: 18px;
+}
+
+.wrapper {
+    min-height: 900px;
+}
+.title-checkout {
+    line-height: 1.5 !important;
+    color: #fff;
+    text-align: left;
+}
+.buttons-set button.button:hover {
+  color: #FFF;
+}
+
+.siteblindado {
+  text-align: right;
+  float: right;
+}
+label.required:after, span.required:after {
+  content: "" !important;
+}
+.siteblindado {
+    text-align: right;
+    float: right;
+    padding-top: 10px;
+    padding-right: 10px;
+}
+#checkout-payment-method-load dt label {
+    line-height: 40px;
+    width: 90% !important;
+}
+@media only screen and (min-width: 600px) {
+.hcenter {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+.vcenter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+}
+
+input[type=email], input[type=search], input[type=number], input[type=password], input[type=tel], input[type=text] {
+  height: auto !important;
+}
+.img-thumbnail {
+  float: left;
+}
+.product-remove {
+    float: right;
+}

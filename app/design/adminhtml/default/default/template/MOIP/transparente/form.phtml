@@ -1,0 +1,682 @@
+<?php
+$standad = Mage::getSingleton('transparente/standard');
+$api = Mage::getSingleton('transparente/api');
+$api->setContaTransparente($standad->getConfigData('conta_transparente'));
+$api->setAmbiente($standad->getConfigData('ambiente'));
+$parcelas = "";
+$descontotexto = "";
+$asterisco = "";
+$nome =  "";
+$telefone =  "";
+$cpf =  "";
+$dn = "";
+$icone_cartao = $this->getSkinUrl('MOIP/transparente/imagem/abacartao.png');
+$icone_boleto = $this->getSkinUrl('MOIP/transparente/imagem/ababoleto.png');
+$icone_transf = $this->getSkinUrl('MOIP/transparente/imagem/abatransf.png');
+$cartao_visa = $this->getSkinUrl('MOIP/transparente/imagem/Visa.png');
+$cartao_master = $this->getSkinUrl('MOIP/transparente/imagem/Mastercard.png');
+$cartao_diners = $this->getSkinUrl('MOIP/transparente/imagem/Diners.png');
+$cartao_american = $this->getSkinUrl('MOIP/transparente/imagem/AmericanExpress.png');
+$cartao_hipercard = $this->getSkinUrl('MOIP/transparente/imagem/Hipercard.png');
+$boleto = $this->getSkinUrl('MOIP/transparente/imagem/Bradesco.png');
+$cartao_bb = $this->getSkinUrl('MOIP/transparente/imagem/BancoDoBrasil.png');
+$cartao_bradesco = $this->getSkinUrl('MOIP/transparente/imagem/Bradesco.png'); 
+$cartao_itau = $this->getSkinUrl('MOIP/transparente/imagem/Itau.png'); 
+$cartao_banrisul = $this->getSkinUrl('MOIP/transparente/imagem/Banrisul.png');
+if(Mage::getStoreConfig('moipall/config/trocar_icone')):
+$icone_cartao = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/icone_cartao');
+$icone_boleto = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/icone_boleto');
+$icone_transf = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/icone_transf');
+endif;
+if(Mage::getStoreConfig('moipall/config/trocar_bandeira_cartao')):
+$cartao_visa = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_visa');
+$cartao_master = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_master');
+$cartao_diners = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_diners');
+$cartao_american = Mage::getBaseUrl('media') . "moip/alltransparente/".  Mage::getStoreConfig('moipall/config/cartao_american');
+$cartao_hipercard = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_hipercard');
+endif;
+if(Mage::getStoreConfig('moipall/config/trocar_bandeira_cartao')):
+$cartao_bb = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_bb');
+$cartao_bradesco = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_bradesco');
+$cartao_itau = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_itau');
+$cartao_banrisul = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_banrisul');
+endif;
+if(Mage::getStoreConfig('moipall/config/trocar_bandeira_cartao')):
+$boleto = Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/boleto');
+endif;
+$mostraboleto = 1;
+$nivelestoque = $standad->getConfigData('estoqueboleto');
+$idcount = 0;
+$_Produtos = Mage::getSingleton('checkout/cart')->getQuote()->getAllItems(); 
+    foreach ($_Produtos as $value)
+    {
+        $item_ID = $value->getProductId();
+        $_Product = Mage::getModel('catalog/product')->load($item_ID);
+       	$model = Mage::getModel('catalog/product'); 
+	$_product = $model->load($item_ID); 
+	$stocklevel[$idcount] = (int)Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product)->getQty();
+        $nomeprod[$idcount] = $model->getName();
+       	$idcount = $idcount + 1;
+    } 
+$idcount = $idcount - 1;  
+$teste = 0;
+while($teste <= $idcount )
+{
+	if ($stocklevel[$teste] <= $nivelestoque){
+	$prodbaixostock = "O Produto <b>". $nomeprod[$teste] . "</b> está com o estoque baixo (<b>menos de  ". $stocklevel[$teste] ." unidades</b>) e não poderá ser pago com boleto. </br>A quantidade mínima de um produto em estoque para compra por boleto deverá ser de: <b>". $nivelestoque . " Produtos.</b>  ";
+	$mostraboleto = 0;
+	}
+$teste++;
+}
+
+$descont_boleto = Mage::getStoreConfig('parcelamento_de2');
+$virtual = Mage::helper('onestepcheckout')->onlyProductDownloadable();
+if ($virtual){
+	$data = $standad->getQuote()->getBillingAddress();
+}
+else {
+	$data = $standad->getQuote()->getShippingAddress();
+}
+$valor_pedido = $data->getGrandTotal();
+$valor_parc = $data->getGrandTotal();
+$valor_parc = number_format($valor_parc,2);
+
+if($valor_pedido > 5):
+$parcelamento = $api->getParcelamento($data->getGrandTotal());
+foreach ($parcelamento as $k => $v):
+if($v['juros'] == "1.99"):
+		$asterisco = "*";
+else:
+$parcelas_sem_juros = $k;
+endif;
+
+$parcelas .= "<option value=\"".$k."\"> ".$k."x R$ " . $v['valor'] . "".$asterisco." | Total: R$ " .$v['total']."</option>";
+endforeach;
+else:
+$parcelas .= "<option value=\"1\"> Pagamento à vista </option>";
+endif;
+
+
+if (Mage::getStoreConfig('moipall/pagamento_avancado/pagamento_boleto')):
+if ($valor_pedido >= Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor')):
+$descontotexto = "Com desconto de: ".Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc')."%.";
+$descontotexto1 = $descontotexto ."<br/>Págavel em qualquer banco, casas lotéricas ou via internet bank.";
+$desconto = $data->getGrandTotal() - $data->getGrandTotal() * Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc')/100;
+endif;
+
+if (Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor2') != "" &&  $valor_pedido >= Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor2')  && $valor_pedido < Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor3') ):
+$descontotexto = "Com desconto de: ".Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc2')."%.";
+$descontotexto1 = $descontotexto ."<br/>Págavel em qualquer banco, casas lotéricas ou via internet bank.";
+$desconto = $data->getGrandTotal() - $data->getGrandTotal() * Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc2')/100;
+endif;
+
+if (Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor3') != "" && $valor_pedido >= Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor3') ):
+$descontotexto = "Com desconto de: ".Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc3')."%.";
+$descontotexto1 = $descontotexto ."<br/>Págavel em qualquer banco, casas lotéricas ou via internet bank.";
+$desconto = $data->getGrandTotal() - $data->getGrandTotal() * Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc3')/100;
+endif;
+
+
+else:
+$descontotexto1 = "Págavel em qualquer banco, casas lotéricas ou via internet bank.";
+$desconto = $data->getGrandTotal();
+endif;
+     
+   
+ if (Mage::getStoreConfig('moipall/pagamento_avancado/transf_desc')):
+if ($valor_pedido >= Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor')):
+$descontotexto = "Com desconto de: ".Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc')."%.";
+$descontotexto1 = $descontotexto ."<br/>Págavel únicamente através internet bank.";
+$desconto = $data->getGrandTotal() - $data->getGrandTotal() * Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc')/100;
+endif;
+
+if (Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor2') != "" &&  $valor_pedido >= Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor2')  && $valor_pedido < Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor3') ):
+$descontotexto = "Com desconto de: ".Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc2')."%.";
+$descontotexto1 = $descontotexto ."<br/>Págavel únicamente através internet bank.";
+$desconto = $data->getGrandTotal() - $data->getGrandTotal() * Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc2')/100;
+endif;
+
+if (Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor3') != "" && $valor_pedido >= Mage::getStoreConfig('moipall/pagamento_avancado/boleto_valor3') ):
+$descontotexto = "Com desconto de: ".Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc3')."%.";
+$descontotexto1 = $descontotexto ."<br/>Págavel únicamente através internet bank.";
+$desconto = $data->getGrandTotal() - $data->getGrandTotal() * Mage::getStoreConfig('moipall/pagamento_avancado/boleto_desc3')/100;
+endif;
+
+
+else:
+$descontotexto1 = "Págavel em qualquer banco, casas lotéricas ou via internet bank.";
+$desconto = $data->getGrandTotal();
+endif;                               			
+				
+if(Mage::getSingleton('customer/session')->isLoggedIn()){
+$nome =  Mage::getSingleton('customer/session')->getCustomer()->getName();
+$telefone =  Mage::getSingleton('customer/session')->getCustomer()->getTelephone();
+$cpf =  Mage::getSingleton('customer/session')->getCustomer()->getTaxvat();
+$dn =  Mage::getSingleton('customer/session')->getCustomer()->getdob();
+$dn = date("d/m/Y", strtotime($dn));
+}
+?>
+
+<script type="text/javascript">
+ 
+jQuery(document).ready(function(){
+	<?php if (!in_array("CartaoCredito", $standad->getFormasPagamento()) ): ?>
+	jQuery('#linhaparcelas').css({display:"none"});
+	<?php endif;?>
+	<?php if (!in_array("BoletoBancario", $standad->getFormasPagamento()) ): ?>
+	jQuery('#linhaboleto').css({display:"none"});
+	<?php endif;?>
+	<?php if (!in_array("DebitoBancario", $standad->getFormasPagamento()) ): ?>
+	jQuery('#linhatransf').css({display:"none"});
+	<?php endif;?>	
+});
+
+fechar = function(){
+	<?php if (in_array("CartaoCredito", $standad->getFormasPagamento()) ): ?>
+	jQuery('#linhacartao').css({display:"none"});
+	<?php endif;?>
+	<?php if (in_array("BoletoBancario", $standad->getFormasPagamento()) ): ?>
+	jQuery('#conteudoboleto').css({display:"none"});
+	<?php endif;?>
+	<?php if (in_array("DebitoBancario", $standad->getFormasPagamento()) ): ?>
+	jQuery('#conteudotransf').css({display:"none"});
+	<?php endif;?>
+}
+parcelas = function(){
+	fechar();
+	jQuery('#linhacartao').hide();
+	jQuery("#linhacartao").slideDown("slow");
+	jQuery('#linhacartao').css({display:"block"});
+	
+}
+boleto = function(){
+	fechar();
+	jQuery('#conteudoboleto').hide();
+	jQuery("#conteudoboleto").slideDown("slow");
+	jQuery('#conteudoboleto').css({display:"block"});
+}
+transf = function(){
+	fechar();
+	jQuery('#conteudotransf').hide();
+	jQuery("#conteudotransf").slideDown("slow");
+	jQuery('#conteudotransf').css({display:"block"});
+}
+function countChar(val) {
+        var cvv = val.value.length;
+        if(cvv > 2){
+        jQuery('#formcli').hide();
+	jQuery("#formcli").slideDown("slow");
+	jQuery('#formcli').css({display:"block"});
+	document.getElementById('credito_portador_nome').value = document.getElementById('billing:firstname').value + ' ' + document.getElementById('billing:lastname').value;
+ 	document.getElementById('credito_portador_telefone').value = document.getElementById('billing:telephone').value;
+	document.getElementById('credito_portador_cpf').value = document.getElementById('billing:taxvat').value;
+	if(document.getElementById('billing:year').value)
+		{
+		document.getElementById('credito_portador_nascimento').value = document.getElementById('billing:day').value + '/' + document.getElementById('billing:month').value + '/' + document.getElementById('billing:year').value
+		}
+        } 
+      };
+//validacao do transparente - inicio
+jQuery('.btn-checkout').on("click",function(e)
+{
+	if(jQuery('input[name=payment\\[method\\]]:checked').val() == "moip_transparente_standard"){
+		if(!jQuery("input[name=payment\\[forma_pagamento\\]]:checked").val()){
+			if(!jQuery('#advice-required-moip').length)
+				{
+					logic=false;
+					jQuery('#checkout-payment-moip').css({display:"block"});
+					jQuery('#checkout-payment-moip').html('Selecione a forma de pagamento.');
+					return false;
+				}
+			}
+			else
+			jQuery('#checkout-payment-moip').css({display:"none"});
+			jQuery('#advice-required-entry_payment_moip').remove();
+		}
+		if(jQuery("input[name=payment\\[forma_pagamento\\]]:checked").val() == "CartaoCredito")
+			{
+			if(!jQuery("input[name=payment\\[credito_instituicao\\]]:checked").val())
+				{
+				if(!jQuery('#advice-required-moip').length)
+				{
+					logic=false;
+					jQuery('#checkout-payment-bandeira').css({display:"block"});
+					jQuery('#checkout-payment-bandeira').html('Selecione a bandeira do cart&atilde;o.');
+					return false;
+				}
+				}
+				else
+				jQuery('#checkout-payment-bandeira').css({display:"none"});
+				jQuery('#advice-required-entry_payment_bandeira').remove();
+			}
+		if(jQuery("input[name=payment\\[forma_pagamento\\]]:checked").val() == "DebitoBancario")
+			{
+				if(!jQuery("input[name=payment\\[debito_instituicao\\]]:checked").val())
+				{
+					if(!jQuery('#advice-required-moip').length)
+					{
+						logic=false;
+						jQuery('#checkout-payment-banco').css({display:"block"});
+						jQuery('#checkout-payment-banco').html('Selecione o seu banco.');
+						return false;
+					}
+
+				}
+				else
+				jQuery('#checkout-payment-banco').css({display:"none"});
+			}
+});
+
+//validacao do transparente - fim
+bb = function(){
+		document.getElementById('checkout-payment-moip-deb').style.display='none';
+  		document.getElementById('debbb').style.opacity='1';
+  		document.getElementById('debbradesco').style.opacity='0.4';
+  		document.getElementById('debitau').style.opacity='0.4';
+  		document.getElementById('Banrisul').style.opacity='0.4';
+		document.getElementById('pagdebito').style.display='block';
+		document.getElementById('checkout-payment-banco').style.display='none';			
+};
+bradesco = function(){
+		document.getElementById('checkout-payment-moip-deb').style.display='none';
+  		document.getElementById('debbb').style.opacity='0.4';
+  		document.getElementById('debbradesco').style.opacity='1';
+  		document.getElementById('debitau').style.opacity='0.4';
+  		document.getElementById('Banrisul').style.opacity='0.4';
+		document.getElementById('pagdebito').style.display='block';
+		document.getElementById('checkout-payment-banco').style.display='none';
+};
+itau = function(){
+		document.getElementById('checkout-payment-moip-deb').style.display='none';
+  		document.getElementById('debbb').style.opacity='0.4';
+  		document.getElementById('debbradesco').style.opacity='0.4';
+  		document.getElementById('debitau').style.opacity='1';
+  		document.getElementById('Banrisul').style.opacity='0.4';
+		document.getElementById('pagdebito').style.display='block';
+		document.getElementById('checkout-payment-banco').style.display='none';
+};
+banrisul = function(){
+		document.getElementById('checkout-payment-moip-deb').style.display='none';
+  		document.getElementById('debbb').style.opacity='0.4';
+  		document.getElementById('debbradesco').style.opacity='0.4';
+  		document.getElementById('debitau').style.opacity='0.4';
+  		document.getElementById('Banrisul').style.opacity='1';
+		document.getElementById('pagdebito').style.display='block';
+		document.getElementById('checkout-payment-banco').style.display='none';
+};
+visa = function(){
+		document.getElementById('Visa').style.opacity='1';
+		document.getElementById('Mastercard').style.opacity='0.4';
+		document.getElementById('Diners').style.opacity='0.4';
+		document.getElementById('AmericanExpress').style.opacity='0.4';
+		document.getElementById('Hipercard').style.opacity='0.4';
+		document.getElementById('checkout-payment-bandeira').style.display='none';
+};
+mastercard = function(){
+		document.getElementById('Visa').style.opacity='0.4';
+		document.getElementById('Mastercard').style.opacity='1';
+		document.getElementById('Diners').style.opacity='0.4';
+		document.getElementById('AmericanExpress').style.opacity='0.4';
+		document.getElementById('Hipercard').style.opacity='0.4';
+		document.getElementById('checkout-payment-bandeira').style.display='none';
+};
+americanexpress = function(){
+		document.getElementById('Visa').style.opacity='0.4';
+		document.getElementById('Mastercard').style.opacity='0.4';
+		document.getElementById('Diners').style.opacity='0.4';
+		document.getElementById('AmericanExpress').style.opacity='1';
+		document.getElementById('Hipercard').style.opacity='0.4';
+		document.getElementById('checkout-payment-bandeira').style.display='none';
+};
+diners = function(){
+		document.getElementById('Visa').style.opacity='0.4';
+		document.getElementById('Mastercard').style.opacity='0.4';
+		document.getElementById('Diners').style.opacity='1';
+		document.getElementById('AmericanExpress').style.opacity='0.4';
+		document.getElementById('Hipercard').style.opacity='0.4';
+		document.getElementById('checkout-payment-bandeira').style.display='none';
+};
+hipercard = function(){
+		document.getElementById('Visa').style.opacity='0.4';
+		document.getElementById('Mastercard').style.opacity='0.4';
+		document.getElementById('Diners').style.opacity='0.4';
+		document.getElementById('AmericanExpress').style.opacity='0.4';
+		document.getElementById('Hipercard').style.opacity='1';
+		document.getElementById('checkout-payment-bandeira').style.display='none';
+};
+</script>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('MOIP/transparente/css/formulario.css'); ?> "media="all">
+<div id="checkoutmoip">
+<ul id="payment_form_<?php echo $this->getMethodCode() ?>">
+		
+		
+		
+		
+	<?php if ($mostraboleto != "1"): ?> 
+		<label>
+
+	<?php if (in_array("BoletoBancario", $standad->getFormasPagamento()) ): ?>
+	<input onclick="boleto();" type="radio" name="payment[forma_pagamento]" title="Boleto" value="" class="forma_pg">
+
+		<div id="linhaboleto" onclick="boleto();">
+			<div id="icone">
+			<img alt="Boleto Bancário" id="imageboleto" src="<?php echo $icone_boleto; ?>">
+			</div>
+			<div id="desc">
+			<h3>Boleto</h3>
+			<span class="desc">
+			Indisponível
+			</span>
+			</div>
+			<div id="valor">
+			<h3>Valor</h3>
+			R$ <?php echo number_format($desconto,2) ?>
+			</div>
+		</div>
+		</label>	
+	<div style="clear:both;"></div>	
+		<div id="conteudoboleto">
+		<h3>Boleto Bancário</h3>		
+		<div id="icone">
+			<img alt="Boleto Bancário" id="imageboleto" src="<?php echo $boleto; ?>">
+		</div>
+		<div id="desc2">
+			<?php echo $prodbaixostock; ?>
+		</div>
+		</div>
+
+	<?php endif;?>
+     <?php endif; ?>
+		
+		
+	<div style="clear:both;"></div>	
+		
+	<?php if ($mostraboleto == "1"): ?> 	
+		<label>
+<?php if (in_array("BoletoBancario", $standad->getFormasPagamento()) ): ?>
+		<input onclick="boleto();" type="radio" name="payment[forma_pagamento]" title="Boleto" value="BoletoBancario" class="forma_pg">
+
+		<div id="linhaboleto" onclick="boleto();">
+			<div id="icone">
+			<img alt="Boleto Bancário" id="imageboleto" src="<?php echo $icone_boleto; ?>">
+			</div>
+			<div id="desc">
+			<h3>Boleto</h3>
+				<span class="desc">
+				<?php echo $descontotexto; ?>
+				</span>
+			</div>
+			<div id="valor">
+			<h3>Valor</h3>
+			R$ <?php echo number_format($desconto,2) ?>
+			</div>
+		</div>
+		</label>	
+		<div style="clear:both;"></div>
+		<div id="conteudoboleto">
+		<h3>Boleto Bancário</h3>		
+			<div id="icone">
+				<img alt="Boleto Bancário" id="imageboleto" src="<?php echo $boleto; ?>">
+			</div>
+			<div id="desc2">
+				<?php echo $descontotexto1; ?>
+			</div>
+		</div>
+     <?php endif; ?>
+	<?php endif; ?>
+
+
+
+
+
+<div style="clear:both;"></div>
+
+
+
+
+
+		<label  onclick="parcelas();">
+
+
+				<?php if (in_array("CartaoCredito", $standad->getFormasPagamento()) ): ?>
+					<input onclick="parcelas();" id="cartao_radio" type="radio" name="payment[forma_pagamento]" title="Cartão de Crédito" value="CartaoCredito" class="forma_pg">
+
+
+				<div id="linhaparcelas">
+					<div id="icone">
+					<img alt="Cartão de Crédito" id="imageboleto" src="<?php echo $icone_cartao; ?>">
+					</div>
+					<div id="desc">
+					<h3>Cartão de Crédito</h3>
+						<span class="desc">
+						Pague em até <?php echo $k; ?>x
+						</span>
+					</div>
+					<div id="valor">
+					Parcelas <?php echo $k; ?>x de
+					R$ <?php echo $v['valor']; ?>
+					</div>
+				</div>
+				<?php endif;?>
+		</label>
+		<div style="clear:both;"></div>
+		<div id="linhacartao">
+			<h3>Cartão de Crédito</h3>
+			<li class="wide">
+					<label class="required" for="credito_bandeira" >Selecione a Bandeira:</label>
+					<div class="input-box"  style="text-align:center;">
+				
+						<label id="band">
+							<input id="bandeiratransparente" type="radio" name="payment[credito_instituicao]" onclick="visa();"  value="Visa"><img src="<?php echo $cartao_visa; ?>" onclick=";"   id="Visa" alt="Visa" border="0">
+						</label>
+				
+						<label id="band">
+							<input id="bandeiratransparente" type="radio"  name="payment[credito_instituicao]" onclick="mastercard();"  value="Mastercard"><img src="<?php echo $cartao_master; ?>" onclick="" id="Mastercard" alt="Mastercard" border="0">
+						</label>
+				
+				
+						<label id="band">
+							<input id="bandeiratransparente" type="radio"  name="payment[credito_instituicao]" onclick="americanexpress();"  value="AmericanExpress"><img src="<?php echo $cartao_american; ?>" onclick="" id="AmericanExpress" alt="AmericanExpress" border="0">
+						</label>
+					</div>
+					<div class="input-box"  style="text-align:center;">
+						<label id="band">
+						<input id="bandeiratransparente" type="radio"  name="payment[credito_instituicao]" onclick="diners();"  value="Diners"> <img onclick="" src="<?php echo $cartao_diners; ?>" id="Diners" alt="Diners" border="0">
+						</label>
+				
+				
+					<label id="band">
+					<input id="bandeiratransparente" type="radio"  name="payment[credito_instituicao]" onclick="hipercard();"  value="Hipercard"><img onclick="" src="<?php echo $cartao_hipercard; ?>" id="Hipercard" alt="Hipercard" border="0">
+					</label>
+
+				</div>
+				</li>
+		
+	<div id="checkout-payment-bandeira"  class="validation-advice" style="display:none;position:relative;" ></div>
+
+	<li class="wide">
+					<label class="required" for="credito_numero">Número:</label>
+					<div class="input-box">
+						<input type="text" name="payment[credito_numero]" id="credito_numero" class="input-text required-entry validate-cc-number" >
+					</div>
+				</li>
+			
+			
+	       <li class="wide">
+					<label class="required" for="Validade">Validade:</label>
+					<div class="input-box">
+					    <select name="payment[credito_expiracao_mes]" id="credito_expiracao_mes" class="input-text required-entry" >
+					      <option value="">Mês</option>
+					      <option value="01">01</option>
+					      <option value="02">02</option>
+					      <option value="03">03</option>
+					      <option value="04">04</option>
+					      <option value="05">05</option>
+					      <option value="06">06</option>
+					      <option value="07">07</option>
+					      <option value="08">08</option>
+					      <option value="09">09</option>
+					      <option value="10">10</option>
+					      <option value="11">11</option>
+					      <option value="12">12</option>
+					    </select>
+					    <select name="payment[credito_expiracao_ano]" id="credito_expiracao_ano" class="input-text required-entry" >
+					      <option value="">Ano</option>
+					      <option value="13">13</option>
+					      <option value="14">14</option>
+					      <option value="15">15</option>
+					      <option value="16">16</option>
+					      <option value="17">17</option>
+					      <option value="18">18</option>
+					      <option value="19">19</option>
+					      <option value="20">20</option>
+					      <option value="21">21</option>
+					      <option value="22">22</option>
+					      <option value="23">23</option>
+					      <option value="24">24</option>
+					      <option value="25">25</option>
+					    </select>
+	     				</div>
+		</li>
+	  	<li class="wide">
+					<label class="required" for="cvv">Código de segurança:</label>
+					<div class="input-box">
+					<span class="tooltip">
+					<input type="text" name="payment[credito_codigo_seguranca]" onkeyup="countChar(this)" class="input-text required-entry" id="credito_codigo_seguranca" >
+	  				 <span class="custom help" style=" width:260px;"><em>Código de segurança:</em>Veja no verso do seu cartão.<img src="<?php echo $this->getSkinUrl('MOIP/transparente/imagem/codigo-seguranca.png'); ?>" id="imageseguratransparente" border="0"></span></span>
+	       </div>
+	</li>
+	<?php
+	$data = $standad->getQuote()->getShippingAddress();
+	$data->getGrandTotal();
+	?>
+		  
+		    	<li class="wide">
+					<label class="required" for="credito_parcela">Opções de pagamento:</label>
+					<div class="input-box">
+		    			<select name="payment[credito_parcelamento]" id="credito_parcelamento" class="input-text required-entry" >
+		                       <?php echo $parcelas; ?>
+		                            </select>
+		   
+		    				<div id="addparcelas">
+		                                    <?php
+		                                    
+		                                    if ($parcelas_sem_juros >= 1)
+		                                    {
+		                                    echo "<div id=\"addparcelasdesc\"> Sem juros até ".$parcelas_sem_juros." parcelas";
+		                                    if ($parcelas_sem_juros < $k)
+		                                    {
+		                                    echo ", após juros de ". $v['juros'] ." a.m.</div>";
+		                                    }
+		                                    }
+		                                    if ($parcelas_sem_juros == "12")
+		                                    {
+		                                    echo "<div id=\"addparcelasdesc\"> Com juros de ".$v['juros'] ." a.m.</div>";
+		                                    }
+		                                    ?>
+		                                 </div>
+		                      </div>
+	       			</li>
+	       			
+	       	<div id="formcli" style="display:none;">
+		<h3>Dados do Titular</h3>
+		<div id="pjtransparente" style="display:none;width:80%; float:left;color:red;">Atenção para Pessoa Júridica você deverá informar os dados do seu cartão empresarial, não os dados da empresa.</div>
+		
+			<li class="wide">
+			<label class="required" for="credito_parcela">Nome no Cartão:</label>
+				<div class="input-box">
+					<span class="tooltip" >        
+					<input type="text" name="payment[credito_portador_nome]" value="<?php echo $nome; ?>" class="required-entry" id="credito_portador_nome" >
+					<span class="custom help"><em>Nome do titular</em>deverá ser obrigatoriamente como descrito no cartão.</span></span>
+				 </div>
+	       	</li>
+	       	<li class="wide">
+			<label class="required" for="credito_parcela">CPF:</label>
+				<div class="input-box">
+				<input type="text" name="payment[credito_portador_cpf]" class="required-entry validar_cpf" placeholder="Ex. 111.111.111-11" onkeypress="return txtBoxFormat(this, '999.999.999-99', event);" maxlength="14" id="credito_portador_cpf" value="<?php echo $cpf; ?>" >
+		 		</div>
+	       	</li>
+	       	<li class="wide">
+			<label class="required" for="credito_parcela">Telefone:</label>
+				<div class="input-box">
+					<span class="tooltip" >
+					<input type="text" name="payment[credito_portador_telefone]" id="credito_portador_telefone" onkeypress="return txtBoxFormat(this, '(99)9999-9999', event);" maxlength="14" value="<?php echo $telefone; ?>" placeholder="Ex. (19)9999-9999" class="input-text required-entry">
+					<span class="custom help"><em>Telefone de contato</em>Muitas vezes é necessária a confirmação manual de seus dados por nossa equipe de crédito, por favor informe um telefone em que seja fácil te localizar.</span></span>
+		 		</div>
+	       	</li>
+	       	<li class="wide">
+			<label class="required" for="credito_parcela">Data nascimento:</label>
+				<div class="input-box">
+				<input type="text" name="payment[credito_portador_nascimento]" id="credito_portador_nascimento" onkeypress="return txtBoxFormat(this, '99/99/9999', event);" maxlength="10" value="<?php if ($dn !='') { echo $dn; } ?>" placeholder="Ex. 10/10/1985" class="input-text required-entry" >
+		 		</div>
+	       	</li>
+		</div>
+		</div>
+	
+	
+	<div style="clear:both;"></div>
+	
+	
+	
+	
+
+		<label>
+
+	<?php if (in_array("DebitoBancario", $standad->getFormasPagamento()) ): ?>
+		<input onclick="transf();" type="radio" class="forma_pg" name="payment[forma_pagamento]" value="DebitoBancario" >
+
+		<div id="linhatransf"  onclick="transf();">
+				<div id="icone">
+				<img alt="Transferência Bancária" id="imageboleto" src="<?php echo $icone_transf; ?>">
+				</div>
+				<div id="desc">
+				<h3>Transferência Bancária</h3>
+				<span class="desc">
+				<?php echo $descontotexto; ?>
+				</span>
+				</div>
+				<div id="valor">
+				<h3>Valor</h3>
+				R$ <?php echo number_format($desconto,2) ?>
+				</div>
+		</div>
+		<?php endif;?>	
+		</label>
+<div style="clear:both;"></div>
+		<div id="conteudotransf">
+			<h3>Transferência Online</h3>
+			<div id="pagdebito">
+				Após finalizar o pedido você será redirecionado ao site do seu banco...</br>
+				<?php echo $descontotexto1; ?>
+				</br>
+			</div>
+			<div id="transparente_debito_bandeiras">
+				<label>
+				<input type="radio" id="debito_instituicao" name="payment[debito_instituicao]"  onclick="bb();"  value="BancoDoBrasil">
+				<img  src="<?php echo $cartao_bb; ?>"  alt="Banco do Brasil" id="debbb" >
+				</label>
+				<label>
+				<input type="radio" id="debito_instituicao" name="payment[debito_instituicao]" onclick="bradesco();" value="Bradesco">
+				<img  src="<?php echo $cartao_bradesco; ?>" id="debbradesco" alt="Bradesco">
+				</label>
+				<label>
+				<input type="radio" id="debito_instituicao" name="payment[debito_instituicao]" onclick="itau();"  value="Itau" >
+				<img src="<?php echo $cartao_itau; ?>" id="debitau" alt="Itaú"  >
+				</label>
+				<label>
+				<input type="radio" id="debito_instituicao" name="payment[debito_instituicao]" onclick="banrisul();" value="Banrisul">
+				<img src="<?php echo $cartao_banrisul; ?>" id="Banrisul" alt="Banrisul"  >
+				</label>
+			</div>
+			<div id="checkout-payment-banco" class="validation-advice" style="position:relative;display:none;"></div>
+			<div id="checkout-payment-moip-deb" class="validation-advice"  style="position:relative;display:none;" >
+		Por favor, selecione o banco!
+		</div>
+		</div>
+	<div style="clear:both;"></div>
+       	
+</ul>
+</div>
+<div id="checkout-payment-moip" class="validation-advice" style="position:relative;display:none;"></div>
+

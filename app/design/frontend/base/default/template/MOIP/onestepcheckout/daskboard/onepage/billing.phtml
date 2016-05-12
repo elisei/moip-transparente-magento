@@ -1,0 +1,59 @@
+
+
+	<div id="co-billing-form">
+						  <?php if ($this->customerHasAddresses()): ?>
+						  	<ul class="form-list" >
+						                    <li class="wide">
+						                       <label for="billing-address-select" style="_width:250px;"><?php echo $this->__('Selecione o endereço de seu cadastro ou crie um novo:') ?></label>
+						                       <div class="input-box">
+						                           <?php echo $this->getAddressesHtmlSelect('billing') ?>
+						                       </div>
+						                    </li>
+					                   	 </ul>
+                            <?php endif ?>
+						<?php echo $this->getChildHtml('billing_form');?>
+
+
+	</div>
+
+
+
+
+
+<script type="text/javascript">
+//<![CDATA[
+
+    var billaddbook = 1;
+    jQuery("#billing\\:save_in_address_book").click(function() {
+        if (this.value != billaddbook) {
+            temp = billaddbook;
+            billaddbook = this.value;
+            jQuery("#billing\\:save_in_address_book").attr("value", temp);
+        }
+    });
+
+    function updateBillingForm(address_id, flag) {
+        if (address_id == "") {
+            var temp_id = jQuery("#billing\\:address_id").val();
+            jQuery('#billing-new-address-form').clearForm();
+            jQuery("#billing\\:address_id").val('');
+        } else {
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: "<?php echo Mage::getUrl('onestepcheckout/index/updatebillingform')?>",
+                    data: jQuery("#onestep_form").serialize(),
+
+                    success: function(msg) {
+                        jQuery('#moip_onstepcheckout_billing_form').html(msg);
+                        jQuery('#moip_onstepcheckout_billing_form').find("script").each(function(i) {
+                                        eval(jQuery(this).text());
+                                    });
+                        updateShippingType();
+                    }
+                });
+        }
+    }
+
+//]]>
+</script>

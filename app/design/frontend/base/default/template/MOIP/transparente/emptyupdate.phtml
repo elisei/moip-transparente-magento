@@ -1,0 +1,26 @@
+<?php if($this->getRequest()->getParams()){
+			$post = $this->getRequest()->getPost();
+			$transparente_id = $post['transparente_id'];
+			$pgtoArray = array();
+			$pgtoArray['forma_pagamento'] = $post['forma_de_pagamento'];
+			$pgtoArray['credito_instituicao'] = $post['bandeira'];
+	        $pgtoArray['credito_numero'] = $post['Numero'];
+	        $pgtoArray['credito_expiracao_mes'] = $post['Expiracao_mes'];
+	        $pgtoArray['credito_expiracao_ano'] = $post['Expiracao_ano'];
+	        $pgtoArray['credito_codigo_seguranca'] = $post['CodigoSeguranca'];
+	        $pgtoArray['credito_parcelamento'] = $post['parcelas'];
+	        $pgtoArray['credito_portador_nome'] = $post['Portador'];
+	        $pgtoArray["vcmentoboleto"] = "3";
+	        $cpf = $post['CPF'];
+	        $pgtoArray['credito_portador_cpf'] = preg_replace("/[^0-9]/", "", $cpf);
+	        $pgtoArray['credito_portador_DDD'] = $this->getNumberOrDDD($post['Telefone'], true);
+	        $pgtoArray['credito_portador_telefone'] = $this->getNumberOrDDD($post['Telefone']);
+	        $pgtoArray['credito_portador_nascimento'] =  date('Y-m-d', strtotime($post['DataNascimento']));
+	        Mage::unregister('result_decode');
+			$api = Mage::getModel('transparente/api');
+			$pagar = $api->getRePagar($transparente_id, $pgtoArray);
+			Mage::Register('result_decode', $pagar);
+			$refez = json_decode($pagar);
+		}
+
+		echo $refez; ?>

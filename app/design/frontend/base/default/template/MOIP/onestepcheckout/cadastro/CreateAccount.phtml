@@ -1,0 +1,185 @@
+<?php $color = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor'); ?>
+<?php $botao_color = "#".Mage::getStoreConfig('onestepcheckout/layout/botao_cor');?>
+<?php $style_cor_background = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor_background');?>
+<?php $style_cor_header = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor_header');?>
+<?php $style_cor_step = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor_step');?>
+<?php $islogin=0; if(Mage::getSingleton('customer/session')->isLoggedIn()) $islogin=1; ?>
+<style type="text/css">
+	#loginbox, #btn_logar,.btn-update-qty{background:<?php echo $botao_color;?>;padding: 5px 10px;color:#fff;text-decoration: none;border-radius: 5px;text-align: center;width: 90%; cursor: pointer;}
+	 p.moip-osc-block-title{color:<?php echo $color;?>;}
+	 .moip-osc-block-title>h3 {color: <?php echo $color;?>;}
+   h2, h1 {color: <?php echo $color;?>;}
+  .full-container {background: <?php echo $style_cor_header;?>}
+  .wrapper {background: <?php echo $style_cor_background;?>}
+  .header {background: <?php echo $style_cor_header;?>}
+</style>
+
+
+<div class="container body-wrapper">
+  <div class="row">
+  
+  		<div class=" col-sm-12 col-lg-8">
+
+            <div class="moip-osc-block" >
+              <div class="moip-osc-block-title">
+                <h3><?php echo $this->__('Entrar ou Cadastrar-se');?></h3>
+              </div>
+            
+              <div class="moip-osc-block-content">
+                <div class="a-center pre-step">
+                  <h2>Identificação</h2>
+                  <p>Para finalizar a compra, informe seu e-mail.</p>
+
+                  <div class="input-group  input-group-lg">
+                   
+                      <input type="text"  type="text" name="checked-login" id="checked-login"  title="Endereço de e-mail"  class="form-control input-text validate-email required-entry" placeholder="Digite seu e-mail">
+                    <span class="input-group-btn">
+                      <button class="btn btn-secondary btn-success "  title="Acesse com seu email" type="button" name="pre-login"><span><span>Continuar</span></span></button>
+                    </span>
+                  </div>
+                  <div class="secure-enable">
+                    <h1><i class="fa fa-lock"></i></h1>
+                    <h3>Você está em um ambiente seguro</h3>
+                     <?php echo $this->__(Mage::getStoreConfig('onestepcheckout/modaluse/secure'));?>
+                  </div>
+                </div>
+                <div class="no-display" id="login-checked">
+                 
+                     <h2>Acesse sua conta</h2>
+                     <?php echo $this->getChildHtml('login-pre',false,true);?>
+                </div>
+                <div class="billing_start no-display" id="create-checked">
+                 
+                  <h2>Crie sua conta</h2>
+                  <div id="cadastrar"><?php echo $this->getChildHtml('billing',false,true);?></div>
+                  
+                </div>
+            </div>
+          </div>      
+      </div>
+      
+      <div class="col-sm-12 col-lg-4">
+        
+                <div class="moip-osc-block" >
+                  <div class="moip-osc-block-title">
+                    <h3><?php echo $this->__('Revisão');?></h3>
+                  </div>
+
+                  <div class="moip-osc-block-content">
+                      <div id="review">
+                        <div class="panel-body"><?php echo $this->getChildHtml('review',false,true);?></div>
+                        
+                      </div>
+                    </div>
+                </div>
+        
+      </div>
+    
+  </div>
+</div>
+	
+<div id="loading-mask">
+    <div id="loading_mask_loader" class="loader">
+    	<img alt="Loading..." class="loading_img" src="<?php echo $this->getSkinUrl('MOIP/onestepcheckout/images/ajax-loader-tr.gif')?>">
+    	<p><span>Atualizando dados, por favor aguarde...</span></p>
+    </div>
+</div>
+
+
+
+
+
+
+<?php if(!$islogin):?>
+
+<div class="modal fade" id="loginModel" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Entrar</h4>
+      </div>
+      <div class="modal-body">
+        		<?php echo $this->getChildHtml('login',false,true);?>
+      </div>
+      <div class="modal-footer">
+	            <button type="button" class="button btn btn-default" data-dismiss="modal">Fechar</button>
+         	      </div>
+    </div>
+  </div>
+</div>
+
+<?php endif; ?>
+
+<?php if(!$islogin):?>
+
+<div class="modal fade" id="EsqueceuSenha" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Recuperar Senha</h4>
+      </div>
+      <div class="modal-body">
+        		<?php echo $this->getChildHtml('forgotpassword',false,true);?>
+      </div>
+      <div class="modal-footer">
+	            <button type="button" class="button btn btn-default" data-dismiss="modal">Fechar</button>
+         	      </div>
+    </div>
+  </div>
+</div>
+
+<?php endif; ?>
+
+<div class="modal fade" id="store_secure_content" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Loja Segura</h4>
+      </div>
+      <div class="modal-body">
+        		<?php echo $this->__(Mage::getStoreConfig('onestepcheckout/modaluse/secure'));?>
+      </div>
+      <div class="modal-footer">
+            <button type="button" class="button btn btn-default" data-dismiss="modal">Fechar</button>
+         </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="termos_modal" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+	      <div class="modal-header">
+	        <h4 class="modal-title" id="myModalLabel">Termos e Condições</h4>
+	      </div>
+	      <div class="modal-body">
+	        		<?php echo $this->__(Mage::getStoreConfig('onestepcheckout/modaluse/content_options'));?>
+	      </div>
+	      <div class="modal-footer">
+	            <button type="button" class="button btn btn-default" data-dismiss="modal">Fechar</button>
+         	      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="ErrosFinalizacao" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="false">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Ops, encontramos erros nos campos abaixo:</h4>
+      </div>
+      <div class="modal-body">
+            <div class="erros_cadastro">
+          <ul class="erros_cadastro_valores"></ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="button btn btn-default" data-dismiss="modal">Ok, entendi!</button>
+      </div>
+    </div>
+  </div>
+</div>

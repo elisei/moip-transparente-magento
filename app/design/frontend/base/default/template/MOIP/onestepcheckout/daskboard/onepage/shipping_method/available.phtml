@@ -1,0 +1,61 @@
+<?php if (!($_shippingRateGroups = $this->getShippingRates())): ?>
+	<div class="erro_cep sem_cep" style="display:none;">
+    	Aguardando preenchimento do CEP, para cálculo do frete, pelos correios.
+	</div>
+	<div class="erro_cep com_cep" style="display:none;">
+		Não Há Meio de Envio disponível, entre em contato com a loja.
+	</div>
+<?php else: ?>
+<dl id="checkout-shipping-method-loadding" class="sp-methods">
+    <?php $_sole = count($this->getShippingRates()) == 1; foreach ($this->getShippingRates() as $code => $_rates): ?>
+        <dt><span class="icon ic ic-truck"></span> <?php echo $this->getCarrierName($code); ?></dt>
+        <dd>
+            <ul class="shipping" id="decore-shipping">
+            <?php $_sole = $_sole && count($_rates) == "1"; foreach ($_rates as $_rate): ?>
+                <li>
+                   <?php if ($_rate->getErrorMessage()): ?>
+                   	 	<div class="erro_cep sem_cep" style="display:none;">
+                   	 		Aguardando preenchimento do CEP, para cálculo do frete, pelos correios.
+	                   </div>
+	                   <div class="erro_cep com_cep" style="display:none;">
+	                   		<?php echo $_rate->getErrorMessage() ?>
+	                   </div>
+                   <?php else: ?>
+			               <?php if ($_sole) : ?>
+			                	<span class="no-display"><input name="shipping_method" type="radio" title="Meio de Envio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>" checked="checked" class="validate-one-required-by-name"/></span>
+			                	
+			               <?php else: ?>
+			               		<input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" title="Meio de Envio" id="s_method_<?php echo $_rate->getCode() ?>" class="radio shipping_method_handle validate-one-required-by-name"/>
+			               <?php endif; ?>
+			               <label for="s_method_<?php echo $_rate->getCode() ?>"  id="s_method_<?php echo $_rate->getCode() ?>" value="<?php echo $_rate->getPrice() ?>">
+
+
+			                        		<?php echo $_rate->getMethodTitle() ?>
+				                        <?php $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
+				                        <?php $_incl = $this->getShippingPrice($_rate->getPrice(), true); ?>
+				                        <?php echo $_excl; ?>
+				                        <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+				                            (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+				                        <?php endif; ?>
+	                    			</label>
+                   <?php endif ?>
+                </li>
+            <?php endforeach; ?>
+            </ul>
+        </dd>
+    <?php endforeach; ?>
+    <span>* O Prazo de envio inicia após a confirmação automática do pagamento.</span>
+</dl>
+<?php endif; ?>
+<script type="text/javascript">
+//<![CDATA[
+	decorateList("decore-shipping");
+	if(jQuery("#billing\\:postcode").val() == '' || jQuery("#billing\\:postcode").val() == '.'){
+		jQuery(".sem_cep").show();
+		jQuery(".com_cep").hide();
+	} else{
+		jQuery(".sem_cep").hide();
+		jQuery(".com_cep").show();
+	}
+//]]>
+</script>

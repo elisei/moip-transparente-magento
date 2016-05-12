@@ -1,0 +1,274 @@
+<form id="onestep_form_account" autocomplete="off" action="<?php echo $this->getUrl('onestepcheckout/index/CreataAccountInit') ?>" method="POST" class="scaffold-form">
+                    <?php echo $this->getBlockHtml('formkey') ?>
+<?php $state_cep =  ($this->customerHasAddresses() ? "show-zip-code" : 'hide-zip-code'); ?>
+
+<fieldset>
+
+    <ul class="form-list" id="moip_onstepcheckout_billing_form" >
+    <input type="hidden" title="Permanecer logado" name="form_key" value="<? echo Mage::getSingleton('core/session')->getFormKey(); ?>" class="input-hidden" />
+    <input type="hidden" name="billing[address_id]" title="Endereço selecionado"  value="<?php echo $this->getAddress()->getId() ?>" id="billing:address_id"class="input-hidden"  />
+    <div class="col-lg-6 col-xm-12">
+        <li class="fields">
+            <div class="customer-name field">
+                <label for="billing:firstname" class="required">Nome</label>
+                <div class="input-box">
+                    <input  autocomplete="off" type="text" id="billing:firstname" name="billing[firstname]" value="<?php echo  $this->getAddress()->getFirstname() ?>" title="Nome" class="input-text required-entry" placeholder="Nome">
+                </div>
+            </div>
+            <div class="field name-lastname">
+                <label for="billing:lastname" class="required">Sobrenome</label>
+                <div class="input-box">
+                    <input  autocomplete="off" type="text" id="billing:lastname" name="billing[lastname]" value="<?php echo  $this->getAddress()->getLastname() ?>" title="Sobrenome" class="input-text required-entry"  placeholder="Sobrenome">
+                </div>
+            </div>
+        </li>
+        <?php if(Mage::getStoreConfig('onestepcheckout/config/enable_pj')):?>
+            <li class="fields pj-pf">
+                <div class="field">
+                        <label class="">
+                            <input  autocomplete="off" type="radio" name="billing[tipopessoa]" class="radio validate-one-required-by-name"  value="1" id="billing:pf" onclick="getval(this);" checked>
+                            Pessoa Física
+                        </label>
+                </div>
+                <div class="field">
+                    <label  class="">
+                        <input  autocomplete="off" type="radio" name="billing[tipopessoa]"  class="radio validate-one-required-by-name" value="2" id="billing:pj" onclick="getval(this);">
+                        Pessoa Jurídica
+                    </label>
+                </div>
+            </li>
+            <li class="fields dados-pj">
+                <div class="field">
+                    <label for="billing:nomefantasia" class="required">Nome Fantasia</label>
+                    <div class="input-box">
+                        <input  autocomplete="off" type="text" title="Nome Fantasia" class="input-text" name="billing[nomefantasia]" id="nomefantasia" value="<?php echo $this->htmlEscape(Mage::getSingleton('customer/session')->getCustomer()->getNomefantasia()); ?>"  placeholder="Nome Fantasia">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="billing:razaosocial" class="required">Razão Social</label>
+                    <div class="input-box">
+                        <input  autocomplete="off" type="text" title="razao_social" class="input-text" name="billing[razaosocial]" id="razaosocial" value="<?php echo $this->htmlEscape(Mage::getSingleton('customer/session')->getCustomer()->getRazaosocial()) ?>" placeholder="Razão Solcial" >
+                    </div>
+                </div>
+            </li>
+            <li class="fields dados-pj">
+                <div class="field">
+                    <label for="billing:cnpj" class="required">CNPJ</label>
+                    <div class="input-box">
+                        <input  autocomplete="off" type="text" title="cnpj" class="input-text" name="billing[cnpj]" id="cnpj" value="<?php echo $this->htmlEscape(Mage::getSingleton('customer/session')->getCustomer()->getCnpj()) ?>"  placeholder="CNPJ">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="billing:insestadual" class="required">Inscrição Estadual</label>
+                    <div class="input-box">
+                        <input  autocomplete="off" type="text" title="Inscrição Estadual" class="input-text" name="billing[insestadual]"   value="<?php echo $this->htmlEscape(Mage::getSingleton('customer/session')->getCustomer()->getInsestadual()) ?>" id="insestadual" value="" placeholder="Inscrição Social">
+                    </div>
+                    <input  autocomplete="off" type="checkbox" name="Isento" title="Isento para a Inscrição Estadual" onclick="marcar_isento()" style="width: 15px !important;"><label>Isento</label>
+                </div>
+            </li>
+        <?php endif; ?>
+
+        <li class="fields">
+           <?php $_taxvat = $this->getLayout()->createBlock('customer/widget_taxvat') ?>
+           <?php $_dob = $this->getLayout()->createBlock('customer/widget_dob') ?>
+                <?php if ($_taxvat->isEnabled()): ?>
+                        <div class="field">
+                            <?php echo $_taxvat->setTaxvat($this->getQuote()->getCustomerTaxvat())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?>
+                        </div>
+                         <script type="text/javascript">
+                        //<![CDATA[
+                        $('billing:taxvat').addClassName('validar_cpf');
+                        Validation.add('validar_cpf', 'O CPF ou CNPJ informado \xE9 invalido', function(v){return validaCPF(v,0);});
+                        //]]>
+                        </script> 
+                <?php endif ?>
+                <?php if ($_dob->isEnabled()): ?>
+                            <div class="field">
+                                <?php echo $_dob->setDate($this->getQuote()->getCustomerDob())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?>
+                            </div>
+            <?php endif; ?>
+           
+           
+        </li>
+        <li class="fields">
+             <div class="field">
+                <label for="billing:telephone" class="required">Telefone</label>
+                <div class="input-box">
+                    <input  autocomplete="off" type="text" name="billing[telephone]" value="<?php echo $this->htmlEscape($this->getAddress()->getTelephone()) ?>"  title="Telefone" class="input-text validate-tel-national required-entry" id="billing:telephone"  placeholder="Telefone">
+                    <script type="text/javascript">
+                    //<![CDATA[
+                        Validation.add('validate-tel-national', 'Entre com telefone válido: (99)9999-?9999', function(v) {
+                            return Validation.get('IsEmpty').test(v) || /^([()])([0-9]){2}([)])([0-9]){4}([-])([0-9]){4,5}$/.test(v);
+                        });
+                    //]]>
+                    </script>
+                </div>
+            </div>
+            <div class="field">
+                <label for="billing:telephone" class="required">Celular</label>
+                <div class="input-box">
+                    <input  autocomplete="off" type="text" name="billing[fax]" value="<?php echo $this->htmlEscape($this->getAddress()->getFax()) ?>"  title="Celular" class="input-text validate-cel-national input-text" id="billing:fax"  placeholder="Celular">
+                    <script type="text/javascript">
+                    //<![CDATA[
+                        Validation.add('validate-cel-national', 'Entre com telefone válido: (99)9999-?9999', function(v) {
+                            return Validation.get('IsEmpty').test(v) || /^([()])([0-9]){2}([)])([0-9]){4}([-])([0-9]){4,5}$/.test(v);
+                        });
+                    //]]>
+                    </script>
+                </div>
+            </div>
+            
+             <?php $_gender = $this->getLayout()->createBlock('customer/widget_gender') ?>
+                    <?php if ($_dob->isEnabled() || $_gender->isEnabled()): ?>
+                        <li class="fields">
+                        
+                        <?php if ($_gender->isEnabled()): ?>
+                            <div class="field">
+                                <?php echo $_gender->setGender($this->getQuote()->getCustomerGender())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?>
+                            </div>
+                        <?php endif ?>
+                        </li>
+                    <?php endif ?>
+
+        </li>
+        </div>
+
+        <div class="col-lg-6 col-xm-12">
+            <?php if(!$this->isCustomerLoggedIn()): ?>
+                <li class="wide">
+                    <label for="billing:email" class="required">Endereço de e-mail</label>
+                    <div class="input-box">
+                        <input  autocomplete="off" type="text" name="billing[email]" id="billing:email" value="<?php echo $this->escapeHtml($this->getAddress()->getEmail()) ?>" title="Endereço de e-mail" class="input-text validate-email required-entry"  placeholder="Email">
+                    </div>
+                </li>
+                <?php else: ?>
+                    <input  autocomplete="off" type="hidden" name="billing[email]"  value="<?php echo $this->htmlEscape( Mage::getSingleton('customer/session')->getCustomer()->getEmail()) ?>"  id="email" class="input-hidden">
+                <?php endif; ?>
+                <?php if(!$this->isCustomerLoggedIn()): ?>
+                <li class="fields" id="register-customer-password" style="display:block;">
+                    <div class="field">
+                        <label for="billing:customer_password" class="required">Crie sua Senha</label>
+                        <div class="input-box">
+                            <input  autocomplete="off" type="password" name="billing[customer_password]" id="billing:customer_password" title="Senha" class="input-text required-entry validate-password"  placeholder="Senha">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="billing:confirm_password" class="required">Confirmar sua Senha</label>
+                        <div class="input-box">
+                            <input  autocomplete="off" type="password" name="billing[confirm_password]" onkeypress="valide_senha(this);" title="Confirmar senha" id="billing:confirm_password" class="input-text required-entry validate-cpassword" placeholder="Confirmar Senha">
+                        </div>
+                    </div>
+                </li>
+                    <input  autocomplete="off" type="hidden" name="billing[register_new_account]" value="1" title="Criar conta" id="register_new_account" class="input-hidden">
+                    <input  autocomplete="off" type="hidden" name="billing[persistent_remember_me]" value="1" title="Continuar logado" id="persistent_remember_me" class="input-hidden">
+                    <p style="padding-bottom:10px;">A senha criada será utilizada para você ter acesso futuro a loja e acompanhar o seu pedido.</p>
+                <?php endif; ?>
+        </div>
+        <div class="col-lg-12 col-xm-12">
+            <li class="fields">
+                <div class="field">
+
+                    <label for="billing:postcode" class="required">CEP</label>
+                    <div class="input-box">
+                        <input  autocomplete="off" type="text" title="CEP" name="billing[postcode]" id="billing:postcode" value="<?php echo $this->htmlEscape($this->getAddress()->getPostcode()) ?>"  class="input-text validate-zip-international  required-entry moipzip" onchange="javascript: buscarEndereco('billing');"    style="width: 100px;" placeholder="CEP">
+                    </div>
+                    <script  type="text/javascript">
+                //<![CDATA[
+                    Validation.add('validate-zip-international', 'Entre com um cep válido: 99999-999', function(v) {
+                        return Validation.get('IsEmpty').test(v) || /^([0-9]){5}([-])([0-9]){3}$/.test(v);
+                    });
+                //]]>
+                </script>
+                </div>
+                <div class="field get-cep">
+                    
+                        <span>Buscar Endereço</span>
+                    
+                </div>
+            </li>
+            <li class="wide <?php echo $state_cep ?>">
+                <label for="billing:street1" class="required">Endereço</label>
+                <div class="input-box <?php echo $state_cep ?>">
+                    <input  autocomplete="off" type="text" title="Endereço da rua" name="billing[street][0]" id="billing:street1" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(1)) ?>" class="input-text  required-entry  validate-length minimum-length-4 maximum-length-45" placeholder="Endereço">
+                </div>
+            </li>
+            <li class="fields <?php echo $state_cep ?>">
+                <div class="field <?php echo $state_cep ?>">
+                    <label for="billing:street2" class="required">Número</label>
+                    <div class="input-box">
+                        <input  autocomplete="off" type="text" title="Número" name="billing[street][1]" id="billing:street2" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(2)) ?>" class="input-text  required-entry  validate-length minimum-length-1 maximum-length-5" placeholder="Número">
+                    </div>
+                </div>
+                <div class="field <?php echo $state_cep ?>">
+                    <label for="billing:street3">Complemento</label>
+                    <div class="input-box">
+                        <input  autocomplete="off" type="text" title="Complemento" name="billing[street][2]" id="billing:street3" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(3)) ?>" class="input-text  validate-length minimum-length-1 maximum-length-30" placeholder="Complemento">
+                    </div>
+                </div>
+            </li>
+
+
+
+            <li class="fields <?php echo $state_cep ?>">
+                <div class="field <?php echo $state_cep ?>">
+                    <label for="billing:street4" class="required">Bairro</label>
+                    <div class="input-box">
+                        <input  autocomplete="off" type="text" title="Bairro" name="billing[street][3]" id="billing:street4" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(4)) ?>" class="input-text required-entry  validate-length minimum-length-1 maximum-length-30" placeholder="Bairro">
+                    </div>
+                </div>
+                <div class="field <?php echo $state_cep ?>">
+                    <label for="billing:city" class="required">Cidade</label>
+                    <div class="input-box">
+                        <input  autocomplete="off" type="text" title="Cidade" name="billing[city]" value="<?php echo $this->htmlEscape($this->getAddress()->getCity()) ?>"class="input-text  required-entry" id="billing:city" placeholder="Cidade">
+                    </div>
+                </div>
+            </li>
+
+            <li class="fields  <?php echo $state_cep ?>">
+                <div class="field <?php echo $state_cep ?>">
+                    <label for="billing:region_id" class="">Estado</label>
+                    <div class="input-box">
+                          <select id="billing:region_id" name="billing[region_id]" title="<?php echo Mage::helper('core')->quoteEscape($this->__('State/Province')) ?>" class="validate-select" style="display:none;">
+                                            <option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+                                        </select>
+                                        <script type="text/javascript">
+                                        //<![CDATA[
+                                            $('billing:region_id').setAttribute('defaultValue',  "<?php echo $this->getAddress()->getRegionId() ?>");
+                                        //]]>
+                                        </script>
+                                        <input type="text" id="billing:region" name="billing[region]" value="<?php echo $this->escapeHtml($this->getAddress()->getRegion()) ?>"  title="<?php echo Mage::helper('core')->quoteEscape($this->__('State/Province')) ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('region') ?>" style="display:none;" />
+                    </div>
+                </div>
+
+                <div class="field no-display">
+                        <label for="billing:country_id" class="required"><em></em>País</label>
+                        <div class="input-box">
+                             <?php echo $this->getCountryHtmlSelect('billing') ?>
+                        </div>
+                </div>
+            </li>
+         
+
+            <li class="control">
+                <input type="hidden" name="ship_to_same_address"  value="1" title="<?php echo $this->__('ship to same address') ?>">
+                <input type="hidden" name="billing[save_in_address_book]" value="1" />
+                <input type="hidden" name="billing[address_id]"  value=""/>
+            </li>
+            <div class="buttons-set">
+                 <button type="submit" title="Prosseguir" class="btn btn-success" id="init-account"><span><span>Prosseguir</span></span></button>
+            </div>
+        </div>
+    </ul>
+</fieldset>
+<script  type="text/javascript">
+//<![CDATA[
+    jQuery(function(){jQuery("#billing-new-address-form").show();});
+    var billing = new Billing("co-billing-form","<?php echo $this->getUrl('checkout/onepage/getAddress/address/') ?>", "<?php echo $this->getUrl('checkout/onepage/saveBilling/') ?>");
+    var billingForm = new VarienForm("co-billing-form");
+
+    var billingRegionUpdater = new RegionUpdater("billing:country_id", "billing:region", "billing:region_id", countryRegions, undefined, "billing:postcode");
+    var formAccount = new VarienForm('onestep_form_account', true);
+//]]>
+</script>
+
+</form>

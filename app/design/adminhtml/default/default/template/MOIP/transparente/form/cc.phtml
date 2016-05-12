@@ -1,0 +1,354 @@
+<?php $_code=$this->getMethodCode() ?>
+<ul id="payment_form_<?php echo $_code ?>" style="display:none">
+	<?php $cofre = $this->getCofre(); ?>
+			<?php if($cofre != "false"): ?>
+  			<script type="text/javascript">
+  				 $j(document).ready(function(){
+		                SetCofre();
+		          });
+  			</script>
+  			
+  			<div class="payment-cofre">
+  				<?php $cofre = Mage::helper('core')->jsonDecode($cofre); ?>
+  				
+  				
+					<?php foreach ($cofre  as $key => $value): ?>
+						<?php $cardBrand = $value['moip_card_brand'] ?>
+						<?php $cardNunber = $value['moip_card_id'] ?>
+						
+							<li class="cofre">
+								<label>
+									<div class="radio_cofre">
+										<input id="payment_card_cofre" type="radio" title="Cartão de Crédito Salvo" class="validate-one-required-by-name" 
+										 name="payment[<?php echo $_code ?>_cofre_nb]"  value="<?php echo $cardNunber ?>">
+									</div>
+									<div class="image_cofre">
+										<img src="<?php echo $this->imageCofre($value['moip_card_brand']); ?>" alt="<?php echo $value['moip_card_brand']; ?>" border="0">
+									</div>
+									<div class="cofre_number">
+										<p class="brand_title"><?php echo $value['moip_card_fullname']; ?> </p>
+										<p><?php echo $value['moip_card_first6'] ?> ** **** <?php echo $value['moip_card_last4'] ?></p>
+									</div>
+								</label>
+							</li>
+							
+					<?php endforeach; ?>
+					<li class="wide">
+						<label for="<?php echo $_code ?>_cofre_id" class="required"><em>*</em><?php echo $this->__('Cod. de Segurança') ?></label>
+						<div class="input-box">
+							
+							 	<input type="text" pattern="\d*" name="payment[<?php echo $_code ?>_cofre_id]" title="Código de Seguranção do Seu Cartão" class="input-text validate-required required-entry" id="<?php echo $_code ?>_cofre_id" placeholder="CVV"  value="">
+							
+							
+						</div>
+					</li>
+					<li class="wide">
+						<label for="<?php echo $_code ?>_installment_cofre" class="required"><em>*</em><?php echo $this->__('Parcelas') ?></label>
+						<div class="input-box">
+							<select name="payment[<?php echo $_code ?>_count_cofre]"  id="<?php echo $_code ?>_count_cofre" class="validate-select" title="Número de Parcelas de sua Compra - Cofre"  >
+								<option value="" select>Selecione as parcelas</option>
+								<?php $parcelas = $this->getParcelamentoSelect(); ?>
+							           <?php foreach ( $parcelas as $key => $value) { ?>
+							           		<?php echo $parcelas[$key]; ?>
+							           <?php } ?>
+							</select>
+						</div>
+					</li>
+  			</div>
+	<?php endif ?>
+
+	<div class="payment-card">
+		<div class="clearer">
+			<textarea  id="id-chave-publica" class="chave-publica-moip" style="display:none !important;"><?php echo $this->getPublicKey() ?></textarea>
+			<input id="encrypted_value" class="encrypted_value input-text  required-entry" name="payment[<?php echo $_code ?>_encrypted]" type="hidden" value="" title="Os dados do cartão de crédito são inválidos.">
+			
+		</div>
+
+		<li>
+			<div class="no-display">
+				<input class="<?php echo $_code ?>_type" id="<?php echo $_code ?>_type" type="hidden" name="payment[<?php echo $_code ?>_type]"  />
+			</div>
+		</li>
+			<li class="wide">
+			<ul id="<?php echo $_code ?>_type">
+				    <li class="VI">Visa</li>
+				    <li class="MC">Mastercard</li>
+				    <li class="AE">American Express</li>
+				    <li class="DI ">Dinners</li>
+				    <li class="EO">Elo</li>
+				    <li class="HI">Hipercard</li>
+				    <li class="HP">Hipper</li>
+				</ul>
+		</li>
+		
+		<li class="fields card-number">
+					<label for="<?php echo $_code ?>_number" class="required"><em>*</em><?php echo $this->__('Número do Cartão') ?></label>
+					<div class="input-box">
+				<input type="text" id="<?php echo $_code ?>_number" pattern="\d*" name="payment[<?php echo $_code ?>_number]" title="Número do seu Cartão de Crédito"  class="required-entry input-text"  placeholder="Número do Cartão" value="">
+			</div>
+		</li>
+
+		<li class="fields card-cvv">
+			<label for="<?php echo $_code ?>_cid" class="required"><em>*</em><?php echo $this->__('Cod. de Segurança') ?></label>
+			<div class="input-box">
+				<div class="v-fix">
+				 	<input type="text" pattern="\d*" name="payment[<?php echo $_code ?>_cid]" title="Código de Seguranção do Seu Cartão" class="input-text cvv required-entry" id="<?php echo $_code ?>_cid" placeholder="CVV"  value="">
+				</div>
+				
+			</div>
+		</li>
+
+		<li class="wide">
+		    <label for="<?php echo $_code ?>_expiration" class="required"><em>*</em><?php echo $this->__('Expiração') ?></label>
+		    <div class="input-box">
+		        <div class="v-fix">
+		            <select name="payment[<?php echo $_code ?>_exp_month]" id="credito_expiracao_mes" class="validate-select" title="Mês de Vencimento do seu Cartão">
+				<option value="">Mês</option>
+				<option value="01">01 - Janeiro</option>
+				<option value="02">02 - Fevereiro</option>
+				<option value="03">03 - Março</option>
+				<option value="04">04 - Abril</option>
+				<option value="05">05 - Maio</option>
+				<option value="06">06 - Junho</option>
+				<option value="07">07 - Julho</option>
+				<option value="08">08 - Agosto</option>
+				<option value="09">09 - Setembro</option>
+				<option value="10">10 - Outubro</option>
+				<option value="11">11 - Novembro</option>
+				<option value="12">12 - Dezembro</option>
+			</select>
+		        </div>
+		        <div class="v-fix">
+		           	<select name="payment[<?php echo $_code ?>_exp_year]" id="credito_expiracao_ano" class="validate-select" title="Ano de Vencimento do seu Cartão">
+				<option value="">Ano</option>
+
+				<option value="2015">15</option>
+				<option value="2016">16</option>
+				<option value="2017">17</option>
+				<option value="2018">18</option>
+				<option value="2019">19</option>
+				<option value="2020">20</option>
+				<option value="2021">21</option>
+				<option value="2022">22</option>
+				<option value="2023">23</option>
+				<option value="2024">24</option>
+				<option value="2025">25</option>
+				<option value="2026">26</option>
+				<option value="2027">27</option>
+				<option value="2028">28</option>
+				<option value="2029">29</option>
+				<option value="2030">30</option>
+			</select>
+		        </div>
+		    </div>
+		</li>
+		<li class="wide">
+			<label for="<?php echo $_code ?>_installment_count" class="required"><em>*</em><?php echo $this->__('Parcelas') ?></label>
+			<div class="input-box">
+			
+				<select name="payment[<?php echo $_code ?>_installment_count]" id="credito_parcelamento" class="required-entry validate-select" title="Número de Parcelas de sua Compra">
+					<option select value="">Selecione as parcelas</option>
+					<?php $parcelas = $this->getParcelamentoSelect(); ?>
+
+				           <?php foreach ( $parcelas as $key => $value) { ?>
+				           		<?php echo $parcelas[$key]; ?>
+				           <?php } ?>
+				</select>
+			</div>
+		</li>
+		<li class="wide">
+			<label for="<?php echo $_code ?>_taxDocument" class="required"><em>*</em><?php echo $this->__('CPF do Titular do Cartão') ?></label>
+			<div class="input-box">
+				<input type="text" name="payment[<?php echo $_code ?>_taxdocument]" value="<?php echo $this->getDateCard('taxvat') ?>" class="input-text required-entry" title="CPF do Titular de seu Cartão" id="credito_portador_cpf"  placeholder="CPF do Titular do Cartão" >
+			</div>
+		</li>
+		<li class="wide card-port">
+			<label for="<?php echo $_code ?>_fullname" class="required"><em>*</em><?php echo $this->__('Nome do Titular Cartão') ?></label>
+			<div class="input-box">
+				<input type="text" name="payment[<?php echo $_code ?>_owner]"  value="<?php echo $this->getDateCard('name') ?>" class="input-text required-entry" title="Nome Impresso em seu Cartão" id="credito_portador_nome" placeholder="Nome Impresso no Cartão">
+			</div>
+		</li>
+		
+		<li class="wide card-port">
+			<label for="<?php echo $_code ?>_Phone" class="required"><em>*</em><?php echo $this->__('Telefone do Titular Cartão') ?></label>
+			<div class="input-box">
+				<input type="hidden" name="payment[<?php echo $_code ?>_PhoneRegion]" value="55" id="credito_portador_telefone" title="Telefone do Titular do Cartão"  class="input-text required-entry" placeholder="Telefone de Contato" >
+				<div class="v-fix">
+					( <input type="text" pattern="\d*" name="payment[<?php echo $_code ?>_phone_code]" value="<?php echo $this->getDateCard('telephone-ddd') ?>" id="credito_portador_telefone" title="Telefone do Titular do Cartão"  class="input-text ddd required-entry" placeholder="Telefone de Contato"> )
+				 </div>
+		        		<div class="v-fix">
+					<input type="text" pattern="\d*" name="payment[<?php echo $_code ?>_phone_number]" value="<?php echo $this->getDateCard('telephone-number') ?>" d="credito_portador_telefone" title="Telefone do Titular do Cartão"  class="input-text telefone required-entry" placeholder="Telefone de Contato">
+				</div>
+			</div>
+		</li>
+		<li class="wide card-port">
+			<label for="<?php echo $_code ?>_birthdate" class="required"><em>*</em><?php echo $this->__('Data de Nascimento Titular do Cartão') ?></label>
+			<div class="input-box">
+				<div class="v-fix">
+					<select name="payment[<?php echo $_code ?>_owner_exp_day]" class="validate-select owner_day" title="Ano de Nacimento do Titular do Catão">
+						<option value="<?php echo $this->getDateCard('dob-day') ?>" select><?php echo ($this->getDateCard('dob-day')  ?  $this->getDateCard('dob-day')  :  "Dia" )?></option>
+						<option value="01">01</option>
+						<option value="02">02</option>
+						<option value="03">03</option>
+						<option value="04">04</option>
+						<option value="05">05</option>
+						<option value="06">06</option>
+						<option value="07">07</option>
+						<option value="08">08</option>
+						<option value="09">09</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+						<option value="15">15</option>
+						<option value="16">16</option>
+						<option value="17">17</option>
+						<option value="18">18</option>
+						<option value="19">19</option>
+						<option value="20">20</option>
+						<option value="21">21</option>
+						<option value="22">22</option>
+						<option value="23">23</option>
+						<option value="24">24</option>
+						<option value="25">25</option>
+						<option value="26">26</option>
+						<option value="27">27</option>
+						<option value="28">28</option>
+						<option value="29">29</option>
+						<option value="30">30</option>
+						<option value="31">31</option>
+					</select>
+				</div>
+				<div class="v-fix">
+					<select name="payment[<?php echo $_code ?>_owner_exp_month]" class="validate-select owner_month" title="Ano de Nacimento do Titular do Catão">
+						<option value="<?php echo $this->getDateCard('dob-month') ?>" select><?php echo ($this->getDateCard('dob-month')  ?  $this->getDateCard('dob-month')  :  "Mês" )?></option>
+						<option value="01">01 - Janeiro</option>
+						<option value="02">02 - Fevereiro</option>
+						<option value="03">03 - Março</option>
+						<option value="04">04 - Abril</option>
+						<option value="05">05 - Maio</option>
+						<option value="06">06 - Junho</option>
+						<option value="07">07 - Jullho</option>
+						<option value="08">08 - Agosto</option>
+						<option value="09">09 - Setembro</option>
+						<option value="10">10 - Outubro</option>
+						<option value="11">11 - Novembro</option>
+						<option value="12">12 - Dezembro</option>
+					</select>
+				</div>
+				<div class="v-fix">
+					<select name="payment[<?php echo $_code ?>_owner_exp_year]" class="validate-select owner_year" title="Ano de Nacimento do Titular do Catão">
+						<option value="<?php echo $this->getDateCard('dob-year') ?>" select><?php echo ($this->getDateCard('dob-year')  ?  $this->getDateCard('dob-year')  :  "Ano" )?></option>
+						<option value="1935">1935</option>
+						<option value="1936">1936</option>
+						<option value="1937">1937</option>
+						<option value="1938">1938</option>
+						<option value="1939">1939</option>
+						<option value="1940">1940</option>
+						<option value="1941">1941</option>
+						<option value="1942">1942</option>
+						<option value="1943">1943</option>
+						<option value="1944">1944</option>
+						<option value="1945">1945</option>
+						<option value="1946">1946</option>
+						<option value="1947">1947</option>
+						<option value="1948">1948</option>
+						<option value="1949">1949</option>
+						<option value="1950">1950</option>
+						<option value="1951">1951</option>
+						<option value="1952">1952</option>
+						<option value="1953">1953</option>
+						<option value="1954">1954</option>
+						<option value="1955">1955</option>
+						<option value="1956">1956</option>
+						<option value="1957">1957</option>
+						<option value="1958">1958</option>
+						<option value="1959">1959</option>
+						<option value="1960">1960</option>
+						<option value="1961">1961</option>
+						<option value="1962">1962</option>
+						<option value="1963">1963</option>
+						<option value="1964">1964</option>
+						<option value="1965">1965</option>
+						<option value="1966">1966</option>
+						<option value="1967">1967</option>
+						<option value="1968">1968</option>
+						<option value="1969">1969</option>
+						<option value="1970">1970</option>
+						<option value="1971">1971</option>
+						<option value="1972">1972</option>
+						<option value="1973">1973</option>
+						<option value="1974">1974</option>
+						<option value="1975">1975</option>
+						<option value="1976">1976</option>
+						<option value="1977">1977</option>
+						<option value="1978">1978</option>
+						<option value="1979">1979</option>
+						<option value="1980">1980</option>
+						<option value="1981">1981</option>
+						<option value="1982">1982</option>
+						<option value="1983">1983</option>
+						<option value="1984">1984</option>
+						<option value="1985">1985</option>
+						<option value="1986">1986</option>
+						<option value="1987">1987</option>
+						<option value="1988">1988</option>
+						<option value="1989">1989</option>
+						<option value="1990">1990</option>
+						<option value="1991">1991</option>
+						<option value="1992">1992</option>
+						<option value="1993">1993</option>
+						<option value="1994">1994</option>
+						<option value="1995">1995</option>
+						<option value="1996">1996</option>
+						<option value="1997">1997</option>
+						<option value="1998">1998</option>
+						<option value="1999">1999</option>
+						<option value="2000">2000</option>
+						<option value="2001">2001</option>
+						<option value="2002">2002</option>
+						<option value="2003">2003</option>
+						<option value="2004">2004</option>
+						<option value="2005">2005</option>
+						<option value="2006">2006</option>
+						<option value="2007">2007</option>
+						<option value="2008">2008</option>
+						<option value="2009">2009</option>
+						<option value="2010">2010</option>
+						<option value="2011">2011</option>
+						<option value="2012">2012</option>
+						<option value="2013">2013</option>
+						<option value="2014">2014</option>
+					</select>
+				</div>
+			</div>
+		</li>
+		<li class="wide">
+				<label>
+				<input type="checkbox" name="titular-card"  title="Salvar este endereço" value="1" class="titular-card validate-number input-checkbox" checked="checked"> Eu sou o Titular do Cartão</label>
+		</li>	
+	</div>	
+
+
+	<?php if($cofre != "false"): ?>
+			<div class="clearer">
+				<li class="wide">
+					<label>
+						<input type="checkbox" name="payment[<?php echo $_code ?>_payment_in_cofre]" title="Usar um novo cartão?" value="0" class="new-card validate-number input-checkbox"> Usar outro Cartão não listado?
+					</label>
+				</li>
+			</div>
+	<?php else: ?>
+				<input type="hidden" name="payment[<?php echo $_code ?>_payment_in_cofre]"   title="Usar um novo cartão?" value="1"  class="new-card validate-number input-checkbox"> 
+	<?php endif; ?>
+</ul>
+<script type="text/javascript">
+//<![CDATA[
+
+          $j(document).ready(function(){
+                MoipPagamentosCc();
+          });
+
+//]]>
+</script>

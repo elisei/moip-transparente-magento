@@ -1,0 +1,14 @@
+<?php $_code=$this->getMethodCode() ?>
+<ul id="payment_form_<?php echo $_code ?>" style="display:none">
+
+	<div class="recommendation">
+		<ul class="checkout-info-boleto">
+			<li class="checkout-info-item"><p class="checkout-info-text"><?php echo Mage::helper('transparente')->__('Pagamento somente à vista') ?></p></li>
+			<li class="checkout-info-item"><p class="checkout-info-text"><?php echo Mage::helper('transparente')->__('O boleto vence em %s dias úteis', Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto')) ?>.</p></li>
+			<li class="checkout-info-item"><p class="checkout-info-text"><?php echo Mage::helper('transparente')->__('É necessário imprimir o boleto ou utilizar o código de barras do mesmo para fazer o pagamento.') ?></p></li>
+			<li class="checkout-info-item"><p class="checkout-info-text"><?php echo Mage::helper('transparente')->__('Imprima o boleto após a finalização da compra.') ?></p></li>
+			<li class="checkout-info-item"><p class="checkout-info-text"><?php echo Mage::helper('transparente')->__('O boleto não será enviado para o seu endereço físico.') ?></p></li>
+		</ul>
+	</div>
+
+</ul>

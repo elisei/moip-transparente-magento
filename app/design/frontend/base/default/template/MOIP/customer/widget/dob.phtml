@@ -1,0 +1,52 @@
+<script type="text/javascript">
+<!--
+//Pula de uma Campo a Outro Automatico
+function ProxCamp(fields) {
+	fields.value=soNumeros(fields.value)
+	if (fields.value.length == fields.maxLength) {
+			for (var i = 0; i < fields.form.length; i++) {
+				if (fields.form[i] == fields && fields.form[(i + 1)] && fields.form[(i + 1)].type != "hidden") {
+					fields.form[(i + 1)].focus();
+				break;
+			}
+		}
+	}
+}
+function soNumeros(v){
+    return v.replace(/\D/g,"")
+}
+//-->
+</script>
+<label for="<?php echo $this->getFieldId('month')?>"<?php if ($this->isRequired()) echo ' class="required"' ?>><?php if ($this->isRequired()) echo '<em>*</em>' ?><?php echo $this->__('Date of Birth') ?></label>
+<div class="input-box customer-dob">
+<?php
+    $this->setDateInput('d',
+        '<div class="dob-day" style="min-width:30px;max-width:30px;float:left; ">
+             <input onkeyup="ProxCamp(this);" id="' . $this->getFieldId('day') . '" name="' . $this->getFieldName('day') . '" value="' . $this->getDay() . '" title="' . $this->__('Day') . '" style="max-width:25px;min-width:25px" placeholder="' . $this->__('DD') . '" maxlength="2" class="input-text validate-custom" ' . $this->getFieldParams() . '/>
+         </div>'
+    );
+
+    $this->setDateInput('m',
+        '<div class="dob-month" style="min-width:30px;max-width:30px;  margin-left:5px;float:left;">
+             <input onkeyup="ProxCamp(this);"  id="' . $this->getFieldId('month') . '" name="' . $this->getFieldName('month') . '" value="' . $this->getMonth()  . '" title="' . $this->__('Month')  . '"  style="max-width:25px;min-width:25px"  placeholder="' . $this->__('MM') . '" maxlength="2"  class="input-text validate-custom" ' . $this->getFieldParams()  . ' />
+         </div>'
+    );
+
+    $this->setDateInput('y',
+        '<div class="dob-year" style="min-width:40px;max-width:40px; margin-left:5px;float:left;" >
+             <input onkeyup="ProxCamp(this);" id="' . $this->getFieldId('year') . '" name="' . $this->getFieldName('year') . '" value="' . $this->getYear()  . '" title="' . $this->__('Year')  . '"  style="max-width:40px;min-width:40px" placeholder="' . $this->__('YYYY') . '" maxlength="4" class="input-text validate-custom" ' . $this->getFieldParams()  . ' />
+         </div>'
+    );
+?>
+    <?php echo $this->getSortedDateInputs() ?>
+    <div class="dob-full" style="display:none;">
+        <input type="hidden" id="<?php echo $this->getFieldId('dob')?>" name="<?php echo $this->getFieldName('dob')?>" />
+    </div>
+
+    <div class="validation-advice" style="display:none;"></div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var customer_dob = new Varien.DOB('.customer-dob', <?php echo $this->isRequired() ? 'true' : 'false' ?>, '<?php echo $this->getDateFormat() ?>');
+//]]>
+</script>

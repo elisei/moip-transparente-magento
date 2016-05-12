@@ -1,0 +1,374 @@
+<?xml version="1.0"?>
+<config>
+    <tabs>
+        <moip translate="label" module="onestepcheckout">
+            <label>MOIP.COM.BR</label>
+            <sort_order>100</sort_order>
+        </moip>
+    </tabs>
+    <sections>
+        <onestepcheckout translate="label" module="onestepcheckout">
+            <label><![CDATA[ <div style="height: 33px; "><img src="http://imagem.o2ti.com/checkout_moip.png" style="float:left; "/><div style="padding-top:8px;color:#2f3850;margin-left: 30px;"> Moip Carrinho<sup style="float: right;">v2.0.0</sup></div></div>]]></label>
+            <tab>moip</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>100</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <config translate="label">
+                    <comment><![CDATA[
+                    <div>
+                    <a style="float: left;text-decoration:none;width:100%" href="http://www.moip.com/magento.php" target="_blank" style="float: left;"><img src="https://imagem.o2ti.com/checkout_moip.png" style="float:left;"/><h1 style="float:left;">Moip Carrinho</h1><sup>v2.0.0</sup>
+                    </a>
+                    <div style="float: left; color:#2f3850">
+                    <label style="font-size: 34px">Vers&atilde;o: <strong>Gratuita para uso com o MoIP Transparente</strong></label>
+                    </div>
+
+                    <br style="clear: both;"/>
+
+                    <p>Essa versão tem o download gratuito desde que utilizem o MoIP Transparente desenvolvido pelo MOIP como o meios de pagamento preferencial em seu site.</p>
+                    <p>Criado por: <a href="http://www.moip.com.br" target="_blank">Moip S/A</a></p>
+                    <hr>
+                    </div>
+                    ]]></comment>
+                    <label>Geral</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enabled translate="label">
+                            <label>Habilitar Checkout:</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+                        <default_country translate="label">
+                            <label>País Padrão</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </default_country>
+                        <enable_buscacep translate="label">
+                            <label>Buscar Endereço pelo CEP?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enable_buscacep>
+                        <enable_pj translate="label">
+                            <label>Habilitar compra por Pessoa Jurídica?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enable_pj>
+                        <default_paymentmethod translate="label">
+                            <label>Meio de Pagamento</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>onestepcheckout/system_config_source_payment_allowedmethods</source_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </default_paymentmethod>
+                        <allowshippingotheraddress translate="label">
+                            <label>Permitir envio para outro endereço</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </allowshippingotheraddress>
+                        <allowguestcheckout translate="label">
+                            <label>Permitir acesso sem estar logado</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </allowguestcheckout>
+                        <allowregister translate="label">
+                            <label>Registrar cliente no checkout</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </allowregister>
+                        <create_account translate="label">
+                            <label>Criar conta obrigatoriamente</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>9</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Deixe marcado como SIM para criar conta obrigatoriamente.</comment>
+                        </create_account>
+                        <disable_shop_cart translate="label">
+                            <label>Redirecionar botão comprar direto para o checkout</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </disable_shop_cart>
+                    </fields>
+                </config>
+                <layout translate="label">
+                    <label>Layout do Checkout</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>2</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <page_layout translate="label">
+                            <label>Layout do Checkout</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>onestepcheckout/system_config_source_pagelayout</source_model>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Formato da página</comment>
+                        </page_layout>
+                        <use_pre_cadastro translate="label">
+                            <label>Usar Pré-Cadastro</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_pre_cadastro>
+
+                        <use_linha_suporte translate="label">
+                            <label>Usar Linha com Suporte no header</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_linha_suporte>
+                        <content_linha_suporte>
+                            <label>Conteúdo linha de suporte</label>
+                            <depends>
+                                <use_linha_suporte>1</use_linha_suporte>
+                            </depends>
+                            <frontend_type>editor</frontend_type>
+                            <frontend_model>onestepcheckout/adminhtml_system_config_editor</frontend_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Insira sua linha de contatos para suporte</comment>
+                        </content_linha_suporte>
+                        <style_cor_background translate="label">
+                            <label>Cor do Background</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Default do checkout: 000. Não usar o "#", apenas o número.</comment>
+                        </style_cor_background>
+                        <style_cor_header translate="label">
+                            <label>Cor do Header</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Default do checkout: 000. Não usar o "#", apenas o número.</comment>
+                        </style_cor_header>
+                        <style_cor translate="label">
+                            <label>Cor do Checkout</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Default do checkout: 000. Não usar o "#", apenas o número.</comment>
+                        </style_cor>
+                        <botao_cor translate="label">
+                            <label>Cor dos Botões</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Default dos Cor dos Botões: 000. Não usar o "#", apenas o número.</comment>
+                        </botao_cor>
+                        <page_conteudo translate="label">
+                            <label>Conteúdo de Pagamento</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>9</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Informação inserida antes do inicio do formulário de pagamento</comment>
+                        </page_conteudo>
+                        <allowremoveproduct translate="label">
+                            <label>Permitir remover produto</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </allowremoveproduct>
+                        <enable_quicklogin translate="label">
+                            <label>Habilitar login por ajax?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>11</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enable_quicklogin>
+                    </fields>
+                </layout>
+                <addfield translate="label">
+                    <label>Habilitar Campos</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>2</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <street_lines translate="label comment">
+                            <label>Número de linhas do endereço </label>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <backend_model>adminhtml/system_config_backend_customer_address_street</backend_model>
+                            <comment>Obrigatóriamente 4</comment>
+                        </street_lines>
+                        <enable_messagetosystem translate="label">
+                            <label>Comentários nos pedidos</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>onestepcheckout/system_config_source_disablefield</source_model>
+                            <sort_order>14</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Usado pelo cliente para comentar o pedido</comment>
+                        </enable_messagetosystem>
+                        <allowcoupon translate="label">
+                            <label>Coupom de desconto</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>onestepcheckout/system_config_source_disablefield</source_model>
+                            <sort_order>16</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </allowcoupon>
+                        <showimageproduct translate="label">
+                            <label>Imagem do produto</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>onestepcheckout/system_config_source_disablefield</source_model>
+                            <sort_order>17</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </showimageproduct>
+                        <enable_giftmessage translate="label">
+                            <label>Mensagem</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>onestepcheckout/system_config_source_disablefield</source_model>
+                            <sort_order>18</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Configure as opções de embalagem em configuracoes/vendas/embalagens!</comment>
+                        </enable_giftmessage>
+                        <usenews translate="label">
+                            <label>Inscrição em Newsletter</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>onestepcheckout/system_config_source_subscribenewletter </source_model>
+                            <sort_order>19</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </usenews>
+                    </fields>
+                </addfield>
+                <modaluse translate="label">
+                    <label>Box Modal</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>6</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <termos translate="label">
+                            <label>Habilitar Modal de termos e condições</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </termos>
+                        <content_options translate="label">
+                            <label>Conteúdo termos e condições</label>
+                            <depends>
+                                <termos>1</termos>
+                            </depends>
+                            <frontend_type>editor</frontend_type>
+                            <frontend_model>onestepcheckout/adminhtml_system_config_editor</frontend_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Especifique os termos de compra em seu site</comment>
+                        </content_options>
+                        <use_secure>
+                            <label>Exibir Modal Loja segura?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Coloque o seu testo de porque o site é seguro.</comment>
+                        </use_secure>
+                        <secure>
+                            <label>Conteúdo Loja Segura:</label>
+                            <depends>
+                                <use_secure>1</use_secure>
+                            </depends>
+                            <frontend_type>editor</frontend_type>
+                            <frontend_model>onestepcheckout/adminhtml_system_config_editor</frontend_model>
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Link próximo ao botão comprar para loja segura.</comment>
+                        </secure>
+                    </fields>
+                </modaluse>
+            </groups>
+        </onestepcheckout>
+    </sections>
+</config>

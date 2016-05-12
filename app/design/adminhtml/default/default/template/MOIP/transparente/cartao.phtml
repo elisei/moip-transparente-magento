@@ -1,0 +1,40 @@
+<?php $this->setDataMoip(); ?>
+<?php $status = $this->getCardStatus(); ?>
+
+
+<?php if($status == "CANCELLED"): ?>
+	<div class="method-type-payment grid12-12">
+		<h2><?php echo $this->__('Pagamento Cancelado') ?></h2>
+	</div>
+	<div class="method-type-action grid12-12">
+		<ul class="messages"><li class="error-msg"><ul><li><span><?php echo $this->__('O pagamento não pode ser realizado com sucesso por favor escolha outro método de pagamento.') ?></span></li></ul></li></ul>
+	</div>
+<?php elseif($status == "IN_ANALYSIS"): ?>
+	<div class="method-type-payment grid12-12">
+		<h2><?php echo $this->__('Pagamento em análise') ?></h2>
+	</div>
+	<div class="method-type-action grid12-12">
+		<p><?php echo $this->__('Seu pagamento foi encaminhado para a análise, por favor aguarde a atualização automática do pedido.') ?></p>
+	</div>
+<?php elseif($status == "AUTHORIZED"): ?>
+	<div class="method-type-payment grid12-12">
+		<h2><?php echo $this->__('Pagamento Aprovado') ?></h2>
+	</div>
+	<div class="method-type-action grid12-12">
+		<p><?php echo $this->__('Seu pagamento foi aprovado.') ?></p>
+	</div>
+<?php elseif($status == "WAITING"): ?>
+	<div class="method-type-payment grid12-12">
+		<h2><?php echo $this->__('Pagamento em análise') ?></h2>
+	</div>
+	<div class="method-type-action grid12-12">
+		<p><?php echo $this->__('Seu pagamento foi encaminhado para a análise, por favor aguarde a atualização automática do pedido.') ?></p>
+	</div>
+<?php else: ?>
+	<div class="method-type-payment grid12-12">
+		<h2><?php echo $this->__('Desculpe, houve um erro em nosso sistema') ?></h2>
+	</div>
+	<div class="method-type-action grid12-12">
+		<ul class="messages"><li class="error-msg"><ul><li><span><?php echo $this->__('Não conseguimos identificar o status de seu pagamento, por favor entre em contato com nossa equipe de atendimento antes de realizar uma nova transação.') ?></span></li></ul></li></ul>
+	</div>
+<?php endif; ?>

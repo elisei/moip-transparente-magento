@@ -1,0 +1,44 @@
+/* =============== Parcelas Moip  ================== */
+#parcelas_integrais.skip-active {  display: block;}
+
+#parcelas_integrais {    background: #fff;
+  padding: 10px;
+  color: #999;
+  border: 1px solid #ccc;
+  box-shadow: 0px -1px 16px 1px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  width: 280px;
+  z-index: 9;
+  margin-top: 45px;
+  text-align: center;
+}
+#parcelas_integrais:after, #parcelas_integrais:before {  bottom: 100%;  left: 25%;  border: solid transparent;  content: " ";  height: 0;  width: 0;  position: absolute;  pointer-events: none;}
+#parcelas_integrais:after {  border-color: transparent;  border-bottom-color: #fff;  border-width: 10px;  margin-left: -20px;}
+#parcelas_integrais:before {  border-color: rgba(255, 255, 255, 0.35);border-bottom-color: transparent;border-width: 1px;margin-left: -1px;}
+ul.product_view_bandeiras > li > img {width: 34px;}
+.skip-link.skip-parcelas_integrais {cursor: pointer;}
+
+a.skip-link.skip-parcelas_integrais,  span.parcela {
+    font-weight: bold;
+  width: 100%;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+    min-width: 130px;
+}
+ul#parcelamento_integral {
+  text-align: left;
+}
+.images-moip-parcelas {
+	width: 100% !important;
+  float: left;
+}
+.result-moip-parcelas {
+	width: 100% !important;
+  	float: left;	
+  	text-align: left;
+}
+ul.product_view_bandeiras.hide-below-768 li {
+  float: left;
+  width: 14%;
+}

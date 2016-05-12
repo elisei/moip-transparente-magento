@@ -1,0 +1,113 @@
+/* layout */
+
+.order-id {
+background: #333333;
+color: #fff;
+font-weight: bold;
+font-size: 16pt;
+padding: 15px 20px;
+border-radius: 5px;
+width: 200px;
+}
+
+.method-type-payment {
+  text-align: center;
+  border-bottom: 1px solid #F0F0F0;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+.method-type-payment h3{
+	margin-top: 30px
+}
+
+.method-type-action h2{
+text-align: center;
+}
+.method-type-action {
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 55px;
+  padding-bottom: 55px;
+  padding-top: 55px;
+}
+
+.box {
+padding-bottom: 30px;
+}
+.corpo_transparente {
+	padding-top: 5%;
+	padding-bottom: 5%;
+	margin-bottom: 5%;
+	border-bottom: 1px solid rgb(229, 229, 229);
+
+}
+.grid12-1	{ width:6.33%; }
+.grid12-2	{ width:14.66%; }
+.grid12-3	{ width:23%; }
+.grid12-4	{ width:31.33%; }
+.grid12-5	{ width:39.67%; }
+.grid12-6	{ width:48%; }
+.grid12-7	{ width:56.33%; }
+.grid12-8	{ width:64.67%; }
+.grid12-9	{ width:73%; }
+.grid12-10	{ width:81.33%; }
+.grid12-11	{ width:89.67%; }
+.grid12-12,
+.grid-full	{ width:98%; }
+.grid12-1, .grid12-2, .grid12-3, .grid12-4, .grid12-5, .grid12-6, .grid12-7, .grid12-8, .grid12-9, .grid12-10, .grid12-11, .grid12-12, .grid-full, .grid-col2-sidebar, .grid-col2-main {
+/* position: relative; */
+display: inline;
+float: left;
+margin-left: 1%;
+margin-right: 1%;
+}
+input#bar-code {
+  width: 360px;
+}
+button.button.btn-checkout {
+  max-width: 256px;
+}
+@media only screen and (max-width:759px) {
+	#bar-code {width: 100%;}
+	button.button.btn-checkout {
+  max-width: 100%;
+}
+/**
+ * Fusion Grid Layout - Mobile layout, 12 column grid, 15px gutters
+ * -------------------------------------------------------------------- */
+/* grid widths */
+	body .grid12-1,
+	body .grid12-2,
+	body .grid12-3,
+	body .grid12-4,
+	body .grid12-5,
+	body .grid12-6,
+	body .grid12-7,
+	body .grid12-8,
+	body .grid12-9,
+	body .grid12-10,
+	body .grid12-11,
+	body .grid12-12 {
+	  clear: both;
+	  width: 100%;
+	}
+
+}
+
+.goto-home {
+margin: 0 auto;
+width: 200px;
+}
+.title-sucess{
+	border-bottom: 1px solid rgb(229, 229, 229);
+}
+
+
+.data-table tr.last th, .data-table tr.last td {
+  border-bottom: 0 !important;
+  white-space: normal !important;
+  width: 100%;
+}
+
+img.img-thumbnail {
+    float: left;
+}

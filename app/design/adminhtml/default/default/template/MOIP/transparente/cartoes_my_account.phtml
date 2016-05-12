@@ -1,0 +1,77 @@
+<?php $cofre = $this->getCofre(); ?>
+<?php if($cofre !="false"): ?>
+<h2>Gerencie Seus Cartões</h2>
+<p>Seus cartões são mantidos plenamente seguros, os dados aqui mostrados possuem apenas informações públicas sobre eles, sendo criado pela bandeira de seu cartão apenas uma chave codificada
+que nos permite acessa-los quando você for realizar um novo pedido.</p>
+<p>Essa chave é válida únicamente para a nossa loja, não sendo aceita em demais estabeleciomentos.</p>
+
+
+<?php $cofre = Mage::helper('core')->jsonDecode($cofre); ?>
+	<form method="POST" action='<?php echo Mage::getBaseUrl('web', true); ?>transparente/index/Remove/' id="remove_card" class="remove_card">
+				<div class="block block-account">
+				    <div class="block-title">
+				        <strong><span>Remova seus Cartões</span></strong>
+				    </div>
+					<div class="block-content">
+
+						<ul class="form-list-cofre">
+							<?php foreach ($cofre  as $key => $value): ?>
+								<?php $cardBrand = $value['moip_card_brand'] ?>
+								<?php $cardNunber = $value['moip_card_id'] ?>
+								<li class="cofre">
+									<label>
+										<div class="radio_cofre">
+											<input id="cartao_remove" class="validate-one-required-by-name" type="radio" name="cofre_remove" title="Cartão de Crédito Salvo" value="<?php echo $cardNunber ?>">
+										</div>
+										<div class="image_cofre">
+											<img src="<?php echo $this->imageCofre($value['moip_card_brand']); ?>" alt="<?php echo $value['moip_card_brand']; ?>" border="0">
+										</div>
+										<div class="cofre_number">
+											<p class="brand_title"><?php echo $value['moip_card_fullname']; ?> </p>
+											<p><?php echo $value['moip_card_first6'] ?> ** **** <?php echo $value['moip_card_last4'] ?></p>
+										</div>
+									</label>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+						<div class="action_remove">
+						<button type="submit" title="Remover" class="button"><span><span>Remover</span></span></button>
+						</div>
+					</div>
+				</div>
+		</form>
+
+<script type="text/javascript">
+//<![CDATA[
+var remove_card = new VarienForm('remove_card');
+
+					jQuery("#remove_card").submit(function(e){
+						if(remove_card.validator.validate()){
+					    var postData = jQuery(this).serializeArray();
+					    var formURL = jQuery(this).attr("action");
+					    jQuery("#remove_card").hide();
+					    jQuery("#loading_mask_loader").show();
+					    jQuery.ajax(
+					    {
+					        url : formURL,
+					        type: "POST",
+					        data : postData,
+					        success:function(data, textStatus, jqXHR) 
+					        {  								
+								location.reload();
+					        },
+					        
+					    });
+					    }
+					    e.preventDefault(); 
+					});
+//]]>				
+</script>
+<?php else: ?>
+	<h2>Você ainda não salvou o seu cartão</h2>
+	<p>Seus cartões são mantidos plenamente seguros, os dados aqui mostrados possuem apenas informações públicas sobre eles, sendo criado pela bandeira de seu cartão apenas uma chave codificada
+que nos permite acessa-los quando você for realizar um novo pedido.</p>
+	<p>Essa chave é válida únicamente para a nossa loja, não sendo aceita em demais estabeleciomentos.</p>
+	<h4>Para Salvar seus cartões é fácil:</h4>
+	<p>Em sua próxima compra basta marcar o campo: "Salvar Cartão para Compra Futura", ele fica logo a baixo do campo "Opções de Parcelamento" no checkout de sua página.</p>
+<?php endif; ?>

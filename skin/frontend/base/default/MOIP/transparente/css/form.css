@@ -1,0 +1,218 @@
+ul#payment_form_moip_cc li {
+    font-size: 12px;
+    width: 100%;
+}
+
+.input-box .v-fix {
+  float: left;
+  margin-right: 5px;
+}
+
+li.fields.card-cvv {
+  clear: right !important;
+  float: left;
+   width: 37% !important;
+  margin-left: 10px;
+}
+
+li.fields.card-number {
+  float: left;
+  width: 53% !important;
+}
+
+input#moip_cc_number {
+  width: 100% !important;
+  float: left;
+}
+
+#credito_portador_telefone {
+width: 35px !important;
+}
+input.input-text.telefone.required-entry {
+  width: 95px !important;
+}
+select.validate-select.owner_day {
+  width: 65px !important;
+}
+select.validate-select.owner_month {
+  width: 145px !important;
+}
+select.validate-select.owner_year {
+  width: 85px !important;
+}
+.recommendation_off {
+  display: none;
+}
+.recommendation{
+  padding: 10px;background-color: #fff9e3;border-left: 2px solid #ffeb8e;
+}
+.checkout-info-item.checkout-info-item-alert {
+color: #f00;
+}
+.checkout-info-item {
+color: #8d8d8d;
+list-style: disc outside;
+margin-bottom: 5px !important;
+margin-left: 13px !important;
+font-size: 11px;
+}
+
+
+#moip_cc_type {
+  width: 100%;
+}
+
+#moip_ccrecurring_type {
+  width: 100%;
+}
+#moip_cc_type li {
+  display: block;
+  width: 46px !important;
+  height: 31px;
+  background: url('../imagem/moip_brands_card.jpg') 0 -32px no-repeat;
+  margin: 0px;
+  overflow: hidden;
+  text-indent: -500em;
+  float: left;
+  -webkit-transition: all .2s;
+  -moz-transition: all .2s;
+  -ms-transition: all .2s;
+  -o-transition: all .2s;
+  transition: all .2s;
+  opacity: 1;
+
+  margin-bottom: 10px;
+  opacity: 1;
+}
+
+
+
+
+#moip_recurring_type {
+  width: 100%;
+}
+
+
+li.VI {background-position: -0px -30px !important;}
+li.MC {background-position: -48px -30px !important;}
+li.AE {background-position: -93px -30px !important;}
+li.DI {background-position: -138px -30px !important}
+li.EO {background-position: -183px -30px !important}
+li.HI {background-position: -228px -30px !important}
+li.HP {background-position: -274px -30px !important}
+
+
+
+li.VI.active {background-position: -0px 0px !important;}
+li.MC.active {background-position: -48px 0px !important;}
+li.AE.active {background-position: -93px 0px !important;}
+li.DI.active {background-position: -138px 0px !important}
+li.EO.active {background-position: -183px 0px !important}
+li.HI.active {background-position: -228px 0px !important}
+li.HP.active {background-position: -274px 0px !important}
+.sp-methods dd li.fields, .sp-methods dd li.wide {
+  clear: both;
+}
+
+.cofre_number p {
+  margin: 0;
+}
+li.cofre label {
+    width: 100%;
+}
+li.cofre {
+    border-bottom: 1px solid #f1f1f1;
+    border-top: 1px solid #f1f1f1;
+    padding: 10px;
+}
+li.cofre {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+
+}
+.payment-cofre {
+    float: left;
+        width: 100%;
+}
+.image_cofre {
+    width: 15%;
+    float: left;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    padding: 15px;
+}
+.image_cofre > img {
+  width: 55px;
+
+}
+.cofre_number {
+
+	
+
+}
+.buttons-set {
+    margin: 0 !important;
+    background: #fff;
+}
+li.cofre.odd {
+    background: #fff;
+}
+
+
+li.cofre.last.odd {
+    background: #fff !important;
+}
+li.cofre:hover{
+  background: #FBFBFB !important;
+}
+p.brand_title {
+  padding-top: 5px;
+}
+.radio_cofre {
+    float: left;
+    padding: 14px;
+    line-height: 55px;
+}
+input#cartao_salvo {
+	float: left;
+  height: 35px;
+}
+
+ul.form-list-cofre {
+width: 100%;
+float: left;
+}
+
+input#cartao_remove {
+	float: left;
+	min-height: 40px;
+}
+
+.action_remove {
+width: 100%;
+text-align: right;
+border-top: 1px solid #ccc;
+float: left;
+}
+.alerta_data {
+float: left;
+}
+.header-minicart, .skip-link.skip-account, .skip-link.skip-cart, #header-search, a.skip-link.skip-search {
+  display: none !important;
+}
+input {
+    border-radius: 3px !important;
+}
+.checkout-onepage-index .col-main {
+    width: 100% !important;
+    min-height: 750px;
+}
+.sp-methods input.cvv {
+      width: 5em !important;
+}
+
