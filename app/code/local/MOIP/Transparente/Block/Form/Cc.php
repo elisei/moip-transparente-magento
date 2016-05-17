@@ -63,7 +63,7 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 								$asterisco = '*';
 							else
 								$asterisco = ' sem juros';
-							$parcelas[]= '<option value="'.$key.'">'.$key.'x de '.$value["parcelas_result"	].' no total de '.$total_parcelado.$asterisco.'</option>';
+							$parcelas[]= '<option value="'.$key.'">'.$key.'x de '.$parcelas_result.' no total de '.$total_parcelado.$asterisco.'</option>';
 							#$parcelas[]= '<li><input type="radio" name="payment[credito_parcelamento]" title="Selecione as Parcelas" id="credito_parcelamento" class="input-radio  validate-one-required-by-name" value="'.$key.'"><label>'.$key.'x de '.$parcelas_result.' no total de '.$total_parcelado.' '.$asterisco.'</label></li>';
 						}
 						else if ($key == 0) {
