@@ -32,21 +32,21 @@
     <div class="container">
         <div class="row">
             <div class="header">            
-                <div class="col-lg-3  col-md-12 col-xl-12">
+                <div class="col-lg-3 col-md-3 col-xm-12">
                     
                     <a href="<?php echo $this->getUrl('') ?>" title="<?php echo $this->getLogoAlt() ?>" class="logo"><img src="<?php echo $this->getLogoSrc() ?>" alt="<?php echo $this->getLogoAlt() ?>" /></a>
                     
                    
                 </div>
-                <div class="col-lg-6 col-md-12 col-xl-12">
+                <div class="col-lg-6 col-md-6 col-xm-12">
                     <h1 class="checkout-title-header">Pagamento</h1>
                     <?php if(Mage::getStoreConfig('onestepcheckout/layout/use_linha_suporte')): ?>
                         <?php echo $this->__(Mage::getStoreConfig('onestepcheckout/layout/content_linha_suporte'));?>
                     <?php endif; ?>
 
                 </div>
-                <div class="col-lg-3 col-md-12 col-xl-12">
-                       <div class="siteblindado">
+                <div class="col-lg-3 col-md-3 col-xm-12 hidden-xs">
+                       <div class="siteblindado a-right">
                               <a id="store_secure_buttom" href="#" data-toggle="modal" data-target="#store_secure_content"  title="Loja Segura, confira!">
                                 <img src="<?php echo $this->getSkinUrl('MOIP/onestepcheckout/images/loja_segura.jpg'); ?>">
                               </a>
@@ -61,7 +61,10 @@
 
 <div class="container">
     <div class="row">
-        <?php echo $this->getChildHtml('progresso') ?>
+        
+            <?php echo $this->getChildHtml('progresso') ?>    
+        
+        
     </div>
 </div>
 

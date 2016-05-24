@@ -14,6 +14,7 @@
 						
 						<script type="text/javascript" src="https://assets.moip.com.br/integration/moip.min.js"></script>
 						<script type="text/javascript">
+								  MoipPagamentosCc();
 							 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
 						     	Validation.creditCartTypes.set('EO', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
 						        Validation.creditCartTypes.set('HI', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
@@ -39,6 +40,7 @@
 						
 						<script type="text/javascript" src="https://assets.moip.com.br/integration/moip.min.js"></script>
 						<script type="text/javascript">
+							  MoipPagamentosCc();
 							 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
 						     	Validation.creditCartTypes.set('EO', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
 						        Validation.creditCartTypes.set('HI', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
@@ -63,6 +65,7 @@
 						
 						<script type="text/javascript" src="https://assets.moip.com.br/integration/moip.min.js"></script>
 						<script type="text/javascript">
+							  MoipPagamentosCc();
 							 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
 						     	Validation.creditCartTypes.set('EO', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
 						        Validation.creditCartTypes.set('HI', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
@@ -87,6 +90,7 @@
 
 						<script type="text/javascript" src="https://assets.moip.com.br/integration/moip.min.js"></script>
 						<script type="text/javascript">
+							  MoipPagamentosCc();
 							 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
 						     	Validation.creditCartTypes.set('EO', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
 						        Validation.creditCartTypes.set('HI', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
@@ -111,6 +115,7 @@
 		           <![CDATA[
 						<script type="text/javascript" src="https://assets.moip.com.br/integration/moip.min.js"></script>
 						<script type="text/javascript">
+							  MoipPagamentosCc();
 							 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
 						     	Validation.creditCartTypes.set('EO', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
 						        Validation.creditCartTypes.set('HI', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
@@ -194,6 +199,7 @@
 		 	<action method="addJs" ifconfig="moipall/oneclick_config/enable_noconflit"><script>MOIP/jquery_noconflict.js</script></action>
 		 	<action method="addJs"  ifconfig="moipall/oneclick_config/enable_bootstrap"><script>MOIP/core/bootstrap-modal.js</script></action>
 		 	<action method="addItem"  ifconfig="moipall/oneclick_config/enable_bootstrap"><type>skin_css</type><name>MOIP/core/css/bootstrap-modal.css</name></action>
+		 	<action method="addItem"  ifconfig="moipall/oneclick_config/enable_bootstrap"><type>skin_css</type><name>MOIP/core/css/bootstrap-popover.css</name></action>
 			
 		</reference>
 		<reference name="product.info">

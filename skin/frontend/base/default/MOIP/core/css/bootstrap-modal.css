@@ -177,11 +177,7 @@ input[type="reset"].btn-block,
 input[type="button"].btn-block {
   width: 100%;
 }
-.btn-success {
-  color: #ffffff;
-  background-color: #5cb85c;
-  border-color: #4cae4c;
-}
+
 .btn-success:hover,
 .btn-success:focus,
 .btn-success:active,
@@ -850,6 +846,11 @@ fieldset[disabled] .btn-success.active {
     margin-left: 0%;
   }
 }
+
+.col-xs-12.col-sm-6.col-md-6.no-padding {
+    margin-bottom: 25px;
+}
+
 button#moip-onclick {
     margin-top: 20px;
 }
@@ -870,4 +871,12 @@ ul.product_view_bandeiras {
 
 ul.product_view_bandeiras li{
     display: inline;
+}
+.btn-success {
+    color: #ffffff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid;
 }

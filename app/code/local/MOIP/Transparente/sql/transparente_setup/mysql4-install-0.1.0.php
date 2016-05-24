@@ -16,7 +16,11 @@ $installer->startSetup();
 
 $directory_country_region = Mage::getSingleton('core/resource')->getTableName('directory_country_region');
 $directory_country_region_name = Mage::getSingleton('core/resource')->getTableName('directory_country_region_name');
+$collection = Mage::getModel('directory/region')->getResourceCollection()
+        ->addCountryCodeFilter('BR')
+        ->load();
 
+if (count($collection) == 0) {
 
 $installer->run("
 
@@ -158,6 +162,8 @@ INSERT INTO `".$directory_country_region_name."` (`locale`, `region_id`, `name`)
 
     ");
 $installer->startSetup();
+}
+
 
 
 $installer->endSetup();

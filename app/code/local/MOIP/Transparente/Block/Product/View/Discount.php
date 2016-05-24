@@ -9,10 +9,11 @@ class MOIP_Transparente_Block_Product_View_Discount extends Mage_Catalog_Block_P
 
 		foreach ($rules as $rule) {
 			    if ($rule->getIsActive()) { 
-			        $conditions = $rule->getConditionsSerialized();
-			        $conditions = unserialize($conditions);
+			    	$conditions = "";
+			    	$conditions_serialized = "";
+			        $conditions_serialized = $rule->getConditionsSerialized();
+			        $conditions = unserialize($conditions_serialized);
 			        
-			       
 			        
 			        foreach ($conditions["conditions"] as $key => $value) {
 			         

@@ -181,7 +181,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 	 public function successAction() {
 	 	error_reporting(E_ALL);
-ini_set("display_errors",1);
+		ini_set("display_errors",1);
 
 	 	$api = $this->getApi();
 		$standard = $this->getStandard();
@@ -190,7 +190,9 @@ ini_set("display_errors",1);
 		$status_moip  = "";
 		$moip_ord  = "";
 		$json_moip = $this->getRequest()->getRawBody();
-		
+		if(!isset($validacao)){
+			return; 
+		}
 		
 		$json_moip = json_decode($json_moip);
 
@@ -201,7 +203,7 @@ ini_set("display_errors",1);
 
 		} else {
 			$refundToStoreCreditAmount = null;
-			$moip_ord = (string)$json_moip->resource->order->id;
+			$moip_ord = $json_moip->resource->order->id;
 			$status_moip = (string)$json_moip->resource->order->status;
 			if (isset($json_moip->resource->order->refunds)) {
 				
@@ -301,7 +303,12 @@ ini_set("display_errors",1);
 
 	 public function autorizaPagamento($order, $paid){
 	 	sleep(10);
-		$order->unhold()->save();
+	 	
+
+		if($order->canUnhold()) {
+			$order->unhold()->save();
+		}
+		
 		$invoice = $order->prepareInvoice();
 		if ($this->getStandard()->canCapture())
 		{
@@ -311,6 +318,8 @@ ini_set("display_errors",1);
 		$invoice->sendEmail();
 		$invoice->setEmailSent(true);
 		$invoice->save();
+
+
 		
 		return;
 	 }

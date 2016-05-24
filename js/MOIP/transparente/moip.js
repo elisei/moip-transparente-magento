@@ -2,9 +2,15 @@
       
 MoipPagamentosCc = function(){
               jQuery('#moip_cc_type li').addClass('active');
-             
-           
-             
+              jQuery('.save-card').prop( "checked", true );
+              jQuery('.save-card').val(1);
+ 
+
+              jQuery('#onestep_form :input').blur(function() {
+                if(jQuery(this).attr('id') != "billing:day" && jQuery(this).attr('id') != "billing:month"){
+                    Validation.validate(jQuery(this).attr('id'));
+                  }
+              });
               jQuery('#moip_cc_number').keyup(function(){
                         if(!jQuery("#moip_cc_number").val().length){
                           jQuery('#moip_cc_type li').addClass('active');
@@ -171,6 +177,8 @@ MoipPagamentosCc = function(){
 
 SetCofre = function(){
   jQuery('.payment-card').fadeOut('fast');
+  jQuery('.save-card').prop( "checked", false );
+  jQuery('.save-card').val(0);
 }
 
 MoipPagamentosRecurring = function(){

@@ -23,28 +23,29 @@
 	<?php  endif;?>
 </style>
 <?php if(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==2){
-	$class_address_user = "col-sm-12 col-lg-4";
-	$class_set_midle_coll = "col-sm-12 col-lg-8";
+	$class_address_user = "col-xm-12 col-lg-4 col-md-4";
+	$class_set_midle_coll = "col-xm-12 col-lg-8 col-lg-8";
 	$class_Shippingcollun = "no-set-coll";
 	$class_Paymentcollun = "no-set-coll";
-	$class_Review = "col-lg-4 col-sm-12";
+	$class_Review = "col-lg-4 col-xm-12 col-md-4";
 	
 } elseif(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==3){
-	$class_address_user = "col-sm-12 col-lg-4";
+	$class_address_user = "col-xm-12 col-lg-4 col-md-4";
 	$class_set_midle_coll = "no-set-coll";
-	$class_Shippingcollun = "col-lg-4 col-sm-12";
-	$class_Paymentcollun = "col-lg-4 col-sm-12";
+	$class_Shippingcollun = "col-lg-4 col-xm-12 col-md-4";
+	$class_Paymentcollun = "col-lg-4 col-xm-12 col-md-4";
+	$class_Review = "col-lg-12 col-xm-12 col-md-12";
 } elseif(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==4){
 	
-	$class_address_user = "col-sm-12 col-lg-4";
-	$class_set_midle_coll = "col-sm-12 col-lg-4";
+	$class_address_user = "col-xm-12 col-lg-4 col-md-4";
+	$class_set_midle_coll = "col-xm-12 col-lg-4 col-md-4";
 	$class_Shippingcollun = "no-set-coll";
 	$class_Paymentcollun = "no-set-coll";
-	$class_Review = "col-lg-4 col-sm-12";
+	$class_Review = "col-lg-4 col-xm-12 col-md-4";
  } else {
-		$class_address_user = "col-sm-12 col-lg-4";
-	 	$class_Shippingcollun = "col-lg-4 col-sm-12";
-		$class_Paymentcollun = "col-lg-4 col-sm-12";
+		$class_address_user = "col-xm-12 col-lg-4 col-md-4";
+	 	$class_Shippingcollun = "col-lg-4 col-xm-12 col-md-4";
+		$class_Paymentcollun = "col-lg-4 col-xm-12 col-md-4";
 		$class_Review = "";
 
   } ?>
@@ -147,9 +148,9 @@
 								<h3> <?php echo $this->__('Pagamento');?> </h3>
 							</div>
 							<div class="moip-osc-block-content">
-								<?php if(!$class_nodisplay): ?>
+								
 									<?php echo $this->getChildHtml('payment',false,true);?>
-								<?php endif; ?>
+								
 								
 								<div class="buttons-set">
 						                <?php $islogin=0; if(Mage::getSingleton('customer/session')->isLoggedIn()) $islogin=1; ?>
@@ -261,7 +262,7 @@
 
 
 <div class="modal fade" id="ErrosFinalizacao" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="false">
-  <div class="modal-dialog modal-sm">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="myModalLabel">Ops, encontramos erros nos campos abaixo:</h4>
@@ -281,7 +282,7 @@
 <?php if(!$islogin):?>
 
 <div class="modal fade" id="loginModel" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="myModalLabel">Entrar</h4>
@@ -301,7 +302,7 @@
 <?php if(!$islogin):?>
 
 <div class="modal fade" id="EsqueceuSenha" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="myModalLabel">Recuperar Senha</h4>
@@ -319,10 +320,10 @@
 <?php endif; ?>
 
 <div class="modal fade" id="store_secure_content" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel">Loja Segura</h4>
+        <h4 class="modal-title" id="myModalLabel">Site Seguro</h4>
       </div>
       <div class="modal-body">
         		<?php echo $this->__(Mage::getStoreConfig('onestepcheckout/modaluse/secure'));?>
@@ -337,7 +338,7 @@
 
 
 <div class="modal fade" id="termos_modal" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+  <div class="modal-dialog">
     <div class="modal-content">
 	      <div class="modal-header">
 	        <h4 class="modal-title" id="myModalLabel">Termos e Condições</h4>

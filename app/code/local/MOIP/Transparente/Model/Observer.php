@@ -291,6 +291,27 @@ class Moip_Transparente_Model_Observer
     }
 
 
+     public function autorizaPagamento($order, $paid){
+        
+
+        if($order->canUnhold()) {
+            $order->unhold()->save();
+        }
+        
+        $invoice = $order->prepareInvoice();
+        if ($this->getStandard()->canCapture())
+        {
+                $invoice->register()->capture();
+        }
+        Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder())->save();
+        $invoice->sendEmail();
+        $invoice->setEmailSent(true);
+        $invoice->save();
+
+
+        
+        return;
+     }
 
      public function updateInOrder($order, $state, $status, $comment){
         $order->setState($state, $status, $comment, $notified = true, $includeComment = true);

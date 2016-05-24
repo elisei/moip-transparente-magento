@@ -905,7 +905,7 @@
             </groups>
         </payment>
         <moipall translate="label" module="moipall">
-            <label><![CDATA[ <div style="height: 33px; "><img src="//imagem.O2TI.com/transparente_moip.png" style="float:left; "/><div style="padding-top:8px;color:#2f3850">Moip Avançado!<sup style="float: right;">v2.0.0</sup></div></div>]]></label>
+            <label><![CDATA[ <div style="height: 33px; "><img src="http://imagem.O2TI.com/transparente_moip.png" style="float:left; "/><div style="padding-top:8px;color:#2f3850">Moip Avançado!<sup style="float: right;">API V2</sup></div></div>]]></label>
             <tab>moip</tab>
             <frontend_type>text</frontend_type>
             <sort_order>200</sort_order>

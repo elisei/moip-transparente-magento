@@ -9,6 +9,8 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
         $this->renderLayout();
 	}
 	public function RemoveAction() {
+		$this->loadLayout();
+        
 		if($this->getRequest()->getParams()){
 			$data = $this->getRequest()->getParams();
 			$model = Mage::getModel('transparente/write');

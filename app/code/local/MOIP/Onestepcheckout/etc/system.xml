@@ -8,7 +8,7 @@
     </tabs>
     <sections>
         <onestepcheckout translate="label" module="onestepcheckout">
-            <label><![CDATA[ <div style="height: 33px; "><img src="http://imagem.o2ti.com/checkout_moip.png" style="float:left; "/><div style="padding-top:8px;color:#2f3850;margin-left: 30px;"> Moip Carrinho<sup style="float: right;">v2.0.0</sup></div></div>]]></label>
+            <label><![CDATA[ <div style="height: 33px; "><img src="http://imagem.o2ti.com/checkout_moip.png" style="float:left; "/><div style="padding-top:8px;color:#2f3850;margin-left: 30px;"> Moip Carrinho<sup style="float: right;">API V2</sup></div></div>]]></label>
             <tab>moip</tab>
             <frontend_type>text</frontend_type>
             <sort_order>100</sort_order>
@@ -19,7 +19,7 @@
                 <config translate="label">
                     <comment><![CDATA[
                     <div>
-                    <a style="float: left;text-decoration:none;width:100%" href="http://www.moip.com/magento.php" target="_blank" style="float: left;"><img src="https://imagem.o2ti.com/checkout_moip.png" style="float:left;"/><h1 style="float:left;">Moip Carrinho</h1><sup>v2.0.0</sup>
+                    <a style="float: left;text-decoration:none;width:100%" href="http://www.moip.com/magento.php" target="_blank" style="float: left;"><img src="https://imagem.o2ti.com/checkout_moip.png" style="float:left;"/><h1 style="float:left;">Moip Carrinho</h1><sup>API V2</sup>
                     </a>
                     <div style="float: left; color:#2f3850">
                     <label style="font-size: 34px">Vers&atilde;o: <strong>Gratuita para uso com o MoIP Transparente</strong></label>
@@ -27,8 +27,8 @@
 
                     <br style="clear: both;"/>
 
-                    <p>Essa versão tem o download gratuito desde que utilizem o MoIP Transparente desenvolvido pelo MOIP como o meios de pagamento preferencial em seu site.</p>
-                    <p>Criado por: <a href="http://www.moip.com.br" target="_blank">Moip S/A</a></p>
+                    <p>Essa versão tem o download e uso gratuito desde que utilizem o Moip Transparente como o método de pagamento preferencial em seu site.</p>
+                    <p>Criado por: <a href="solucoes.moip.com.br/magento" target="_blank">Moip S/A</a></p>
                     <hr>
                     </div>
                     ]]></comment>
@@ -176,7 +176,8 @@
                             </depends>
                             <frontend_type>editor</frontend_type>
                             <frontend_model>onestepcheckout/adminhtml_system_config_editor</frontend_model>
-                            <sort_order>2</sort_order>
+                            <validate>required-entry</validate>
+                            <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -218,15 +219,7 @@
                             <show_in_store>1</show_in_store>
                             <comment>Default dos Cor dos Botões: 000. Não usar o "#", apenas o número.</comment>
                         </botao_cor>
-                        <page_conteudo translate="label">
-                            <label>Conteúdo de Pagamento</label>
-                            <frontend_type>textarea</frontend_type>
-                            <sort_order>9</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <comment>Informação inserida antes do inicio do formulário de pagamento</comment>
-                        </page_conteudo>
+                        
                         <allowremoveproduct translate="label">
                             <label>Permitir remover produto</label>
                             <frontend_type>select</frontend_type>

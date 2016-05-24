@@ -43,6 +43,9 @@ fieldset {border: 0;clear: both;}
 .form-list .fields { width: 100%; clear: both; }
 .form-list label {
   font-weight: normal;
+   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .form-list label em { display: none; }
 .form-list .input-box { width: 93% !important; }

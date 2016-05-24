@@ -18,7 +18,7 @@
 <div class="container body-wrapper">
   <div class="row">
   
-  		<div class=" col-sm-12 col-lg-8">
+  		<div class=" col-sm-12 col-lg-8 col-md-8">
 
             <div class="moip-osc-block" >
               <div class="moip-osc-block-title">
@@ -27,6 +27,7 @@
             
               <div class="moip-osc-block-content">
                 <div class="a-center pre-step">
+                <form id="onestep_form_identifique" autocomplete="off" action="<?php echo $this->getUrl('onestepcheckout/index/updateemailmsg') ?>" method="POST" class="scaffold-form">
                   <h2>Identificação</h2>
                   <p>Para finalizar a compra, informe seu e-mail.</p>
 
@@ -34,7 +35,7 @@
                    
                       <input type="text"  type="text" name="checked-login" id="checked-login"  title="Endereço de e-mail"  class="form-control input-text validate-email required-entry" placeholder="Digite seu e-mail">
                     <span class="input-group-btn">
-                      <button class="btn btn-secondary btn-success "  title="Acesse com seu email" type="button" name="pre-login"><span><span>Continuar</span></span></button>
+                      <button class="btn btn-secondary btn-success"  title="Acesse com seu email" type="submit" name="pre-login"  id="pre-login"><span><span>Continuar</span></span></button>
                     </span>
                   </div>
                   <div class="secure-enable">
@@ -42,6 +43,7 @@
                     <h3>Você está em um ambiente seguro</h3>
                      <?php echo $this->__(Mage::getStoreConfig('onestepcheckout/modaluse/secure'));?>
                   </div>
+                </form>
                 </div>
                 <div class="no-display" id="login-checked">
                  
@@ -58,7 +60,7 @@
           </div>      
       </div>
       
-      <div class="col-sm-12 col-lg-4">
+      <div class="col-sm-12 col-lg-4 col-md-4">
         
                 <div class="moip-osc-block" >
                   <div class="moip-osc-block-title">
@@ -93,7 +95,7 @@
 <?php if(!$islogin):?>
 
 <div class="modal fade" id="loginModel" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="myModalLabel">Entrar</h4>
@@ -113,7 +115,7 @@
 <?php if(!$islogin):?>
 
 <div class="modal fade" id="EsqueceuSenha" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="myModalLabel">Recuperar Senha</h4>
@@ -131,7 +133,7 @@
 <?php endif; ?>
 
 <div class="modal fade" id="store_secure_content" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="myModalLabel">Loja Segura</h4>
@@ -149,7 +151,7 @@
 
 
 <div class="modal fade" id="termos_modal" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+   <div class="modal-dialog">
     <div class="modal-content">
 	      <div class="modal-header">
 	        <h4 class="modal-title" id="myModalLabel">Termos e Condições</h4>
@@ -167,7 +169,7 @@
 
 
 <div class="modal fade" id="ErrosFinalizacao" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="false">
-  <div class="modal-dialog modal-sm">
+   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="myModalLabel">Ops, encontramos erros nos campos abaixo:</h4>
@@ -183,3 +185,55 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  
+  var formId = 'onestep_form_identifique';
+    var myForm = new VarienForm(formId, true);
+    var postUrl = "<?php echo Mage::getUrl('onestepcheckout/index/updateemailmsg')?>";
+    function doAjax() {
+        if (myForm.validator.validate()) {
+            new Ajax.Request(
+                 postUrl, {
+                    method:'post',
+                    parameters: "email="+jQuery('#checked-login').val(),
+                    onSuccess:function(response) {
+                      
+                       var responsetxt = response.responseText || "0";
+                    
+                        if(responsetxt==0){
+                          
+                         jQuery('#loading-mask').hide();
+                          jQuery('.pre-step').hide();
+                          jQuery('#login-checked').show();
+                          jQuery('#login-checked').removeClass('no-display');
+                          jQuery('#checked-login-email').val(jQuery('#checked-login').val());
+                          
+                          
+
+                        }else{
+                          jQuery('#loading-mask').hide();
+                          jQuery('.pre-step').hide();
+                          jQuery('#billing\\:email').val(jQuery('#checked-login').val());
+                          jQuery('#create-checked').removeClass('no-display');
+                          jQuery('#create-checked').show();
+                         
+                          
+                        }
+                    },
+                    onLoading:function(request, json){
+                        jQuery('#loading-mask').show();
+                    },
+                    
+                }
+            );
+        }
+    }
+    
+    new Event.observe(formId, 'submit', function(e){
+        e.stop();
+        doAjax();
+    });
+
+
+</script>

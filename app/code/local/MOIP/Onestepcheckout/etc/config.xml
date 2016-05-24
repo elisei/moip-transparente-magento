@@ -253,13 +253,12 @@
                 <page_titulo>Pagamento</page_titulo>
                 <page_conteudo>Sua compra segura via Transparente</page_conteudo>
                 <use_linha_suporte>1</use_linha_suporte>
-                <content_linha_suporte>Dúvidas? <a href="javascript:$zopim.livechat.window.show()" class="chat" id="control_chat">Chat Online</a> | Sac (11) 3333-3333</content_linha_suporte>
+                <content_linha_suporte><![CDATA[Dúvidas? <a href="javascript:$zopim.livechat.window.show()" class="chat" id="control_chat">Chat Online</a> | Sac (11) 3333-3333]]></content_linha_suporte>
                 <page_layout>3</page_layout>
                 <style_cor>000000</style_cor>
                 <botao_cor>000000</botao_cor>
                 <style_cor_background>F7F7F7</style_cor_background>
                 <style_cor_header>FFFFFF</style_cor_header>
-                <page_conteudo>Preencha os dados para concluir seu pedido</page_conteudo>
                 <allowsubscribenewsletter>2</allowsubscribenewsletter>
                 <enable_quicklogin>1</enable_quicklogin>
             </layout>
@@ -272,7 +271,7 @@
             </addfield>
             <termcondition>
                 <allow_options>1</allow_options>
-                <content_options>Termos e condições do site...</content_options>
+                <content_options><![CDATA[Termos e condições do site...]]></content_options>
                 <boxwidth>250</boxwidth>
                 <boxheight>350</boxheight>
             </termcondition>
