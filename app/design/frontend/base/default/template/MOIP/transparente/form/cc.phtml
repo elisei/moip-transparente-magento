@@ -2,11 +2,7 @@
 <ul id="payment_form_<?php echo $_code ?>" class="form-list" style="display:none">
 	<?php $cofre = $this->getCofre(); ?>
 			<?php if($cofre != "false"): ?>
-  			<script type="text/javascript">
-  				 $j(document).ready(function(){
-		                SetCofre();
-		          });
-  			</script>
+  		
   			
   			<div class="payment-cofre">
   				<?php $cofre = Mage::helper('core')->jsonDecode($cofre); ?>
@@ -212,3 +208,13 @@
 
 //]]>
 </script>
+<?php $cofre = $this->getCofre(); ?>
+<?php if($cofre != "false"): ?>
+		<script type="text/javascript">
+		//<![CDATA[
+		 jQuery(document).ready(function(){
+		    SetCofre();
+		});
+		 //]]>
+		</script>
+<?php endif; ?>

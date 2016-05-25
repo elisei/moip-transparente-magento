@@ -98,19 +98,30 @@ class MOIP_Transparente_Model_Api
     public function getAuditOrder($quote, $shipping)
     {
         $grandTotalProd = null;
-        foreach ($quote->getAllItems() as $item) {
-            $grandTotalProd += $item->getPriceInclTax() * $item->getQty();
+       
+        $items     = $quote->getallvisibleitems();
+        $itemcount = count($items);
+        $produtos  = array();
+        foreach ($items as $itemId => $item) {
+            if ($item->getPrice() > 0) {
+               $grandTotalProd += $item->getPrice() * $item->getQty();
+            }
         }
+
+
         $totals     = $quote->getTotals();
         $grandTotal = $totals['grand_total']->getValue();
         $total_cal  = $grandTotalProd + $shipping;
+        $this->generateLog($grandTotal, 'debub_valores.log');
+        $this->generateLog($grandTotalProd, 'debub_valores.log');
+
         if ($total_cal != $grandTotal) {
             if ($total_cal > $grandTotal) {
                 $diff          = $total_cal - $grandTotal;
                 $return_values = array(
                     "shipping" => number_format($shipping, 2, '', ''),
                     "discount" => number_format($diff, 2, '', ''),
-                    "addition" => 0
+                    "addition" => 0,
                 );
             } else {
                 $diff          = $grandTotal - $total_cal;
