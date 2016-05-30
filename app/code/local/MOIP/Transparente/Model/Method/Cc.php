@@ -104,12 +104,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                 );
                 $specifiedCCType  = $info->getCcType();
                 if ($specifiedCCType == 'VI' || $specifiedCCType == "MC" || $$specifiedCCType == "AE" || $$specifiedCCType == "DC") {
-                    if (array_key_exists($specifiedCCType, $ccTypeRegExpList)) {
-                        $ccTypeRegExp = $ccTypeRegExpList[$specifiedCCType];
-                        if (!preg_match($ccTypeRegExp, $ccNumber)) {
-                            $errorMsg = Mage::helper('transparente')->__('Ops, não consigo processar o seu cartão confira o número por favor.');
-                        }
-                    }
+                        $errorMsg = "";
                 } else {
                     if ($specifiedCCType)
                         $errorMsg = "";
@@ -119,13 +114,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
             } else {
                 $errorMsg = Mage::helper('transparente')->__('O número do cartão está inválido');
             }
-            if ($errorMsg === false) {
-                $verifcationRegEx = $this->getVerificationRegEx();
-                $regExp           = isset($verifcationRegEx[$info->getCcType()]) ? $verifcationRegEx[$info->getCcType()] : '';
-                if (!$info->getCcCid() || !$regExp || !preg_match($regExp, $info->getCcCid())) {
-                    $errorMsg = Mage::helper('transparente')->__('O Código de Segurança (cvv) está inválido');
-                }
-            }
+            
             if ($errorMsg === false) {
                  if (!$info->getCcOwner()) {
                     $errorMsg = Mage::helper('transparente')->__('O nome do portador do cartão não está correto');
@@ -138,7 +127,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
             }
             if ($errorMsg === false) {
                 if (!$this->getValidaCPF($additionaldata['taxdocument_moip'])) {
-                    $errorMsg = Mage::helper('transparente')->__('Informe um CPF válido, caso seu cartão seja empresarial é necessário informar o seu CPF.');
+                    $errorMsg = Mage::helper('transparente')->__('Informe um CPF válido, caso seu cartão seja empresarial é necessário informar o seu CPF, para isto desmarque a opção "Sou o titular do cartão".');
                 }
             }
             // if ($errorMsg === false) {
