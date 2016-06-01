@@ -102,7 +102,7 @@
 		   </block>
 		</reference>
     </inovarti_onestepcheckout_index_index>
-	<ckt_finish_index>
+	<gc_checkout_finish_index>
 		<reference name="head">
 			<action method="addJs" ifconfig="moipall/config/enable_jquery"><script>MOIP/core/jquery.js</script></action>
    	 		<action method="addJs"><script>MOIP/core/jquery_noconflict.js</script></action>
@@ -125,7 +125,7 @@
 		      </action>
 		   </block>
 		</reference>
-	</ckt_finish_index>
+	</gc_checkout_finish_index>
 	<checkout_onepage_index>
 		<reference name="head">
 			<action method="addJs" ifconfig="moipall/config/enable_jquery"><script>MOIP/core/jquery.js</script></action>
