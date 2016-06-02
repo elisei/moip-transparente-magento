@@ -87,20 +87,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </order_status>
-                        <order_status_processing translate="label">
-                            <label>Status Aprovados</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status_processing</source_model>
-                            <comment><![CDATA[
-                                        <p>É o primeiro status de pedido pago.</p>
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
-                                    ]]>
-                            </comment>
-                            <sort_order>12</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </order_status_processing>
+                       
                         <order_status_holded translate="label">
                             <label>Status em Análise</label>
                             <frontend_type>select</frontend_type>
@@ -1197,7 +1184,7 @@
                     
                 </advanced_reset>
                 <oneclick_config>
-                    <label>Compra com 1 Click</label>
+                    <label>Compra com 1 Click e Widgets de Parcelamento</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>4</sort_order>
                     <show_in_default>1</show_in_default>
@@ -1215,7 +1202,7 @@
                             <show_in_store>1</show_in_store>
                         </enable_oneclick>
                         <enable_jquery>
-                            <label>Uusar Jquery?</label>
+                            <label>Usar Jquery?</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <comment>Define a chamada ou não do jquery.js na página de produto.</comment>

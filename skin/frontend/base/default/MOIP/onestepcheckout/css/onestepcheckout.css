@@ -293,7 +293,7 @@ h3.product-name {
   font-size: 16px !important;
 }
 .sp-methods dt label, #checkout-shipping-method-load .sp-methods dd label, #co-shipping-method-form .sp-methods dd label {
-    width: 90% !important
+    width: 100% !important
 }
 
 .sp-methods .price {
@@ -407,7 +407,7 @@ label.required:after, span.required:after {
 }
 #checkout-payment-method-load dt label {
     line-height: 40px;
-    width: 90% !important;
+    width: 100% !important;
 }
 @media only screen and (min-width: 600px) {
 .hcenter {

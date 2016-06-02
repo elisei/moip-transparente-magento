@@ -19,7 +19,7 @@
                 <config translate="label">
                     <comment><![CDATA[
                     <div>
-                    <a style="float: left;text-decoration:none;width:100%" href="http://www.moip.com/magento.php" target="_blank" style="float: left;"><img src="https://imagem.o2ti.com/checkout_moip.png" style="float:left;"/><h1 style="float:left;">Moip Carrinho</h1><sup>API V2</sup>
+                    <a style="float: left;text-decoration:none;width:100%" href="http://www.moip.com/magento.php" target="_blank" style="float: left;"><img src="http://imagem.o2ti.com/checkout_moip.png" style="float:left;"/><h1 style="float:left;">Moip Carrinho</h1><sup>API V2</sup>
                     </a>
                     <div style="float: left; color:#2f3850">
                     <label style="font-size: 34px">Vers&atilde;o: <strong>Gratuita para uso com o MoIP Transparente</strong></label>

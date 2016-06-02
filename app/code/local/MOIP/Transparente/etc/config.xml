@@ -227,7 +227,7 @@
                 <validopara_transparente>1</validopara_transparente>
                 <apelido>ALTERE PARA O NOME DA SUA EMPRESA</apelido>
                 <notificar_cliente>1</notificar_cliente>
-                <ambiente>teste</ambiente>
+                <ambiente>producao</ambiente>
                 <allowspecific>0</allowspecific>
                 <min_order_total>5</min_order_total>
             </moip_transparente_standard>
@@ -261,7 +261,7 @@
                 <min_order_total>5</min_order_total>
             </moip_cc>
             <moip_tef>
-                <active>0</active>
+                <active>1</active>
                 <vcmentotef>3</vcmentotef>
                 <model>MOIP_Transparente_Model_Method_Tef</model>
                 <title>Débito em Conta</title>

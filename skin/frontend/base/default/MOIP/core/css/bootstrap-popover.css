@@ -137,3 +137,6 @@ ul.product_view_bandeiras li {
 div#parecelas-view {
     cursor: pointer;
 }
+.popover {
+    min-width: 280px;
+}
