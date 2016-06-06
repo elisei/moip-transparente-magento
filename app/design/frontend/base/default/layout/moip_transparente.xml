@@ -12,7 +12,7 @@
 		          <text>
 		           <![CDATA[
 						
-						<script type="text/javascript" src="https://assets.moip.com.br/integration/moip.min.js"></script>
+						<script type="text/javascript" src="https://assets.moip.com.br/v2/moip.min.js"></script>
 						<script type="text/javascript">
 								  MoipPagamentosCc();
 							 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
@@ -38,7 +38,7 @@
 		          <text>
 		           <![CDATA[
 						
-						<script type="text/javascript" src="https://assets.moip.com.br/integration/moip.min.js"></script>
+						<script type="text/javascript" src="https://assets.moip.com.br/v2/moip.min.js"></script>
 						<script type="text/javascript">
 							  MoipPagamentosCc();
 							 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
@@ -63,7 +63,7 @@
 		          <text>
 		           <![CDATA[
 						
-						<script type="text/javascript" src="https://assets.moip.com.br/integration/moip.min.js"></script>
+						<script type="text/javascript" src="https://assets.moip.com.br/v2/moip.min.js"></script>
 						<script type="text/javascript">
 							  MoipPagamentosCc();
 							 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
@@ -88,7 +88,7 @@
 		          <text>
 		           <![CDATA[
 
-						<script type="text/javascript" src="https://assets.moip.com.br/integration/moip.min.js"></script>
+						<script type="text/javascript" src="https://assets.moip.com.br/v2/moip.min.js"></script>
 						<script type="text/javascript">
 							  MoipPagamentosCc();
 							 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
@@ -102,30 +102,7 @@
 		   </block>
 		</reference>
     </inovarti_onestepcheckout_index_index>
-	<gc_checkout_finish_index>
-		<reference name="head">
-			<action method="addJs" ifconfig="moipall/config/enable_jquery"><script>MOIP/core/jquery.js</script></action>
-   	 		<action method="addJs"><script>MOIP/core/jquery_noconflict.js</script></action>
-			<action method="addJs"><script>MOIP/transparente/moip.js</script></action>
-			<action method="addCss"><stylesheet>MOIP/transparente/css/form.css</stylesheet></action>
-		   <block type="core/text" name="moip.cdn">
-		      <action method="setText">
-		          <text>
-		           <![CDATA[
-						<script type="text/javascript" src="https://assets.moip.com.br/integration/moip.min.js"></script>
-						<script type="text/javascript">
-							  MoipPagamentosCc();
-							 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
-						     	Validation.creditCartTypes.set('EO', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
-						        Validation.creditCartTypes.set('HI', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
-						        Validation.creditCartTypes.set('HP', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
-						</script>
-					]]>
-		        </text>
-		      </action>
-		   </block>
-		</reference>
-	</gc_checkout_finish_index>
+
 	<checkout_onepage_index>
 		<reference name="head">
 			<action method="addJs" ifconfig="moipall/config/enable_jquery"><script>MOIP/core/jquery.js</script></action>
@@ -136,7 +113,7 @@
 		      <action method="setText">
 		          <text>
 		           <![CDATA[
-						<script type="text/javascript" src="https://assets.moip.com.br/integration/moip.min.js"></script>
+						<script type="text/javascript" src="https://assets.moip.com.br/v2/moip.min.js"></script>
 						<script type="text/javascript">
 							  MoipPagamentosCc();
 							 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
@@ -265,5 +242,25 @@
 			</block>
 		</reference>
 	</transparente_index_loginonclick>
+
+<!-- 	<checkout_onepage_success translate="label">
+       <reference name="head">
+			<action method="addCss"><stylesheet>MOIP/transparente/css/redirect.css</stylesheet></action>
+		</reference>
+        <reference name="content">
+	        <block type="MOIP_Transparente_Block_Standard_SuccessDetails" name="success.order"  template="MOIP/transparente/SuccessDetails.phtml">
+				<action method="addItemRender"><type>default</type><block>sales/order_item_renderer_default</block><template>MOIP/transparente/checkout/sales/order/items/renderer/default.phtml</template></action>
+				<action method="addItemRender"><type>grouped</type><block>sales/order_item_renderer_grouped</block><template>MOIP/transparente/checkout/sales/order/items/renderer/default.phtml</template></action>
+				<block type="sales/order_totals" name="order_totals" template="MOIP/transparente/checkout/sales/order/totals.phtml">
+					<action method="setLabelProperties"><value>colspan="2" class="a-right"</value></action>
+					
+					<block type="tax/sales_order_tax" name="tax" template="tax/order/tax.phtml">
+						<action method="setIsPlaneMode"><value>1</value></action>
+					</block>
+				</block>
+
+			</block>
+        </reference>
+    </checkout_onepage_success> -->
 
 </layout>

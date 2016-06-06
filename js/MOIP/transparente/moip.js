@@ -50,11 +50,11 @@ MoipPagamentosCc = function(){
                        break;
                       case 'HIPERCARD':
                         jQuery('#moip_cc_type .HI').addClass('active');
-                        jQuery("input[id=moip_cc_type]").val('HI');
+                        jQuery("input[id=moip_cc_type]").val('HP');
                        break;
                       case 'HIPER':
                         jQuery('#moip_cc_type .HP').addClass('active');
-                        jQuery("input[id=moip_cc_type]").val('HP');
+                        jQuery("input[id=moip_cc_type]").val('HI');
                        break;
                    };
                   } else {
@@ -225,12 +225,12 @@ MoipPagamentosRecurring = function(){
                        break;
                       case 'HIPERCARD':
                         jQuery('#moip_ccrecurring_type .HI').addClass('active');
-                        jQuery("input[id=moip_ccrecurring_type]").val('HI');
+                        jQuery("input[id=moip_ccrecurring_type]").val('HP');
                         alert('Ainda nao estamos trabalhando com o HIPERCARD, por favor escolha outro cartão');
                        break;
                       case 'HIPER':
                         jQuery('#moip_ccrecurring_type .HP').addClass('active');
-                        jQuery("input[id=moip_ccrecurring_type]").val('HP');
+                        jQuery("input[id=moip_ccrecurring_type]").val('HI');
                         alert('Ainda nao estamos trabalhando com o HIPER, por favor escolha outro cartão');
                        break;
                    };
