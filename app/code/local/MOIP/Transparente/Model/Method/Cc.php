@@ -103,7 +103,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                     'HP' => '/^([0-9])$/'
                 );
                 $specifiedCCType  = $info->getCcType();
-                if ($specifiedCCType == 'VI' || $specifiedCCType == "MC" || $$specifiedCCType == "AE" || $$specifiedCCType == "DC") {
+                if ($specifiedCCType == 'VI' || $specifiedCCType == "MC" || $specifiedCCType == "AE" || $specifiedCCType == "DC") {
                         $errorMsg = "";
                 } else {
                     if ($specifiedCCType)
