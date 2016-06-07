@@ -3,6 +3,7 @@ class MOIP_Transparente_Block_Standard_Redirect extends Mage_Checkout_Block_Onep
 {
     public function __construct()
     {
+        $this->setDataMoip();
         $this->_expireCart();
         $session = Mage::getSingleton('checkout/session');
         Mage::dispatchEvent('checkout_onepage_controller_success_action', array(
@@ -10,6 +11,7 @@ class MOIP_Transparente_Block_Standard_Redirect extends Mage_Checkout_Block_Onep
                 $session->getLastOrderId()
             )
         ));
+
         parent::__construct();
     }
 

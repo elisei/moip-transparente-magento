@@ -1,8 +1,6 @@
 <script type="text/javascript">countryRegions = <?php echo $this->helper('directory')->getRegionJson() ?></script>
-
 <script type="text/javascript">
 //<![CDATA[
-
 
 var message_payment = "Por Favor, selecione um meio de pagamento.";
 var message_ship = "Por favor, selecione um Meio de Envio";
@@ -31,12 +29,9 @@ ProxCamp = function(fields) {
 	}
 };
 
-
-
 soNumeros = function(v){
     return v.replace(/\D/g,"")
 };
-
 
 has_default_billing = function()
 {
@@ -51,8 +46,6 @@ has_default_billing = function()
 	<?php endif ?>
 };
 
-
-
 getval = function(sel) {
 	if (sel.value == 1){
 		jQuery('.dados-pj').slideUp();
@@ -66,8 +59,6 @@ getval = function(sel) {
 marcar_isento = function() {
 	jQuery("#insestadual").val("Isento");
 };
-
-
 
 buscarEndereco = function(whatform) {
 	if (whatform == "billing") {
@@ -138,6 +129,7 @@ buscarEndereco = function(whatform) {
 				if (campos.postcode != "" && campos.postcode != ".")
 				{
 					updateShippingType(campos.postcode);
+					console.log('1');
 				};
 				
 			} else {
@@ -148,6 +140,7 @@ buscarEndereco = function(whatform) {
 				if (campos.postcode != "" && campos.postcode != ".")
 				{
 					updateShippingType(campos.postcode);
+					console.log('2');
 				};
 			}
 		},
@@ -190,25 +183,18 @@ updateShippingMethod = function() {
 		jQuery.ajax({
 			type: "POST",
 			url: updateshippingmethodurl,
-
 			data: jQuery("#onestep_form").serialize(),
 			beforeSend: function(){
-
 				jQuery('.validation-advice').hide();
 				jQuery("input[name='shipping_method']").removeClass('validation-failed');
 				jQuery('#checkout-payment-method-load').html('<div class="update_payment"><p>Calculando valor do pagamento.</p><img class="Loading" alt="Loading..." src="<?php echo $this->getSkinUrl("MOIP/onestepcheckout/images/ajax-loader-tr.gif")?>"></div>');
 				updatePaymentAssociated();
-
 			},
 			success: function(msg) {
-
-
 				jQuery('#checkout-review-table-wrapper').html(msg);
 				jQuery('#checkout-review-table-wrapper').find("script").each(function(i) {
 				                    eval(jQuery(this).text());
 				                });
-
-
 			},
 			fail:function() {
 				updateShippingMethod();
@@ -226,9 +212,7 @@ updateOrderMethod = function() {
 		jQuery.ajax({
 			type: "POST",
 			url: updateordermethodurl,
-
-			data: jQuery("#onestep_form").serialize(),
-			
+			data: jQuery("#onestep_form").serialize(),			
 			success: function(msg) {
 				var result = jQuery.parseJSON(msg);
 				if(result.erros == 1){
@@ -239,9 +223,6 @@ updateOrderMethod = function() {
 				} else{
 					window.location.href = result.msg_success;
 				}
-				
-
-
 			},
 			fail:function() {
 				location.reload();
@@ -250,8 +231,6 @@ updateOrderMethod = function() {
 
 			},
 		})
-
-	
 };
 
 updateShippingType = function(){
@@ -270,6 +249,7 @@ updateShippingType = function(){
 					jQuery('#checkout-shipping-method-load').find("script").each(function(i) {
 				                    eval(jQuery(this).text());
 				                });
+					shippingChange();
 				},
 			error: function(){
 			 	jQuery('#checkout-shipping-method-load').html("Não foi possível cotar o seu frete, por favor recarrege a página ou entre em contato com nossa loja.");
@@ -279,7 +259,6 @@ updateShippingType = function(){
 };
 
 updateClear = function() {
-
 		jQuery.ajax({
 			async: false,
 			type: "POST",
@@ -323,18 +302,14 @@ updatePaymentMethod = function() {
 	jQuery.ajax({
 		url: updatepaymentmethodurl,
 		type: "POST",
-
 		data: jQuery("#onestep_form").serialize(),
 		success: function(msg) {
-
 				jQuery('#checkout-review-table-wrapper').html(msg);
-
 				jQuery('#checkout-review-table-wrapper').find("script").each(function(i) {
 				                    eval(jQuery(this).text());
 				                });
 		},
 	});
-
 };
 
 updateCoupon = function() {
@@ -387,11 +362,7 @@ removeProduct = function(id) {
 }
 logined = function()
 {
-	<?php	if(Mage::getSingleton('customer/session')->isLoggedIn()):?>
-		return 1;
-	<?php else: ?>
-		return 0;
-	<?php endif ?>
+	return <?php echo Mage::getSingleton('customer/session')->isLoggedIn() ?>;
 }
 hasaddress = function(){
 	<?php if(count(Mage::getSingleton('customer/session')->getCustomer()->getAddresses())): ?>
@@ -477,6 +448,11 @@ updateQty = function(){
 
 }
 
+shippingChange = function(){
+	jQuery("input[name='shipping_method']").on('change', function () {
+		updateShippingMethod();
+	});
+}
 
 inbtn = function(id){
 	removeElemento = "#up_"+id;
@@ -485,8 +461,6 @@ inbtn = function(id){
 }
 
 })(jQuery);
-
-
 
 jQuery(document).ready(function(){
 	var payment = new Payment('co-payment-form', '<?php echo $this->getUrl("checkout/onepage/savePayment") ?>');
@@ -497,6 +471,7 @@ jQuery(document).ready(function(){
 	ChangeEvents();	
 	Setmask();
 	updateClear();
+	shippingChange();
 	<?php if(!Mage::helper('onestepcheckout')->onlyProductDownloadable()):?>
 		jQuery('#moip_cc_number').focus(function() {
 			var selectShipping = jQuery("input[name='shipping_method']:checked").val();
@@ -505,9 +480,6 @@ jQuery(document).ready(function(){
 			}
 		});
 	<?php endif?>
-	jQuery("input[name='shipping_method']").change(function () {
-		updateShippingMethod();
-	});
 });
 
 	
