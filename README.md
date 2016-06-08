@@ -52,6 +52,40 @@ Oferecemos suporte gratuito para todo o processo de instalação.  Em caso de d�
 
 ### [Moip Pagamento - V2 - Widgets para Parcelamento no Magento](https://youtu.be/uCSG5O0qFOo "Moip Pagamento - V2 - Widgets para Parcelamento no Magento")
 
+#DEMO's
+
+Você pode testar o módulo em nossa loja de demonstrar.
+
+É um Magento 100% Padrão contento apenas o módulo Moip Transparente V2 e o serviço de entrega Correios.
+Todos os recursos adcionais presentes na loja são do módulo Moip.
+Todo o processo de pagamento pode ser realizado nesse ambiente, como estamos operando em ambiente de sandbox moip, suas transações não serão efetivamente cobradas junto a operado.
+
+Caso queira testar com um cartão de crédito válido use:
+
+| Bandeira  	  | Número do cartão para Teste     	           | CVV  | Expiração |
+| --------------- | ---------------------------------------------- | ---- | --------- |
+| Visa       	  | 4747474747474747							   | 123  | 10/20	  |
+| Mastercard 	  | 5453010000066167							   | 123  | 10/20	  |
+| Elo       	  | 6362970000457013							   | 123  | 10/20	  |
+| Dinners         | 36490102462661								   | 123  | 10/20	  |
+| AmericanExpress | 376449047333005								   | 1234 | 10/20	  |
+| Hiper       	  | 6062825624254001							   | 123  | 10/20	  |
+| Hipercard       | 6062825624254001							   | 123  | 10/20	  |
+
+Há 4 opções em sistema de multistore:
+
+1. Layout de Checkout em 3 Colunas com a revisão na lateral fechada:
+[http://moip.loja.ninja/default/produtos-para-teste](http://moip.loja.ninja/default/produtos-para-teste)
+
+2. Layout do Checkout em 3 Colunas com a revisão do pedido na lateral e aberta:
+[http://moip.loja.ninja/layout2/produtos-para-teste](http://moip.loja.ninja/layout2/produtos-para-teste)
+
+3. Layout do Checkout em 3 Colunas com a revisão do pedido em baixo:
+[http://moip.loja.ninja/layout3/produtos-para-teste](http://moip.loja.ninja/layout3/produtos-para-teste)
+
+4. Layout do Checkout em 2 Colunas
+[http://moip.loja.ninja/layout4/produtos-para-teste](http://moip.loja.ninja/layout4/produtos-para-teste)
+
 ### Versão
 1.0.0
 
