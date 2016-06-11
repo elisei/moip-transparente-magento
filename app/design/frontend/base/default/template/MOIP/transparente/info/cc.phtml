@@ -1,7 +1,5 @@
-<?php
-/* Mage::getModel("sales/order")->getCollection()->getLastItem()->getIncrementId(); */
-if(Mage::app()->getRequest()->getModuleName() != "onestepcheckout" && Mage::app()->getRequest()->getModuleName() != "checkout"){
-?>
+<?php if(Mage::app()->getRequest()->getControllerModule() != "Mage_Checkout" && Mage::app()->getRequest()->getActionName() != "progresscheckout"): ?>
+
 		<?php $info = $this->_prepareInfo(); ?>
 
 
@@ -29,16 +27,6 @@ if(Mage::app()->getRequest()->getModuleName() != "onestepcheckout" && Mage::app(
 			</div>
 
 		</div>
-
-	
-
-<?php } else { ?>
-
-<?php $addtional = $this->getMethod()->getInfoInstance()->getAdditionalData();?>
-<?php $addtional = unserialize($addtional); ?>
-
-	<?php echo Mage::helper('transparente')->__('Nome Impresso no cartão: %s', $this->htmlEscape($this->getInfo()->getCcOwner())) ?><br/>
-	<?php echo Mage::helper('transparente')->__('Bandeira: %s', $this->htmlEscape($this->getInfo()->getCcType())) ?><br/>
-	<?php echo Mage::helper('transparente')->__('Número do cartão: xxxx-%s', $this->htmlEscape($this->getInfo()->getCcLast4())) ?><br/>
-	<?php echo Mage::helper('transparente')->__('Vencimento do cartão: %s/%s', $this->htmlEscape($this->getInfo()->getCcExpMonth()), $this->htmlEscape($this->getInfo()->getCcExpYear())) ?><br/>
-<?php } ?>
+<?php else: ?>
+	Pagamento via Cartão de Crédito
+<?php endif; ?>

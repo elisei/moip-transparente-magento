@@ -418,65 +418,28 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 	 }
 
 
-	
-	
-
-
-
-	public function post_correio($url, $get) {
-		$url = explode('?', $url, 2);
-		$ch = curl_init($url[0]."?".http_build_query($get));
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		return curl_exec($ch);
-	}
-
 	public function buscaCepAction() {
 		$data = $this->getRequest()->getParams();
-		if ($data['meio'] == "buscaend") {
-			$rua = $data['logradouro'];
-			$vSomeSpecialChars = array("á", "á","é","é", "í","í", "ó", "ú", "Á","À","É","È", "Í", "Ì","Ó", "Ú", "ç", "Ç", "ã", "Ã", "õ", "Õ");
-			$vReplacementChars = array("a", "a", "e","e", "i","i", "o", "u", "A", "A","E","E", "I", "I","O", "U", "c", "C", "a", "A", "o", "O");
-			$rua = str_replace($vSomeSpecialChars, $vReplacementChars, $rua);
-			$rua = trim($rua);
-			$uf = $data['busca_uf'];
-			$url_end = "http://endereco.ecorreios.com.br/app/enderecoCep.php";
-			$get = array(
-				'cep' => '0',
-				'busca_end' =>$rua,
-				'busca_uf' =>$uf,
-				);
-			$config = array('adapter' => 'Zend_Http_Client_Adapter_Socket');
-			$resposta = $this->post_correio($url_end, $get);
-			$this->getResponse()->setBody($resposta);
-		}
 
 		if ($data['meio'] == "cep") {
-			function simple_curl($url, $post=array(), $get=array()) {
-				$url = explode('?', $url, 2);
-				if (count($url)===2) {
-					$temp_get = array();
-					parse_str($url[1], $temp_get);
-					$get = array_merge($get, $temp_get);
-				}
-				$ch = curl_init($url[0]."?".http_build_query($get));
-				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-				return curl_exec($ch);
-			}
+			
 			$cep = $data['cep'];
 			$cep = substr(preg_replace("/[^0-9]/", "", $cep) . '00000000', 0, 8);
-			$url_end = "http://endereco.ecorreios.com.br/app/enderecoCep.php?cep={$cep}";
-			$config = array('adapter' => 'Zend_Http_Client_Adapter_Socket');
-			$client = new Zend_Http_Client($url_end, $config);
-			$response = $client->request();
+			$url = "http://endereco.ecorreios.com.br/app/enderecoCep.php?cep={$cep}";
 
-			if($response->getBody() != "503"){
-				$res = $response->getBody();
+			$result = array();
+		    $ch = curl_init();
+		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		    curl_setopt($ch, CURLOPT_URL, $url);
+		    curl_setopt($ch,CURLOPT_USERAGENT,'MoipMagento/2.0.0');
+		    $responseBody = curl_exec($ch);
+		    curl_close($ch);
 
-				$endereco = Mage::helper('core')->jsonDecode($res);
+
+			if($responseBody){
+				
+
+				$endereco = Mage::helper('core')->jsonDecode($responseBody);
 
 				/* 
 				//Remover comentário para usar a versão em que o distrito federal está fora da ordem alfabética. Nesse caso lembre-se que precisa remover o switch de baixo.

@@ -12,6 +12,8 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
     public function NewTranscitionAction()
     {
 
+
+               
         $api       = $this->getApiMoip();
         $chave1 = Mage::getStoreConfig('payment/moip_transparente_standard/validador_retorno');
        
@@ -19,8 +21,8 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
         $json_moip = $this->getRequest()->getRawBody();
         $decode = json_decode($json_moip, false);
        
-       
-
+              
+        $api->generateLog($json_moip, 'MOIP_Webhooks.log'); 
 
         if($data['validacao'] == $chave1){
             $order_event = $decode->event;
@@ -232,9 +234,9 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
             try {
 
                 
-                    $paid    = Mage::getSingleton('transparente/standard')->getConfigData('order_status_processing');
+                    
                     $state   = Mage_Sales_Model_Order::STATE_PROCESSING;
-                    $status  = $paid;
+                    $status  = "processing";
                     $comment = "Pagamento Autorizado";
                     $order->setState($state, $status, $comment, $notified = true, $includeComment = true);
                     $order->save();
@@ -245,7 +247,7 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
                     $invoice->setEmailSent(true);
                     $invoice->save();
                
-                
+                    echo "Processada";
             }
             catch (Exception $order) {
                 

@@ -34,8 +34,13 @@ class MOIP_Transparente_Block_Product_View_Discount extends Mage_Catalog_Block_P
 	public function getNewPriceDiscount(){
 		$_product = $this->getProduct();
 		$price = $_product->getFinalPrice();
-		$percentual = $this->getPercentual() / 100; 
-  		$valor_final = $price - ($percentual * $price);
-		return Mage::helper('core')->currency($valor_final, true, false); 
+		if($_product->getFinalPrice()) {
+			$percentual = $this->getPercentual() / 100; 
+	  		$valor_final = $price - ($percentual * $price);
+			return Mage::helper('core')->currency($valor_final, true, false); 	
+		} else {
+			return;
+		}
+		
 	}
 }

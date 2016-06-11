@@ -58,14 +58,11 @@ font-size: 11px;
 }
 
 
-#moip_cc_type {
+#moip_cc_type, #moip_ccrecurring_type  {
   width: 100%;
 }
 
-#moip_ccrecurring_type {
-  width: 100%;
-}
-#moip_cc_type li {
+#moip_cc_type li, #moip_ccrecurring_type li {
   display: block;
   width: 46px !important;
   height: 31px;
@@ -88,9 +85,6 @@ font-size: 11px;
 
 
 
-#moip_recurring_type {
-  width: 100%;
-}
 
 
 li.VI {background-position: -0px -30px !important;}
@@ -110,6 +104,7 @@ li.DI.active {background-position: -138px 0px !important}
 li.EO.active {background-position: -183px 0px !important}
 li.HI.active {background-position: -228px 0px !important}
 li.HP.active {background-position: -274px 0px !important}
+
 .sp-methods dd li.fields, .sp-methods dd li.wide {
   clear: both;
 }
@@ -150,11 +145,8 @@ li.cofre {
   width: 55px;
 
 }
-.cofre_number {
 
-	
 
-}
 .buttons-set {
     margin: 0 !important;
     background: #fff;
@@ -216,3 +208,9 @@ input {
       width: 5em !important;
 }
 
+@media only screen and (max-width: 768px) {
+  li.fields.card-number {
+    float: left;
+    width: 100% !important;
+  }
+}

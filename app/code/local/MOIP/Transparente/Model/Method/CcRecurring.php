@@ -206,6 +206,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
                 $transaction->setOrderPaymentObject($payment);
                 $transaction->setIsClosed(1);
                 $transaction->save();
+                $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
             }
             
             $this->chargeRecurringProfile($profile, $moip_code);
@@ -304,7 +305,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
             $productItemInfo->setPrice( $profile->getTaxAmount() + $profile->getBillingAmount() + $profile->getShippingAmount() );
 
             $order = $profile->createOrder($productItemInfo);
-            $order->setState(Mage_Sales_Model_Order::STATE_NEW);
+            $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
 
             $payment = $order->getPayment();
             $payment->setTransactionId($trans_id)->setIsTransactionClosed(1);

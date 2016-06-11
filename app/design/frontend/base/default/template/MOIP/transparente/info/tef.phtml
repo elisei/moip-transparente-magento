@@ -1,17 +1,9 @@
-<?php
-/* Mage::getModel("sales/order")->getCollection()->getLastItem()->getIncrementId(); */
-if(Mage::app()->getRequest()->getModuleName() != "onestepcheckout" && Mage::app()->getRequest()->getModuleName() != "checkout"){
-?>
+<?php if(Mage::app()->getRequest()->getControllerModule() != "Mage_Checkout" && Mage::app()->getRequest()->getActionName() != "progresscheckout"): ?>
 <?php $info = $this->_prepareInfo(); ?>
-		<div class="box-content">
-			<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
-			<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['moip_href_trans']  ?>"  target="_blank">Ir Ao banco</a></p>
-		</div>
-
-	
-
-<?php } else { ?>
-
-<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
-
-<?php } ?>
+<div class="box-content">
+	<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
+	<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['moip_href_trans']  ?>"  target="_blank">Ir Ao banco</a></p>
+</div>
+<?php else: ?>
+	Pagamento via Transf. Eletrônica
+<?php endif; ?>

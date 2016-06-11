@@ -259,7 +259,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                 '_secure' => true
             ));
         } else {
-            return Mage::getUrl('transparente/standard/redirect', array(
+            return Mage::getUrl('checkout/onepage/success', array(
                 '_secure' => true
             ));
         }

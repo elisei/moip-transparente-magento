@@ -22,7 +22,10 @@
 		#first_collun > .moip-osc-block-content .form-list .control label {display: block}
 	<?php  endif;?>
 </style>
-<?php if(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==2){
+
+<?php if(!Mage::helper('onestepcheckout')->onlyProductDownloadable()):
+
+if(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==2){
 	$class_address_user = "col-xm-12 col-lg-4 col-md-4";
 	$class_set_midle_coll = "col-xm-12 col-lg-8 col-lg-8";
 	$class_Shippingcollun = "no-set-coll";
@@ -48,7 +51,36 @@
 		$class_Paymentcollun = "col-lg-4 col-xm-12 col-md-4";
 		$class_Review = "";
 
-  } ?>
+ } 
+ else:
+	if(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==2){
+		$class_address_user = "col-xm-12 col-lg-4 col-md-4";
+		$class_set_midle_coll = "col-xm-12 col-lg-8 col-lg-8";
+		$class_Shippingcollun = "no-set-coll";
+		$class_Paymentcollun = "no-set-coll";
+		$class_Review = "col-lg-4 col-xm-12 col-md-4";
+		
+	} elseif(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==3){
+		$class_address_user = "col-xm-12 col-lg-4 col-md-4";
+		$class_set_midle_coll = "no-set-coll";
+		$class_Shippingcollun = "no-set-coll";
+		$class_Paymentcollun = "col-lg-8 col-xm-12 col-md-8";
+		$class_Review = "col-lg-12 col-xm-12 col-md-12";
+	} elseif(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==4){
+		
+		$class_address_user = "col-xm-12 col-lg-4 col-md-4";
+		$class_set_midle_coll = "col-xm-12 col-lg-4 col-md-4";
+		$class_Shippingcollun = "no-set-coll";
+		$class_Paymentcollun = "no-set-coll";
+		$class_Review = "col-lg-4 col-xm-12 col-md-4";
+	 } else {
+			$class_address_user = "col-xm-12 col-lg-4 col-md-4";
+		 	$class_Shippingcollun = "no-set-coll";
+			$class_Paymentcollun = "col-lg-8 col-xm-12 col-md-8";
+			$class_Review = "";
+
+	 } 
+ endif; ?>
 
 
 <div class="container body-wrapper">
@@ -115,31 +147,32 @@
 				<?php if(Mage::getStoreConfig('onestepcheckout/layout/page_layout')==4 || Mage::getStoreConfig('onestepcheckout/layout/page_layout')==2): ?>
 						<div class="<?php echo $class_set_midle_coll ?>">
 				<?php endif; ?>
-				
-					<div class="<?php echo $class_Shippingcollun ?>">
-						<div class="moip-osc-block" >
-							<div class="moip-osc-block-title">
-											<h3> <?php echo $this->__('Entrega');?> </h3>
-							</div>
+					<?php if(!Mage::helper('onestepcheckout')->onlyProductDownloadable()): ?>
+						<div class="<?php echo $class_Shippingcollun ?>">
+							<div class="moip-osc-block" >
+								<div class="moip-osc-block-title">
+												<h3> <?php echo $this->__('Entrega');?> </h3>
+								</div>
 
-							<div class="moip-osc-block-content">
-								
-									<?php if(!Mage::helper('onestepcheckout')->onlyProductDownloadable()):?>
-
-
-											
-												<?php echo $this->getChildHtml('shipping_method',false,true);?>
-												<?php if(Mage::helper('onestepcheckout')->enableGiftMessage()):?>
-													<?php echo $this->getChildHtml('additional',false,true) ?>
-												<?php endif; ?>
-											
+								<div class="moip-osc-block-content">
+									
+										<?php if(!Mage::helper('onestepcheckout')->onlyProductDownloadable()):?>
 
 
-										<?php endif?>	
-								
+												
+													<?php echo $this->getChildHtml('shipping_method',false,true);?>
+													<?php if(Mage::helper('onestepcheckout')->enableGiftMessage()):?>
+														<?php echo $this->getChildHtml('additional',false,true) ?>
+													<?php endif; ?>
+												
+
+
+											<?php endif?>	
+									
+								</div>
 							</div>
 						</div>
-					</div>
+					<?php endif; ?>
 					
 
 					<div class="<?php echo $class_Paymentcollun ?>">

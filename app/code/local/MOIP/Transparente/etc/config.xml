@@ -271,6 +271,7 @@
            
 
             <moip_ccrecurring>
+                <order_status>pending</order_status>
                 <model>MOIP_Transparente_Model_Method_CcRecurring</model>
                 <title>Cartão de Crédito Recorrente</title>
             </moip_ccrecurring>

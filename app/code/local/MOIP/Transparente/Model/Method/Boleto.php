@@ -25,9 +25,7 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
             $data = new Varien_Object($data);
         }
         $info           = $this->getInfoInstance();
-        $additionaldata = array(
-            'var_para_boleto' => "boleto e"
-        );
+        $additionaldata = array();
         $info->setAdditionalData(serialize($additionaldata))->save()->setAdditionalInformation(serialize($additionaldata))->save();
         return $this;
     }
@@ -96,7 +94,7 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
                 '_secure' => true
             ));
         } else {
-            return Mage::getUrl('transparente/standard/redirect', array(
+            return Mage::getUrl('checkout/onepage/success', array(
                 '_secure' => true
             ));
         }

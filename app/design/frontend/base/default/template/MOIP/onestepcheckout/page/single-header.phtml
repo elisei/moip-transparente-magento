@@ -32,13 +32,13 @@
     <div class="container">
         <div class="row">
             <div class="header">            
-                <div class="col-lg-3 col-md-3 col-xm-12">
+                <div class="col-lg-3 col-md-3 col-xm-12  col-xs-12">
                     
                     <a href="<?php echo $this->getUrl('') ?>" title="<?php echo $this->getLogoAlt() ?>" class="logo"><img src="<?php echo $this->getLogoSrc() ?>" alt="<?php echo $this->getLogoAlt() ?>" /></a>
                     
                    
                 </div>
-                <div class="col-lg-6 col-md-6 col-xm-12">
+                <div class="col-lg-6 col-md-6 col-xm-12  col-xs-12">
                     <h1 class="checkout-title-header">Pagamento</h1>
                     <?php if(Mage::getStoreConfig('onestepcheckout/layout/use_linha_suporte')): ?>
                         <?php echo $this->__(Mage::getStoreConfig('onestepcheckout/layout/content_linha_suporte'));?>

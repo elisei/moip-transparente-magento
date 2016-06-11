@@ -1,5 +1,4 @@
-<?php if($this->getPercentual()): ?>
-	<div class="background double price-boleto"><span> ou </span></div>
+<?php if($this->getPercentual() &&  $this->getNewPriceDiscount()): ?>
 	<div class="line-boleto-text"><?php echo $this->__(' %s de desconto no boleto', (int)$this->getPercentual().'%') ?></div>
 	<div class="line-boleto-price"><?php echo $this->getNewPriceDiscount(); ?></div>
 <?php endif ?>

@@ -34,7 +34,7 @@ class MOIP_Transparente_Model_Standard extends Mage_Payment_Model_Method_Abstrac
        	$decode = json_decode($IdMoip, true);
         $link_boleto = $decode['_links']['checkout']['payBoleto']['redirectHref'];
         $link_cc = $decode['_links']['checkout']['payCreditCard']['redirectHref'];
-       $info           = $this->getInfoInstance();
+        $info           = $this->getInfoInstance();
         $additionaldata = array(
             'link_boleto' => $link_boleto,
             'link_cc' => $link_cc

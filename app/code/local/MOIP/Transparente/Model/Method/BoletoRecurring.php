@@ -5,21 +5,29 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
     protected $_code = 'moip_boletorecurring';
     protected $_formBlockType = 'transparente/form_boleto';
     protected $_infoBlockType = 'transparente/info_boletorecurring';
-    protected $_isGateway = false;
-    protected $_canOrder = false;
-    protected $_canAuthorize = false;
-    protected $_canCapture = false;
-    protected $_canCapturePartial = false;
-    protected $_canRefund = false;
-    protected $_canRefundInvoicePartial = false;
-    protected $_canVoid = false;
+    protected $_isGateway = true;
+    protected $_canOrder = true;
+    protected $_canAuthorize = true;
+    protected $_canCapture = true;
+    protected $_canCapturePartial = true;
+    protected $_canRefund = true;
+    protected $_canRefundInvoicePartial = true;
+    protected $_canVoid = true;
     protected $_canUseInternal = false;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = false;
     protected $_canFetchTransactionInfo = true;
     protected $_canCreateBillingAgreement = false;
+    protected $_allowCurrencyCode = array('BRL');
     protected $_canReviewPayment = true;
     
+    public function assignData($data)
+    {
+        if (!($data instanceof Varien_Object)) {
+            $data = new Varien_Object($data);
+        }
+        return $this;
+    }
     public function getPayment()
     {
         return $this->getQuote()->getPayment();
@@ -37,7 +45,19 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
         return $this->getCheckout()->getQuote();
     }
    
-   
+    public function prepareSave()
+    {
+        $info = $this->getInfoInstance();
+        return $this;
+    }
+    public function prepare()
+    {
+        $info           = $this->getInfoInstance();
+        $additionaldata = unserialize($info->getAdditionalData());
+        $session        = Mage::getSingleton('checkout/session');
+        $session->setMoipData($additionaldata);
+    }
+
     public function validate()
     {
         
@@ -177,6 +197,7 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
                 $transaction->setOrderPaymentObject($payment);
                 $transaction->setIsClosed(1);
                 $transaction->save();
+                $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
             }
             
             $this->chargeRecurringProfile($profile, $moip_code);
@@ -275,11 +296,10 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
             $productItemInfo->setPrice( $profile->getTaxAmount() + $profile->getBillingAmount() );
 
             $order = $profile->createOrder($productItemInfo);
-            $order->setState(Mage_Sales_Model_Order::STATE_NEW);
-
+            $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
             $payment = $order->getPayment();
             $payment->setTransactionId($trans_id)->setIsTransactionClosed(1);
-            $order->save();
+            
             $profile->addOrderRelation($order->getId());
             $payment->save();
 
