@@ -1,0 +1,10 @@
+<?php $info = $this->_prepareInfo(); ?>
+<?php if($info): ?>
+<?php $url = $info.'/print' ?>
+		<div class="box-content">
+				<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
+				<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $url  ?>"  target="_blank" style="max-width: 200px;">Imprimir Boleto</a></p>
+		</div>
+<?php else: ?>
+	<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
+<?php endif; ?>

@@ -1,0 +1,134 @@
+<?php if(Mage::getStoreConfig('moipall/oneclick_config/enable_oneclick', Mage::app()->getStore())): ?>
+<script type="text/javascript">
+//<![CDATA[
+(function($) {
+    var onclick_proccess_form = new VarienForm('onclick_proccess');
+
+      onclick_proccess_form.submit = function (button, url) {
+          if (this.validator.validate()) {
+              var form = this.form;
+             
+              var data = jQuery('#onclick_proccess').serialize();
+             
+              try {
+                jQuery(".form-post-loading").hide();
+                jQuery(".progress").show();
+                  jQuery.ajax({
+                        url: form.action,
+                        dataType: 'json',
+                        type : 'post',
+                        data: data,
+                        success: function(data){
+                           
+                            window.location.href = data.url_redirect;
+                          
+                        }
+                  });
+              } catch (e) {
+              }
+          }
+      }.bind(onclick_proccess_form);
+    var onclick_login_form = new VarienForm('onclick_login');
+
+    onclick_login_form.submit = function (button, url) {
+        if (this.validator.validate()) {
+            var form = this.form;
+           
+            var data = jQuery('#onclick_login').serialize();
+           
+            try {
+              //jQuery(".form-post-loading").hide();
+              jQuery(".progress").show();
+                jQuery.ajax({
+                      url: form.action,
+                      dataType: 'json',
+                      type : 'post',
+                      data: data,
+                      success: function(data){
+                        if(data._status == "SUCCESS"){
+                          jQuery(".progress-login").hide();
+                          jQuery(".form-post-loading-login").hide();
+                          jQuery('#response-moip-onclick-payment').replaceWith(data.mensage);  
+                        } else {
+                          jQuery(".progress-login").hide();
+                          jQuery(".form-post-loading-login").show();
+                          jQuery('#error-login-onclick').replaceWith(data.mensage);  
+                        }
+                        
+                      }
+                });
+            } catch (e) {
+            }
+          
+
+          
+        }
+    }.bind(onclick_login_form);
+
+
+    productAddToCartForm.submitOnclick = function (button, url) {
+        if (this.validator.validate()) {
+            var form = this.form;
+            var oldUrl = form.action;
+            if (url) {
+                form.action = url;
+            }
+            var e = null;
+            // Start of our new ajax code
+            if (!url) {
+                url = jQuery('#product_addtocart_form').attr('action');
+            }
+            url = url.replace("checkout/cart", "Transparente/index/addOnclick"); 
+            var data = jQuery('#product_addtocart_form').serialize();
+            data += '&onclick=1';
+            jQuery('#ajax_loader').show();
+            try {
+                jQuery.ajax({
+                      url: url,
+                      dataType: 'json',
+                      type : 'post',
+                      data: data,
+                      success: function(data){
+                        jQuery('#ajax_loader').hide();
+
+                        jQuery('#response-moip-onclick').replaceWith(data.message);
+                        jQuery('#Moiponclick').modal('show');
+                        jQuery('.btn-onclick').attr("onclick",'productAddToCartForm.showOnclick(this)');
+                             
+                      },
+                });
+            } catch (e) {
+            }
+            // End of our new ajax code
+            this.form.action = oldUrl;
+
+            if (e) {
+                throw e;
+            }
+        }
+    }.bind(productAddToCartForm);
+
+    productAddToCartForm.showOnclick = function (button, url) {
+        jQuery('#Moiponclick').modal('show');
+    }.bind(productAddToCartForm);
+
+})(jQuery);
+
+//]]>
+</script>
+
+<div class="modal fade" id="Moiponclick" role="dialog" tab-index="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4><i class="fa fa-mouse-pointer"></i> Comprar em 1 clique</h4>
+      </div>
+      <div class="modal-body" >
+          <div id="response-moip-onclick"></div>
+          <div id="response-moip-onclick-payment"></div>
+      </div>
+    </div>
+  </div>
+</div> 
+<?php endif; ?>

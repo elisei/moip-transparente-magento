@@ -187,7 +187,7 @@ updateShippingMethod = function() {
 			beforeSend: function(){
 				jQuery('.validation-advice').hide();
 				jQuery("input[name='shipping_method']").removeClass('validation-failed');
-				jQuery('#checkout-payment-method-load').html('<div class="update_payment"><p>Calculando valor do pagamento.</p><img class="Loading" alt="Loading..." src="<?php echo $this->getSkinUrl("MOIP/onestepcheckout/images/ajax-loader-tr.gif")?>"></div>');
+				jQuery('#checkout-payment-method-load').html('<div class="update_payment"><p>Calculando valor do pagamento.</p><img class="Loading" alt="Loading..." src="<?php echo $this->getSkinUrl("images/opc-ajax-loader.gif")?>"></div>');
 				updatePaymentAssociated();
 			},
 			success: function(msg) {
@@ -242,7 +242,7 @@ updateShippingType = function(){
 			data:jQuery("#onestep_form").serialize(),
 			beforeSend: function(){
 				jQuery('#message-box').html('');
-				jQuery('#checkout-shipping-method-load').html('<div class="update_shipping"><p>Calculando Frete.</p><img class="Loading" alt="Loading..." src="<?php echo $this->getSkinUrl("MOIP/onestepcheckout/images/ajax-loader-tr.gif")?>"></div>');
+				jQuery('#checkout-shipping-method-load').html('<div class="update_shipping"><p>Calculando Frete.</p><img class="Loading" alt="Loading..." src="<?php echo $this->getSkinUrl("images/opc-ajax-loader.gif")?>"></div>');
 			},
 			success: function(msg){
 					jQuery('#checkout-shipping-method-load').html(msg);

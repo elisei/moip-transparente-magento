@@ -1,5 +1,5 @@
 <?php
-class MOIP_Transparente_Block_Standard_Redirect extends Mage_Checkout_Block_Onepage_Success
+class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_Success
 {
     public function __construct()
     {

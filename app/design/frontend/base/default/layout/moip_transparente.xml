@@ -267,6 +267,7 @@
  		</reference>		
  	</gc_checkout_finish_index>
 
+ 	
  	<checkout_onepage_success translate="label">
         <label>One Page Checkout Success</label>
 
@@ -274,36 +275,26 @@
 			<action method="addCss"><stylesheet>MOIP/transparente/css/redirect.css</stylesheet></action>
 		</reference>
             <reference name="checkout.success">
-              <block type="MOIP_Transparente_Block_Standard_Redirect" name="transparente.comum" template="MOIP/transparente/redirect.phtml">
-				<block type="MOIP_Transparente_Block_Standard_Redirect" name="transparente.transferencia" template="MOIP/transparente/redirect/transferencia.phtml"></block>
-			            <block type="MOIP_Transparente_Block_Standard_Redirect" name="transparente.boleto" template="MOIP/transparente/redirect/boleto.phtml"></block>
-			            <block type="MOIP_Transparente_Block_Standard_Redirect" name="transparente.cartao" template="MOIP/transparente/redirect/cartao.phtml"></block>
-				 </block>
-				<block type="MOIP_Transparente_Block_Standard_SuccessDetails" name="success.order"  template="MOIP/transparente/SuccessDetails.phtml">
-					<action method="addItemRender"><type>default</type><block>sales/order_item_renderer_default</block><template>MOIP/transparente/checkout/sales/order/items/renderer/default.phtml</template></action>
-					<action method="addItemRender"><type>grouped</type><block>sales/order_item_renderer_grouped</block><template>MOIP/transparente/checkout/sales/order/items/renderer/default.phtml</template></action>
-					<block type="sales/order_totals" name="order_totals" template="MOIP/transparente/checkout/sales/order/totals.phtml">
-						<action method="setLabelProperties"><value>colspan="2" class="a-right"</value></action>
-						
-						<block type="tax/sales_order_tax" name="tax" template="tax/order/tax.phtml">
-							<action method="setIsPlaneMode"><value>1</value></action>
-						</block>
-					</block>
-					 <block type="MOIP_Transparente_Block_Standard_SuccessRecurring" name="success.order" as="success_order_boleto"  template="MOIP/transparente/checkout/success/boleto.phtml">
-						<action method="addItemRender"><type>default</type><block>sales/order_item_renderer_default</block><template>sales/order/items/renderer/default.phtml</template></action>
-						<action method="addItemRender"><type>grouped</type><block>sales/order_item_renderer_grouped</block><template>sales/order/items/renderer/default.phtml</template></action>
-						<block type="sales/order_totals" name="order_totals" template="sales/order/totals.phtml">
-							<action method="setLabelProperties"><value>colspan="4" class="a-right"</value></action>
-							<action method="setValueProperties"><value>class="last a-right"</value></action>
-							<block type="tax/sales_order_tax" name="tax" template="tax/order/tax.phtml">
-								<action method="setIsPlaneMode"><value>1</value></action>
+              	<block type="MOIP_Transparente_Block_Standard_Moip" name="transparente.comum" template="MOIP/transparente/checkout/success/moip.phtml">
+						<block type="MOIP_Transparente_Block_Standard_Moip" name="transparente.transferencia" template="MOIP/transparente/checkout/success/method/transferencia.phtml"></block>
+			            <block type="MOIP_Transparente_Block_Standard_Moip" name="transparente.boleto" template="MOIP/transparente/checkout/success/method/boleto.phtml"></block>
+			            <block type="MOIP_Transparente_Block_Standard_Moip" name="transparente.cartao" template="MOIP/transparente/checkout/success/method/cartao.phtml"></block>
+			            <block type="MOIP_Transparente_Block_Standard_Details" name="success.order.details" as="details" template="MOIP/transparente/checkout/success/details.phtml">
+							<action method="addItemRender"><type>default</type><block>sales/order_item_renderer_default</block><template>MOIP/transparente/checkout/sales/order/items/renderer/default.phtml</template></action>
+							<action method="addItemRender"><type>grouped</type><block>sales/order_item_renderer_grouped</block><template>MOIP/transparente/checkout/sales/order/items/renderer/default.phtml</template></action>
+							<block type="sales/order_totals" name="order_totals" template="MOIP/transparente/checkout/sales/order/totals.phtml">
+								<action method="setLabelProperties"><value>colspan="2" class="a-right"</value></action>
+								
+								<block type="tax/sales_order_tax" name="tax" template="tax/order/tax.phtml">
+									<action method="setIsPlaneMode"><value>1</value></action>
+								</block>
 							</block>
 						</block>
-					</block>
 				</block>
-
             </reference>
+            <!-- <block type="MOIP_Transparente_Block_Standard_SuccessRecurring" name="success.order" as="success_order_boletorecorrente"  template="MOIP/transparente/checkout/success/method/boletorecorrente.phtml"/> -->
     </checkout_onepage_success>
+
 
 
 </layout>

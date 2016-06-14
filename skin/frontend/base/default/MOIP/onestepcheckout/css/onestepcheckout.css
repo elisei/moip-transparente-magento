@@ -72,7 +72,6 @@ h2.endereco_title, h3.como_comprar_title, h3.dados_pessoais {clear: both;}
 .moip-osc-block-content.force-none-float {
     float: none !important;
 }
-
 #loading-mask {
   position: fixed;
   top: 0;
@@ -85,24 +84,22 @@ h2.endereco_title, h3.como_comprar_title, h3.dados_pessoais {clear: both;}
   display: none;
   top: 0px;
 }
-#loading-mask #loading_mask_loader {
-  background: none repeat scroll 0 0 #fff;
-  border: 1px solid #ccc;
-  box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
-  display: block;
-  left: 42%;
-  line-height: 20px;
-  margin-top: 0;
-  padding: 20px;
-  position: absolute;
+#loading-mask img {
   text-align: center;
-  top: 32%;
-  width: 300px;
-  right: 50%;
 }
-img.loading_img {margin: 0 auto;}
-img.Loading {margin: 0 auto;}
+#loading_mask_loader {
+    display: inline-block;
+    position: absolute;
+    left: 40%;
+    z-index: 100;
+    top: 50%;
+    background: #fff;
+}
+.update_shipping img, .update_payment img {
+    text-align: center;
+    margin: 0 auto;
+    padding-bottom: 30px;
+}
 
 .update_shipping,.update_payment { width: 100%; text-align: center; font-size: 14px; min-height: 115px; padding-top: 50px; }
 .sp-methods .form-list { padding-left: 0px !important; }

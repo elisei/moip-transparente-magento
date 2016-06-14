@@ -1,0 +1,32 @@
+<?php if(Mage::app()->getRequest()->getControllerModule() != "Mage_Checkout" && Mage::app()->getRequest()->getActionName() != "progresscheckout"): ?>
+
+		<?php $info = $this->_prepareInfo(); ?>
+
+
+		<div class="box-content">
+			<h3><?php echo $info['moip_card_brand']; ?> <b><?php echo $info['moip_card_installment']; ?><b> parcelas</h3>
+			<div class="input-value">
+				<?php echo $info['moip_card_fullname'] ?>
+			</div>
+
+			<div class="input-value">
+				<label>6 Primeiros dígitos do cartão</label>
+				<?php echo $info['moip_card_first6'] ?>
+			</div>
+
+			<div class="input-value">
+				<label>4 Últimos dígitos do cartão</label>
+				<?php echo $info['moip_card_last4'] ?>
+			</div>
+
+
+			
+			<div class="input-value">
+				<label>Pagamento n.º</label>
+				<?php echo $info['moip_pay'] ?>
+			</div>
+
+		</div>
+<?php else: ?>
+	Pagamento via Cartão de Crédito
+<?php endif; ?>

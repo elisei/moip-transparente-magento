@@ -1,0 +1,68 @@
+<?php  $_order = $this->getOrder() ?>
+<?php  if($_order): ?>
+<div class="row"> 
+		<div class="col-xm-12 col-sm-12 col-md-5 col-lg-5 grid12-5">
+	        <?php if($_order->getShippingDescription()): ?>
+	        	<div class="box">
+		        		<div class="box">
+
+				            <div class="box-title">
+				                <h3><?php echo $this->__('Endereço de Entrega') ?></h3>
+				            </div>
+				            <div class="box-content">
+				                <address>
+									<?php echo $_order->getShippingAddress()->format('html'); ?>
+				                 </address>
+				            </div>
+						</div>
+						<div class="box">
+				            <div class="box-title">
+				                <h3><?php echo $this->__('Dados de Entrega') ?></h3>
+				            </div>
+				            <div class="box-content">
+				                <p>
+				                	Seu pedido será enviado por:
+				                	<div> <?php  echo $_order->getShippingDescription(); ?></div>
+				                 </p>
+				            </div>
+						</div>
+				</div>
+			<?php endif; ?>
+		</div>
+		<div class="col-xm-12 col-sm-12 col-md-7 col-lg-7 grid12-7">
+			<div class="box">
+				<div class="box-title">
+					<h3>Itens</h3>
+				</div>
+				<div class="box-content">
+					<table class="data-table cart-table-items" id="checkout-review-table">
+					  
+					    <thead>
+					        <tr>
+					            <th><?php echo $this->__('Product Name') ?></th>
+					            <th class="a-center"><?php echo $this->__('Qty') ?></th>
+					            <th class="a-right"><?php echo $this->__('Subtotal') ?></th>
+					        </tr>
+					    </thead>
+					    <tfoot>
+					        <?php echo $this->getChildHtml('order_totals') ?>
+					    </tfoot>
+					        <?php $_items = $_order->getItemsCollection(); ?>
+					        <?php $_index = 0; ?>
+					        <?php $_count = $_items->count(); ?>
+					        <?php foreach ($_items as $_item): ?>
+						        <?php if ($_item->getParentItem()) continue; ?>
+						        	<tbody>
+						            	<?php echo $this->getItemHtml($_item) ?>
+						        	</tbody>
+					        <?php endforeach; ?>
+					</table>
+					
+				</div>
+			</div>
+		</div>
+</div>
+<script type="text/javascript">
+	decorateTable('checkout-review-table', {'tbody' : ['odd', 'even'], 'tbody tr' : ['first', 'last']});
+</script>
+<?php endif; ?>
