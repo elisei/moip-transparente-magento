@@ -59,6 +59,11 @@
                     <order_totals>MOIP_Transparente_Block_Sales_Order_Fee</order_totals>
                 </rewrite>
             </sales>
+            <adminhtml>
+                <rewrite>
+                    <sales_order_grid>MOIP_Transparente_Block_Sales_Order_Grid</sales_order_grid>
+                </rewrite>
+            </adminhtml>
         </blocks>
         <helpers>
             <transparente>
@@ -101,15 +106,7 @@
 			            </transparente>
 			        </observers>
 			    </catalog_product_save_after>
-			    <checkout_submit_all_after>
-                    <observers>
-                        <recorrente>
-                            <type>singleton</type>
-                            <class>transparente/observer</class>
-                            <method>sales_order_place_before_success</method>
-                        </recorrente>
-                    </observers>
-                </checkout_submit_all_after>
+
         </events>
     </global>
     <frontend>
@@ -143,14 +140,14 @@
         </layout>
     </frontend>
     <admin>
-        <routers>
-            <MOIP_Transparente>
-                 <transparente after="Mage_Adminhtml">Transparente_Adminhtml</transparente>
+         <routers>
+            <adminhtml>
                 <args>
-                    <module>MOIP_Transparente</module>
-                    <frontName>transparente</frontName>
+                    <modules>
+                        <statusmoip after="Mage_Adminhtml">MOIP_Transparente</statusmoip>
+                    </modules>
                 </args>
-            </MOIP_Transparente>
+            </adminhtml>
         </routers>
     </admin>
     <adminhtml>
@@ -170,6 +167,16 @@
                 </transparente>
             </updates>
         </layout>
+        <events>
+            <core_block_abstract_prepare_layout_before>
+                <observers>
+                    <transparente_core_block_abstract_prepare_layout_before>
+                        <class>transparente/observer</class>
+                        <method>addMassAction</method>
+                    </transparente_core_block_abstract_prepare_layout_before>
+                </observers>
+            </core_block_abstract_prepare_layout_before>
+        </events>
     </adminhtml>
     <crontab>
         <jobs>

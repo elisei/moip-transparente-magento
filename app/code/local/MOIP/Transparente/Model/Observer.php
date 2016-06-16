@@ -279,7 +279,18 @@ class Moip_Transparente_Model_Observer
 
       
     }
-
+    public function addMassAction($observer)
+    {
+        $block = $observer->getEvent()->getBlock();
+        if(get_class($block) =='Mage_Adminhtml_Block_Widget_Grid_Massaction'
+            && $block->getRequest()->getControllerName() == 'sales_order')
+        {
+            $block->addItem('transparente', array(
+                'label' => 'Consultar status no Moip',
+                'url' =>  Mage::helper('adminhtml')->getUrl('adminhtml/adminhtml_statusmoip/setstate'),
+            ));
+        }
+    }
     public function getApi()
     {
         $api = Mage::getModel('transparente/api');

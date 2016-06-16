@@ -302,7 +302,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 
 	 public function autorizaPagamento($order, $paid){
-	 	sleep(10);
+	 	sleep(3);
 	 	
 
 		if($order->canUnhold()) {
