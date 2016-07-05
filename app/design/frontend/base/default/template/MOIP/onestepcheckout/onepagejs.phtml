@@ -188,13 +188,14 @@ updateShippingMethod = function() {
 				jQuery('.validation-advice').hide();
 				jQuery("input[name='shipping_method']").removeClass('validation-failed');
 				jQuery('#checkout-payment-method-load').html('<div class="update_payment"><p>Calculando valor do pagamento.</p><img class="Loading" alt="Loading..." src="<?php echo $this->getSkinUrl("images/opc-ajax-loader.gif")?>"></div>');
-				updatePaymentAssociated();
 			},
 			success: function(msg) {
 				jQuery('#checkout-review-table-wrapper').html(msg);
 				jQuery('#checkout-review-table-wrapper').find("script").each(function(i) {
 				                    eval(jQuery(this).text());
 				                });
+			
+				updatePaymentAssociated();
 			},
 			fail:function() {
 				updateShippingMethod();
