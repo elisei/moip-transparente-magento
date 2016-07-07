@@ -2,7 +2,7 @@
 class Moip_Transparente_Model_Observer
 {
     
-    public function getStateAll($order){
+    public function setStateAll($order){
         $standard = $this->getStandard();
         $api = $this->getApi();
         $model = Mage::getModel('transparente/write');
