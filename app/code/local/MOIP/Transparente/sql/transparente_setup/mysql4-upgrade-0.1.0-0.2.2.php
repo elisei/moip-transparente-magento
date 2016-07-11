@@ -18,15 +18,10 @@ $resource = Mage::getSingleton('core/resource');
 
 $writeConnection = $resource->getConnection('core_write');
 
-$table = $resource->getTableName('core/resource');
-
-$query = "UPDATE {$table} SET `version` = '0.1.0', `data_version` = '0.1.0' WHERE `core_resource`.`code` = 'transparente_setup'";
-
-$writeConnection->query($query);
-
+$table_moip = $tablePrefix."moip_transparentev2"; 
 $installer->run("
-DROP TABLE IF EXISTS `".$tablePrefix."moip_transparentev2`;
-CREATE TABLE IF NOT EXISTS `".$tablePrefix."moip_transparentev2` (
+DROP TABLE IF EXISTS `".$table_moip."`;
+CREATE TABLE IF NOT EXISTS `".$table_moip."` (
   `entity_id_moip` int(11) NOT NULL AUTO_INCREMENT,
   `mage_pay` int(11) DEFAULT NULL,
   `moip_order` varchar(256) DEFAULT NULL,
@@ -60,4 +55,3 @@ $installer->endSetup();
 
 
 ?>
-

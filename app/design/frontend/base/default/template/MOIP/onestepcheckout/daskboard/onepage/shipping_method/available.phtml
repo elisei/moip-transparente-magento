@@ -23,7 +23,11 @@
                    <?php else: ?>
 			               <?php if ($_sole) : ?>
 			                	<span class="no-display"><input name="shipping_method" type="radio" title="Meio de Envio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>" checked="checked" class="validate-one-required-by-name"/></span>
-			                	
+			                	<script type="text/javascript">
+			                		jQuery(document).ready(function(){
+										updateShippingMethod();
+									});
+			                	</script>
 			               <?php else: ?>
 			               		<input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" title="Meio de Envio" id="s_method_<?php echo $_rate->getCode() ?>" class="radio shipping_method_handle validate-one-required-by-name"/>
 			               <?php endif; ?>

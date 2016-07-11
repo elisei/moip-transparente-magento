@@ -3,18 +3,24 @@
 	<acl>
 	    <resources>
 	        <admin>
-	            <children>
-	                <system>
-	                    <children>
-	                        <config>
+                <children>
+                    <sales translate="title" module="sales">
+                        <title>Sales</title>
+                        <children>
+                            <order translate="title">
+	            				<title>Orders</title>
 	                            <children>
-	                                <onestepcheckout>
-	                                    <title>Onestepcheckout</title>
-	                                </onestepcheckout>
-	                            </children>
-	                        </config>
-	                    </children>
-	                </system>
+	                                <actions translate="title">
+	                                    <title>Actions</title>
+	                                    <children>
+                                            <setstate translate="title"><title>Consultar Status no Moip</title></setstate>
+	               						 </children>
+                                    </actions>
+                                </children>
+                                <sort_order>100</sort_order>
+                    		</order>
+	            		</children>
+	            	</sales>
 	            </children>
 	        </admin>
 	    </resources>

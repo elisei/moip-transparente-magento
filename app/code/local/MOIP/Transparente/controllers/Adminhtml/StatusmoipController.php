@@ -2,7 +2,12 @@
 class MOIP_Transparente_Adminhtml_StatusmoipController extends  Mage_Adminhtml_Controller_Action {
 
    
-   
+    protected function _isAllowed()
+    {
+        $action = strtolower($this->getRequest()->getActionName());
+        $aclResource = 'sales/order/actions/setstate';
+        return Mage::getSingleton('admin/session')->isAllowed($aclResource);
+    }
 
     public function setstateAction()
     {

@@ -2,8 +2,9 @@
 	$installer = $this;
 	$installer->startSetup();
 	$tablePrefix = (string) Mage::getConfig()->getTablePrefix();
-	$installer->run("DROP TABLE IF EXISTS ".$tablePrefix."moip_onestepcheckout;
-	CREATE TABLE ".$tablePrefix."moip_onestepcheckout (
+	$tablePrefix = $tablePrefix."moip_onestepcheckout";
+	$installer->run("DROP TABLE IF EXISTS ".$tablePrefix.";
+	CREATE TABLE ".$tablePrefix." (
 	  `moip_onestepcheckout_date_id` int(11) unsigned NOT NULL auto_increment,
 	  `sales_order_id` int(11) unsigned NOT NULL,
 	  `moip_customercomment_info` varchar(255) default '',

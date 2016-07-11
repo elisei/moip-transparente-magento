@@ -3,7 +3,7 @@ class MOIP_Transparente_Block_Sales_Order_Fee extends Mage_Sales_Block_Order_Tot
 {
     protected $_code = 'fee';
 
- protected function _initTotals() {
+    protected function _initTotals() {
         parent::_initTotals();
         $shipping = $this->getSource()->getShippingAmount();
         $amt = $this->getSource()->getSubtotal() + $shipping;

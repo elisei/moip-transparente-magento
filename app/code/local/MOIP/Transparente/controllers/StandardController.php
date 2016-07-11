@@ -302,7 +302,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 
 	 public function autorizaPagamento($order, $paid){
-	 	sleep(3);
+	 	sleep(5);
 	 	
 
 		if($order->canUnhold()) {
@@ -334,7 +334,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 	 }
 
 	 public function cancelaPagamento($order, $details){
-	 	sleep(3);
+	 	sleep(5);
 	 	if($order->canUnhold()) {
 			$order->unhold()->save();
 		}
