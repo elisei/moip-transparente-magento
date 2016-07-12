@@ -91,7 +91,9 @@ class Moip_Transparente_Model_Observer
                     $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
                             ->addFieldToFilter('created_at', array('lteq' => $to_date))
                             ->addFieldToFilter('payment.method', array(array('eq' => 'moip_cc')))
-                            ->addAttributeToFilter('status', array('neq' => array('canceled','complete','closed')));
+                            ->addAttributeToFilter('state', array('neq' => 'canceled'))
+                            ->addAttributeToFilter('state', array('neq' => 'complete'))
+                            ->addAttributeToFilter('state', array('neq' => 'closed'));
 
             foreach($orders as $order){
                  $order =  Mage::getModel('sales/order')->load($order->getEntityId());
@@ -131,7 +133,9 @@ class Moip_Transparente_Model_Observer
                     $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
                             ->addFieldToFilter('created_at', array('lteq' => $to_date))
                             ->addFieldToFilter('payment.method', array(array('eq' => 'moip_boleto')))
-                            ->addAttributeToFilter('status', array('neq' => array('canceled','complete','closed')));
+                            ->addAttributeToFilter('state', array('neq' => 'canceled'))
+                            ->addAttributeToFilter('state', array('neq' => 'complete'))
+                            ->addAttributeToFilter('state', array('neq' => 'closed'));
 
             foreach($orders as $order){
                  $order =  Mage::getModel('sales/order')->load($order->getEntityId());
@@ -169,7 +173,9 @@ class Moip_Transparente_Model_Observer
                     $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
                             ->addFieldToFilter('created_at', array('lteq' => $to_date))
                             ->addFieldToFilter('payment.method', array(array('eq' => 'moip_tef')))
-                            ->addAttributeToFilter('status', array('neq' => array('canceled','complete','closed')));
+                            ->addAttributeToFilter('state', array('neq' => 'canceled'))
+                            ->addAttributeToFilter('state', array('neq' => 'complete'))
+                            ->addAttributeToFilter('state', array('neq' => 'closed'));
 
             foreach($orders as $order){
                  $order =  Mage::getModel('sales/order')->load($order->getEntityId());
@@ -207,7 +213,9 @@ class Moip_Transparente_Model_Observer
                     $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
                             ->addFieldToFilter('created_at', array('lteq' => $to_date))
                             ->addFieldToFilter('payment.method', array(array('eq' => 'moip_cc'), array('eq' => 'moip_boleto'), array('eq' => 'moip_tef')))
-                            ->addAttributeToFilter('status', array('neq' => array('canceled','complete','closed')));
+                            ->addAttributeToFilter('state', array('neq' => 'canceled'))
+                            ->addAttributeToFilter('state', array('neq' => 'complete'))
+                            ->addAttributeToFilter('state', array('neq' => 'closed'));
 
             foreach($orders as $order){
                  $order =  Mage::getModel('sales/order')->load($order->getEntityId());
@@ -246,7 +254,9 @@ class Moip_Transparente_Model_Observer
                 $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
                         ->addFieldToFilter('created_at', array('lteq' => $to_date))
                         ->addFieldToFilter('payment.method', array(array('eq' => 'moip_boleto')))
-                        ->addAttributeToFilter('status', array('neq' => array('canceled','complete','closed')));
+                        ->addAttributeToFilter('state', array('neq' => 'canceled'))
+                        ->addAttributeToFilter('state', array('neq' => 'complete'))
+                        ->addAttributeToFilter('state', array('neq' => 'closed'));
 
         foreach($orders as $order){
              $order =  Mage::getModel('sales/order')->load($order->getEntityId());
