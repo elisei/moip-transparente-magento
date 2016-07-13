@@ -57,6 +57,8 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
             $moip_card_fullname         = $responseMoip->fundingInstrument->creditCard->holder->fullname;
             $state_onhold               = $this->initState('order_status_holded');
             $comment                    = "Aguardando confirmação automática de pagamento.";
+        } else {
+            return;
         }
         $model = Mage::getModel('transparente/write');
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste")
