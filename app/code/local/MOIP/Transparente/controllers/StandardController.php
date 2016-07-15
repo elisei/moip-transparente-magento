@@ -91,7 +91,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 		} else {
 			echo utf8_decode("ha ha ha... você não tem autorização para realizar pagamentos...");
 		}
-
+		Mage::app()->cleanCache();
 	}
 
 	public function getOauthAcess($code) {
@@ -302,7 +302,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 
 	 public function autorizaPagamento($order, $paid){
-	 	sleep(5);
+	 	sleep(10);
 	 	
 
 		if($order->canUnhold()) {
@@ -334,7 +334,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 	 }
 
 	 public function cancelaPagamento($order, $details){
-	 	sleep(5);
+	 	sleep(10);
 	 	if($order->canUnhold()) {
 			$order->unhold()->save();
 		}
@@ -682,6 +682,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 			if($responseBody['token']){
 				echo "WebHooks configurado com sucesso.";
 			}
+			Mage::app()->cleanCache();
 		}
 		
 
