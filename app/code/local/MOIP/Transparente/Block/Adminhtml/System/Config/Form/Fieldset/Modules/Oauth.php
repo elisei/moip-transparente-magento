@@ -13,8 +13,8 @@ class MOIP_Transparente_Block_Adminhtml_System_Config_Form_Fieldset_Modules_Oaut
     	$validacao = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
     	
     	$code = Mage::getSingleton('adminhtml/config_data')->getStore();
-    	
-
+    	$website_id = 0;
+	$text_logar_se = "";
     	if (strlen($code = Mage::getSingleton('adminhtml/config_data')->getStore()))
     	{
     	    $store_id = Mage::getModel('core/store')->load($code)->getId();
