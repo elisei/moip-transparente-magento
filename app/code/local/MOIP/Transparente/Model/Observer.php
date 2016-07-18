@@ -93,7 +93,9 @@ class Moip_Transparente_Model_Observer
                             ->addFieldToFilter('payment.method', array(array('eq' => 'moip_cc')))
                             ->addAttributeToFilter('state', array('neq' => 'canceled'))
                             ->addAttributeToFilter('state', array('neq' => 'complete'))
-                            ->addAttributeToFilter('state', array('neq' => 'closed'));
+                            ->addAttributeToFilter('state', array('neq' => 'closed'))
+                            ->addAttributeToFilter('state', array('neq' => 'processing'));
+                            
 
             foreach($orders as $order){
                  $order =  Mage::getModel('sales/order')->load($order->getEntityId());
@@ -135,7 +137,8 @@ class Moip_Transparente_Model_Observer
                             ->addFieldToFilter('payment.method', array(array('eq' => 'moip_boleto')))
                             ->addAttributeToFilter('state', array('neq' => 'canceled'))
                             ->addAttributeToFilter('state', array('neq' => 'complete'))
-                            ->addAttributeToFilter('state', array('neq' => 'closed'));
+                            ->addAttributeToFilter('state', array('neq' => 'closed'))
+                            ->addAttributeToFilter('state', array('neq' => 'processing'));
 
             foreach($orders as $order){
                  $order =  Mage::getModel('sales/order')->load($order->getEntityId());
@@ -175,7 +178,8 @@ class Moip_Transparente_Model_Observer
                             ->addFieldToFilter('payment.method', array(array('eq' => 'moip_tef')))
                             ->addAttributeToFilter('state', array('neq' => 'canceled'))
                             ->addAttributeToFilter('state', array('neq' => 'complete'))
-                            ->addAttributeToFilter('state', array('neq' => 'closed'));
+                            ->addAttributeToFilter('state', array('neq' => 'closed'))
+                            ->addAttributeToFilter('state', array('neq' => 'processing'));
 
             foreach($orders as $order){
                  $order =  Mage::getModel('sales/order')->load($order->getEntityId());
@@ -215,7 +219,8 @@ class Moip_Transparente_Model_Observer
                             ->addFieldToFilter('payment.method', array(array('eq' => 'moip_cc'), array('eq' => 'moip_boleto'), array('eq' => 'moip_tef')))
                             ->addAttributeToFilter('state', array('neq' => 'canceled'))
                             ->addAttributeToFilter('state', array('neq' => 'complete'))
-                            ->addAttributeToFilter('state', array('neq' => 'closed'));
+                            ->addAttributeToFilter('state', array('neq' => 'closed'))
+                            ->addAttributeToFilter('state', array('neq' => 'processing'));
 
             foreach($orders as $order){
                  $order =  Mage::getModel('sales/order')->load($order->getEntityId());
@@ -256,7 +261,8 @@ class Moip_Transparente_Model_Observer
                         ->addFieldToFilter('payment.method', array(array('eq' => 'moip_boleto')))
                         ->addAttributeToFilter('state', array('neq' => 'canceled'))
                         ->addAttributeToFilter('state', array('neq' => 'complete'))
-                        ->addAttributeToFilter('state', array('neq' => 'closed'));
+                        ->addAttributeToFilter('state', array('neq' => 'closed'))
+                            ->addAttributeToFilter('state', array('neq' => 'processing'));
 
         foreach($orders as $order){
              $order =  Mage::getModel('sales/order')->load($order->getEntityId());
