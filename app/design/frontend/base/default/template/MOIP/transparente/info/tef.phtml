@@ -2,8 +2,12 @@
 <?php $info = $this->_prepareInfo(); ?>
 <div class="box-content">
 	<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
-	<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['moip_href_trans']  ?>"  target="_blank">Ir Ao banco</a></p>
+	<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['moip_href_trans']  ?>"  target="_blank">Pagar agora</a></p>
 </div>
+<?php elseif( Mage::app()->getRequest()->getActionName() == "success"): ?>
+	<?php $info = $this->_prepareInfo(); ?>
+	<?php var_dump($info) ?>
+	<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['moip_href_trans']  ?>"  target="_blank">Pagar agora</a></p>
 <?php else: ?>
 	Pagamento via Transf. Eletrônica
 <?php endif; ?>

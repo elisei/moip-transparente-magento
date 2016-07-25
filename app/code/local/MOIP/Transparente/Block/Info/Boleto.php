@@ -11,8 +11,7 @@ class MOIP_Transparente_Block_Info_Boleto extends Mage_Payment_Block_Info
     protected function _prepareInfo()
     {
 
-
-                $order = $this->getInfo()->getOrder();
+        if($order = $this->getInfo()->getOrder()){               
 
                 $customer_order = Mage::getModel('customer/customer')->load($order->getCustomerId());
                 $order =  $order->getId();
@@ -21,6 +20,10 @@ class MOIP_Transparente_Block_Info_Boleto extends Mage_Payment_Block_Info
                 $result = $model->load($order, 'mage_pay')->getData();
                 
             return $result;
+        } else {
+            return; 
+        }
+            
     }
       public function getMethodInstance()
     {
