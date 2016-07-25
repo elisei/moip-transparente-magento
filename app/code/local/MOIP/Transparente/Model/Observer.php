@@ -91,11 +91,7 @@ class Moip_Transparente_Model_Observer
                     $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
                             ->addFieldToFilter('created_at', array('lteq' => $to_date))
                             ->addFieldToFilter('payment.method', array(array('eq' => 'moip_cc')))
-                            ->addAttributeToFilter('state', array('neq' => 'canceled'))
-                            ->addAttributeToFilter('state', array('neq' => 'complete'))
-                            ->addAttributeToFilter('state', array('neq' => 'closed'))
-                            ->addAttributeToFilter('state', array('neq' => 'processing'));
-                            
+                            ->addAttributeToFilter('status', array('neq' => array('canceled','complete','closed')));
 
             foreach($orders as $order){
                  $order =  Mage::getModel('sales/order')->load($order->getEntityId());
@@ -106,92 +102,6 @@ class Moip_Transparente_Model_Observer
 
 
     public function setStatusBoletoAll() {
-            $api = $this->getApi();
-            $api->generateLog("aciona", 'MOIP_CRON.log');
-            
-            
-            $to = date('Y-m-d', time());
-
-            $moip_boleto_vencimento =  Mage::getStoreConfig('payment/moip_transparente_standard/vcmentoboleto') + 6;
-            $time_boleto = '-'.(int)$moip_boleto_vencimento.' day';
-
-
-            $from_boleto = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
-
-            
-            $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
-            $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
-
-
-          
-
-            $api->generateLog($from_date, 'MOIP_CRON.log');
-            $api->generateLog($to_date, 'MOIP_CRON.log');
-            $orders = Mage::getModel("sales/order")->getCollection()->join(
-                                    array('payment' => 'sales/order_payment'),
-                                    'main_table.entity_id=payment.parent_id',
-                                    array('payment_method' => 'payment.method')
-                                );
-                    $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
-                            ->addFieldToFilter('created_at', array('lteq' => $to_date))
-                            ->addFieldToFilter('payment.method', array(array('eq' => 'moip_boleto')))
-                            ->addAttributeToFilter('state', array('neq' => 'canceled'))
-                            ->addAttributeToFilter('state', array('neq' => 'complete'))
-                            ->addAttributeToFilter('state', array('neq' => 'closed'))
-                            ->addAttributeToFilter('state', array('neq' => 'processing'));
-
-            foreach($orders as $order){
-                 $order =  Mage::getModel('sales/order')->load($order->getEntityId());
-                 $this->setStateAll($order);
-            }
-    }
-
-    public function  setStatusTefAll() {
-            $api = $this->getApi();
-            $api->generateLog("aciona", 'MOIP_CRON.log');
-            
-            
-            $to = date('Y-m-d', time());
-
-            $moip_boleto_vencimento =  Mage::getStoreConfig('payment/moip_transparente_standard/vcmentoboleto') + 5;
-            $time_boleto = '-'.(int)$moip_boleto_vencimento.' day';
-
-
-            $from_boleto = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
-
-            
-            $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
-            $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
-
-
-          
-
-            $api->generateLog($from_date, 'MOIP_CRON.log');
-            $api->generateLog($to_date, 'MOIP_CRON.log');
-            $orders = Mage::getModel("sales/order")->getCollection()->join(
-                                    array('payment' => 'sales/order_payment'),
-                                    'main_table.entity_id=payment.parent_id',
-                                    array('payment_method' => 'payment.method')
-                                );
-                    $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
-                            ->addFieldToFilter('created_at', array('lteq' => $to_date))
-                            ->addFieldToFilter('payment.method', array(array('eq' => 'moip_tef')))
-                            ->addAttributeToFilter('state', array('neq' => 'canceled'))
-                            ->addAttributeToFilter('state', array('neq' => 'complete'))
-                            ->addAttributeToFilter('state', array('neq' => 'closed'))
-                            ->addAttributeToFilter('state', array('neq' => 'processing'));
-
-            foreach($orders as $order){
-                 $order =  Mage::getModel('sales/order')->load($order->getEntityId());
-                 $this->setStateAll($order);
-            }
-    }
-
-    public function setStatusAll() {
-            $api = $this->getApi();
-            $api->generateLog("aciona", 'MOIP_CRON.log');
-            
-            
             $to = date('Y-m-d', time());
 
             $moip_boleto_vencimento =  Mage::getStoreConfig('payment/moip_transparente_standard/vcmentoboleto') + 7;
@@ -204,23 +114,105 @@ class Moip_Transparente_Model_Observer
             $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
             $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
 
-
-          
-
-            $api->generateLog($from_date, 'MOIP_CRON.log');
-            $api->generateLog($to_date, 'MOIP_CRON.log');
+            echo $from_date;
+            echo $to_date;
+            
             $orders = Mage::getModel("sales/order")->getCollection()->join(
                                     array('payment' => 'sales/order_payment'),
                                     'main_table.entity_id=payment.parent_id',
                                     array('payment_method' => 'payment.method')
                                 );
-                    $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
-                            ->addFieldToFilter('created_at', array('lteq' => $to_date))
-                            ->addFieldToFilter('payment.method', array(array('eq' => 'moip_cc'), array('eq' => 'moip_boleto'), array('eq' => 'moip_tef')))
-                            ->addAttributeToFilter('state', array('neq' => 'canceled'))
-                            ->addAttributeToFilter('state', array('neq' => 'complete'))
-                            ->addAttributeToFilter('state', array('neq' => 'closed'))
-                            ->addAttributeToFilter('state', array('neq' => 'processing'));
+            $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
+                         ->addFieldToFilter('created_at', array('lteq' => $to_date))
+                         ->addAttributeToFilter('status',  array(
+                                                                                'nin' => array(
+                                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
+                                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
+                                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
+                                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
+                                                                                                )
+                                                                                )
+                                                                
+                                                )
+                         ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_boleto')));
+
+            foreach($orders as $order){
+                 $order =  Mage::getModel('sales/order')->load($order->getEntityId());
+                 $this->setStateAll($order);
+            }
+    }
+
+    public function  setStatusTefAll() {
+            $moip_boleto_vencimento =  Mage::getStoreConfig('payment/moip_transparente_standard/vcmentoboleto') + 5;
+            $time_boleto = '-'.(int)$moip_boleto_vencimento.' day';
+
+
+            $from_boleto = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
+
+            
+            $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
+            $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
+
+            echo $from_date;
+            echo $to_date;
+            
+            $orders = Mage::getModel("sales/order")->getCollection()->join(
+                                    array('payment' => 'sales/order_payment'),
+                                    'main_table.entity_id=payment.parent_id',
+                                    array('payment_method' => 'payment.method')
+                                );
+            $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
+                         ->addFieldToFilter('created_at', array('lteq' => $to_date))
+                         ->addAttributeToFilter('status',  array(
+                                                                                'nin' => array(
+                                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
+                                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
+                                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
+                                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
+                                                                                                )
+                                                                                )
+                                                                
+                                                )
+                         ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_tef')));
+
+            foreach($orders as $order){
+                 $order =  Mage::getModel('sales/order')->load($order->getEntityId());
+                 $this->setStateAll($order);
+            }
+    }
+
+    public function setStatusAll() {
+            $moip_boleto_vencimento =  Mage::getStoreConfig('payment/moip_transparente_standard/vcmentoboleto') + 7;
+            $time_boleto = '-'.(int)$moip_boleto_vencimento.' day';
+
+
+            $from_boleto = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
+
+            
+            $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
+            $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
+
+            echo $from_date;
+            echo $to_date;
+            
+            $orders = Mage::getModel("sales/order")->getCollection()->join(
+                                    array('payment' => 'sales/order_payment'),
+                                    'main_table.entity_id=payment.parent_id',
+                                    array('payment_method' => 'payment.method')
+                                );
+            $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
+                         ->addFieldToFilter('created_at', array('lteq' => $to_date))
+                         ->addAttributeToFilter('status',  array(
+                                                                                'nin' => array(
+                                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
+                                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
+                                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
+                                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
+                                                                                                )
+                                                                                )
+                                                                
+                                                )
+                         ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_cc'), array('eq' => 'moip_boleto'), array('eq' => 'moip_tef')));
 
             foreach($orders as $order){
                  $order =  Mage::getModel('sales/order')->load($order->getEntityId());
@@ -230,39 +222,37 @@ class Moip_Transparente_Model_Observer
 
 
     public function setHoldedNotification(){
-        $api = $this->getApi();
-        $api->generateLog("----- Enviando Boleto a vencer -----", 'MOIP_CRON.log');
-
-
-        $to = date('Y-m-d', time());
-
         $moip_boleto_vencimento =  Mage::getStoreConfig('payment/moip_transparente_standard/vcmentoboleto');
-        $time_boleto = '-'.(int)$moip_boleto_vencimento.' day';
+            $time_boleto = '-'.(int)$moip_boleto_vencimento.' day';
 
 
-        $from_boleto = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
+            $from_boleto = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
 
+            
+            $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
+            $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
 
-        $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
-        $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
-
-
-
-
-        $api->generateLog($from_date, 'MOIP_CRON.log');
-        $api->generateLog($to_date, 'MOIP_CRON.log');
-        $orders = Mage::getModel("sales/order")->getCollection()->join(
-                                array('payment' => 'sales/order_payment'),
-                                'main_table.entity_id=payment.parent_id',
-                                array('payment_method' => 'payment.method')
-                            );
-                $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
-                        ->addFieldToFilter('created_at', array('lteq' => $to_date))
-                        ->addFieldToFilter('payment.method', array(array('eq' => 'moip_boleto')))
-                        ->addAttributeToFilter('state', array('neq' => 'canceled'))
-                        ->addAttributeToFilter('state', array('neq' => 'complete'))
-                        ->addAttributeToFilter('state', array('neq' => 'closed'))
-                            ->addAttributeToFilter('state', array('neq' => 'processing'));
+            echo $from_date;
+            echo $to_date;
+            
+            $orders = Mage::getModel("sales/order")->getCollection()->join(
+                                    array('payment' => 'sales/order_payment'),
+                                    'main_table.entity_id=payment.parent_id',
+                                    array('payment_method' => 'payment.method')
+                                );
+            $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
+                         ->addFieldToFilter('created_at', array('lteq' => $to_date))
+                         ->addAttributeToFilter('status',  array(
+                                                                                'nin' => array(
+                                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
+                                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
+                                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
+                                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
+                                                                                                )
+                                                                                )
+                                                                
+                                                )
+                         ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_boleto')));
 
         foreach($orders as $order){
              $order =  Mage::getModel('sales/order')->load($order->getEntityId());
