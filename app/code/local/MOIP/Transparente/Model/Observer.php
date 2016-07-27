@@ -11,53 +11,59 @@ class Moip_Transparente_Model_Observer
         $api->generateLog($moip_pay, 'MOIP_CRON.log');
         $result = $model->load($order->getId(), 'mage_pay');
         $moip_pay = $result->getMoipPay();
-        $url = "https://api.moip.com.br/v2/webhooks?resourceId=".$moip_pay;
-        $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
-        $header = "Authorization: OAuth " . $oauth;
-        $documento = 'Content-Type: application/json; charset=utf-8';
-        $result = array();
-        $ch     = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            $header
-        ));
-        curl_setopt($ch, CURLOPT_USERAGENT, 'MoipMagento/2.0.0');
-        $responseBody = curl_exec($ch);
-        $info_curl = curl_getinfo($ch);
-        curl_close($ch);
-        $api->generateLog($moip_pay, 'MOIP_CRON.log');
-
-        foreach (json_decode($responseBody, true) as $key => $value) {
-            foreach ($value as $key => $_value) {
-                        $api->generateLog($_value['event'], 'MOIP_CRON.log');
-                if($_value['event'] == "PAYMENT.AUTHORIZED"){
-                    $paid = $standard->getConfigData('order_status_processing');
-                    $upOrder = $this->autorizaPagamento($order, $paid);
-                    $autorize_pagamento = 1;
-                } elseif ($_value['event'] == "PAYMENT.CANCELLED") {
-
-                            if($order->canUnhold()) {
-                                $order->unhold()->save();
-                            }
-
-                            $order->cancel()->save();
-                            $link = Mage::getUrl('sales/order/reorder/');
-                            $link = $link.'order_id/'.$order->getEntityId();
-                            $comment = "Cancelado por tempo limite para a notificação de pagamento, caso já tenha feito o pagamento entre em contato com o nosso atendimento, se desejar poderá refazer o seu pedido acessando: ".$link;
-                            $status = 'canceled';
-                            $order->cancel();
-                            $state = Mage_Sales_Model_Order::STATE_CANCELED;
-                            $order->setState($state, $status, $comment, $notified = true, $includeComment = true);
-                            $order->sendOrderUpdateEmail(true, $comment);
-                            $order->save();
-                } else {
-                    return;
+        if($moip_pay){
+            $url = "https://api.moip.com.br/v2/webhooks?resourceId=".$moip_pay;
+            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
+            $header = "Authorization: OAuth " . $oauth;
+            $documento = 'Content-Type: application/json; charset=utf-8';
+            $result = array();
+            $ch     = curl_init();
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                $header
+            ));
+            curl_setopt($ch, CURLOPT_USERAGENT, 'MoipMagento/2.0.0');
+            $responseBody = curl_exec($ch);
+            $info_curl = curl_getinfo($ch);
+            curl_close($ch);
+            $api->generateLog($moip_pay, 'MOIP_CRON.log');
+    
+            foreach (json_decode($responseBody, true) as $key => $value) {
+                foreach ($value as $key => $_value) {
+                            $api->generateLog($_value['event'], 'MOIP_CRON.log');
+                    if($_value['event'] == "PAYMENT.AUTHORIZED"){
+                        $paid = $standard->getConfigData('order_status_processing');
+                        $upOrder = $this->autorizaPagamento($order, $paid);
+                        $autorize_pagamento = 1;
+                    } elseif ($_value['event'] == "PAYMENT.CANCELLED") {
+    
+                                if($order->canUnhold()) {
+                                    $order->unhold()->save();
+                                }
+    
+                                $order->cancel()->save();
+                                $link = Mage::getUrl('sales/order/reorder/');
+                                $link = $link.'order_id/'.$order->getEntityId();
+                                $comment = "Cancelado por tempo limite para a notificação de pagamento, caso já tenha feito o pagamento entre em contato com o nosso atendimento, se desejar poderá refazer o seu pedido acessando: ".$link;
+                                $status = 'canceled';
+                                $order->cancel();
+                                $state = Mage_Sales_Model_Order::STATE_CANCELED;
+                                $order->setState($state, $status, $comment, $notified = true, $includeComment = true);
+                                $order->sendOrderUpdateEmail(true, $comment);
+                                $order->save();
+                    } else {
+                        return;
+                    }
                 }
+                
             }
-            
+            return;
+        } else {
+                 return;
         }
-        return;
+        
+        
         
     }
 
