@@ -133,7 +133,7 @@
      <div class="field">
         <label for="billing:telephone" class="required"><em>*</em>Telefone</label>
         <div class="input-box">
-            <input  autocomplete="off" type="text" name="billing[telephone]" value="<?php echo $this->htmlEscape($this->getAddress()->getTelephone()) ?>"  title="Telefone" class="input-text validate-tel-national required-entry" id="billing:telephone"  placeholder="Telefone">
+            <input  autocomplete="off"  type="tel" name="billing[telephone]" value="<?php echo $this->htmlEscape($this->getAddress()->getTelephone()) ?>"  title="Telefone" class="input-text validate-tel-national required-entry" id="billing:telephone"  placeholder="Telefone">
             <script type="text/javascript">
             //<![CDATA[
                 Validation.add('validate-tel-national', 'Entre com telefone válido: (99)9999-?9999', function(v) {
@@ -146,7 +146,7 @@
     <div class="field">
         <label for="billing:telephone" class="required"><em>*</em>Celular</label>
         <div class="input-box">
-            <input  autocomplete="off" type="text" name="billing[fax]" value="<?php echo $this->htmlEscape($this->getAddress()->getFax()) ?>"  title="Celular" class="input-text validate-cel-national input-text" id="billing:fax"  placeholder="Celular">
+            <input  autocomplete="off"  type="tel" name="billing[fax]" value="<?php echo $this->htmlEscape($this->getAddress()->getFax()) ?>"  title="Celular" class="input-text validate-cel-national input-text" id="billing:fax"  placeholder="Celular">
             <script type="text/javascript">
             //<![CDATA[
                 Validation.add('validate-cel-national', 'Entre com telefone válido: (99)9999-?9999', function(v) {
@@ -178,7 +178,7 @@
 
         <label for="billing:postcode" class="required"><em>*</em>CEP</label>
         <div class="input-box">
-            <input  autocomplete="off" type="text" title="CEP" name="billing[postcode]" id="billing:postcode" value="<?php echo $this->htmlEscape($this->getAddress()->getPostcode()) ?>"  class="input-text validate-zip-international  required-entry moipzip" onchange="javascript: buscarEndereco('billing');"    style="width: 100px;" placeholder="CEP">
+            <input  autocomplete="off"  type="tel" title="CEP" name="billing[postcode]" id="billing:postcode" value="<?php echo $this->htmlEscape($this->getAddress()->getPostcode()) ?>"  class="input-text validate-zip-international  required-entry moipzip" onchange="javascript: buscarEndereco('billing');"    style="width: 100px;" placeholder="CEP">
         </div>
         <script  type="text/javascript">
     //<![CDATA[

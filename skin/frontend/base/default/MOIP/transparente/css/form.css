@@ -214,3 +214,11 @@ input {
     width: 100% !important;
   }
 }
+
+.bg-destaque {
+    background: #F7F7F7;
+    float: left;
+    width: 100%;
+    padding: 10px;
+    margin: 9px 0px;
+}

@@ -1,107 +1,185 @@
 <?php
 
-class MOIP_Transparente_Block_Adminhtml_System_Config_Form_Fieldset_Modules_Oauth extends Mage_Adminhtml_Block_System_Config_Form_Fieldset {
+class MOIP_Transparente_Block_Adminhtml_System_Config_Form_Fieldset_Modules_Oauth 
+extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Renderer_Interface
+{
 
-    /**
-     * Return header html for fieldset
-     *
-     * @param Varien_Data_Form_Element_Abstract $element
-     * @return string
-     */
-    protected function _getHeaderHtml($element)
+    const EndPointProd  = "https://api.moip.com.br/oauth/authorize";
+    const EndPointDev   = "https://sandbox.moip.com.br/oauth/authorize";
+    const AppIdDev      = "APP-9MUFQ39Y4CQU";
+    const AppIdProd     = "APP-AKYBMMVU1FL1";
+    const SCOPE_APP     = "CREATE_ORDERS|VIEW_ORDERS|CREATE_PAYMENTS|VIEW_PAYMENTS";
+    const responseType  = "CODE";
+    
+    public function render(Varien_Data_Form_Element_Abstract $element)
     {
-    	$validacao = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
-    	
-    	$code = Mage::getSingleton('adminhtml/config_data')->getStore();
-    	$website_id = 0;
-	$text_logar_se = "";
-    	if (strlen($code = Mage::getSingleton('adminhtml/config_data')->getStore()))
-    	{
-    	    $store_id = Mage::getModel('core/store')->load($code)->getId();
-    	} elseif (strlen($code = Mage::getSingleton('adminhtml/config_data')->getWebsite())) {
-    	    $website_id = Mage::getModel('core/website')->load($code)->getId();
-    	    $store_id = Mage::app()->getWebsite($website_id)->getDefaultStore()->getId();
-    	} else 	{
-    	    $store_id = Mage::app()->getWebsite($website_id)->getDefaultStore()->getId();
-    	}
-        if($code == ""){
-            $code = "default";
+        return sprintf(
+            '<tr class="system-fieldset-sub-head" id="row_%s">
+                <td colspan="5">
+                    <h4 id="%s">%s</h4>
+                    <p class="subheading-note" style="font-size:11px;font-style:italic;color:#666; margin-bottom:30px;"><span>%s</span></p>
+                    <div class="action-moip">%s</div>
+                </td>
+            </tr>',
+            $element->getHtmlId(),  $element->getHtmlId(), $this->getTitleSetup(), $this->getTextAmbiente(), $this->getActionSetup()
+        );
+    }
+
+    public function getTitleSetup(){
+        $validacao = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
+        if(!$validacao){
+            $title = "1º Passo";
+        } else {
+            $oauth      = $this->getIfOauth();
+            $webhooks   = $this->getifWebHooks();
+            if(!$oauth) {
+                $title = "2º Passo - Autorizar sua Loja a Realizar vendas";
+            } else {
+                if($webhooks){ 
+                    $title = "Configuração concluídas com sucesso";
+                } else {
+                    $title = "3ª Habilitar Retorno da transação";
+                }
+            }
+
         }
-    	
-        $redirectUri = Mage::getUrl('Transparente/standard/Oauth/'.'validacao/'.$validacao.'/store_scope/'.$code.'/store_id/'.$store_id); // Esse é um controle para get da autorização...
+        return $title;
+    }
+
+    public function getIfOauth(){
+
+        if($this->getAmbiente() == "teste"){
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');    
+        } else {
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');    
+        }
+        return $oauth;
+        
+    }
+
+    public function getifWebHooks(){
+        if($this->getAmbiente() == "teste"){
+            
+            $webhooks   = Mage::getSingleton('transparente/standard')->getConfigData('webhook_key_dev');
+        } else {
+            $webhooks   = Mage::getSingleton('transparente/standard')->getConfigData('webhook_key_prod');
+        }
+        return $webhooks;
+    }
+
+    public function getAmbiente(){
+        return Mage::getSingleton('transparente/standard')->getConfigData('ambiente');
+    }
+
+    public function getTextAmbiente(){
+        if(Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste"){
+            $texto = "O ambiente escolhido é de <b>Teste (Sandbox Moip)</b> - O Moip não irá comunicar as vendas a operadora de cartão, essa versão é apenas para testes.";
+        } else {
+            $texto = "O ambiente escolhido é de <b>Produção</b> - Suas vendas serão processadas normalmente.";
+        }
+        return $texto;
+    }
+
+    public function getUrlClearMoip(){
+        $validacao = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
+        $url_frontend = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, array(
+            '_nosid' => true,
+            'store_scope' => 'default',
+            '_secure' => true,
+            '_type' => 'direct_link'
+        ));
+        return $url_frontend.'Transparente/standard/ClearMoip/validacao/'.$validacao.'/';
+    }
+
+    public function getUrlOuathMoip(){
+        $validacao = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
+        $url_frontend = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, array(
+            '_nosid' => true,
+            'store_scope' => 'default',
+            '_secure' => true,
+            '_type' => 'direct_link'
+        ));
+        return $url_frontend.'Transparente/standard/Oauth/validacao/'.$validacao.'/';
+    }
+    public function getUrlEnableWebhooks(){
+        $validacao = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
+        $url_frontend = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, array(
+            '_nosid' => true,
+            'store_scope' => 'default',
+            '_secure' => true,
+            '_type' => 'direct_link'
+        ));
+        return $url_frontend.'Transparente/standard/EnableWebhooks/validacao/'.$validacao.'/';
+    }
+    public function getRedirectUri(){
+        $redirectUri = $this->getUrlOuathMoip();
         $redirectUri = urlencode($redirectUri);
         $redirectUri = "http://moip.o2ti.com/magento/redirect/?client_id=".$redirectUri; //Aqui voce pode construir sua url URI no entanto precisa estar exatamente como indicado no app construido...
-        $responseType = "CODE";
-        $scope = "CREATE_ORDERS|VIEW_ORDERS|CREATE_PAYMENTS|VIEW_PAYMENTS";
-        $webhooks_url = Mage::getUrl('Transparente/standard/EnableWebhooks/validacao/'.$validacao.'/');
-    	if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-            
-            $app_id_moip_dev = "APP-9MUFQ39Y4CQU"; //Alterar aqui caso necessário.
+        return $redirectUri;
+    }
 
-    		$endpoint_moip = "https://sandbox.moip.com.br/oauth/authorize";
-    		$set_url_btn = $endpoint_moip.'?responseType='.$responseType.'&appId='.$app_id_moip_dev.'&redirectUri='.$redirectUri.'&scope='.$scope;
-    		$oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
-            $webhooks_return = Mage::getSingleton('transparente/standard')->getConfigData('webhook_key_dev');
+    public function getLinkMoipApp(){
+        
+        if(Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste"){
+            $endpoint       = self::EndPointDev;
+            $responseType   = self::responseType;
+            $appId          = self::AppIdDev; 
+            $scope          = self::SCOPE_APP;
+            $redirectUri    = $this->getRedirectUri();
+        } else {
+            $endpoint       = self::EndPointProd;
+            $responseType   = self::responseType;
+            $appId          = self::AppIdProd; 
+            $scope          = self::SCOPE_APP;
+            $redirectUri    = $this->getRedirectUri();
+        }
 
-    		if(!is_null($oauth) || isset($oauth)) {
+        $link = $endpoint.'?responseType='.$responseType.'&appId='.$appId.'&redirectUri='.$redirectUri.'&scope='.$scope;
+        return $link;
+    }
 
+    public function getSrcBtnMoipOauth(){
+        $src =  $this->getSkinUrl('MOIP/transparente/imagem/btn-login-moip.png');
+        return $src;
+    }
 
-    			$text_logar_se .= "<h2>Sua loja está autorizada a realizar vendas no ambiente:</h2> <p> Teste - Não processa compras reais.</p><hr/>";
-                if(!$webhooks_return || is_null($webhooks_return)){
-                   $text_logar_se .= "<h2>Para configurar o retorno da transação acesse:</h2> <p> <a href='{$webhooks_url}''>Clique aqui</a> para configurar o retorno de status da transação </p>";    
+    public function getActionSetup(){
+        $validacao  = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
+        $oauth      = $this->getIfOauth();
+        $webhooks   = $this->getifWebHooks();
+        if($validacao){
+            if($oauth){
+                if($webhooks){
+                    $texto      = "Apagar configuração de permissão do módulo.";
+                    $acao       = "Apagar Configuração Atuais";
+                    $class_btn  = 'danger';
+                    $comentario = "Esse processo permite trocar a conta que receberá o pagamento, mas atenção, ele é IREVERSÌVEL. Para prosseguir clique no link:";
+                    $link       = $this->getUrlClearMoip();
                 } else {
-                    $text_logar_se .= "Registro do MOIP: ".$webhooks_return;
+                    $texto      = "Configurar o Retorno de Transação do Moip para o seu Magento";
+                    $acao       = "Configurar retorno";
+                    $class_btn  = '';
+                    $comentario = "Esse processo permite receber a notificação de pedido pago ou cancelado. Para prosseguir clique no link:";
+                    $link       = $this->getUrlEnableWebhooks();
                 }
-                
-
-	    	
             } else {
-                   
-	    		$set_url_btn = $endpoint_moip.'?responseType='.$responseType.'&appId='.$app_id_moip_dev.'&redirectUri='.$redirectUri.'&scope='.$scope;
-                $criar_conta = 'Para criar uma conta de teste acesse <a href="https://labs.moip.com.br/login/">clique aqui</a>';
-	    		$btn = '<p><a href="'.$set_url_btn.'"><img src="' . $this->getSkinUrl('MOIP/transparente/imagem/btn-login-moip.png') . '" alt="Botão Login Moip" /></a></p><p>'.$criar_conta.'</p>';
-	    		$text_logar_se .= "<p>2º  - Passo - Para Realizar Transações no ambiente de Sandbox (ambiente para testes), por favor autorize o aplicativo:</p>".$btn;
-    			
-
-	    	}
-
-
-    	} else {
-
-            $app_id_moip_prod = "APP-AKYBMMVU1FL1";
-    		$endpoint_moip = "https://api.moip.com.br/oauth/authorize";
-    		$oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
-            $webhooks_return = Mage::getSingleton('transparente/standard')->getConfigData('webhook_key_prod');
-
-    		if(!is_null($oauth) || isset($oauth)) {
-                
-    			$text_logar_se = "<h2>Sua loja está autorizada a para realizar vendas no ambiente:</h2> <p>Produção</p><hr/>";
-                 if(!$webhooks_return || is_null($webhooks_return)){
-                    $text_logar_se .= "<h2>Para configurar o retorno da transação acesse:</h2> <p> <a href='{$webhooks_url}''>Clique aqui</a> para configurar o retorno de status da transação </p>";    
-                } else {
-                    $text_logar_se .= "Registro do MOIP: ".$webhooks_return;
-                }
-
-	    	} else {
-
-	    		$set_url_btn = $endpoint_moip.'?responseType='.$responseType.'&appId='.$app_id_moip_prod.'&redirectUri='.$redirectUri.'&scope='.$scope;
-                $criar_conta = 'Para criar uma conta no Moip acesse <a href="https://www.moip.com.br/login/">clique aqui</a>';
-	    		$btn = '<p><a href="'.$set_url_btn.'"><img src="' . $this->getSkinUrl('MOIP/transparente/imagem/btn-login-moip.png') . '" alt="Botão Login Moip" /></a></p><p>'.$criar_conta.'</p>';
-	    		$text_logar_se = "<h2>Para Realizar Transações no ambiente de Desenvolvimento (ambiente para produção, compras reais), por favor autorize o aplicativo:</h2>".$btn;
-    			
-
-	    	}
-    	}
-
-
-    	if($validacao){
-    		$info_config = $text_logar_se;
-    	}else {
-    		$info_config = '<h2>Vamos Configurar a sua conta?</h2><p>1º  - Passo - Insira no campo a baixo  "Validação de comunicação" para continuar a sua instalação e clique em Salvar Configuração.</p>';
-    	}
-        	$html = parent::_getHeaderHtml($element);
-        	$html = $html.$info_config;
-        return $html;
+                $texto      = "Criar permissão para o Moip realizar vendas em seu Magento";
+                $acao       = "Autorizar Moip";
+                $class_btn  = '';
+                $comentario = "Esse processo permite passar a receber transações com sua conta Moip. Para prosseguir Clique no link:";
+                $link       = $this->getLinkMoipApp();
+            }
+        } else {
+            $texto      = "Configuração inicial do Módulo";
+            $acao       = "Precisa de Ajuda?";
+            $class_btn  = 'help';
+            $comentario = "Escolha a sua chave de notificação";
+            $link       = 'https://www.youtube.com/watch?v=5e5j407VLGI';
+        }
+        $action_setup  = "<h4>{$texto}</h4>";
+        $action_setup .= "<p class='subheading-note' style='font-size:11px;font-style:italic;color:#666;'>{$comentario}</p>";
+        $action_setup .= "<p class='p-actin-moip'><a href='{$link}' class='btn-moip {$class_btn}'>{$acao}</a></p>";
+        return $action_setup;
     }
 }
 ?>

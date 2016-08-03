@@ -81,17 +81,11 @@
 				    <li class="HP">Hipper</li>
 				</ul>
 		</li>
-		<li class="wide">
-			<label for="<?php echo $_code ?>_fullname" class="required"><?php echo $this->__('Nome do Impresso Cartão') ?></label>
-			<div class="input-box">
-				<input type="text" name="payment[<?php echo $_code ?>_owner]"  value="" class="input-text required-entry" title="Nome Impresso em seu Cartão" id="credito_portador_nome" placeholder="Nome Impresso no Cartão">
-
-			</div>
-		</li>
+		
 		<li class="fields card-number">
 					<label for="<?php echo $_code ?>_number" class="required"><?php echo $this->__('Número do Cartão') ?></label>
 					<div class="input-box">
-				<input type="text" id="<?php echo $_code ?>_number" pattern="\d*"  title="Número do seu Cartão de Crédito"  class="required-entry input-text"  placeholder="Número do Cartão" value="">
+				<input type="tel" pattern="[0-9]*" maxlength="19" minlength="14" id="<?php echo $_code ?>_number"  title="Número do seu Cartão de Crédito"  class="required-entry input-text validate-number validate-length minimum-length-14 maximum-length-19"  placeholder="Número do Cartão" value="">
 			</div>
 		</li>
 
@@ -99,7 +93,10 @@
 			<label for="<?php echo $_code ?>_cid" class="required"><?php echo $this->__('Cod. de Segurança') ?></label>
 			<div class="input-box">
 				<div class="v-fix">
-				 	<input type="text" pattern="\d*" title="Código de Seguranção do Seu Cartão" class="input-text cvv validate-length minimum-length-3 maximum-length-4 required-entry" id="<?php echo $_code ?>_cid" placeholder="CVV"  value=""><a href="#" class="cvv-what-is-this">?</a>
+				 	<input type="tel" pattern="[0-9]*"  pattern="\d*" title="Código de Seguranção do Seu Cartão" class="input-text cvv validate-length minimum-length-3 maximum-length-4 required-entry" id="<?php echo $_code ?>_cid" placeholder="CVV"  value="" maxlength="4" minlength="3">			 	
+				</div>
+				<div class="v-fix">
+					 <a href="javascript:void(0)" title="Código de segurança" data-toggle="popover" data-placement="top" data-content="O CVV é o código de segurança do seu cartão, ele fica localizado na parte de trás do seu cartão, é um número de 3 dígitos."><i class="fa fa-question-circle" aria-hidden="true"></i></a>
 				</div>
 				
 			</div>
@@ -164,6 +161,14 @@
 				</select>
 			</div>
 		</li>
+	<div class="bg-destaque">
+		<li class="wide">
+			<label for="<?php echo $_code ?>_fullname" class="required"><?php echo $this->__('Nome Impresso no Cartão') ?></label>
+			<div class="input-box">
+				<input type="numero" name="payment[<?php echo $_code ?>_owner]"  value="" class="input-text required-entry" title="Nome Impresso em seu Cartão" id="credito_portador_nome" placeholder="Nome Impresso no Cartão">
+
+			</div>
+		</li>
 		<li class="wide">
 			<label><input type="checkbox" name="payment[<?php echo $_code ?>_personal_info]" id="personal-card-info-control" title="Você é o Titular do Cartão" value="0" class=" validate-number input-checkbox" checked>Sou o Titular do Cartão</label>
 		</li>
@@ -174,12 +179,15 @@
 				<input type="text" name="payment[<?php echo $_code ?>_taxdocument]" value="<?php echo $this->getDateCard('taxvat') ?>" class="input-text required-entry" title="CPF do Titular de seu Cartão" id="credito_portador_cpf"  placeholder="CPF do Titular do Cartão" >
 			</div>
 		</li>
+	</div>
+		
 		
 		
 		
 		<li class="wide">
 				<label>
-				<input type="checkbox" name="payment[<?php echo $_code ?>_save_card]"  title="Salvar Cartão Para Próximas Compras?" value="" class=" validate-number input-checkbox save-card" > Salvar Cartão</label>
+				<input type="checkbox" name="payment[<?php echo $_code ?>_save_card]"  title="Salvar Cartão Para Próximas Compras?" value="" class=" validate-number input-checkbox save-card" > Salvar cartão para agilizar futuras compras </label><span> <a href="javascript:void(0)" title="Compra com 1 Clique" data-toggle="popover" data-placement="top" data-content=" Não salvaremos os dados de seu cartão. Para agilizar as próximas compras, apenas pegaremos uma autorização de sua operadora de cartão para você comprar passando somente o código de segurança do cartão.">	&nbsp; <i class="fa fa-question-circle" aria-hidden="true"></i>
+</a></span>
 		</li>
 		
 			
@@ -200,21 +208,24 @@
 	<?php endif; ?>
 </ul>
 <script type="text/javascript">
-//<![CDATA[
+
 
           jQuery(document).ready(function(){
                 MoipPagamentosCc();
+                
+			
           });
 
-//]]>
+
+
 </script>
 <?php $cofre = $this->getCofre(); ?>
 <?php if($cofre != "false"): ?>
 		<script type="text/javascript">
-		//<![CDATA[
+
 		 jQuery(document).ready(function(){
 		    SetCofre();
 		});
-		 //]]>
+
 		</script>
 <?php endif; ?>

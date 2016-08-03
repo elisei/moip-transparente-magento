@@ -276,9 +276,9 @@
 		</reference>
             <reference name="checkout.success">
               	<block type="MOIP_Transparente_Block_Standard_Moip" name="transparente.comum" template="MOIP/transparente/checkout/success/moip.phtml">
-						<block type="MOIP_Transparente_Block_Standard_Moip" name="transparente.transferencia" template="MOIP/transparente/checkout/success/method/transferencia.phtml"></block>
-			            <block type="MOIP_Transparente_Block_Standard_Moip" name="transparente.boleto" template="MOIP/transparente/checkout/success/method/boleto.phtml"></block>
-			            <block type="MOIP_Transparente_Block_Standard_Moip" name="transparente.cartao" template="MOIP/transparente/checkout/success/method/cartao.phtml"></block>
+              			<block type="MOIP_Transparente_Block_Standard_Method_Boleto" name="transparente.boleto" template="MOIP/transparente/checkout/success/method/boleto.phtml" />
+              			<block type="MOIP_Transparente_Block_Standard_Method_Cc" name="transparente.cartao" template="MOIP/transparente/checkout/success/method/cartao.phtml" />
+			            <block type="MOIP_Transparente_Block_Standard_Method_Tef" name="transparente.transferencia" template="MOIP/transparente/checkout/success/method/transferencia.phtml" />
 			            <block type="MOIP_Transparente_Block_Standard_Details" name="success.order.details" as="details" template="MOIP/transparente/checkout/success/details.phtml">
 							<action method="addItemRender"><type>default</type><block>sales/order_item_renderer_default</block><template>MOIP/transparente/checkout/sales/order/items/renderer/default.phtml</template></action>
 							<action method="addItemRender"><type>grouped</type><block>sales/order_item_renderer_grouped</block><template>MOIP/transparente/checkout/sales/order/items/renderer/default.phtml</template></action>

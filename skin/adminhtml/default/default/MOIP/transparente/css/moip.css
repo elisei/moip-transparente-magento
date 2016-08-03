@@ -1,0 +1,23 @@
+a.btn-moip {
+    background: #3A95D1;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 1px solid #3B89BD;
+    margin: 10px;
+    border-radius: 4px;
+}
+p.p-actin-moip {
+    line-height: 50px;
+}
+a.btn-moip.danger {
+    background-color: #FF0000;
+    border-color: #FF0000;
+}
+a.btn-moip.help {
+	background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+.btn-moip:hover{
+	opacity: 0.7;
+}
