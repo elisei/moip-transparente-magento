@@ -147,6 +147,11 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 		}
 		return $image_brand;
 	}
+
+	public function getCustomerState(){
+			return Mage::getSingleton('customer/session')->isLoggedIn();
+	}
+
 	public function getCofre() {
 		if (Mage::getSingleton('customer/session')->isLoggedIn()) {
 			$data_array = array();

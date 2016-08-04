@@ -169,11 +169,14 @@
 
 			</div>
 		</li>
-		<li class="wide">
-			<label><input type="checkbox" name="payment[<?php echo $_code ?>_personal_info]" id="personal-card-info-control" title="Você é o Titular do Cartão" value="0" class=" validate-number input-checkbox" checked>Sou o Titular do Cartão</label>
-		</li>
+		<?php if($this->getCustomerState()): ?>
+			<li class="wide">
+				<label><input type="checkbox" name="payment[<?php echo $_code ?>_personal_info]" id="personal-card-info-control" title="Você é o Titular do Cartão" value="0" class=" validate-number input-checkbox" checked>Sou o Titular do Cartão</label>
+			</li>
+		<?php endif; ?>
 
-		<li class="wide personal-card-info no-display">
+
+		<li class="wide <?php echo($this->getCustomerState() ? 'personal-card-info no-display' : '') ?>">
 			<label for="<?php echo $_code ?>_taxDocument" class="required"><?php echo $this->__('CPF do Titular do Cartão') ?></label>
 			<div class="input-box">
 				<input type="text" name="payment[<?php echo $_code ?>_taxdocument]" value="<?php echo $this->getDateCard('taxvat') ?>" class="input-text required-entry" title="CPF do Titular de seu Cartão" id="credito_portador_cpf"  placeholder="CPF do Titular do Cartão" >

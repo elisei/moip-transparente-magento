@@ -443,3 +443,7 @@ input[type=email], input[type=search], input[type=number], input[type=password],
       min-width: 50px !important;
   }
 }
+.checkout-onepage-index .col-main {
+    width: 100% !important;
+    min-height: 750px;
+}

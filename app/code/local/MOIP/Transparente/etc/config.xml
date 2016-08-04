@@ -126,7 +126,7 @@
             <modules>
                 <transparente>
                     <files>
-                        <default>transparente.csv</default>
+                        <default>MOIP_Transparente.csv</default>
                     </files>
                 </transparente>
             </modules>

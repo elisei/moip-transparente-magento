@@ -200,10 +200,7 @@ float: left;
 input {
     border-radius: 3px !important;
 }
-.checkout-onepage-index .col-main {
-    width: 100% !important;
-    min-height: 750px;
-}
+
 .sp-methods input.cvv {
       width: 5em !important;
 }
