@@ -231,7 +231,7 @@ class MOIP_Transparente_Model_Api
                 "email" => $data['email'],
                 "birthDate" => $data['data_nascimento'],
                 "taxDocument" => array(
-                    "type" =>  $document_tyé,
+                    "type" =>  $document_type,
                     "number" => $data['cpf']
                 ),
                 "phone" => array(
