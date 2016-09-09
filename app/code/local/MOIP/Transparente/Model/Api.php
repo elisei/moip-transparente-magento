@@ -178,9 +178,9 @@ class MOIP_Transparente_Model_Api
         $taxvat        = $quote->getCustomerTaxvat();
         $taxvat        = preg_replace("/[^0-9]/", "", $taxvat);
         if(strlen($taxvat) > 11){
-            $document_tyé = "CNPJ";
+            $document_type = "CNPJ";
         } else {
-            $document_tyé = "CPF";
+            $document_type = "CPF";
         }
         $document_nome 
         $website_id    = Mage::app()->getWebsite()->getId();
