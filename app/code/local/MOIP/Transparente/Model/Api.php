@@ -177,6 +177,12 @@ class MOIP_Transparente_Model_Api
 
         $taxvat        = $quote->getCustomerTaxvat();
         $taxvat        = preg_replace("/[^0-9]/", "", $taxvat);
+        if(strlen($taxvat) > 11){
+            $document_tyé = "CNPJ";
+        } else {
+            $document_tyé = "CPF";
+        }
+        $document_nome 
         $website_id    = Mage::app()->getWebsite()->getId();
         $website_name  = Mage::app()->getWebsite()->getName();
         $store_name    = Mage::app()->getStore()->getName();
@@ -225,7 +231,7 @@ class MOIP_Transparente_Model_Api
                 "email" => $data['email'],
                 "birthDate" => $data['data_nascimento'],
                 "taxDocument" => array(
-                    "type" => "CPF",
+                    "type" =>  $document_tyé,
                     "number" => $data['cpf']
                 ),
                 "phone" => array(
