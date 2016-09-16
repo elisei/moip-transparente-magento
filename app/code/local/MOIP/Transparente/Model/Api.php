@@ -182,7 +182,6 @@ class MOIP_Transparente_Model_Api
         } else {
             $document_type = "CPF";
         }
-        $document_nome 
         $website_id    = Mage::app()->getWebsite()->getId();
         $website_name  = Mage::app()->getWebsite()->getName();
         $store_name    = Mage::app()->getStore()->getName();
