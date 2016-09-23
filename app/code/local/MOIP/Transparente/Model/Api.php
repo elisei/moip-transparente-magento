@@ -177,7 +177,7 @@ class MOIP_Transparente_Model_Api
 
         $taxvat        = $quote->getCustomerTaxvat();
         $taxvat        = preg_replace("/[^0-9]/", "", $taxvat);
-        if(strlen($taxvat) > 11){
+         if(strlen($taxvat) > 11){
             $document_type = "CNPJ";
         } else {
             $document_type = "CPF";
@@ -230,7 +230,7 @@ class MOIP_Transparente_Model_Api
                 "email" => $data['email'],
                 "birthDate" => $data['data_nascimento'],
                 "taxDocument" => array(
-                    "type" =>  $document_type,
+                    "type" => $document_type,
                     "number" => $data['cpf']
                 ),
                 "phone" => array(
@@ -331,10 +331,17 @@ class MOIP_Transparente_Model_Api
     {
         $cust_ddd       = '11';
         $cust_telephone = preg_replace("/[^0-9]/", "", $param_telefone);
-        $st             = strlen($cust_telephone) - 8;
+        if(strlen($cust_telephone) == 11){
+            $st             = strlen($cust_telephone) - 9;
+            $indice         = 9;
+        } else {
+            $st             = strlen($cust_telephone) - 8;
+            $indice         = 8;
+        }
+        
         if ($st > 0) {
             $cust_ddd       = substr($cust_telephone, 0, 2);
-            $cust_telephone = substr($cust_telephone, $st, 8);
+            $cust_telephone = substr($cust_telephone, $st, $indice);
         }
         if ($param_ddd === false) {
             $retorno = $cust_telephone;

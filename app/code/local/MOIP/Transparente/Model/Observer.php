@@ -1,7 +1,194 @@
 <?php
 class Moip_Transparente_Model_Observer
 {
-    
+    public function testCapture(Varien_Event_Observer $observer){
+
+        $pgto             = Mage::getSingleton('checkout/session')->getMoipPayment();
+
+        $api = $this->getApi();
+        $order = $observer['token_moip'];
+        $decode_order = json_decode($order);
+        $order = $this->getOrder($decode_order->ownId);
+        if($order){
+            $payment = $order->getPayment();
+            $mage_pay         = $order->getId();
+            $forma_pagamento  = $payment->getMethodInstance()->getCode();
+            $api->generateLog($mage_pay, 'MOIP_Save.log');
+            $api->generateLog($forma_pagamento, 'MOIP_Save.log');
+
+
+            if ($forma_pagamento == "moip_boleto" || $forma_pagamento == "moip_tef" || $forma_pagamento == "moip_cc") {
+                $pgto             = $observer;
+                
+                $orderIdMoip      = $pgto['order_moip'];
+                $email            = $order->getBillingAddress()->getEmail();
+                $customerId       = $order->getCustomerId();
+
+                $responseMoip     = $pgto['response_moip'];
+                $fees             = $responseMoip->amount->fees;
+                $moipidPay        = $responseMoip->id;
+                
+                $api->generateLog($orderIdMoip, 'MOIP_Save.log');
+                 
+            } else {
+                return $this; 
+            }
+            if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste"){
+                $ambiente = "teste";
+            }
+            else{
+                $ambiente = "producao";
+            }
+            $model = Mage::getModel('transparente/write');
+            $order_moip = str_replace("ORD-", "", $orderIdMoip);
+            $model->setMagePay($mage_pay)->setMoipOrder($order_moip)->setCustomerEmail($email)->setCustomerId($customerId)->setFormaPagamento($forma_pagamento)->setMoipAmbiente($ambiente)->setMoipFees($fees)->setMoipPay($moipidPay);
+            if ($forma_pagamento == "moip_boleto") {
+                $href                       = $responseMoip->_links->payBoleto->redirectHref;
+                $moip_boleto_expirationDate = $responseMoip->fundingInstrument->boleto->expirationDate;
+                $moip_boleto_lineCode       = $responseMoip->fundingInstrument->boleto->lineCode;
+
+                $api->generateLog($href, 'MOIP_Save.log');
+                $api->generateLog($moip_boleto_expirationDate, 'MOIP_Save.log');
+                $api->generateLog($moip_boleto_lineCode, 'MOIP_Save.log');
+
+                $model->setMoipHrefBoleto($href)->setMoipExpirationBoleto($moip_boleto_expirationDate)->setMoipLinecodeBoleto($moip_boleto_lineCode);
+            } elseif ($forma_pagamento == "moip_tef") {
+                $href                       = $responseMoip->_links->payOnlineBankDebitBB->redirectHref;
+                $moip_transf_expirationDate = $responseMoip->fundingInstrument->onlineBankDebit->expirationDate;
+                $moip_transf_bankName       = $responseMoip->fundingInstrument->onlineBankDebit->bankName;
+                $model->setMoipHrefTrans($href)->setMoipBankNameTrans($moip_transf_bankName)->setMoipExpirationTrans($moip_transf_expirationDate);
+            } elseif ($forma_pagamento == "moip_cc") {
+                $moip_card_installmentCount = $responseMoip->installmentCount;
+                $moip_card_brand            = $responseMoip->fundingInstrument->creditCard->brand;
+                if($pgto['save_card']){
+                    $moip_card_id               = $responseMoip->fundingInstrument->creditCard->id;
+                } else {
+                    $moip_card_id               = null;
+                }
+                $moip_card_first6           = $responseMoip->fundingInstrument->creditCard->first6;
+                $moip_card_last4            = $responseMoip->fundingInstrument->creditCard->last4;
+                $moip_card_birthdate        = $responseMoip->fundingInstrument->creditCard->holder->birthdate;
+                $moip_card_taxDocument      = $responseMoip->fundingInstrument->creditCard->holder->taxDocument->number;
+                $moip_card_fullname         = $responseMoip->fundingInstrument->creditCard->holder->fullname;
+                $model->setMoipCardInstallment($moip_card_installmentCount)->setMoipCardBrand($moip_card_brand)->setMoipCardId($moip_card_id)->setMoipCardFirst6($moip_card_first6)->setMoipCardLast4($moip_card_last4)->setMoipCardBirthdate($moip_card_birthdate)->setMoipCardTaxdocument($moip_card_taxDocument)->setMoipCardFullname($moip_card_fullname);
+            }
+            $model->save();
+
+           //  try {
+           //      $api->generateLog("------- salvouuuu -------", 'MOIP_Save.log');
+           //      return $this;
+           //  } catch (Exception $e) {
+           //      $this->getApi()->generateLog("----------- erro -  --------------", 'Moip_OrderSave.log');
+           //      $this->getApi()->generateLog($e->getMessage(), 'Moip_OrderSave.log');
+           //      $this->getApi()->generateLog($mage_pay, 'Moip_OrderSave.log');
+           //      $this->getApi()->generateLog($order_moip, 'Moip_OrderSave.log');
+           //      $this->getApi()->generateLog($responseMoip, 'Moip_OrderSave.log');
+           //  }
+            return $this;
+
+        }
+    }
+
+    public function getOrder($id)
+    {
+        $final = "";
+        $current_order = Mage::getModel('sales/order')->getCollection()->addFieldToFilter('increment_id', $id);
+        if ($current_order) {
+            foreach ($current_order as $order) {
+                $final = $order;
+                break;
+            }
+        }
+        return $final;
+    }
+
+
+
+    public function paymentCapture($observer){
+        
+        $api = $this->getApi();
+        
+        $order = $observer->getEvent()->getData('order');
+        
+         if($order){
+            $payment = $order->getPayment();
+            $mage_pay         = $order->getId();
+            $forma_pagamento  = $payment->getMethodInstance()->getCode();
+            $api->generateLog($mage_pay, 'MOIP_Save.log');
+            $api->generateLog($forma_pagamento, 'MOIP_Save.log');
+
+
+            if ($forma_pagamento == "moip_boleto" || $forma_pagamento == "moip_tef" || $forma_pagamento == "moip_cc") {
+
+                $pgto             = Mage::getSingleton('checkout/session')->getMoipPayment();
+                $api->generateLog($pgto, 'MOIP_Save.log');
+                $responseMoip     = $pgto['response_moip'];
+                $orderIdMoip      = $pgto['order_moip'];
+                $email            = $order->getBillingAddress()->getEmail();
+                $customerId       = $order->getCustomerId();
+                $fees             = $responseMoip->amount->fees;
+                $moipidPay        = $responseMoip->id;
+                
+                 
+            } else {
+                return $this; 
+            }
+            if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste"){
+                $ambiente = "teste";
+            }
+            else{
+                $ambiente = "producao";
+            }
+            $model = Mage::getModel('transparente/write');
+            $order_moip = str_replace("ORD-", "", $orderIdMoip);
+            $model->setMagePay($mage_pay)->setMoipOrder($order_moip)->setCustomerEmail($email)->setCustomerId($customerId)->setFormaPagamento($forma_pagamento)->setMoipAmbiente($ambiente)->setMoipFees($fees)->setMoipPay($moipidPay);
+            if ($forma_pagamento == "moip_boleto") {
+                $href                       = $responseMoip->_links->payBoleto->redirectHref;
+                $moip_boleto_expirationDate = $responseMoip->fundingInstrument->boleto->expirationDate;
+                $moip_boleto_lineCode       = $responseMoip->fundingInstrument->boleto->lineCode;
+                $model->setMoipHrefBoleto($href)->setMoipExpirationBoleto($moip_boleto_expirationDate)->setMoipLinecodeBoleto($moip_boleto_lineCode);
+            } elseif ($forma_pagamento == "moip_tef") {
+                $href                       = $responseMoip->_links->payOnlineBankDebitBB->redirectHref;
+                $moip_transf_expirationDate = $responseMoip->fundingInstrument->onlineBankDebit->expirationDate;
+                $moip_transf_bankName       = $responseMoip->fundingInstrument->onlineBankDebit->bankName;
+                $model->setMoipHrefTrans($href)->setMoipBankNameTrans($moip_transf_bankName)->setMoipExpirationTrans($moip_transf_expirationDate);
+            } elseif ($forma_pagamento == "moip_cc") {
+                $moip_card_installmentCount = $responseMoip->installmentCount;
+                $moip_card_brand            = $responseMoip->fundingInstrument->creditCard->brand;
+                if($pgto['save_card']){
+                    $moip_card_id               = $responseMoip->fundingInstrument->creditCard->id;
+                } else {
+                    $moip_card_id               = null;
+                }
+                $moip_card_first6           = $responseMoip->fundingInstrument->creditCard->first6;
+                $moip_card_last4            = $responseMoip->fundingInstrument->creditCard->last4;
+                $moip_card_birthdate        = $responseMoip->fundingInstrument->creditCard->holder->birthdate;
+                $moip_card_taxDocument      = $responseMoip->fundingInstrument->creditCard->holder->taxDocument->number;
+                $moip_card_fullname         = $responseMoip->fundingInstrument->creditCard->holder->fullname;
+                $model->setMoipCardInstallment($moip_card_installmentCount)->setMoipCardBrand($moip_card_brand)->setMoipCardId($moip_card_id)->setMoipCardFirst6($moip_card_first6)->setMoipCardLast4($moip_card_last4)->setMoipCardBirthdate($moip_card_birthdate)->setMoipCardTaxdocument($moip_card_taxDocument)->setMoipCardFullname($moip_card_fullname);
+            }
+            $model->save();
+
+           //  try {
+           //      $api->generateLog("------- salvouuuu -------", 'MOIP_Save.log');
+           //      return $this;
+           //  } catch (Exception $e) {
+           //      $this->getApi()->generateLog("----------- erro -  --------------", 'Moip_OrderSave.log');
+           //      $this->getApi()->generateLog($e->getMessage(), 'Moip_OrderSave.log');
+           //      $this->getApi()->generateLog($mage_pay, 'Moip_OrderSave.log');
+           //      $this->getApi()->generateLog($order_moip, 'Moip_OrderSave.log');
+           //      $this->getApi()->generateLog($responseMoip, 'Moip_OrderSave.log');
+           //  }
+            return $this;
+
+        }
+    }
+
+     public function getMoipPayment()
+    {
+        return $this->getCheckout()->getMoipData();
+    }
+
     public function setStateAll($order){
         $standard = $this->getStandard();
         $api = $this->getApi();

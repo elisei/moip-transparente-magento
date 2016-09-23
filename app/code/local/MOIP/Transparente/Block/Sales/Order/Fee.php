@@ -9,17 +9,17 @@ class MOIP_Transparente_Block_Sales_Order_Fee extends Mage_Sales_Block_Order_Tot
         $amt = $this->getSource()->getSubtotal() + $shipping;
         $total = $this->getSource()->getGrandTotal();
         $juros = $total - $amt;
-         $amt = $this->getSource()->getFeeAmount();
+        $amt = $this->getSource()->getFeeAmount();
         $baseAmt = $this->getSource()->getBaseFeeAmount();
         if ($juros > 0) {
             $this->addTotal(new Varien_Object(array(
                         'code' => 'fee',
                         'value' => $juros,
                         'base_value' => $juros,
-                        'label' => 'Juros do Cartão',
+                        'label' => 'Juros de parcelamento',
                     )), 'fee');
-        }
-        return $this;
+            return $this;
+        } 
     }
 
 }

@@ -59,11 +59,7 @@
                     <order_totals>MOIP_Transparente_Block_Sales_Order_Fee</order_totals>
                 </rewrite>
             </sales>
-            <adminhtml>
-                <rewrite>
-                    <sales_order_grid>MOIP_Transparente_Block_Sales_Order_Grid</sales_order_grid>
-                </rewrite>
-            </adminhtml>
+            
         </blocks>
         <helpers>
             <transparente>
@@ -79,22 +75,6 @@
                     </fee>
                 </totals>
             </quote>
-            <order_invoice>
-                <totals>
-                    <fee>
-                        <class>transparente/sales_order_total_invoice_fee</class>
-                        <after>subtotal</after>
-                    </fee>
-                </totals>
-            </order_invoice>
-            <order_creditmemo>
-                <totals>
-                    <fee>
-                        <class>transparente/sales_order_total_creditmemo_fee</class>
-                        <after>subtotal</after>
-                    </fee>
-                </totals>
-            </order_creditmemo>
         </sales>
         <events>
         		<catalog_product_save_after>
@@ -106,8 +86,17 @@
 			            </transparente>
 			        </observers>
 			    </catalog_product_save_after>
-
+                <sales_order_place_moip_after>
+                    <observers>
+                        <teste>
+                            <type>singleton</type>
+                            <class>transparente/observer</class>
+                            <method>testCapture</method>
+                        </teste>
+                    </observers>
+                </sales_order_place_moip_after>
         </events>
+
     </global>
     <frontend>
         <secure_url>

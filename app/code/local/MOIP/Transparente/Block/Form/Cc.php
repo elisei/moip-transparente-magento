@@ -149,7 +149,18 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 	}
 
 	public function getCustomerState(){
-			return Mage::getSingleton('customer/session')->isLoggedIn();
+		if(Mage::getSingleton('customer/session')->isLoggedIn()){
+			$taxvat = $this->getQuote()->getCustomer()->getTaxvat();
+			$taxvat        = preg_replace("/[^0-9]/", "", $taxvat);
+		         if(strlen($taxvat) == 11)
+		            return 1;
+		        else 
+		            return !1;
+			
+		} else{
+			return !1;	
+		}
+		
 	}
 
 	public function getCofre() {

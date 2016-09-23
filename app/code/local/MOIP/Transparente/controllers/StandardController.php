@@ -74,7 +74,12 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 			$details_cancel 	= "Prazo para pagamento excedido";
 		} elseif ($method == "moip_cc"){
 			$onhold 			= $standard->getConfigData('order_status_holded');
-			$details_cancel 	= $json_moip->resource->payment->cancellationDetails->description;
+			if(isset($json_moip->resource->payment->cancellationDetails)){
+				$details_cancel 	= $json_moip->resource->payment->cancellationDetails->description;	
+			} else{
+				$details_cancel 	= "";
+			}
+
 		} elseif($method == "moip_tef"){
 			$onhold 			= $standard->getConfigData('order_status_holded_tef');
 			$details_cancel 	= "Prazo para pagamento excedido";
@@ -109,8 +114,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 		if($result->getMagePay()){
 			return $result;	
 		} else {
-			echo "aguarde...";
-			sleep(1);
+			sleep(4);
 			$this->findOrderMage($moip_ord);
 		}
 		
@@ -163,7 +167,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 		$state = Mage_Sales_Model_Order::STATE_CANCELED;
 		$link = Mage::getUrl('sales/order/reorder/');
         $link = $link.'order_id/'.$order->getEntityId();
-		$comment = "Motivo: ".$details." Para refazer o pagamento acesse o link: ".$link;
+		$comment = "Motivo: ".Mage::helper('transparente')->__($details)." Para refazer o pagamento acesse o link: ".$link;
 		$status = 'canceled';
 		$order->setState($state, $status, $comment, $notified = true, $includeComment = true);
 		$order->save();

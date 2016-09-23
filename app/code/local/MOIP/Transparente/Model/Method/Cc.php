@@ -229,6 +229,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
     }
     public function getOrderPlaceRedirectUrl()
     {
+        ignore_user_abort(true);
         $api                 = $this->getApi();
         $info                = $this->getInfoInstance();
         $quote               = $info->getQuote();
@@ -259,6 +260,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                 '_secure' => true
             ));
         } else {
+            Mage::dispatchEvent('sales_order_place_moip_after',$additionaldataAfter);
             return Mage::getUrl('checkout/onepage/success', array(
                 '_secure' => true
             ));
