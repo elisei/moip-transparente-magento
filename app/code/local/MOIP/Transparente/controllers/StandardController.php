@@ -35,6 +35,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 	public function successAction() {
 		error_reporting(E_ALL);
 		ini_set("display_errors",1);
+		sleep(3);
 		$this->getResponse()->setHeader('HTTP/1.0','202',true);
 		$params 	= $this->getRequest()->getParams();
 		$json_moip 	= $this->getRequest()->getRawBody();
