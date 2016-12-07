@@ -167,51 +167,29 @@
             </core_block_abstract_prepare_layout_before>
         </events>
     </adminhtml>
-    <crontab>
-        <jobs>
-            <transparente_set_state_cc>
-                <schedule>
-                    <cron_expr>30 2 * * *</cron_expr>
-                </schedule>
-                <run>
-                    <model>transparente/observer::setStatusCcAll</model>
-                </run>
-            </transparente_set_state_cc>
-             <transparente_set_state_boleto>
-                <schedule>
-                    <cron_expr>30 2 * * *</cron_expr>
-                </schedule>
-                <run>
-                    <model>transparente/observer::setStatusBoletoAll</model>
-                </run>
-            </transparente_set_state_boleto>
-             <transparente_set_state_tef>
-                <schedule>
-                    <cron_expr>30 2 * * *</cron_expr>
-                </schedule>
-                <run>
-                    <model>transparente/observer::setStatusTefAll</model>
-                </run>
-            </transparente_set_state_tef>
-            <transparente_send_onhold>
-                <schedule>
-                    <cron_expr>30 2 * * *</cron_expr>
-                </schedule>
-                <run>
-                    <model>transparente/observer::setHoldedNotification</model>
-                </run>
-            </transparente_send_onhold>
-             <transparente_set_state_all>
-                <schedule>
-                    <cron_expr>30 2 * * *</cron_expr>
-                </schedule>
-                <run>
-                    <model>transparente/observer::setStatusAll</model>
-                </run>
-            </transparente_set_state_all>
-           
-        </jobs>
-    </crontab>
+    
+	<crontab>
+		<jobs>
+
+		    <transparente_send_onhold>
+			<schedule>
+			    <cron_expr>30 2 * * *</cron_expr>
+			</schedule>
+			<run>
+			    <model>transparente/observer::setHoldedNotification</model>
+			</run>
+		    </transparente_send_onhold>
+		     <transparente_set_state_all>
+			<schedule>
+			    <cron_expr>30 2 * * *</cron_expr>
+			</schedule>
+			<run>
+			    <model>transparente/observer::setStatusAll</model>
+			</run>
+		    </transparente_set_state_all>
+
+		</jobs>
+	    </crontab>
     <default>
         <payment>
             <moip_transparente_standard>
