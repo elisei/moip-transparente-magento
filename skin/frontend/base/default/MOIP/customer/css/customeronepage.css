@@ -1,0 +1,68 @@
+
+.moip-wrapper {
+	background: #fff;
+}
+.full-container {
+    background: #fff;
+    border-bottom: 1px solid #dddddd;
+}
+.page-title h1 {
+    background: none;
+    color: #2b2b2b;
+    font-weight: bold;
+    font-weight: 100;
+}
+
+#footer-inbootom {
+    border-bottom: 0px;
+
+    margin-top: 30px;
+}
+.page-title {
+    background: none !important;
+}
+
+
+ul.list-inline.a-right {
+    margin-top: 20px;
+}
+.buttons-set {
+    margin: 10px 0 0px !important;
+}
+
+
+@media (max-width: 480px){
+  
+  .separe-border {
+    border-top: 2px dotted #f6f6f6;
+    }
+}
+@media (min-width: 784px){
+   .authenticate {
+    float: left;
+}
+    .separe-border {
+        border-left: 2px dotted #f6f6f6;
+    }
+    .vertical-center {
+        min-height: 60%;
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+    }
+	select#day, select#month, select#year {
+	    width: 130%;
+	}
+	select#month {
+	    margin-left: -10px;
+	}
+	select#year {
+	    margin-left: -20px;
+	}
+}
+
+
+.page-title h1 {
+  margin-top: none !important;
+  margin-bottom: none !important;
+}

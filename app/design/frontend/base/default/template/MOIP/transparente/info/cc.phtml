@@ -3,30 +3,17 @@
 		<?php $info = $this->_prepareInfo(); ?>
 
 
-		<div class="box-content">
-			<h3><?php echo $info['moip_card_brand']; ?> <b><?php echo $info['moip_card_installment']; ?><b> parcelas</h3>
+	
+			<h3 class="h3"><?php echo $info['moip_card_brand']; ?> <?php echo $info['moip_card_installment']; ?> parcelas</h3>
 			<div class="input-value">
-				<?php echo $info['moip_card_fullname'] ?>
+				<div><strong><?php echo $info['moip_card_fullname'] ?></strong></div>
+				<div><?php echo $this->__('<strong>%sxxxxx%s</strong>', $info['moip_card_first6'], $info['moip_card_last4'] ); ?></div>
+				<div><?php echo $info['moip_pay'] ?></div>
 			</div>
-
-			<div class="input-value">
-				<label>6 Primeiros dígitos do cartão</label>
-				<?php echo $info['moip_card_first6'] ?>
+			<div>
+				- Nossos pedidos são processados pelo Moip Pagamentos S/A
 			</div>
-
-			<div class="input-value">
-				<label>4 Últimos dígitos do cartão</label>
-				<?php echo $info['moip_card_last4'] ?>
-			</div>
-
-
-			
-			<div class="input-value">
-				<label>Pagamento n.º</label>
-				<?php echo $info['moip_pay'] ?>
-			</div>
-
-		</div>
+		
 <?php else: ?>
 	Pagamento via Cartão de Crédito
 <?php endif; ?>

@@ -18,7 +18,7 @@ class MOIP_Transparente_Block_Product_View_Parcelas extends Mage_Catalog_Block_P
 				            $asterisco = '';
 				        else
 				            $asterisco = ' sem juros';
-				        $parcelas[]= $key.'x de <span class="parcela-valor">'.$parcelas_result.'</span>'.$asterisco;
+				        $parcelas[]= '<div>em até <strong>'.$key.'x</strong>'.$asterisco.' de <strong>'.$parcelas_result.'</strong></div>';
 			  		}
 			        
 			endforeach;

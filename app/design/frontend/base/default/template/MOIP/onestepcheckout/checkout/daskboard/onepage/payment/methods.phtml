@@ -1,0 +1,57 @@
+<?php foreach($this->getQuote()->getAllItems() as $_item){
+   if($_item->getProduct()->isRecurring()){
+     $is_recurring = 1;
+   } else {
+     $is_recurring = !1;
+   }
+}
+?>
+<div  id="checkout-payment-method-load" >
+    <div class="col-sm-2 btn-inputs-payment" data-toggle="buttons">
+        
+            <?php foreach ($this->getMethods() as $_method): $_code = $_method->getCode() ?>
+                <?php 
+                    $icon_method = array(
+                        "moip_cc" => '<span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span>',
+                        'moip_ccrecurring' => '<span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span>',
+                        "moip_boletorecurring" => '<span class="glyphicon glyphicon-barcode" aria-hidden="true"></span>',
+                        "moip_boleto" => '<span class="glyphicon glyphicon-barcode" aria-hidden="true"></span>',
+                        "moip_tef" => '<span class="glyphicon glyphicon-usd" aria-hidden="true"></span>',
+                        "default" => '<span class="glyphicon glyphicon-usd" aria-hidden="true"></span>'
+                        );
+                ?>
+                    <label class="btn btn-block btn-group btn-default btn-payment-available <?php echo ($_code == "moip_cc"? "active" : "") ?> <?php echo ($_code == "moip_ccrecurring"? "active" : "") ?>">
+                        <?php if( sizeof($this->getMethods()) > 1 ): ?>
+                            <input id="p_method_<?php echo $_code ?>"  value="<?php echo $_code ?>" type="radio" name="payment[method]" title="Meio de Pagamento" onclick="payment.switchMethod('<?php echo $_code ?>');" class="radio payment_method_handle validate-one-required-by-name" <?php echo ($_code == "moip_cc"? "checked" : "") ?> <?php echo ($_code == "moip_ccrecurring"? "checked" : "") ?>/>
+                        <?php else: ?>
+                            <span class="no-display"><input id="p_method_<?php echo $_code ?>"  value="<?php echo $_code ?>" type="radio" name="payment[method]"  class="radio payment_method_handle validate-one-required-by-name" /></span>
+                        <?php endif; ?>
+                        
+                           <div class="icon-payment"><?php echo(isset($icon_method[$_code])? $icon_method[$_code] : $icon_method['default']) ?></div>
+                           <div class="text-payment"><?php echo $_method->getTitle() ?></div>
+                            
+                           <!--  <?php echo($_code == "moip_boleto" ? '<span class="badge">-7%</span>' : ""); ?> -->
+                    </label>
+                
+                <?php $html[] = $this->getPaymentMethodFormHtml($_method); ?>
+               
+            <?php endforeach; ?>
+          
+    </div>
+    <div class="col-sm-10">
+        <div class="row">
+            <div class="bg-payment-method">
+                    <?php foreach ($html as $_form): ?>
+                        <?php echo $_form; ?>
+                    <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+   
+   <script type="text/javascript">
+    var payment = new Payment('co-payment-form', '<?php echo $this->getUrl("checkout/onepage/savePayment") ?>');
+        payment.init();
+        PayamentChange();
+    </script>
+</div>
+    

@@ -1,0 +1,136 @@
+<?php $islogin=0; if(Mage::getSingleton('customer/session')->isLoggedIn()) $islogin=1; ?>
+<div class="min-content-create-account">
+ <div class="col-md-8 col-md-offset-2">
+ <div class="vertical-center-moip">
+   <div class="tabs-checkout">
+      <div id="checkout-Tab" class="tab-content row create-account-tabs">
+
+
+         <div class="tab-pane fade active in" id="identifique">
+          
+            
+            
+            <div class="row">
+                  <?php echo $this->getChildHtml('billing',false,true);?>
+            </div>
+          
+        </div>
+
+         
+      </div>
+   </div> 
+   </div>   
+  </div> 
+</div>   
+
+
+
+  <div class="modal fade" id="modal-loading-process" tabindex="-1" role="dialog" data-toggle="modal" aria-labelledby="smallModal" aria-hidden="true">
+    <div class="vertical-center-moip">
+        <div class="modal-dialog">
+          <div class="progress" id="moip-loading">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+              Por favor, aguarde...
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="store_secure_content" tabindex="-1" role="dialog" data-toggle="modal" aria-labelledby="smallModal" aria-hidden="true">
+        <div class="vertical-center-moip">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Loja Segura</h4>
+              </div>
+              <div class="modal-body">
+                  <?php echo Mage::getStoreConfig('onestepcheckout/addfield/secure'); ?>
+              </div>
+              <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal"  aria-hidden="true">Entendi!</button>
+              </div>
+            </div>
+          </div>   
+        </div>
+    </div>
+
+   <div class="modal fade" id="ErrosFinalizacao" tabindex="-1" role="dialog" data-toggle="modal" aria-labelledby="smallModal" aria-hidden="true">
+      <div class="vertical-center-moip">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Ops, encontramos alguns erros</h4>
+          </div>
+          <div class="modal-body">
+              <div class="erros_cadastro">
+                  <ul class="erros_cadastro_valores"></ul>
+              </div>
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"  aria-hidden="true">Vou corrigir!</button>
+          </div>
+        </div>
+      </div>   
+      </div>
+  </div>
+
+
+
+<script type="text/javascript">
+  
+  var formId = 'onestep_form_identifique';
+    var myForm = new VarienForm(formId, true);
+    var postUrl = "<?php echo Mage::getUrl('onestepcheckout/index/updateemailmsg')?>";
+    function doAjax() {
+        if (myForm.validator.validate()) {
+            
+            new Ajax.Request(
+                 postUrl, {
+                    method:'post',
+                    parameters: "email="+jQuery('#checked-login').val(),
+                    onSuccess:function(response) {
+                        jQuery('#modal-loading-process').modal('toggle');
+                       var responsetxt = response.responseText || "0";
+                    
+                        if(responsetxt==0){
+                          
+                          var target = jQuery("#create-loggin");  
+                          jQuery(target).css('right','-'+jQuery(window).width()+'px');   
+                          var right = jQuery(target).offset().right;
+                          jQuery(target).css({right:right}).animate({"right":"0px"}, "10");
+                          jQuery('#loading-mask').hide();
+                          
+                          jQuery("#create-loggin").addClass('active in');
+                          jQuery('#identifique').removeClass('active', 'in');
+                          jQuery('#checked-login-email').val(jQuery('#checked-login').val());
+                          
+                          
+
+                        }else{
+                          var target = jQuery("#create-account");  
+                          jQuery(target).css('right','-'+jQuery(window).width()+'px');   
+                          var right = jQuery(target).offset().right;
+                          jQuery(target).css({right:right}).animate({"right":"0px"}, "10");
+                          
+                          jQuery('#identifique').removeClass('active', 'in');
+                          jQuery("#create-account").addClass('active in');
+                          jQuery('#billing\\:email').val(jQuery('#checked-login').val());
+                        }
+                    },
+                    onLoading:function(request, json){
+                        jQuery('#modal-loading-process').modal();
+                    },
+                    
+                }
+            );
+        }
+    }
+    
+    new Event.observe(formId, 'submit', function(e){
+        e.stop();
+        doAjax();
+    });
+
+
+</script>

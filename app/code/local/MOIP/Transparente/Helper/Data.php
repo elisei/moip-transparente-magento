@@ -25,7 +25,7 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
 				            $asterisco = '';
 				        else
 				            $asterisco = ' sem juros';
-				        $parcelas[]= $key.'x de '.$parcelas_result.$asterisco;	
+				        $parcelas[]= '<strong>'.$key.'x</strong> '.$asterisco.' de <strong>'.$parcelas_result.'</strong>';
 			  		}
 			        
 			endforeach;

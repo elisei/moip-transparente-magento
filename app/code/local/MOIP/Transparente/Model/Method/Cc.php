@@ -241,6 +241,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
         $additionaldataAfter = array(
             'token_moip' => $json_order,
             'response_moip' => $payment,
+            'card_save' => $info->getAdditionalData(),
             'order_moip' => (string) $IdMoip
         );
         $additionaldata      = array_merge($additionaldata, $additionaldataAfter);

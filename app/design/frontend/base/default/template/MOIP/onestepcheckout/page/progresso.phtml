@@ -1,0 +1,59 @@
+  <?php 
+   	$request = $this->getRequest();
+	$module = $request->getModuleName();
+	$controller = $request->getControllerName();
+	$action = $request->getActionName();
+	
+	if($action == "cadastro") {
+		$step1 = "active";
+		$step2 = "disabled";
+		$step3 = "disabled";
+		$_notusenavegation = !1;
+	} elseif ($action == "index") {
+		$step1 = "complete";
+		$step2 = "active";
+		$step3 = "disabled";
+		$_notusenavegation = !1;
+	} elseif(Mage::helper('checkout')->isContextCheckout()){
+		$step1 = "active";
+		$step2 = "disabled";
+		$step3 = "disabled";
+		$_notusenavegation = !1;
+	}
+	elseif ($action == "redirect"){
+		$step1 = "complete";
+		$step2 = "active";
+		$step3 = "active";
+		$_notusenavegation = !1;
+	} else {
+		$_notusenavegation = 1;
+	}
+ ?>
+ <?php if(!$_notusenavegation): ?>
+   <div class="row bs-wizard">
+		<div class="col-xs-6 bs-wizard-step <?php echo $step1 ?>">
+			<div class="progress">
+				<div class="progress-bar"></div>
+			</div>
+			<span class="bs-wizard-dot">
+				<span class="progress-number"></span>
+			</span>
+			<div class="text-center bs-wizard-stepnum ">1. Identificação</div>
+		</div>
+		<div class="col-xs-6 bs-wizard-step <?php echo $step2 ?>"><!-- complete -->
+			<div class="progress">
+				<div class="progress-bar"></div>
+			</div>
+			<span class="bs-wizard-dot">
+				<span class="progress-number"></span>
+			</span>
+			<div class="text-center bs-wizard-stepnum">2. Envio & Pagamento</div>
+		</div>
+    </div>
+<?php else: ?>
+    <ul class="list-inline a-right">
+   		<li>
+   			<h4 class="create-account-info-secure">Você está em um <strong>ambiente seguro</strong></h4>
+   		</li>
+   </ul>
+<?php endif; ?>

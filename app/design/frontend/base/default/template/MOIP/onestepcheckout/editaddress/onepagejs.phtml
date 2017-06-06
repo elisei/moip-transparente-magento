@@ -1,0 +1,134 @@
+<script type="text/javascript">countryRegions = <?php echo $this->helper('directory')->getRegionJson() ?></script>
+<script type="text/javascript">
+//<![CDATA[
+(function($) {
+var buscacepurl = "<?php echo Mage::getUrl('onestepcheckout/index/buscaCep') ?>";
+var customer_status = "<?php echo Mage::getSingleton('customer/session')->isLoggedIn() ?>";
+buscarEndereco = function(whatform) {
+	if (whatform == "billing") {
+			jQuery(".hide-zip-code").addClass("show-zip-code");
+			postcode 	= jQuery('#billing\\:postcode').val();
+			street_1 	= jQuery('#billing\\:street1');
+			street_2 	= jQuery('#billing\\:street2');
+			street_4 	= jQuery('#billing\\:street4');
+			city 		= jQuery('#billing\\:city');
+			region 		= jQuery('#billing\\:region_id');
+	}
+	if (whatform == "shipping") {
+			postcode 	= jQuery('#shipping\\:postcode').val();
+			street_1 	= jQuery('#shipping\\:street1');
+			street_2 	= jQuery('#shipping\\:street2');
+			street_4 	= jQuery('#shipping\\:street4');
+			city 		= jQuery('#shipping\\:city');
+			region 		= jQuery('#shipping\\:region_id');
+	}
+	if (whatform == "register") {
+			postcode 	= jQuery('#ostcode').val();
+			street_1 	= jQuery('#street_1');
+			street_2 	= jQuery('#street_1');
+			street_4 	= jQuery('#street_4');
+			city 		= jQuery('#city');
+			region 		= jQuery('#region_id');
+	}
+	jQuery.ajax({
+		type:'GET',
+		url:  buscacepurl+'meio/cep/cep/' + postcode.replace(/[^\d\.]/g, ''),
+		beforeSend: function(data){
+			street_1.attr('placeholder', 'Buscando Endereço');
+			street_4.attr('placeholder', 'Buscando Endereço');
+			city.attr('placeholder', 'Buscando Endereço');
+		},
+		success: function(data){
+			
+			if(data){
+				var addressData = jQuery.parseJSON(data);
+				if(addressData.logradouro != "undefined"){
+					street_1.attr('placeholder', 'Rua');
+					street_2.attr('placeholder', 'N.º');
+					street_4.attr('placeholder', 'Bairro');
+					city.attr('placeholder', 'Cidade');
+					street_1.val(addressData.logradouro);
+					street_1.focus();
+					street_4.val(addressData.bairro);
+					street_4.focus();
+					city.val(addressData.cidade);
+					city.focus();
+					region.val(addressData.ufid);
+				}else {
+					street_1.val('');
+					street_4.val('');
+					city.val('');
+					street_1.attr('placeholder', 'Rua');
+					street_2.attr('placeholder', 'N.º');
+					street_4.attr('placeholder', 'Bairro');
+					city.attr('placeholder', 'Cidade');
+				}
+			} else {
+				street_1.attr('placeholder', 'Rua');
+				street_2.attr('placeholder', 'N.º');
+				street_4.attr('placeholder', 'Bairro');
+				city.attr('placeholder', 'Cidade');
+				
+			}
+			street_2.focus();
+		},
+		error: function(){
+			jQuery(street_1).val("");
+			jQuery(street_4).val("");
+			jQuery(city).val("");
+			jQuery(region).val("");
+			if (postcode != "" && postcode != ".")
+			{
+				updateShippingType(postcode);
+			};
+		},
+	});
+};
+})(jQuery);
+jQuery(document).ready(function(){
+	ChangeEvents();
+	Setmask();
+	jQuery('#billing\\:customer_password').on('input',function(e){
+		jQuery('#billing\\:confirm_password').val(jQuery('#billing\\:customer_password').val());
+	});
+
+	jQuery('#init-account').bind("click",function(e){
+		e.preventDefault();
+
+		var form = new VarienForm('onestep_form_account', true);
+		if(form.validator.validate())	{
+			visibilyloading();
+			var email = jQuery('#billing\\:email').val();
+			jQuery.ajax({
+					type: "POST",
+					url: "<?php echo Mage::getUrl('onestepcheckout/index/updateemailmsg')?>",
+					data:"email="+email,
+					success: function(msg){
+						if(msg==0){
+							return false;
+						}else{
+							jQuery( "#onestep_form_account" ).submit();
+						}
+					}
+				});
+		} else 	{
+			jQuery(".erros_cadastro_valores").html("");
+			var erro_dado = [];
+			var j = 0;
+			jQuery(".validation-failed").each(function() {
+				j++;
+				temp_erro = jQuery(this).attr("title");
+				if(jQuery.inArray(temp_erro, erro_dado) != 1){
+					erro_dado[j] = jQuery(this).attr("title");
+					jQuery(".erros_cadastro_valores").append('<li>'+erro_dado[j]+'</li>');
+				}
+			});
+		
+			jQuery('#ErrosFinalizacao').modal();
+
+			return false;
+		}
+	});
+});
+//]]>
+</script>

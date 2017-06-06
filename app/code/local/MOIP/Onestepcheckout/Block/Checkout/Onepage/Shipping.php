@@ -28,12 +28,12 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Shipping extends Mage_Checkout
             $select = $this->getLayout()->createBlock('core/html_select')
                 ->setName($type.'_address_id')
                 ->setId($type.'-address-select')
-                ->setClass('address-select')
+                ->setClass('address-select form-control')
                //->setExtraParams('onchange="'.$type.'.newAddress(!this.value)"')
                 ->setValue($addressId)
                 ->setOptions($options);
 
-            $select->addOption('', Mage::helper('checkout')->__('New Address'));
+            $select->addOption('', Mage::helper('checkout')->__('Novo Endereço'));
 
             return $select->getHtml();
         }

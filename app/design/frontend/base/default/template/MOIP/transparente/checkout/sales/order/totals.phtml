@@ -33,7 +33,7 @@
         <?php echo $this->getChildHtml($_total->getBlockName(), false); ?>
     <?php else:?>
     <tr class="<?php echo $_code?>">
-        <td <?php echo $this->getLabelProperties()?>>
+        <td colspan="3" class="a-right">
             <?php if ($_total->getStrong()):?>
             <strong><?php echo $this->escapeHtml($_total->getLabel());?></strong>
             <?php else:?>

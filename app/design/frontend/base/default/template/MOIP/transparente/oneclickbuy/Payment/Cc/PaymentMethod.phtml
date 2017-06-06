@@ -1,0 +1,42 @@
+<?php $cofre = $this->getCofre(); ?>
+<?php $_i = 0; ?>                
+    <div class="clearfix"></div>
+        <span class="label-edit-shipping">Parcelas</span>
+        
+        <div class="col-xs-12">
+            <div class="form-group">
+                <div id="update-parcelas"><?php echo $this->getChildParcelas() ?></div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+        <span class="label-edit-shipping">Cartão</span>
+             <div class="col-xs-12">
+                <div class="select-type-cc">
+                    <?php $decode = json_decode($cofre, true); ?>
+                    <div class="btn btn-block" data-toggle="buttons" id="card-save">
+                        <?php foreach ($decode  as $key => $value): ?>
+                        <?php $cardBrand = $value['moip_card_brand'] ?>
+                        <?php $cardNunber = $value['moip_card_id'] ?>
+                                
+                                <label class="btn btn-default btn-block  <?php if($_i==0): ?>active<?php endif;?> bg-card cc_type-<?php echo $cardBrand ?>" >
+                                    <input id="payment_card_cofre" type="radio" title="Selecione o Cartão de Crédito Salvo" class="validate-one-required-by-name" 
+                                        name="moip_cc_cofre_nb"  value="<?php echo $cardNunber ?>" <?php if($_i==0): ?> checked="checked"<?php endif;?>>
+                                    <?php echo $value['moip_card_fullname']; ?> <?php echo $value['moip_card_first6'] ?>xxxxxxx<?php echo $value['moip_card_last4'] ?> 
+                                </label>
+                                <?php $_i++; ?>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="input-group">
+              <input type="text" class="form-control required-entry" name="moip_cc_cofre_id" placeholder="Código de Segurança" >
+              <span class="input-group-btn">
+                <button type="button" id="moip-oneclickby" class="btn btn-success btn-lg btn-block" onclick="oneclickbuy_proccess_form.submit(this)"><span><span>Finalizar Pedido</span></span></button>
+              </span>
+            </div>
+        </div>
+    <div class="clearfix"></div>
+        
+    

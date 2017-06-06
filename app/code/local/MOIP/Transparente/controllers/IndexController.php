@@ -36,12 +36,12 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
 	}
 	public function renderLogin() {
 
-		return  $this->getLayout()->getBlock('moip.onclick.login')->toHtml();
+		return  $this->getLayout()->getBlock('moip.oneclickbuy.login')->toHtml();
 	}
 
 	public function renderPayment() {
 		$this->loadLayout();
-		return  $this->getLayout()->getBlock('moip.onclick.payment')->toHtml();
+		return  $this->getLayout()->getBlock('moip.oneclickbuy')->toHtml();
 	}
 
 	public function addAction()
@@ -121,11 +121,11 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
 	}
 	
 
-	public function addOnclickAction()
+	public function addOneclickbuyAction()
 	{
 		$cart   = $this->_getCart();
 		$params = $this->getRequest()->getParams();
-		if($params['onclick'] == 1){
+		if($params['oneclickbuy'] == 1){
 			$response = array();
 			try {
 				if (isset($params['qty'])) {
@@ -167,9 +167,9 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
 						$session = Mage::getSingleton( 'customer/session' );
 						$session->setBeforeAuthUrl($this->_getRefererUrl());
 						$response['_status'] = 'SUCCESS';
-					    $login_onclick = $this->renderLogin();
+					    $login_oneclickbuy = $this->renderLogin();
 					    Mage::register('referrer_url', $this->_getRefererUrl());
-					    $response['message'] = $login_onclick;
+					    $response['message'] = $login_oneclickbuy;
 
 					} else {
 						$response['_status'] = 'SUCCESS';
@@ -186,11 +186,11 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
 						->setCollectShippingRates(true);
 						$this->_getQuote()->save();
 
-						$moip_onclick = $this->renderPayment();
+						$moip_oneclickbuy = $this->renderPayment();
 					
 						Mage::register('referrer_url', $this->_getRefererUrl());
 						
-			        	$response['message'] = $moip_onclick;
+			        	$response['message'] = $moip_oneclickbuy;
 					}
 					
 				}
@@ -209,7 +209,7 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
 				$response['message'] = $msg;
 			} catch (Exception $e) {
 				$response['_status'] = 'ERROR';
-				$response['message'] = $this->__('<h4 class="modal-title">Não foi possível adcionar o produto via onclick.</h4>');
+				$response['message'] = $this->__('<h4 class="modal-title">Não foi possível adcionar o produto via oneclickbuy.</h4>');
 				Mage::logException($e);
 			}
 			$this->getResponse()->setBody(Mage::helper('core')->jsonEncode($response));
@@ -219,7 +219,7 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
 		}
 	}
 
-	public function MoipOnclickAction() {
+	public function MoipOneclickbuyAction() {
 		$datapost = $this->getRequest()->getPost();
 		$address_billing = null; 
 		$_customer = Mage::getSingleton( 'customer/session' )->getCustomer();
@@ -273,7 +273,7 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
 		}
 	}
 
-	public function LoginOnclickAction() {
+	public function LoginOneclickbuyAction() {
 		$datapost = $this->getRequest()->getPost();
 		
 		$email = $datapost['email'];
@@ -303,6 +303,8 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
            	$response['_status'] = 'ERROR';
 			$response['mensage'] =  '<ul class="messages"><li class="error-msg"><ul><li><span>Login não pode ser feito, verifique seu e-mail e senha.</span></li></ul></li></ul>';
         }
+		
+
 		return $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($response));
 
 	}

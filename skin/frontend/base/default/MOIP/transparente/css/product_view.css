@@ -1,44 +1,116 @@
 /* =============== Parcelas Moip  ================== */
-#parcelas_integrais.skip-active {  display: block;}
+label.btn-primary {
+  white-space: normal;
+}
+.modal-content {
+  background-color: transparent;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  border: none;
+  color: #fff !important
+}
+.modal-footer {
+  border-top: none !important;
+  padding: 0px !important
+}
+.modal-content h2 {
+  color: #fff !important
+}
+.modal-backdrop.in {
+  opacity: 0.85 !important;
+  filter: alpha(opacity=85) !important;
+}
+.modal-title {
+  font-size: 28px;
+  padding: 0px 15px;
+}
 
-#parcelas_integrais {    background: #fff;
-  padding: 10px;
-  color: #999;
-  border: 1px solid #ccc;
-  box-shadow: 0px -1px 16px 1px rgba(0, 0, 0, 0.2);
-  position: absolute;
-  width: 280px;
-  z-index: 9;
-  margin-top: 45px;
-  text-align: center;
+img#ajax_loader {
+    display: inline-block;
 }
-#parcelas_integrais:after, #parcelas_integrais:before {  bottom: 100%;  left: 25%;  border: solid transparent;  content: " ";  height: 0;  width: 0;  position: absolute;  pointer-events: none;}
-#parcelas_integrais:after {  border-color: transparent;  border-bottom-color: #fff;  border-width: 10px;  margin-left: -20px;}
-#parcelas_integrais:before {  border-color: rgba(255, 255, 255, 0.35);border-bottom-color: transparent;border-width: 1px;margin-left: -1px;}
-ul.product_view_bandeiras > li > img {width: 34px;}
-.skip-link.skip-parcelas_integrais {cursor: pointer;}
+.in-loading {
+    text-align: center;
+    font-size: 28px;
+    width: 100%
+}
 
-a.skip-link.skip-parcelas_integrais,  span.parcela {
-    font-weight: bold;
-  width: 100%;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-    min-width: 130px;
+.form-control {
+    height: 34px !important;
+    padding: 6px 12px !important;
 }
-ul#parcelamento_integral {
-  text-align: left;
+span.h4.address-title {
+    font-size: 138%;
+    color: beige;
 }
-.images-moip-parcelas {
-	width: 100% !important;
-  float: left;
+.modal-body {
+    font-size: 48px;
 }
-.result-moip-parcelas {
-	width: 100% !important;
-  	float: left;	
-  	text-align: left;
+.label-edit-shipping{
+  font-size: 12px; 
 }
-ul.product_view_bandeiras.hide-below-768 li {
-  float: left;
-  width: 14%;
+button.close {
+    font-size: 43px;
+    color: #fff !important;
+    font-size: 22px;
+    opacity: 1;
+    margin: 25px auto;
+    width: 100%;
+}
+
+@media only screen and (min-width: 769px) {
+  .vertical-center-moip {
+    min-height: 78%;
+    min-height: 78vh;
+    display: flex;
+    align-items: center;
+  }
+}
+select.input-lg {
+    height: 46px !important;
+    line-height: 46px  !important;
+}
+.form-control {
+    height: 46px !important;
+}
+#card-save label {
+    text-align: left;
+    line-height: 46px;
+}
+
+.label-edit-shipping {
+    font-size: 26px;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+    float: left;
+    line-height: 46px;
+}
+.select-type-cc {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+.bg-card:before {
+    content: " ";
+    position: absolute;
+    width: 35px;
+    height: 26px;
+    right: 26px;
+    margin-top: 10px;
+    border-radius: 4px;
+    background: url(../imagem/moip_brands_card.png) transparent 0px 0px no-repeat;
+}
+
+
+.cc_type-VISA:before {background-position: 0px 0px !important}
+.cc_type-MASTERCARD:before {background-position: 0px -26px !important}
+.AE:before {background-position: 0px -53px !important}
+.DC:before {background-position: 0px -79px !important}
+.EO:before {background-position: 0px -105px !important}
+.HI:before {background-position: 0px -131px !important}
+.HP:before {background-position: 0px -158px !important}
+
+#card-save label {
+    text-align: left;
+    line-height: 46px;
+    margin-bottom: 15px;
 }

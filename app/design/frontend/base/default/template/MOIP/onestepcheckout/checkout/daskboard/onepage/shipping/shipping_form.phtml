@@ -1,0 +1,207 @@
+<div id="moip_onstepcheckout_shipping_form" >
+
+<fieldset>
+<div class="row">
+    <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" class="input-hidden">
+    <input type="hidden" name="shipping[address_id]" title="Endereço selecionado"  value="<?php echo $this->getAddress()->getId() ?>" id="shipping:address_id" class="input-hidden">
+        
+
+            <div class="col-sm-6">
+              <div class="row">
+                <div class="form-group">
+                      <label class="col-sm-12 control-label" for="textinput">Nome</label>  
+                      <div class="col-sm-12">
+                           <input  type="text" id="shipping:firstname" name="shipping[firstname]" value="<?php echo  $this->getAddress()->getFirstname() ?>" title="Nome" class=" form-control  required-entry" placeholder="Nome">
+                      </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="row">
+                <div class="form-group">
+                      <label class="col-sm-12 control-label" for="textinput">Sobrenome</label>
+                      <div class="col-sm-12">
+                        <input   type="text" id="shipping:lastname" name="shipping[lastname]" value="<?php echo  $this->getAddress()->getLastname() ?>" title="Sobrenome" class=" form-control  required-entry"  placeholder="Sobrenome">
+                      </div>
+                </div>
+              </div>
+            </div>
+
+          
+            <div class="col-sm-6">
+              <div class="row">
+                <div class="form-group">
+                      <label class="col-sm-12 control-label" for="textinput">Telefone</label>  
+                      <div class="col-sm-12">
+                            <input   type="tel" name="shipping[telephone]" value="<?php echo $this->htmlEscape($this->getAddress()->getTelephone()) ?>"  title="Telefone" class=" form-control  validate-tel-national required-entry" id="shipping:telephone"  placeholder="Telefone">
+
+                      </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="row">
+                <div class="form-group">
+                      <label class="col-sm-12 control-label" for="textinput">Celular</label>
+                      <div class="col-sm-12">
+                            <input   type="tel" name="shipping[fax]" value="<?php echo $this->htmlEscape($this->getAddress()->getFax()) ?>"  title="Celular" class=" form-control  validate-cel-national  form-control " id="shipping:fax"  placeholder="Celular">
+
+                      </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12">
+                <hr>
+            </div>
+             <div class="col-xs-6">
+                <div class="row">
+                    <div class="form-group">
+                          <label class="col-sm-12 control-label" for="textinput">Cep <a href="http://www.buscacep.correios.com.br/" target="_blank" class="f-right not-zip-code hidden-xs">Não sabe o CEP?</a></label>  
+                          <div class="col-sm-12">
+                                <input   type="tel" title="CEP" name="shipping[postcode]" id="shipping:postcode" value="<?php echo $this->htmlEscape($this->getAddress()->getPostcode()) ?>"  class=" form-control  validate-zip-international  required-entry moipzip" onchange="javascript: buscarEndereco('shipping');"   placeholder="CEP">
+
+                          </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="row">
+                    <button type="button" id="singlebutton" onclick="javascrip:buscarEndereco('shipping')" name="singlebutton" class="btn btn-default" aria-label="Single Button">Buscar Endereço</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <div class="col-sm-6 hide-zip-code">
+              <div class="row">
+                <div class="form-group">
+                      <label class="col-sm-12 control-label" for="textinput">Rua</label>  
+                      <div class="col-sm-12">
+                            <input   type="text" title="Endereço da rua" name="shipping[street][0]" id="shipping:street1" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(1)) ?>" class=" form-control   required-entry  validate-length minimum-length-4 maximum-length-45" placeholder="Endereço">
+                      </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-2 hide-zip-code">
+              <div class="row">
+                <div class="form-group">
+                      <label class="col-sm-12 control-label" for="textinput">Número</label>
+                      <div class="col-sm-12">
+                            <input   type="tel" title="Número" name="shipping[street][1]" id="shipping:street2" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(2)) ?>" class=" form-control   required-entry  validate-length minimum-length-1 maximum-length-5" placeholder="Número">
+                      </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3 hide-zip-code">
+              <div class="row">
+                <div class="form-group">
+                      <label class="col-sm-12 control-label" for="textinput">Complemento</label>
+                      <div class="col-sm-12">
+                            <input   type="text" title="Complemento" name="shipping[street][2]" id="shipping:street3" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(3)) ?>" class=" form-control   validate-length minimum-length-1 maximum-length-30" placeholder="Complemento">
+                      </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-sm-6 hide-zip-code">
+              <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-12 control-label" for="textinput">Bairro</label>
+                    <div class="col-sm-12">
+                        <input   type="text" title="Bairro" name="shipping[street][3]" id="shipping:street4" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(4)) ?>" class=" form-control  required-entry  validate-length minimum-length-1 maximum-length-60" placeholder="Bairro">
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 hide-zip-code">
+              <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-12 control-label" for="textinput">Cidade</label>
+                    <div class="col-sm-12">
+                        <input   type="text" title="Cidade" name="shipping[city]" value="<?php echo $this->htmlEscape($this->getAddress()->getCity()) ?>"class=" form-control   required-entry" id="shipping:city" placeholder="Cidade">
+                    </div>
+                </div>
+              </div>
+            </div>
+
+       
+            <div class="col-sm-6 hide-zip-code">
+              <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-12 control-label" for="textinput">Estado</label>
+                    <div class="col-sm-12">
+                            <select id="shipping:region_id" name="shipping[region_id]" title="<?php echo Mage::helper('core')->quoteEscape($this->__('State/Province')) ?>" class="validate-select form-control">
+                                <option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+                            </select>
+
+                            <input type="text" id="shipping:region" name="shipping[region]" value="<?php echo $this->escapeHtml($this->getAddress()->getRegion()) ?>"  title="<?php echo Mage::helper('core')->quoteEscape($this->__('State/Province')) ?>" class=" form-control  <?php echo $this->helper('customer/address')->getAttributeValidationClass('region') ?>" style="display:none;">
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 no-display">
+              <div class="row">
+                <div class="form-group">
+                        <label class="col-sm-12 control-label" for="textinput">País</label>
+                        <div class="col-sm-12">
+                             <?php echo $this->getCountryHtmlSelect('shipping') ?>
+                        </div>
+                </div>
+              </div>
+            </div>
+            
+        <div class="col-sm-12  a-right">
+            <?php if($this->isCustomerLoggedIn()): ?>
+               <div class="col-sm-12">
+                    <hr>
+                </div>
+                 <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                        <input type="checkbox" name="shipping[save_in_address_book]"
+                        title="<?php echo $this->__('Save in address book') ?>" id="shipping::save_in_address_book" class="checkbox" > <?php echo $this->__('Salvar como novo endereço') ?>
+                  </label>
+                  
+                </div>
+               
+                
+            <?php else : ?>
+                    <input type="hidden" name="shipping[save_in_address_book]" value="1" />
+                    <input type="hidden" name="shipping[address_id]"  value=""/>
+            <?php endif; ?>
+        </div>
+            
+</div>
+
+<script type="text/javascript">
+    
+    var shippingRegionUpdater = new RegionUpdater("shipping:country_id", "shipping:region", "shipping:region_id", countryRegions, undefined, "shipping:postcode");
+    
+    jQuery("shipping\\:country_id").addClass('form-control');
+    jQuery('shipping\\:region_id').attr('defaultValue',  "<?php echo $this->getAddress()->getRegionId() ?>");
+  
+    Validation.add('validate-tel-national', 'Entre com telefone válido: (99)9999-9999 ou caso tenha o 9º digito (99)9999-99999', function(v) {
+            return Validation.get('IsEmpty').test(v) || /^([()])([0-9]){2}([)])([0-9]){4}([-])([0-9]){4,5}$/.test(v);
+        });
+
+    Validation.add('validate-cel-national', 'Entre com telefone válido: (99)9999-9999 ou caso tenha o 9º digito (99)9999-99999', function(v) {
+        return Validation.get('IsEmpty').test(v) || /^([()])([0-9]){2}([)])([0-9]){4}([-])([0-9]){4,5}$/.test(v);
+    });
+    Validation.add('validate-zip-international', 'Entre com um cep válido: 99999-999', function(v) {
+        return Validation.get('IsEmpty').test(v) || /^([0-9]){5}([-])([0-9]){3}$/.test(v);
+    });
+
+    jQuery(document).ready(function(){
+        
+        jQuery('#onestep_form :input').blur(function() {
+                            Validation.validate(jQuery(this).attr('id'));
+        });
+    });
+</script>
+
+</fieldset>
+ 
+</div>
+
+
+
+

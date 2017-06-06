@@ -1,0 +1,146 @@
+<?php if(Mage::getStoreConfig('moipall/oneclick_config/enable_oneclick', Mage::app()->getStore())): ?>
+<script type="text/javascript">
+//<![CDATA[
+(function($) {
+    var oneclickbuy_proccess_form = new VarienForm('oneclickbuy_proccess');
+
+      oneclickbuy_proccess_form.submit = function (button, url) {
+          if (this.validator.validate()) {
+              var form = this.form;
+             
+              var data = jQuery('#oneclickbuy_proccess').serialize();
+             
+              try {
+                jQuery(".form-post-loading").hide();
+                jQuery(".progress").show();
+                  jQuery.ajax({
+                        url: form.action,
+                        dataType: 'json',
+                        type : 'post',
+                        data: data,
+                        success: function(data){
+                           
+                            window.location.href = data.url_redirect;
+                          
+                        }
+                  });
+              } catch (e) {
+              }
+          }
+      }.bind(oneclickbuy_proccess_form);
+    var oneclickbuy_login_form = new VarienForm('oneclickbuy_login');
+
+    oneclickbuy_login_form.submit = function (button, url) {
+        if (this.validator.validate()) {
+            var form = this.form;
+           
+            var data = jQuery('#oneclickbuy_login').serialize();
+           
+            try {
+              //jQuery(".form-post-loading").hide();
+              jQuery(".progress").show();
+                jQuery.ajax({
+                      url: form.action,
+                      dataType: 'json',
+                      type : 'post',
+                      data: data,
+                      success: function(data){
+                        if(data._status == "SUCCESS"){
+                          jQuery(".progress-login").hide();
+                          jQuery("#response-moip-oneclickbuy").hide();
+                          jQuery('#response-moip-oneclickbuy-payment').html(data.mensage);  
+                        } else {
+                          jQuery(".progress-login").hide();
+                          jQuery(".form-post-loading-login").show();
+                          jQuery('#Moiponeclick-form').modal({
+                        backdrop: 'static',
+                        keyboard: true, 
+                        show: true
+                });
+                          jQuery('#error-login-oneclickbuy').html(data.mensage);  
+                        }
+                        
+                      }
+                });
+            } catch (e) {
+            }
+          
+
+          
+        }
+    }.bind(oneclickbuy_login_form);
+
+
+    productAddToCartForm.submitOneclickbuy = function (button, url) {
+        if (this.validator.validate()) {
+            jQuery('#ajax_loader_product').show();
+            var form = this.form;
+            var oldUrl = form.action;
+            if (url) {
+                form.action = url;
+            }
+            var e = null;
+            // Start of our new ajax code
+            if (!url) {
+                url = jQuery('#product_addtocart_form').attr('action');
+            }
+            url = url.replace("checkout/cart", "Transparente/index/addOneclickbuy"); 
+            var data = jQuery('#product_addtocart_form').serialize();
+            data += '&oneclickbuy=1';
+            jQuery('#ajax_loader').show();
+            try {
+                jQuery.ajax({
+                      url: url,
+                      dataType: 'json',
+                      type : 'post',
+                      data: data,
+                      success: function(data){
+                        jQuery('#ajax_loader_product').hide();
+                        jQuery('#response-moip-oneclickbuy').html(data.message);
+                        jQuery('#Moiponeclick-form').modal({
+                                backdrop: 'static',
+                                keyboard: true, 
+                                show: true
+                        });
+                        jQuery('.btn-oneclick').attr("onclick",'productAddToCartForm.Oneclickbuy(this)');
+                      },
+                });
+            } catch (e) {
+            }
+            // End of our new ajax code
+            this.form.action = oldUrl;
+
+            if (e) {
+                throw e;
+            }
+        }
+    }.bind(productAddToCartForm);
+
+    productAddToCartForm.Oneclickbuy = function (button, url) {
+        jQuery('#Moiponeclick-form').modal({
+                        backdrop: 'static',
+                        keyboard: true, 
+                        show: true
+                });
+    }.bind(productAddToCartForm);
+
+})(jQuery);
+
+//]]>
+</script>
+
+<div class="modal fade" id="Moiponeclick-form" role="dialog" tab-index="-1" tabindex="-1" role="dialog" aria-labelledby="OneClickBuy" aria-hidden="true" data-keyboard="false" >
+  
+  <div class="modal-dialog modal-md">
+    <div class="vertical-center-moip">
+      <div class="modal-content">
+        
+        <div id="response-moip-oneclickbuy"></div>
+        <div id="response-moip-oneclickbuy-payment"></div>
+        
+        
+      </div>
+    </div>
+  </div>
+</div> 
+<?php endif; ?>

@@ -13,42 +13,9 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
     {
         $order            = $this->getOrder();
         
-        if($order){
-            $mage_pay         = $order->getId();
-            $forma_pagamento  = $order->getPayment()->getMethodInstance()->getCode();
-            if ($forma_pagamento == "moip_boleto" || $forma_pagamento == "moip_tef" || $forma_pagamento == "moip_cc") {
-              if ($forma_pagamento == "moip_boleto") {
-                    $state_onhold               = $this->initState('order_status_holded_boleto');
-                    $comment                    = "Aguardando confirmação automática de pagamento.";
-                } elseif ($forma_pagamento == "moip_tef") {
-                    
-                    $state_onhold               = $this->initState('order_status_holded_tef');
-                    $comment                    = "Aguardando confirmação automática de pagamento.";
-                    
-                } elseif ($forma_pagamento == "moip_cc") {
-                    $state_onhold               = $this->initState('order_status_holded');
-                    $comment                    = "Aguardando confirmação automática de pagamento.";
-                }
-            } else {
-                return;
-            }
-
-            $order->sendNewOrderEmail();
-            $order->setState(Mage_Sales_Model_Order::STATE_HOLDED, $state_onhold, $comment, $notified = false, $includeComment = true);
-            $order->setEmailSent(true);
-            $order->save();
-            try {
-                return $this;    
-            } catch (Exception $e) {
-                $this->getApi()->generateLog("----------- erro -  --------------", 'Moip_OrderSave.log');
-                $this->getApi()->generateLog($e->getMessage(), 'Moip_OrderSave.log');
-                $this->getApi()->generateLog($mage_pay, 'Moip_OrderSave.log');
-                $this->getApi()->generateLog($order_moip, 'Moip_OrderSave.log');
-                $this->getApi()->generateLog($responseMoip, 'Moip_OrderSave.log');
-            }
-            #$order->sendOrderUpdateEmail(true, $comment);
-            return $this;
-        }
+        $order->sendNewOrderEmail();
+        $order->setEmailSent(true);
+        $order->save();
         
     }
 

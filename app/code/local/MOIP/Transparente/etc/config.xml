@@ -7,12 +7,12 @@
     </modules>
     <fieldsets>
         <sales_convert_quote_address>
-            <fee_amount>
+            <fee_amount_moip>
                 <to_order>*</to_order>
-            </fee_amount>
-            <base_fee_amount>
+            </fee_amount_moip>
+            <base_fee_amount_moip>
                 <to_order>*</to_order>
-            </base_fee_amount>
+            </base_fee_amount_moip>
         </sales_convert_quote_address>
     </fieldsets>
     <global>
@@ -91,7 +91,7 @@
                         <teste>
                             <type>singleton</type>
                             <class>transparente/observer</class>
-                            <method>testCapture</method>
+                            <method>paymentCapture</method>
                         </teste>
                     </observers>
                 </sales_order_place_moip_after>
@@ -167,29 +167,28 @@
             </core_block_abstract_prepare_layout_before>
         </events>
     </adminhtml>
-    
-	<crontab>
-		<jobs>
-
-		    <transparente_send_onhold>
-			<schedule>
-			    <cron_expr>30 2 * * *</cron_expr>
-			</schedule>
-			<run>
-			    <model>transparente/observer::setHoldedNotification</model>
-			</run>
-		    </transparente_send_onhold>
-		     <transparente_set_state_all>
-			<schedule>
-			    <cron_expr>30 2 * * *</cron_expr>
-			</schedule>
-			<run>
-			    <model>transparente/observer::setStatusAll</model>
-			</run>
-		    </transparente_set_state_all>
-
-		</jobs>
-	    </crontab>
+    <crontab>
+        <jobs>
+            
+            <transparente_send_onhold>
+                <schedule>
+                    <cron_expr>30 2 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>transparente/observer::setHoldedNotification</model>
+                </run>
+            </transparente_send_onhold>
+            <transparente_set_state_all>
+                <schedule>
+                    <cron_expr>30 2 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>transparente/observer::setStatusAll</model>
+                </run>
+            </transparente_set_state_all>
+           
+        </jobs>
+    </crontab>
     <default>
         <payment>
             <moip_transparente_standard>
@@ -198,12 +197,12 @@
                 <title>Pagamento via Admin - Moip</title>
                 <model>MOIP_Transparente_Model_Standard</model>
                 <order_status>pending</order_status>
+                <order_status_holded>holded</order_status_holded>
+                <order_status_holded_boleto>holded</order_status_holded_boleto>
+                <order_status_holded_tef>holded</order_status_holded_tef>
                 <validopara_transparente>1</validopara_transparente>
                 <apelido>ALTERE PARA O NOME DA SUA EMPRESA</apelido>
-                <notificar_cliente>1</notificar_cliente>
                 <ambiente>producao</ambiente>
-                <allowspecific>0</allowspecific>
-                <min_order_total>5</min_order_total>
             </moip_transparente_standard>
             <moip_boleto>
                 <active>1</active>
@@ -242,8 +241,6 @@
                 <vcmentoboleto>3</vcmentoboleto>
                 <min_order_total>5</min_order_total>
             </moip_tef>
-           
-
             <moip_ccrecurring>
                 <order_status>pending</order_status>
                 <model>MOIP_Transparente_Model_Method_CcRecurring</model>
@@ -262,6 +259,9 @@
                 <enable_carrinho>1</enable_carrinho>
                 <transparente_layout>Horizontal</transparente_layout>
             </config>
+            <success_page>
+                <detalis>1</detalis>
+            </success_page>
         </moipall>
     </default>
 </config>

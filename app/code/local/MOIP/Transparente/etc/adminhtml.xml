@@ -21,7 +21,11 @@
                     		</order>
 	            		</children>
 	            	</sales>
-	            </children>
+	            	<oauthmoip>
+							<title>MOIP Configurações do Oauth</title>
+							<sort_order>10</sort_order>
+		            </oauthmoip>
+				</children>
 	        </admin>
 	    </resources>
 	</acl>

@@ -1,0 +1,80 @@
+<div class="col1-set">
+	<div>
+		<form id="login-form-checkout" method="post">
+		<fieldset>
+			<div class="form-group">
+				<label class="form-label">Email</label>
+			 	<div class="input-group">
+		          <span class="input-group-addon">
+		           <i class="glyphicon glyphicon-envelope"></i>
+		          </span>
+		           <input type="text"  name="login[username]" id="login-email"  title="Endereço de e-mail"   class=" form-control input-text validate-email">
+		      	</div>
+			</div>
+			<div class="form-group">
+				<label class="form-label">Senha</label>
+				<input  type="password"  class="form-control input-text" name="login[password]" id="login-password"  data-toggle="password">
+			</div>
+			
+			<div id="dados_incorretos" style="display:none; height:90px;position: relative">
+				<ul class="messages"> <li class="error-msg">Dados incorretos, por favor tente novamente.<li><ul>
+			</div>
+			<div class="logando_aguarde" style="display:none">
+				<span>Por favor, aguarde!</span>
+				    <p id="loading_mask_loader" class="loader"><img alt="Loading..." src="<?php echo $this->getSkinUrl('MOIP/onestepcheckout/images/ajax-loader-tr.gif')?>">.</p>
+
+			</div>
+
+		</fieldset>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var loginForm = new VarienForm('login-form-checkout', true);
+    $('login-email').observe('keypress', bindLoginPost);
+    $('login-password').observe('keypress', bindLoginPost);
+    function bindLoginPost(evt){
+        if (evt.keyCode == Event.KEY_RETURN) {
+		   return false;
+        }
+    }
+    function onepageLogin(button)
+    {
+        if(loginForm.validator && loginForm.validator.validate()){
+		   updateLogin(jQuery('#login-email').val(),jQuery('#login-password').val());
+        }
+		jQuery('#errorlogin').css('display','none');
+		return false;
+    }
+//]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+function updateLogin(email,password)
+{
+
+jQuery('.buttons-set .button').css('display','none');
+	jQuery.ajax({
+	type: "POST",
+	url: "<?php echo Mage::getUrl('onestepcheckout/index/updatelogin')?>",
+	data: "email="+email+"&"+"password="+password,
+	success: function(msg){
+		if(msg==0){
+			jQuery('.buttons-set .button').css('display','block');
+			jQuery('#login-please-wait').css('display','none');
+			jQuery('#dados_incorretos').css('display','block');
+			jQuery('#errorlogin').css('display','block');
+			jQuery('#login-email').addClass('validation-failed');
+			jQuery('#login-password').addClass('validation-failed');
+			}
+		else{
+			jQuery('.logando_aguarde').show();
+			var url="<?php echo Mage::getUrl('checkout/onepage'); ?>";
+				jQuery(location).attr('href',url);
+			}
+		}
+	});
+}
+//]]>
+</script>

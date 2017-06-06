@@ -1,0 +1,29 @@
+<?php $_shippingRateGroups = $this->getShippingRates(); ?>
+<?php if (!$_shippingRateGroups): ?>
+    <p><?php echo $this->__('Sorry, no quotes are available for this order at this time.') ?></p>
+<?php else: ?>
+<div id="oneclickby-shipping">
+	<select id='drop_estimate_method' class="form-control input-lg" name="shipping_method">
+    <?php $_sole = count($this->getShippingRates()) == 1; foreach ($this->getShippingRates() as $code => $_rates): ?>
+        <optgroup label=" <?php echo $this->getCarrierName($code); ?>">
+            <?php $_sole = $_sole && count($_rates) == "1"; foreach ($_rates as $_rate): ?>
+                
+                   
+			               <?php if ($_sole) : ?>
+			                	<option type="radio" value="<?php echo  $this->htmlEscape($_rate->getCode()) ?>" title="Meio de Envio" data-price="<?php echo $_rate->getPrice() ?>"><?php echo $this->htmlEscape($_rate->getMethodTitle()) ?></option>
+			             
+			            
+
+			               <?php else: ?>
+
+			               	 <option type="radio" value="<?php echo $_rate->getCode() ?>" title="Meio de Envio" data-price="<?php echo $_rate->getPrice() ?>"><?php echo $this->htmlEscape($_rate->getMethodTitle()) ?> - <?php echo $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?></option>
+
+	                    	 <?php endif; ?>
+                
+            <?php endforeach; ?>
+           
+        </optgroup>
+    <?php endforeach; ?>
+    </select>
+</div>
+<?php endif; ?>

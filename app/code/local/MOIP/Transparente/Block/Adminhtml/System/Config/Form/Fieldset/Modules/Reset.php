@@ -17,9 +17,9 @@ class MOIP_Transparente_Block_Adminhtml_System_Config_Form_Fieldset_Modules_Rese
     	
 
     
-            $info_config .= '<p>Caso necessário você pode Apagar Todos os dados das configurações Moip para os ambientes.</p>';
+            
            
-            $info_config .= '<hr><h3>Seus dados Atuais são:</h3>';
+            $info_config .= '<hr><h3>Detalhes do token:</h3>';
 
     		$oauth_dev = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
             $publickey_dev= Mage::getSingleton('transparente/standard')->getConfigData('publickey_dev');
@@ -37,7 +37,7 @@ class MOIP_Transparente_Block_Adminhtml_System_Config_Form_Fieldset_Modules_Rese
                                     </td>
                                 </tr>';
                
-                $info_config .= '<tr id="row_moipall_advanced_rest">    <td class="label">        <label for="row_moipall_advanced_rest"> Sua Public Key  - Ambiente de Testes</label>    </td>    <td class="value">        <textarea id="row_moipall_advanced_rest" class=" textarea" rows="2" cols="15" readonly>'.$publickey_dev.'</textarea>    </td></tr>';
+              
 
 	    	} else {
 
@@ -64,7 +64,6 @@ class MOIP_Transparente_Block_Adminhtml_System_Config_Form_Fieldset_Modules_Rese
                                     </td>
                                 </tr>';
                
-                $info_config .= '<tr id="row_moipall_advanced_rest">    <td class="label">        <label for="row_moipall_advanced_rest"> Sua Public Key  - Ambiente de Produção</label>    </td>    <td class="value">        <textarea id="row_moipall_advanced_rest" class=" textarea" rows="2" cols="15" readonly>'.$publickey_prod.'</textarea>    </td></tr>';
 
 	    	} else {
 

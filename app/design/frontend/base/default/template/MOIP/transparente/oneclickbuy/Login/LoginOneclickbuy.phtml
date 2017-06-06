@@ -1,0 +1,78 @@
+<div class="progress-login" style="display:none;">
+    <div class="in-loading"><span><img src='<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif')?>' id="ajax_loader"/></span> Por favor, aguarde...</div>
+</div>
+<div class="loading">
+  <div class="modal-title" >
+      Para concluir
+  </div>
+  <div class="modal-body" > 
+    
+      
+        
+        <form role="form" action="<?php echo Mage::getUrl('Transparente/index/LoginOneclickbuy', array('_secure' => true )) ?>" method="post" id="oneclickbuy_login">
+          <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+          <div class="customer-account">
+            <h1>Entrar com sua <strong>conta</strong></h1>
+            <div id="error-login-oneclickbuy"></div>
+            <div class="col-md-12">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon">E-mail</span>
+                <input type="text" name="email" class="input-text required-entry validate-email form-control" id="usrname" placeholder="Digite seu email">
+              </div>
+            </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon">Senha</span>
+                  <input type="password"  class="input-text required-entry form-control" id="login-password" name="password" placeholder="Senha">
+                </div>
+              </div>
+            </div>
+            <button type="button" id="moip-oneclickbuy" class="btn btn-success btn-lg btn-block" onclick="oneclickbuy_login_form.submit(this)"><span><span>Entrar</span></span></button>
+          </div>
+        </form>
+  </div>        
+  <div class="modal-footer">
+    <button type="button" class="close" data-dismiss="modal">&times; Cancelar</button>
+  </div>
+</div>
+<script type="text/javascript">
+    var oneclickbuy_login_form = new VarienForm('oneclickbuy_login');
+    oneclickbuy_login_form.submit = function (button, url) {
+        if (this.validator.validate()) {
+            jQuery('.progress-login').show();
+            jQuery('.loading').hide();
+            var form = this.form;
+            var data = jQuery('#oneclickbuy_login').serialize();
+            try {
+              //jQuery(".form-post-loading").hide();
+              jQuery(".progress").show();
+                jQuery.ajax({
+                      url: form.action,
+                      dataType: 'json',
+                      type : 'post',
+                      data: data,
+                      success: function(data){
+                        jQuery('.progress-login').hide();
+                        jQuery('.loading').show();
+                        if(data._status == "SUCCESS"){
+                          jQuery(".progress-login").hide();
+                          jQuery("#response-moip-oneclickbuy").hide();
+                          jQuery('#response-moip-oneclickbuy-payment').replaceWith(data.mensage);  
+                        } else {
+                          jQuery(".progress-login").hide();
+                          jQuery(".form-post-loading-login").show();
+                          jQuery('#error-login-oneclickbuy').replaceWith(data.mensage);  
+                        }
+                        
+                      }
+                });
+            } catch (e) {
+            }
+        }
+    }.bind(oneclickbuy_login_form);
+</script>
+
+

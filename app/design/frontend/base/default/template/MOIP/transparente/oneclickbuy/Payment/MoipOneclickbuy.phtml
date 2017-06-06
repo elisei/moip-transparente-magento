@@ -1,0 +1,63 @@
+<div class="progress-login" style="display:none;">
+    <div class="in-loading"><span><img src='<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif')?>' id="ajax_loader"/></span> Realizando o pagamento. Por favor, aguarde...</div>
+</div>
+<?php if($this->getAvailability()): ?>
+<div class="loading">
+  <div class="modal-body" > 
+      <form role="form" action="<?php echo Mage::getUrl('Transparente/index/MoipOneclickbuy', array('_secure' => true )) ?>" method="post" id="oneclickbuy_proccess">
+        <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+          <div class="col-xs-12">
+              <h2  class="oneclickbuy-title"><span class="glyphicon glyphicon-road"></span><?php echo $this->getChildHtml('moip.oneclickbuy.shipping.address') ?></h2>
+              <div class="form-group">
+                  <span class="label-edit-shipping">Envio</span>
+                  
+             		  <?php echo $this->getChildHtml('moip.oneclickbuy.shipping.methods') ?>
+              </div>
+          </div>
+          <?php echo $this->getChildHtml('moip.oneclickbuy.payment.method') ?>
+      </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="close" data-dismiss="modal">&times; Cancelar</button>
+  </div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+  
+      var oneclickbuy_proccess_form = new VarienForm('oneclickbuy_proccess');
+
+      oneclickbuy_proccess_form.submit = function (button, url) {
+          if (this.validator.validate()) {
+              jQuery('.progress-login').show();
+              jQuery('.loading').hide();
+              var form = this.form;
+             
+              var data = jQuery('#oneclickbuy_proccess').serialize();
+            
+              try {
+              	  
+                  jQuery.ajax({
+                        url: form.action,
+                        dataType: 'json',
+                        type : 'post',
+                        data: data,
+                        success: function(data){
+                        		window.location.href = data.url_redirect;
+                        },
+                        error: function(data){
+                          jQuery('.progress-login').hide();
+                          jQuery('.loading').show();
+                        }
+                  });
+              } catch (e) {
+              }
+          }
+      }.bind(oneclickbuy_proccess_form);
+  
+//]]>
+</script>
+<?php else: ?>
+  <script type="text/javascript">
+      window.location.href = "<?php echo Mage::getUrl('checkout/cart', array('_secure' => true)); ?>"
+  </script>
+<?php endif; ?>

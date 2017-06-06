@@ -1,33 +1,65 @@
-<?php $url_boleto = $this->getBoletoLinks().'/print'; ?>
-		<div class="page-title">
-		    <h1><?php echo $this->__('Quase lá! Agora só falta pagar o boleto.') ?></h1>
-		</div>
-		
-		<div class="method-type-action grid12-12">
-			<div class="grid12-6">
-				<h3><?php echo $this->__('Código de Barra') ?></h3>
-				<div>
-					
-					<div class="input-box">
-			            <input type="text" name="codigo-barra" id="bar-code" value="<?php echo $this->getBoletoCode() ?>" title="Código de Barra" class="input-text required-entry">
-			        </div>
-				</div>
-			</div>
-			<div class="grid12-6">
-				<h3><?php echo $this->__('Visualizar Boleto') ?></h3>
-				<a class="btn btn-success"  href="<?php echo $url_boleto  ?>" target="_blank" ><span><span><i class="glyphicon glyphicon-print"></i> Visualizar Boleto</span></span></a>	
-			</div>
-			
+<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
+<p><?php echo $this->__('As informações de seu pedido foram encaminhadas para o seu email <strong>%s</strong>.', $this->getOrder()->getCustomerEmail()) ?></p>
+<h3 class="h3"><strong>Faça agora o pagamento do seu boleto</strong></h3>
 
 
-		</div>
+<div class="input-group input-group-lg">
+  <input type="text" class="form-control" readonly="disable" id="barcode-line" value="<?php echo $this->getBoletoCode() ?>">
+  <span class="input-group-btn">
+    <button class="btn btn-success" type="button"  id="copy-code"><span><span>Copiar!</span></span></button>
+  </span>
+</div>
+<div class="action-payment-secundary">
+    <button type="button" class=" btn btn-success" title="Imprimir o boleto" onclick="
+            popWin('<?php echo $this->getBoletoLinks().'/print'  ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;"><span><span>Visualize o Boleto</span></span>
+    </button>
+</div>
+		   
+
 
 <script type="text/javascript">
-//<![CDATA[
-		//jQuery('body').append('<div class="modal fade animated" id="largeModal" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">      <div class="modal-dialog modal-lg">        <div class="modal-content">          <div class="modal-header">            <h4 class="modal-title" id="myModalLabel">Boleto Bancário</h4>          </div>          <div class="modal-body">		<iframe  width="800"  onload="this.height=screen.height;" scrolling= "no" frameBorder="0" allowtransparency="true" src="<?php echo $url_boleto ?>"> </iframe>          </div>          <div class="modal-footer">            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>          </div>        </div>      </div>    </div>');
-		//jQuery('#largeModal').modal('toggle');
-//]]>
+	document.getElementById("copy-code").addEventListener("click", function() {
+        jQuery("#copy-code").text('Copiado');
+        copyToClipboard(document.getElementById("barcode-line"));
+        
+    });
+    function copyToClipboard(elem) {
+        var targetId = "_hiddenCopyText_";
+        var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
+        var origSelectionStart, origSelectionEnd;
+        if (isInput) {
+            target = elem;
+            origSelectionStart = elem.selectionStart;
+            origSelectionEnd = elem.selectionEnd;
+        } else {
+            target = document.getElementById(targetId);
+            if (!target) {
+                var target = document.createElement("textarea");
+                target.style.position = "absolute";
+                target.style.left = "-9999px";
+                target.style.top = "0";
+                target.id = targetId;
+                document.body.appendChild(target);
+            }
+            target.textContent = elem.textContent;
+        }
+        var currentFocus = document.activeElement;
+            target.focus();
+            target.setSelectionRange(0, target.value.length);
+        var succeed;
+        try {
+        	  succeed = document.execCommand("copy");
+        } catch(e) {
+            succeed = false;
+        }
+        if (currentFocus && typeof currentFocus.focus === "function") {
+            currentFocus.focus();
+        }
+        if (isInput) {
+            elem.setSelectionRange(origSelectionStart, origSelectionEnd);
+        } else {
+            target.textContent = "";
+        }
+        return succeed;
+    }
 </script>
-
-
-

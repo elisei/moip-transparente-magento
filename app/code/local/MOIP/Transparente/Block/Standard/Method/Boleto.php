@@ -19,6 +19,21 @@ class MOIP_Transparente_Block_Standard_Method_Boleto extends Mage_Checkout_Block
         return $responseMoipJson->fundingInstrument->boleto->lineCode;
     }
 
+   
+    public function getOrder()
+    {
+        $final = "";
+        $orderId       = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+        $current_order = Mage::getModel('sales/order')->getCollection()->addFieldToFilter('increment_id', $orderId);
+        if ($current_order) {
+            foreach ($current_order as $order) {
+                $final = $order;
+                break;
+            }
+        }
+        return $final;
+    }
+
     public function getLinkReorder()
     {
           $order            = $this->getOrder();

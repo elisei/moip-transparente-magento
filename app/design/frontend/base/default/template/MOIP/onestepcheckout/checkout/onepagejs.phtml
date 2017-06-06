@@ -1,0 +1,40 @@
+<script type="text/javascript">countryRegions = <?php echo $this->helper('directory')->getRegionJson() ?></script>
+<script type="text/javascript">
+var message_payment = "Por Favor, selecione um meio de pagamento.";
+var message_ship = "Por favor, selecione um Meio de Envio";
+var updatepaymenttypeurl = "<?php echo Mage::getUrl('onestepcheckout/index/updatepaymenttype')?>";
+var updatepaymentmethodurl = "<?php echo Mage::getUrl('onestepcheckout/index/updatepaymentmethod')?>";
+var updatecouponurl = "<?php echo Mage::getUrl('onestepcheckout/index/updatecoupon')?>";
+var updateqtyurl = "<?php echo Mage::getUrl('onestepcheckout/index/updateqty')?>";
+var removeproducturl = "<?php echo Mage::getUrl('onestepcheckout/index/removeproduct')?>";
+var updateshippingmethodurl = "<?php echo Mage::getUrl('onestepcheckout/index/updateshippingmethod') ?>";
+var updateordermethodurl = "<?php echo Mage::getUrl('onestepcheckout/index/updateordermethod') ?>";
+var updatereviewurl = "<?php echo Mage::getUrl('onestepcheckout/index/updatereviewmethod') ?>";
+var buscacepurl = "<?php echo Mage::getUrl('onestepcheckout/index/buscaCep') ?>";
+var updateemailmsg = "<?php echo Mage::getUrl('onestepcheckout/index/updateemailmsg')?>";
+var updateshippingtypeurl = "<?php echo Mage::getUrl('onestepcheckout/index/updateshippingtype')?>";
+var updateshippingformurl = "<?php echo Mage::getUrl('onestepcheckout/index/updateshippingform')?>";
+var updatebillingformurl  = "<?php echo Mage::getUrl('onestepcheckout/index/updatebillingform')?>";
+var editaddressurl  = "<?php echo Mage::getUrl('checkout/onepage/')?>";
+var address_status = "<?php echo Mage::getSingleton('customer/session')->getCustomer()->getDefaultBilling() ?>";
+var is_virtual = 	"<?php echo Mage::helper('onestepcheckout')->onlyProductDownloadable() ?>";
+var set_payment_form =	 "<?php echo $this->getUrl('checkout/onepage/savePayment') ?>";
+var customer_status = "<?php echo Mage::getSingleton('customer/session')->isLoggedIn() ?>";
+(function($) {
+	jQuery(document).ready(function(){
+		has_default_billing();
+		ChangeEvents();	
+		Setmask();
+		shippingChange();
+		if(!is_virtual){
+			jQuery('#moip_cc_number, #moip_cc_cid, #moip_cc_owner').focus(function() {
+				var selectShipping = jQuery("input[name='shipping_method']:checked").val();
+				if(typeof selectShipping == 'undefined'){
+					jQuery('.bg-payment-method').html('<div class="select-shipping-for-payment"><div class="icon-large"><span class="glyphicon glyphicon-upload" aria-hidden="true"></span></div><div class="text-select-shipping-for-payment">Para calcularmos o valor total, <strong>escolha acima o método de envio</strong></div></div>');
+				}
+			});
+		}
+	});	
+})(jQuery);
+</script>
+

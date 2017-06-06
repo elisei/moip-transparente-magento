@@ -17,10 +17,6 @@
                     <frontName>onestepcheckout</frontName>
                 </args>
             </onestepcheckout>
-
-           
-
-
         </routers>
         <layout>
             <updates>
@@ -122,11 +118,6 @@
                     </onestepcheckout>
                 </entities>
             </onestepcheckout_mysql4>
-            <sales>
-                <rewrite>
-                    <quote_address>MOIP_Onestepcheckout_Model_Sales_Quote_Address</quote_address>
-                </rewrite>
-            </sales>
         </models>
         <resources>
             <moip_onestepcheckout_setup>
@@ -243,36 +234,40 @@
                 <allowregister>1</allowregister>
                 <enable_buscacep>1</enable_buscacep>
                 <enable_pj>1</enable_pj>
-                <create_account>1</create_account>
-                <style_color>000000</style_color>
-                <botao_color>000000</botao_color>
-                <default_country>BR</default_country>
             </config>
             <layout>
-                <use_secure>1</use_secure>
                 <page_titulo>Pagamento</page_titulo>
                 <page_conteudo>Sua compra segura via Transparente</page_conteudo>
                 <use_linha_suporte>1</use_linha_suporte>
                 <content_linha_suporte><![CDATA[Dúvidas? <a href="javascript:$zopim.livechat.window.show()" class="Chat" id="control_chat">Chat Online</a> | Sac (11) 3333-3333]]></content_linha_suporte>
                 <use_pre_cadastro>1</use_pre_cadastro>
                 <page_layout>4</page_layout>
-                <style_cor>000000</style_cor>
-                <botao_cor>000000</botao_cor>
-                <style_cor_background>F7F7F7</style_cor_background>
+                <style_cor>174D7D</style_cor>
+                <style_cor_background>FAFAFA</style_cor_background>
                 <style_cor_header>FFFFFF</style_cor_header>
+                <style_cor>333333</style_cor>
+                <progress_bar>5CB85C</progress_bar>
+                <style_cor_header_text>333333</style_cor_header_text>
+                <style_cor_footer>333333</style_cor_footer>
+                <botao_cor_success>5CB85C</botao_cor_success>
+                <botao_cor_success_hover>447A18</botao_cor_success_hover>
+                <botao_cor_success_qty_up>FFFFFF</botao_cor_success_qty_up>
+                <botao_cor_success_qty_down>333333</botao_cor_success_qty_down>
+                <borda_cor_success_qty>FFFFFF</borda_cor_success_qty>
+                <botao_cor_default>F7F7F7</botao_cor_default>
+                <botao_cor_default_font>333333</botao_cor_default_font>
+                <icon_cor_default_font>187506</icon_cor_default_font>
+                <botao_cor>333333</botao_cor>
                 <allowsubscribenewsletter>2</allowsubscribenewsletter>
                 <enable_quicklogin>1</enable_quicklogin>
+                <allowcoupon>1</allowcoupon>
             </layout>
             <addfield>
-                <street_lines>4</street_lines>
-                <addressbook>1</addressbook>
-                <allowcoupon>1</allowcoupon>
                 <showimageproduct>1</showimageproduct>
                 <enable_giftmessage>0</enable_giftmessage>
-            </addfield>
-            <modaluse>
+                <use_secure>1</use_secure>
                 <content_options><![CDATA[Termos e condições do site...]]></content_options>
-            </modaluse>
+            </addfield>            
         </onestepcheckout>
     </default>
 </config>

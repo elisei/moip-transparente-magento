@@ -196,6 +196,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
                 $order->save();
                 $profile->addOrderRelation($order->getId());
                 $order->save();
+                $order->sendNewOrderEmail();
                 $payment->save();
                 
                 $transaction = Mage::getModel('sales/order_payment_transaction');
@@ -302,7 +303,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
        
             $productItemInfo = new Varien_Object;
             $productItemInfo->setPaymentType(Mage_Sales_Model_Recurring_Profile::PAYMENT_TYPE_REGULAR);
-            $productItemInfo->setPrice( $profile->getTaxAmount() + $profile->getBillingAmount() + $profile->getShippingAmount() );
+            $productItemInfo->setPrice( $profile->getTaxAmount() + $profile->getBillingAmount() );
 
             $order = $profile->createOrder($productItemInfo);
             $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
@@ -311,6 +312,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
             $payment->setTransactionId($trans_id)->setIsTransactionClosed(1);
             $order->save();
             $profile->addOrderRelation($order->getId());
+            $order->sendNewOrderEmail();
             $payment->save();
 
             $transaction= Mage::getModel('sales/order_payment_transaction');

@@ -1,0 +1,6 @@
+<select class="form-control validate-select input-lg" name="moip_cc_count_cofre" id="moip_cc_count_cofre" placeholder="Escolha as parcelas">
+    <?php $parcelas = $this->getParcelamentoSelect(); ?>
+    <?php foreach ( $parcelas as $key => $value) { ?>
+        <?php echo $parcelas[$key]; ?>
+    <?php } ?>
+</select>

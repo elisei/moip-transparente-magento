@@ -1,0 +1,4 @@
+
+<?php if (!$this->getQuote()->isVirtual()): ?>
+		<?php echo $this->helper('giftmessage/message')->getInline('multishipping_adress', Mage::getSingleton('checkout/session')->getQuote(), $this->getDontDisplayContainer()) ?>
+<?php endif; ?>

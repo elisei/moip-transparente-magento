@@ -1,8 +1,10 @@
 <?php if(Mage::app()->getRequest()->getControllerModule() != "Mage_Checkout" && Mage::app()->getRequest()->getActionName() != "progresscheckout"): ?>
 <?php $info = $this->_prepareInfo(); ?>
 <div class="box-content">
-	<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
-	<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['moip_href_trans']  ?>"  target="_blank">Pagar agora</a></p>
+	
+	<a  class="btn btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['moip_href_trans']  ?>"  target="_blank">
+		<span><span>Pagar agora</span></span>
+	</a>
 </div>
 <?php elseif( Mage::app()->getRequest()->getActionName() == "success"): ?>
 	<?php $info = $this->_prepareInfo(); ?>

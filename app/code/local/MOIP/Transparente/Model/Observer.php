@@ -1,8 +1,24 @@
 <?php
 class Moip_Transparente_Model_Observer
 {
-    public function testCapture(Varien_Event_Observer $observer){
+    
+    public function getOrder($id)
+    {
+        $final = "";
+        $current_order = Mage::getModel('sales/order')->getCollection()->addFieldToFilter('increment_id', $id);
+        if ($current_order) {
+            foreach ($current_order as $order) {
+                $final = $order;
+                break;
+            }
+        }
+        return $final;
+    }
 
+
+
+    public function paymentCapture($observer){
+        
         $pgto             = Mage::getSingleton('checkout/session')->getMoipPayment();
 
         $api = $this->getApi();
@@ -13,6 +29,7 @@ class Moip_Transparente_Model_Observer
             $payment = $order->getPayment();
             $mage_pay         = $order->getId();
             $forma_pagamento  = $payment->getMethodInstance()->getCode();
+            $this->setInit($order);
             $api->generateLog($mage_pay, 'MOIP_Save.log');
             $api->generateLog($forma_pagamento, 'MOIP_Save.log');
 
@@ -28,7 +45,10 @@ class Moip_Transparente_Model_Observer
                 $fees             = $responseMoip->amount->fees;
                 $moipidPay        = $responseMoip->id;
                 
-                $api->generateLog($orderIdMoip, 'MOIP_Save.log');
+                if($forma_pagamento == "moip_cc"){
+                    $infopgto = unserialize($pgto['card_save']);
+                    
+                }
                  
             } else {
                 return $this; 
@@ -53,14 +73,14 @@ class Moip_Transparente_Model_Observer
 
                 $model->setMoipHrefBoleto($href)->setMoipExpirationBoleto($moip_boleto_expirationDate)->setMoipLinecodeBoleto($moip_boleto_lineCode);
             } elseif ($forma_pagamento == "moip_tef") {
-                $href                       = $responseMoip->_links->payOnlineBankDebitBB->redirectHref;
+                $href                       = $responseMoip->_links->payOnlineBankDebitItau->redirectHref;
                 $moip_transf_expirationDate = $responseMoip->fundingInstrument->onlineBankDebit->expirationDate;
                 $moip_transf_bankName       = $responseMoip->fundingInstrument->onlineBankDebit->bankName;
                 $model->setMoipHrefTrans($href)->setMoipBankNameTrans($moip_transf_bankName)->setMoipExpirationTrans($moip_transf_expirationDate);
             } elseif ($forma_pagamento == "moip_cc") {
                 $moip_card_installmentCount = $responseMoip->installmentCount;
                 $moip_card_brand            = $responseMoip->fundingInstrument->creditCard->brand;
-                if($pgto['save_card']){
+                if($infopgto['save_card']){
                     $moip_card_id               = $responseMoip->fundingInstrument->creditCard->id;
                 } else {
                     $moip_card_id               = null;
@@ -74,128 +94,106 @@ class Moip_Transparente_Model_Observer
             }
             $model->save();
 
-           //  try {
-           //      $api->generateLog("------- salvouuuu -------", 'MOIP_Save.log');
-           //      return $this;
-           //  } catch (Exception $e) {
-           //      $this->getApi()->generateLog("----------- erro -  --------------", 'Moip_OrderSave.log');
-           //      $this->getApi()->generateLog($e->getMessage(), 'Moip_OrderSave.log');
-           //      $this->getApi()->generateLog($mage_pay, 'Moip_OrderSave.log');
-           //      $this->getApi()->generateLog($order_moip, 'Moip_OrderSave.log');
-           //      $this->getApi()->generateLog($responseMoip, 'Moip_OrderSave.log');
-           //  }
             return $this;
 
         }
     }
 
-    public function getOrder($id)
-    {
-        $final = "";
-        $current_order = Mage::getModel('sales/order')->getCollection()->addFieldToFilter('increment_id', $id);
-        if ($current_order) {
-            foreach ($current_order as $order) {
-                $final = $order;
-                break;
-            }
-        }
-        return $final;
-    }
-
-
-
-    public function paymentCapture($observer){
-        
-        $api = $this->getApi();
-        
-        $order = $observer->getEvent()->getData('order');
-        
-         if($order){
-            $payment = $order->getPayment();
+    public function setInit($order){
+        if($order){
             $mage_pay         = $order->getId();
-            $forma_pagamento  = $payment->getMethodInstance()->getCode();
-            $api->generateLog($mage_pay, 'MOIP_Save.log');
-            $api->generateLog($forma_pagamento, 'MOIP_Save.log');
-
-
+            $forma_pagamento  = $order->getPayment()->getMethodInstance()->getCode();
             if ($forma_pagamento == "moip_boleto" || $forma_pagamento == "moip_tef" || $forma_pagamento == "moip_cc") {
-
-                $pgto             = Mage::getSingleton('checkout/session')->getMoipPayment();
-                $api->generateLog($pgto, 'MOIP_Save.log');
-                $responseMoip     = $pgto['response_moip'];
-                $orderIdMoip      = $pgto['order_moip'];
-                $email            = $order->getBillingAddress()->getEmail();
-                $customerId       = $order->getCustomerId();
-                $fees             = $responseMoip->amount->fees;
-                $moipidPay        = $responseMoip->id;
-                
-                 
-            } else {
-                return $this; 
-            }
-            if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste"){
-                $ambiente = "teste";
-            }
-            else{
-                $ambiente = "producao";
-            }
-            $model = Mage::getModel('transparente/write');
-            $order_moip = str_replace("ORD-", "", $orderIdMoip);
-            $model->setMagePay($mage_pay)->setMoipOrder($order_moip)->setCustomerEmail($email)->setCustomerId($customerId)->setFormaPagamento($forma_pagamento)->setMoipAmbiente($ambiente)->setMoipFees($fees)->setMoipPay($moipidPay);
-            if ($forma_pagamento == "moip_boleto") {
-                $href                       = $responseMoip->_links->payBoleto->redirectHref;
-                $moip_boleto_expirationDate = $responseMoip->fundingInstrument->boleto->expirationDate;
-                $moip_boleto_lineCode       = $responseMoip->fundingInstrument->boleto->lineCode;
-                $model->setMoipHrefBoleto($href)->setMoipExpirationBoleto($moip_boleto_expirationDate)->setMoipLinecodeBoleto($moip_boleto_lineCode);
-            } elseif ($forma_pagamento == "moip_tef") {
-                $href                       = $responseMoip->_links->payOnlineBankDebitBB->redirectHref;
-                $moip_transf_expirationDate = $responseMoip->fundingInstrument->onlineBankDebit->expirationDate;
-                $moip_transf_bankName       = $responseMoip->fundingInstrument->onlineBankDebit->bankName;
-                $model->setMoipHrefTrans($href)->setMoipBankNameTrans($moip_transf_bankName)->setMoipExpirationTrans($moip_transf_expirationDate);
-            } elseif ($forma_pagamento == "moip_cc") {
-                $moip_card_installmentCount = $responseMoip->installmentCount;
-                $moip_card_brand            = $responseMoip->fundingInstrument->creditCard->brand;
-                if($pgto['save_card']){
-                    $moip_card_id               = $responseMoip->fundingInstrument->creditCard->id;
-                } else {
-                    $moip_card_id               = null;
+              if ($forma_pagamento == "moip_boleto") {
+                    $state_onhold               = $this->initState('order_status_holded_boleto');
+                    $comment                    = "Aguardando confirmação automática de pagamento.";
+                } elseif ($forma_pagamento == "moip_tef") {
+                    
+                    $state_onhold               = $this->initState('order_status_holded_tef');
+                    $comment                    = "Aguardando confirmação automática de pagamento.";
+                    
+                } elseif ($forma_pagamento == "moip_cc") {
+                    $state_onhold               = $this->initState('order_status_holded');
+                    $comment                    = "Aguardando confirmação automática de pagamento.";
                 }
-                $moip_card_first6           = $responseMoip->fundingInstrument->creditCard->first6;
-                $moip_card_last4            = $responseMoip->fundingInstrument->creditCard->last4;
-                $moip_card_birthdate        = $responseMoip->fundingInstrument->creditCard->holder->birthdate;
-                $moip_card_taxDocument      = $responseMoip->fundingInstrument->creditCard->holder->taxDocument->number;
-                $moip_card_fullname         = $responseMoip->fundingInstrument->creditCard->holder->fullname;
-                $model->setMoipCardInstallment($moip_card_installmentCount)->setMoipCardBrand($moip_card_brand)->setMoipCardId($moip_card_id)->setMoipCardFirst6($moip_card_first6)->setMoipCardLast4($moip_card_last4)->setMoipCardBirthdate($moip_card_birthdate)->setMoipCardTaxdocument($moip_card_taxDocument)->setMoipCardFullname($moip_card_fullname);
+            } else {
+                return;
             }
-            $model->save();
 
-           //  try {
-           //      $api->generateLog("------- salvouuuu -------", 'MOIP_Save.log');
-           //      return $this;
-           //  } catch (Exception $e) {
-           //      $this->getApi()->generateLog("----------- erro -  --------------", 'Moip_OrderSave.log');
-           //      $this->getApi()->generateLog($e->getMessage(), 'Moip_OrderSave.log');
-           //      $this->getApi()->generateLog($mage_pay, 'Moip_OrderSave.log');
-           //      $this->getApi()->generateLog($order_moip, 'Moip_OrderSave.log');
-           //      $this->getApi()->generateLog($responseMoip, 'Moip_OrderSave.log');
-           //  }
+            
+            $order->setState(Mage_Sales_Model_Order::STATE_HOLDED, $state_onhold, $comment, $notified = false, $includeComment = true);
+            $order->save();
+            try {
+                return $this;    
+            } catch (Exception $e) {
+                $this->getApi()->generateLog("----------- erro -  --------------", 'Moip_OrderErrorSave.log');
+                $this->getApi()->generateLog($e->getMessage(), 'Moip_OrderErrorSave.log');
+                $this->getApi()->generateLog($mage_pay, 'Moip_OrderErrorSave.log');
+                $this->getApi()->generateLog($order_moip, 'Moip_OrderErrorSave.log');
+                $this->getApi()->generateLog($responseMoip, 'Moip_OrderErrorSave.log');
+            }
+            #$order->sendOrderUpdateEmail(true, $comment);
             return $this;
-
         }
     }
-
-     public function getMoipPayment()
+    public function initState($value){
+        return Mage::getSingleton('transparente/standard')->getConfigData($value);
+    }
+    public function getMoipPayment()
     {
         return $this->getCheckout()->getMoipData();
+    }
+
+    
+
+    public function setStatusAll() {
+            
+            $api                        = $this->getApi();
+            $to                         = now();
+            $moip_boleto_vencimento     =  Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto') + 7;
+            $time_boleto                = '-'.(int)$moip_boleto_vencimento.' day';
+            $from_boleto                = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
+            $from_date                  = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
+            $to_date                    = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
+
+            $api->generateLog("------- Set no state -------", 'MOIP_StateAll.log');
+            $api->generateLog($time_boleto, 'MOIP_StateAll.log');
+            $api->generateLog($from_date, 'MOIP_StateAll.log');
+            $api->generateLog($to_date, 'MOIP_StateAll.log');
+            
+            
+            $orders = Mage::getModel("sales/order")->getCollection()->join(
+                                    array('payment' => 'sales/order_payment'),
+                                    'main_table.entity_id=payment.parent_id',
+                                    array('payment_method' => 'payment.method')
+                                );
+            $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
+                         ->addFieldToFilter('created_at', array('lteq' => $to_date))
+                         ->addAttributeToFilter('status',  array(
+                                                                                'nin' => array(
+                                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
+                                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
+                                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
+                                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
+                                                                                                )
+                                                                                )
+                                                                
+                                                )
+                         ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_cc'), array('eq' => 'moip_boleto'), array('eq' => 'moip_tef')));
+
+            foreach($orders as $order){
+                 $order =  Mage::getModel('sales/order')->load($order->getEntityId());
+                 $this->setStateAll($order);
+            }
     }
 
     public function setStateAll($order){
         $standard = $this->getStandard();
         $api = $this->getApi();
         $model = Mage::getModel('transparente/write');
-        $api->generateLog("------- CONSULTA -------", 'MOIP_CRON.log');
-        $api->generateLog($order->getId(), 'MOIP_CRON.log');
-        $api->generateLog($moip_pay, 'MOIP_CRON.log');
+        $api->generateLog("------- Set no state -------", 'MOIP_StateAll.log');
+        $api->generateLog($order->getId(), 'MOIP_StateAll.log');
+        $api->generateLog($moip_pay, 'MOIP_StateAll.log');
         $result = $model->load($order->getId(), 'mage_pay');
         $moip_pay = $result->getMoipPay();
         if($moip_pay){
@@ -214,7 +212,7 @@ class Moip_Transparente_Model_Observer
             $responseBody = curl_exec($ch);
             $info_curl = curl_getinfo($ch);
             curl_close($ch);
-            $api->generateLog($moip_pay, 'MOIP_CRON.log');
+            $api->generateLog($moip_pay, 'MOIP_StateAll.log');
     
             foreach (json_decode($responseBody, true) as $key => $value) {
                 foreach ($value as $key => $_value) {
@@ -249,185 +247,22 @@ class Moip_Transparente_Model_Observer
         } else {
                  return;
         }
-        
-        
-        
-    }
-
-    public function setStatusCcAll() {
-            $api = $this->getApi();
-            $api->generateLog("aciona", 'MOIP_CRON.log');
-            
-            
-            $to = date('Y-m-d', time());
-
-            $moip_boleto_vencimento = 3;
-            $time_boleto = '-'.(int)$moip_boleto_vencimento.' day';
-
-
-            $from_boleto = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
-
-            
-            $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
-            $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
-
-
-          
-
-            $api->generateLog($from_date, 'MOIP_CRON.log');
-            $api->generateLog($to_date, 'MOIP_CRON.log');
-            $orders = Mage::getModel("sales/order")->getCollection()->join(
-                                    array('payment' => 'sales/order_payment'),
-                                    'main_table.entity_id=payment.parent_id',
-                                    array('payment_method' => 'payment.method')
-                                );
-                    $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
-                            ->addFieldToFilter('created_at', array('lteq' => $to_date))
-                            ->addFieldToFilter('payment.method', array(array('eq' => 'moip_cc')))
-                            ->addAttributeToFilter('status', array('neq' => array('canceled','complete','closed')));
-
-            foreach($orders as $order){
-                 $order =  Mage::getModel('sales/order')->load($order->getEntityId());
-                 $this->setStateAll($order);
-            }
-    }
-
-
-
-    public function setStatusBoletoAll() {
-            $to = date('Y-m-d', time());
-
-            $moip_boleto_vencimento =  Mage::getStoreConfig('payment/moip_transparente_standard/vcmentoboleto') + 7;
-            $time_boleto = '-'.(int)$moip_boleto_vencimento.' day';
-
-
-            $from_boleto = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
-
-            
-            $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
-            $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
-
-            echo $from_date;
-            echo $to_date;
-            
-            $orders = Mage::getModel("sales/order")->getCollection()->join(
-                                    array('payment' => 'sales/order_payment'),
-                                    'main_table.entity_id=payment.parent_id',
-                                    array('payment_method' => 'payment.method')
-                                );
-            $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
-                         ->addFieldToFilter('created_at', array('lteq' => $to_date))
-                         ->addAttributeToFilter('status',  array(
-                                                                                'nin' => array(
-                                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
-                                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
-                                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
-                                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
-                                                                                                )
-                                                                                )
-                                                                
-                                                )
-                         ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_boleto')));
-
-            foreach($orders as $order){
-                 $order =  Mage::getModel('sales/order')->load($order->getEntityId());
-                 $this->setStateAll($order);
-            }
-    }
-
-    public function  setStatusTefAll() {
-            $moip_boleto_vencimento =  Mage::getStoreConfig('payment/moip_transparente_standard/vcmentoboleto') + 5;
-            $time_boleto = '-'.(int)$moip_boleto_vencimento.' day';
-
-
-            $from_boleto = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
-
-            
-            $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
-            $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
-
-            echo $from_date;
-            echo $to_date;
-            
-            $orders = Mage::getModel("sales/order")->getCollection()->join(
-                                    array('payment' => 'sales/order_payment'),
-                                    'main_table.entity_id=payment.parent_id',
-                                    array('payment_method' => 'payment.method')
-                                );
-            $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
-                         ->addFieldToFilter('created_at', array('lteq' => $to_date))
-                         ->addAttributeToFilter('status',  array(
-                                                                                'nin' => array(
-                                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
-                                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
-                                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
-                                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
-                                                                                                )
-                                                                                )
-                                                                
-                                                )
-                         ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_tef')));
-
-            foreach($orders as $order){
-                 $order =  Mage::getModel('sales/order')->load($order->getEntityId());
-                 $this->setStateAll($order);
-            }
-    }
-
-    public function setStatusAll() {
-            $moip_boleto_vencimento =  Mage::getStoreConfig('payment/moip_transparente_standard/vcmentoboleto') + 7;
-            $time_boleto = '-'.(int)$moip_boleto_vencimento.' day';
-
-
-            $from_boleto = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
-
-            
-            $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
-            $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
-
-            echo $from_date;
-            echo $to_date;
-            
-            $orders = Mage::getModel("sales/order")->getCollection()->join(
-                                    array('payment' => 'sales/order_payment'),
-                                    'main_table.entity_id=payment.parent_id',
-                                    array('payment_method' => 'payment.method')
-                                );
-            $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
-                         ->addFieldToFilter('created_at', array('lteq' => $to_date))
-                         ->addAttributeToFilter('status',  array(
-                                                                                'nin' => array(
-                                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
-                                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
-                                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
-                                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
-                                                                                                )
-                                                                                )
-                                                                
-                                                )
-                         ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_cc'), array('eq' => 'moip_boleto'), array('eq' => 'moip_tef')));
-
-            foreach($orders as $order){
-                 $order =  Mage::getModel('sales/order')->load($order->getEntityId());
-                 $this->setStateAll($order);
-            }
-    }
-
+    }   
 
     public function setHoldedNotification(){
-        $moip_boleto_vencimento =  Mage::getStoreConfig('payment/moip_transparente_standard/vcmentoboleto');
-            $time_boleto = '-'.(int)$moip_boleto_vencimento.' day';
+            $api                        = $this->getApi();
+            $standard                   = $this->getStandard();
+            $to                         = now();
+            $moip_boleto_vencimento     =  Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto');
+            $time_boleto                = '-'.(int)$moip_boleto_vencimento.' day';
+            $from_boleto                = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
+            $from_date                  = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
+            $to_date                    = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
 
+            $api->generateLog('----- consulta pedidos em holded', 'MOIP_CronNotification.log');
+            $api->generateLog($from_date, 'MOIP_CronNotification.log');
+            $api->generateLog($to_date, 'MOIP_CronNotification.log');
 
-            $from_boleto = date('Y-m-d',(strtotime($time_boleto, strtotime($to))));
-
-            
-            $from_date = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
-            $to_date = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
-
-            echo $from_date;
-            echo $to_date;
-            
             $orders = Mage::getModel("sales/order")->getCollection()->join(
                                     array('payment' => 'sales/order_payment'),
                                     'main_table.entity_id=payment.parent_id',
@@ -448,15 +283,14 @@ class Moip_Transparente_Model_Observer
                          ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_boleto')));
 
         foreach($orders as $order){
+             $api->generateLog($order->getEntityId(), 'MOIP_CronNotification.log');
              $order =  Mage::getModel('sales/order')->load($order->getEntityId());
              $onhold = $standard->getConfigData('order_status_holded_boleto');
              $state = Mage_Sales_Model_Order::STATE_HOLDED;
              $status = $onhold;
              $comment = "Seu boleto está próximo a vencer, caso não tenha realizado o pagamento ainda, acesse sua conta e realize agora.";
              $update = $this->updateInOrder($order, $state, $status, $comment);
-
         }
-
         
     }
 
@@ -475,9 +309,8 @@ class Moip_Transparente_Model_Observer
         }
 
         return $ogPrice;
-
-      
     }
+
     public function addMassAction($observer)
     {
         $block = $observer->getEvent()->getBlock();
@@ -490,6 +323,7 @@ class Moip_Transparente_Model_Observer
             ));
         }
     }
+
     public function getApi()
     {
         $api = Mage::getModel('transparente/api');
@@ -502,8 +336,6 @@ class Moip_Transparente_Model_Observer
 
 
      public function autorizaPagamento($order, $paid){
-        
-
         if($order->canUnhold()) {
             $order->unhold()->save();
         }
@@ -517,9 +349,6 @@ class Moip_Transparente_Model_Observer
         $invoice->sendEmail();
         $invoice->setEmailSent(true);
         $invoice->save();
-
-
-        
         return;
      }
 

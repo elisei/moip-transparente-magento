@@ -4,21 +4,27 @@ class MOIP_Transparente_Block_Adminhtml_System_Config_Form_Fieldset_Modules_Oaut
 extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Renderer_Interface
 {
 
-    const EndPointProd  = "https://api.moip.com.br/oauth/authorize";
-    const EndPointDev   = "https://sandbox.moip.com.br/oauth/authorize";
+    const EndPointProd  = "https://connect.moip.com.br/oauth/authorize";
+    const EndPointDev   = "https://connect-sandbox.moip.com.br/oauth/authorize";
     const AppIdDev      = "APP-9MUFQ39Y4CQU";
     const AppIdProd     = "APP-AKYBMMVU1FL1";
-    const SCOPE_APP     = "CREATE_ORDERS|VIEW_ORDERS|CREATE_PAYMENTS|VIEW_PAYMENTS";
-    const responseType  = "CODE";
+    const SCOPE_APP     = "RECEIVE_FUNDS,REFUND,MANAGE_ACCOUNT_INFO,DEFINE_PREFERENCES,RETRIEVE_FINANCIAL_INFO";
+    const responseType  = "code";
     
     public function render(Varien_Data_Form_Element_Abstract $element)
     {
         return sprintf(
-            '<tr class="system-fieldset-sub-head" id="row_%s">
-                <td colspan="5">
-                    <h4 id="%s">%s</h4>
-                    <p class="subheading-note" style="font-size:11px;font-style:italic;color:#666; margin-bottom:30px;"><span>%s</span></p>
-                    <div class="action-moip">%s</div>
+            '<tr class="nested" id="row_%s" style="background: #fff">
+                <td colspan="4">
+                    <div class="section-config pp-method-general with-button">
+                        <div class="config-heading">
+                            
+                                <h4 id="%s">%s</h4>
+                                <p class="subheading-note" style="font-size:11px;font-style:italic;color:#666; margin-bottom:30px;"><span>%s</span></p>
+                                <div class="action-moip">%s</div>
+                            
+                        </div>
+                    </div>
                 </td>
             </tr>',
             $element->getHtmlId(),  $element->getHtmlId(), $this->getTitleSetup(), $this->getTextAmbiente(), $this->getActionSetup()
@@ -28,17 +34,17 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
     public function getTitleSetup(){
         $validacao = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
         if(!$validacao){
-            $title = "1º Passo";
+            $title = "1º Passo - Preencher e salvar campo Validação de comunicação";
         } else {
             $oauth      = $this->getIfOauth();
             $webhooks   = $this->getifWebHooks();
             if(!$oauth) {
-                $title = "2º Passo - Autorizar sua Loja a Realizar vendas";
+                $title = "2º Passo - Autorizar APP cliclando nno botão Autorizar Moip";
             } else {
                 if($webhooks){ 
-                    $title = "Configuração concluídas com sucesso";
+                    $title = "Configurações concluídas com sucesso!";
                 } else {
-                    $title = "3ª Habilitar Retorno da transação";
+                    $title = "3ª Passo - Habilitar retorno da transação clicando no botão Configurar Retorno";
                 }
             }
 
@@ -73,7 +79,7 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
 
     public function getTextAmbiente(){
         if(Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste"){
-            $texto = "O ambiente escolhido é de <b>Teste (Sandbox Moip)</b> - O Moip não irá comunicar as vendas a operadora de cartão, essa versão é apenas para testes.";
+            $texto = "O ambiente escolhido é de <strong>Ambiente de Teste (Sandbox Moip)</strong> O Moip não irá comunicar as vendas a operadora de cartão, essa versão é apenas para testes.";
         } else {
             $texto = "O ambiente escolhido é de <b>Produção</b> - Suas vendas serão processadas normalmente.";
         }
@@ -81,35 +87,14 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
     }
 
     public function getUrlClearMoip(){
-        $validacao = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
-        $url_frontend = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, array(
-            '_nosid' => true,
-            'store_scope' => 'default',
-            '_secure' => true,
-            '_type' => 'direct_link'
-        ));
-        return $url_frontend.'Transparente/standard/ClearMoip/validacao/'.$validacao.'/';
+        return Mage::helper("adminhtml")->getUrl("adminhtml/adminhtml_oauthmoip/ClearMoip");
     }
 
     public function getUrlOuathMoip(){
-        $validacao = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
-        $url_frontend = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, array(
-            '_nosid' => true,
-            'store_scope' => 'default',
-            '_secure' => true,
-            '_type' => 'direct_link'
-        ));
-        return $url_frontend.'Transparente/standard/Oauth/validacao/'.$validacao.'/';
+        return Mage::helper("adminhtml")->getUrl("adminhtml/adminhtml_oauthmoip/Oauth");
     }
     public function getUrlEnableWebhooks(){
-        $validacao = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
-        $url_frontend = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, array(
-            '_nosid' => true,
-            'store_scope' => 'default',
-            '_secure' => true,
-            '_type' => 'direct_link'
-        ));
-        return $url_frontend.'Transparente/standard/EnableWebhooks/validacao/'.$validacao.'/';
+       return Mage::helper("adminhtml")->getUrl("adminhtml/adminhtml_oauthmoip/EnableWebhooks");
     }
     public function getRedirectUri(){
         $redirectUri = $this->getUrlOuathMoip();
@@ -134,7 +119,7 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
             $redirectUri    = $this->getRedirectUri();
         }
 
-        $link = $endpoint.'?responseType='.$responseType.'&appId='.$appId.'&redirectUri='.$redirectUri.'&scope='.$scope;
+        $link = $endpoint.'?response_type='.$responseType.'&client_id='.$appId.'&redirect_uri='.$redirectUri.'&scope='.$scope;
         return $link;
     }
 
@@ -151,9 +136,9 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
             if($oauth){
                 if($webhooks){
                     $texto      = "Apagar configuração de permissão do módulo.";
-                    $acao       = "Apagar Configuração Atuais";
+                    $acao       = "Apagar Configuração Atual";
                     $class_btn  = 'danger';
-                    $comentario = "Esse processo permite trocar a conta que receberá o pagamento, mas atenção, ele é IREVERSÌVEL. Para prosseguir clique no link:";
+                    $comentario = "Esse processo permite trocar a conta que receberá o pagamento, mas atenção, ele é IRREVERSÌVEL. Para prosseguir clique no link:";
                     $link       = $this->getUrlClearMoip();
                 } else {
                     $texto      = "Configurar o Retorno de Transação do Moip para o seu Magento";
@@ -179,6 +164,7 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
         $action_setup  = "<h4>{$texto}</h4>";
         $action_setup .= "<p class='subheading-note' style='font-size:11px;font-style:italic;color:#666;'>{$comentario}</p>";
         $action_setup .= "<p class='p-actin-moip'><a href='{$link}' class='btn-moip {$class_btn}'>{$acao}</a></p>";
+        
         return $action_setup;
     }
 }

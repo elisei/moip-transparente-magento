@@ -1,11 +1,12 @@
-<?php $href = $this->getDebitLinks(); ?>
-	<div class="page-title">
-		 <h1><?php echo $this->__('Quase lá! Por favor conclua a transação em seu banco.') ?></h1>
-	</di>
-		<div class="method-type-action grid12-12">
-			<p>Você será redirecionado para o seu banco em <strong><span id="count">10</span>s</strong>, para concluir o pagamento</p>
-			<button type="button" title="Finalizar compra" class="button btn-checkout" onclick="window.location='<?php echo $href ?>'"><span><span>Ir ao Banco <i class="fa fa-arrow-right"></i></span></span></button>
-		</div>
+<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
+<p><?php echo $this->__('As informações de seu pedido foram encaminhadas para o seu email <strong>%s</strong>.', $this->getOrder()->getCustomerEmail()) ?></p>
+	<?php $href = $this->getDebitLinks(); ?>
+	<h3 class="h3"><strong><?php echo $this->__('Você será redirecionado ao seu banco.') ?></strong></h3>
+	<div>Você será redirecionado para o seu banco em <strong><span id="count">10</span>s</strong>, para concluir o pagamento</div>
+	<div class="action-payment-secundary">
+		<button type="button" title="Finalizar compra" class="button btn-checkout" onclick="window.location='<?php echo $href ?>'"><span><span>Ir ao Banco <i class="fa fa-arrow-right"></i></span></span></button>
+	</div>
+		
 <script type="text/javascript">
 //<![CDATA[
 				jQuery(document).ready(function(){
@@ -17,7 +18,7 @@
 					    } else {
 					        document.getElementById("count").innerHTML = counter;
 					         }
-					}, 1000);
+					}, 800);
 				});
 //]]>
 </script>

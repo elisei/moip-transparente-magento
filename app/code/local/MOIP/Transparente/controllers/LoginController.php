@@ -13,23 +13,20 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
 
 	const URL_DEV 				= "https://sandbox.moip.com.br/";
 	const URL_CONNECT_DEV 		= "https://connect-sandbox.moip.com.br/";
+	const SCOPE     			= 'MANAGE_ACCOUNT_INFO';
+
 	const TOKEN_DEV 			= "VPL0MCCFINDWOMA85B8UMJHW2VOPYTLL";
 	const KEY_TEST 				= "Y6LTLBDNRKST1VEXNXMHI07MXLY3VEDW3LWNQHM3";
 	const APP_ID_SAND  			= 'APP-LPEXI3SLWA8R';
 	const APP_SECRET_DEV 		= '08b6eb68f09d418ba20c011d8059e80c';
 
-
-
-	const SCOPE     			= 'MANAGE_ACCOUNT_INFO';
-
-
-
 	const URL_PROD 				= "https://api.moip.com.br/";
 	const URL_CONNECT_PROD 		= "https://connect.moip.com.br/";
-	const TOKEN_PROD			= "11";
-	const KEY_PROD 				= "11";
-	const APP_ID_PROD  			= 'APP-LPEXI3SLWA8R';
-	const APP_SECRET_PROD 		= '08b6eb68f09d418ba20c011d8059e80c';
+
+	const TOKEN_PROD 			= "FEE5P78NA6RZAHBNH3GLMWZFWRE7IU3D";
+	const KEY_PROD 				= "Y8DIATTADUNVOSXKDN0JVDAQ1KU7UPJHEGPM7SBA";
+	const APP_ID_PROD  			= 'APP-FSY889YYQWLZ';
+	const APP_SECRET_PROD 		= '00b54376ab174246ad4ad767a43bd99f';
 
 
 	public function _prepareLayout()
@@ -50,17 +47,25 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
 
     public function getConnectMoip(){
     	if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-        	$url = SELF::URL_CONNECT_DEV.'?response_type=AUTHORIZATION_CODE&client_id='.SELF::APP_ID_SAND.'&redirectUri='.$this->getUriConnect().'&scope='.SELF::SCOPE;
+        	$url = SELF::URL_CONNECT_DEV.'/oauth/authorize/?response_type=AUTHORIZATION_CODE&client_id='.SELF::APP_ID_SAND.'&redirectUri='.$this->getUriConnect().'&scope='.SELF::SCOPE;
         } else {
-        	$url = SELF::URL_CONNECT_PROD.'?response_type=AUTHORIZATION_CODE&client_id='.SELF::APP_ID_PROD.'&redirectUri='.$this->getUriConnect().'&scope='.SELF::SCOPE;
+        	$url = SELF::URL_CONNECT_PROD.'/oauth/authorize/?response_type=AUTHORIZATION_CODE&client_id='.SELF::APP_ID_PROD.'&redirectUri='.$this->getUriConnect().'&scope='.SELF::SCOPE;
         }
         return $url; 
+    }
+    public function getAllValuesAction()
+    {
+    	$this->loadLayout();
+    	$params = $this->getRequest()->getParams();
+    	$json_moip 	= $this->getRequest()->getRawBody();
+    	$this->getResponse()->setBody(Mage::helper('core')->jsonEncode((object)$json_moip));
     }
 
 
 	public function OauthAction(){
 		$this->loadLayout();
 		$params = $this->getRequest()->getParams();
+
 		if($params){
 			$getRequestCode 	= $this->getAcesstoken($params['code']); 
 			$result 			= $getRequestCode['result'];
@@ -68,6 +73,9 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
 			$MPA 				= $result_decode['moipAccount']['id'];
 			$accountInfo 		= $this->getAccountInfo($MPA);
 			$statusCustomer 	= $this->getClientMage($accountInfo);
+
+			$this->ClearAndAddProductCart();
+
 			$checkout			= Mage::getUrl('checkout/onepage/');
 			Mage::app()->getResponse()->setRedirect($checkout, 301)->sendHeaders();
 			
@@ -76,6 +84,62 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
 	}
 
 
+	
+	protected function _getSession()
+	    {
+	        $session = Mage::getSingleton('adminhtml/session_quote');
+
+	        return $session;
+	    }
+
+
+	public function ClearAndAddProductCart(){
+		$product_id = 2;
+		$qty 		= 1;
+		$cart = Mage::helper('checkout/cart')->getCart();
+	    $items = $cart->getItems();
+	    $itemCount = count($items);
+	    if($itemCount > 1)
+	    {
+	        $i = 0;
+	        foreach($items as $item)
+	        {
+	            $i++;
+	            if($i == $itemCount)
+	            {
+	                if($item->getProduct()->getId() == $product_id)
+	                {
+	                    $itemId = $item->getItemId();
+	                    $cart->removeItem($itemId)->save();
+	                }
+	            }
+	        }
+	    }
+	    else
+	    {
+	        foreach($items as $item)
+	        {
+	            if($item->getProduct()->getId() == $product_id)
+	            {
+	                try{
+	                    $quote = Mage::getSingleton('checkout/session')->getQuote();
+	                    $quote->removeAllItems();
+	                    $quote->save();
+	                }catch (Exception $e)
+	                {
+	                    Mage::log('Failed to remove item from cart'.$e.'.');
+	                }
+	            }
+	        }
+	    }
+	   
+		
+		
+		$product = Mage::getModel('catalog/product')->load($product_id);
+		$quote = Mage::getSingleton('checkout/session')->getQuote();
+		$quote->addProduct($product, $qty);
+		$quote->collectTotals()->save();
+	}
 	
     public function getAcesstoken($code){
 		
@@ -199,7 +263,18 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
 		$pass			= $DataMoip->id;
 		$password_hash 	= md5($pass);
 		$taxvat 		= $DataMoip->person->taxDocument->number;
-		$address_user	= $DataMoip->person->address;
+		if(isset($DataMoip->company)){
+			$address_user	= $DataMoip->company->address;
+			$telCode 		= $DataMoip->company->phone->areaCode;
+			$telNumber		= $DataMoip->company->phone->number;
+			$state 			= $this->getEstadoSigla($address_user->state);
+		} else {
+			$address_user	= $DataMoip->person->address;
+			$telCode 		= $DataMoip->person->phone->areaCode;
+			$telNumber		= $DataMoip->person->phone->number;
+			$state 			= $this->getEstadoSigla($address_user->state);
+		}
+		
 		$dob			= $DataMoip->person->birthDate;
 		
 		$customer->setGroupId(1)
@@ -235,12 +310,12 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
 														'3' => $address_user->district,
 													),
 													'city' => $address_user->city,
-													'region_id' => $this->getEstado($address_user->state),
+													'region_id' => $state,
 													'region' => $address_user->state,
 													'postcode' => $address_user->zipCode,
 													'country_id' => 'BR',
-													'telephone' => $person->phone->areaCode.$person->phone->number,
-													'fax' => $person->phone->areaCode.$person->phone->number
+													'telephone' => $telCode.$telNumber,
+													'fax' => $telCode.$telNumber
 												);
 				
 				$customAddress->setData($_custom_address)
@@ -278,89 +353,99 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
 
 		    }
 
-	} 
-    public function getEstado($UF)
+	}
+	private function getEstadoSigla($sigla){ 
+		$region = Mage::getModel('directory/region')->loadByCode($sigla, 'BR');
+		if($region){
+			return $region->getId(); 	
+		} else {
+			return !1;
+		}
+		
+	}
+    public function getEstadoExtenso($UF)
 	{
+		$UF = strtolower($UF);
 		switch ($UF) {
-				case "AC":
+				case "acre":
 					$endereco['ufid'] = 485;
 					break;
-				case "AL":
+				case "alagoas":
 					$endereco['ufid'] = 486;
 					break;
-				case "AP":
+				case "amapá":
 					$endereco['ufid'] = 487;
 					break;
-				case "AM":
+				case "amazonas":
 					$endereco['ufid'] = 488;
 					break;
-				case "BA":
+				case "bahia":
 					$endereco['ufid'] = 489;
 					break;
-				case "CE":
+				case "ceará":
 					$endereco['ufid'] = 490;
 					break;
-				case "DF":
+				case "distrito federal":
 					$endereco['ufid'] = 491;
 					break;
-				case "ES":
+				case "espirito santo":
 					$endereco['ufid'] = 492;
 					break;
-				case "GO":
+				case "goias":
 					$endereco['ufid'] = 493;
 					break;
-				case "MA":
+				case "maranhão":
 					$endereco['ufid'] = 494;
 					break;
-				case "MT":
+				case "mato grosso":
 					$endereco['ufid'] = 495;
 					break;
-				case "MS":
+				case "mato grosso do sul":
 					$endereco['ufid'] = 496;
 					break;
-				case "MG":
+				case "minas gerais":
 					$endereco['ufid'] = 497;
 					break;
-				case "PA":
+				case "pará":
 					$endereco['ufid'] = 498;
 					break;
-				case "PB":
+				case "paraíba":
 					$endereco['ufid'] = 499;
 					break;
-				case "PR":
+				case "paraná":
 					$endereco['ufid'] = 500;
 					break;
-				case "PE":
+				case "pernambuco":
 					$endereco['ufid'] = 501;
 					break;
-				case "PI":
+				case "piauí":
 					$endereco['ufid'] = 502;
 					break;
-				case "RJ":
+				case "rio de janeiro":
 					$endereco['ufid'] = 503;
 					break;
-				case "RN":
+				case "rio grande do norte":
 					$endereco['ufid'] = 504;
 					break;
-				case "RS":
+				case "rio grande do sul":
 					$endereco['ufid'] = 505;
 					break;
-				case "RO":
+				case "rondônia":
 					$endereco['ufid'] = 506;
 					break;
-				case "RR":
+				case "roraima":
 					$endereco['ufid'] = 507;
 					break;
-				case "SC":
+				case "santa catarina":
 					$endereco['ufid'] = 508;
 					break;
-				case "SP":
+				case "são paulo":
 					$endereco['ufid'] = 509;
 					break;
-				case "SE":
+				case "sergipe":
 					$endereco['ufid'] = 510;
 					break;
-				case "TO":
+				case "tocantins":
 					$endereco['ufid'] = 511;
 					break;
 			}

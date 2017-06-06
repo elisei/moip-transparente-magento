@@ -25,19 +25,133 @@ class MOIP_Transparente_Model_Api
     {
         return $this->getCheckout()->getQuote();
     }
-    public function getListaComissoesAvancadas($order, $meio)
-    {
-        $valor_comissao = 20 / 100;
-        foreach ($order->getAllVisibleItems() as $key => $item) {
-            $product        = Mage::getModel('catalog/product')->load($item->getProductId());
-            $comissao_valor = $item->getPrice() - ($item->getPrice() * $valor_comissao);
-            $comissoes[]    = array(
-                'Razao' => 'Produto ' . $item->getName() . ' x ' . $item->getQtyToInvoice() . ' sku: ' . $item->getSku(),
-                #'LoginMoIP' => $product->getAttributeText('loginmoip'),
-                'ValorFixo' => $comissao_valor
-            );
+    public function normalizeComissao($comissionados){
+
+       $_i = 0;
+        foreach ($comissionados as $key => $value) {
+            if(!is_null($value["moipAccount"]["id"])){
+                    $id_sellers[] = $value["moipAccount"]["id"];
+                    $amount_sellers[] = $value["amount"]["fixed"];
+                   
+                   if(in_array($value["moipAccount"]["id"], $controle_sellers_repeat )){
+                        $repeat = true;
+                   } else {
+                    if(!$repeat){
+                        $controle_sellers_repeat[] = $value["moipAccount"]["id"];
+                        $repeat = false;
+                    }
+                    
+                   }
+            } else {
+                unset($comissionados[$_i]);
+            }
+            $_i++;
+           
+           
         }
-        return $comissoes;
+        
+                
+        if($repeat){
+                $unique = array_unique($id_sellers);
+                $duplicates = array_diff_assoc($id_sellers, $unique);
+                $duplicate_keys = array_keys(array_intersect($id_sellers, $duplicates));
+
+                foreach ($duplicate_keys as $key => $value) {
+                    $seller_id_temp             = $comissionados[$value]["moipAccount"]["id"];
+                        unset($comissionados[$value]);
+                    if(!array_key_exists($seller_id_temp, $temp_comissionado )){
+                        $amount_for_seller[$seller_id_temp]     = $amount_sellers[$value] + $amount_for_seller[$seller_id_temp];
+                        $temp_comissionados[$seller_id_temp]    = array(
+                                                                        'moipAccount' => array(
+                                                                                                'id' => $seller_id_temp
+                                                                                                ),
+                                                                        'type' => 'SECONDARY',
+                                                                        'amount' => array(
+                                                                                            'fixed' => $amount_for_seller[$seller_id_temp]
+                                                                                        )
+                                                                    );
+
+                    }
+                }
+
+            foreach ($temp_comissionados as $key => $value) {
+                $new_sellers[] = $value;
+            }
+            $comissionados = array_merge($comissionados, $new_sellers);
+        }
+        return $comissionados;
+    }
+    public function getListaComissoesAvancadas($quote)
+    {
+
+        $comissionados[0] =  array(
+                                'moipAccount' => array('id' => Mage::getStoreConfig('moipall/mktplacet_config/mpa')),
+                                'type' => "PRIMARY",
+                            );
+
+
+        
+        $items     = $quote->getAllVisibleItems();
+        $itemcount = count($items);
+        $produtos  = array();
+        $storeId   = Mage::app()->getStore()->getStoreId();
+
+        $split_type             = Mage::getStoreConfig('moipall/mktplacet_config/split_type');
+
+        if($split_type == 'attributeproduct'){
+            $attribute_mpa          = Mage::getStoreConfig('moipall/mktplacet_config/mpa_forprod');
+            $attribute_commisao     = Mage::getStoreConfig('moipall/mktplacet_config/value_forprod');
+    
+            
+            foreach ($items as $key => $item) {
+                $mpa_secundary  = null;
+                $valor_comissao_comprado = null;
+                $product                     = Mage::getModel('catalog/product')->load($item->getProductId());
+                $mpa_secundary               = $product->getAttributeText($attribute_mpa);
+                $valor_comissao_comprado     = $product->getData($attribute_commisao);
+                
+                $valor_comissao              = $valor_comissao_comprado / 100;
+                $comissao_valor     = $item->getPrice() - ($item->getPrice() * $valor_comissao);
+                $comissao_toJson    = $comissao_valor*$item->getQty();
+                $this->generateLog($item->getProductId(), 'MOIP_Comissioesdois.log');
+                $this->generateLog("MPA ".is_null($mpa_secundary)." setado ".isset($mpa_secundary)." mpa é ".$mpa_secundary, 'MOIP_Comissioesdois.log');
+                $this->generateLog("comissao ".$valor_comissao_comprado  , 'MOIP_Comissioesdois.log');
+                if((string)$mpa_secundary  != ""){
+                    $comissionados[]    = array(
+                                                'moipAccount' => array('id' => $mpa_secundary),
+                                                'type' => "SECONDARY",
+                                                'amount' => array('fixed' => number_format($comissao_toJson, 2, '', ''))
+                                            );                   
+                }
+            }
+        } elseif($split_type == 'perstoreview') {
+            $attribute_mpa          = Mage::getStoreConfig('moipall/mktplacet_config/mpa_store');
+            $attribute_commisao     = Mage::getStoreConfig('moipall/mktplacet_config/value_store');
+    
+
+            foreach ($items as $key => $item) {
+
+                $product                     = Mage::getModel('catalog/product')->load($item->getProductId());
+                $valor_comissao_comprado     = $attribute_commisao;
+                $mpa_secundary               = $attribute_mpa;
+                $valor_comissao              = $valor_comissao_comprado / 100;
+                $comissao_valor     = $item->getPrice() - ($item->getPrice() * $valor_comissao);
+                $comissao_toJson    = $comissao_valor*$item->getQty();
+                if($mpa_secundary){
+                    $comissionados[]    = array(
+                            'moipAccount' => array('id' => $mpa_secundary),
+                            'type' => "SECONDARY",
+                            'amount' => array('fixed' => number_format($comissao_toJson, 2, '', ''))
+                        );
+                }
+            }
+        } else{
+            // Você pode personalizar seu método de split aqui! :D 
+
+        }
+        
+
+        return $comissionados;
     }
     public function generatePayment($json, $IdMoip)
     {
@@ -182,13 +296,21 @@ class MOIP_Transparente_Model_Api
         } else {
             $document_type = "CPF";
         }
+
+        if($quote->getCustomerTipopessoa() == 0 && $quote->getCustomerNomefantasia()){
+            $nome = $quote->getCustomerNomefantasia();
+            $document_type = "CNPJ";
+            $taxvat = $quote->getCustomerCnpj();
+        } else {
+             $nome =  $b->getFirstname() . ' ' . $b->getLastname();
+        }
         $website_id    = Mage::app()->getWebsite()->getId();
         $website_name  = Mage::app()->getWebsite()->getName();
         $store_name    = Mage::app()->getStore()->getName();
         $data          = array(
             'id_transacao' => $quote->getId(),
-            'nome' => 'Pagamento a ' . $website_name,
-            'nome' => $b->getFirstname() . ' ' . $b->getLastname(),
+            
+            'nome' => $nome,
             'email' => strtolower($email),
             'ddd' => $this->getNumberOrDDD($b->getTelephone(), true),
             'telefone' => $this->getNumberOrDDD($b->getTelephone()),
@@ -217,6 +339,8 @@ class MOIP_Transparente_Model_Api
             'frete' => number_format($b->getShippingAmount(), 2, '', '')
         );
         $autida_values = $this->getAuditOrder($quote, $b->getShippingAmount());
+
+        
         $json_order    = array(
             "ownId" => $id_proprio,
             "amount" => array(
@@ -263,8 +387,17 @@ class MOIP_Transparente_Model_Api
                     "country" => "BRA",
                     "zipCode" => $data['billing_cep']
                 )
-            )
+            ),
+           
+           
         );
+        $use_split = Mage::getStoreConfig('moipall/mktplacet_config/enable_split');
+        if($use_split){
+            $comissoes = $this->getListaComissoesAvancadas($quote);
+            $normalize = $this->normalizeComissao($comissoes);
+            $array_receivers = array("receivers" => $normalize);
+            $json_order = array_merge($json_order, $array_receivers);
+        }
         $json_order    = Mage::helper('core')->jsonEncode((object) $json_order);
         $this->generateLog("------ Geração da order #{$id_proprio} ------", 'MOIP_Order.log');
         $this->generateLog("------ Json Enviado da order ------", 'MOIP_Order.log');

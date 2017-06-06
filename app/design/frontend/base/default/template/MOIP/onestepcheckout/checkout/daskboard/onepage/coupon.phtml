@@ -1,0 +1,33 @@
+<div class="panel-group">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" href="#coupon" class="link-toggle"><?php echo($this->getCouponCode()? "Cupom ativo!" : "Cupom"  ) ?></a>
+            </h4>
+        </div>
+        <div id="coupon" class="panel-collapse collapse <?php echo($this->getCouponCode()? "in" : ""  ) ?>">
+            <div class="panel-body">
+                <div class="discount-form row">
+                    <?php if(!$this->getCouponCode()): ?>
+                        <div class="col-sm-12">
+                            <input type="hidden" name="remove" id="remove-coupone" value="0" />
+                            <label>Digite seu <strong>Cupom</strong></label>
+                            <div class="input-group">
+                              <input type="text" class="form-control input-moip" id="coupon_code" name="coupon_code" value="<?php echo $this->htmlEscape($this->getCouponCode()) ?>" >
+                              <span class="input-group-btn">
+                                <button class="btn btn-success" type="button" title="<?php echo $this->__('Apply Coupon') ?>" class="button" onclick="if(!jQuery('#coupon_code').val()){alert('Por Favor, insira um cupom.')}else{updateCoupon();}" value="<?php echo $this->__('Apply Coupon') ?>"><span><span>Aplicar!</span></span></button>
+                              </span>
+                            </div>
+                           <div class="small">O cupom é opcional. Caso não tenha não preencha.</div>
+                        </div>
+                    <?php else: ?>
+                           <div class="col-sm-12"> O cupom "<?php echo $this->getCouponCode() ?>" foi aplicado com sucesso! </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+

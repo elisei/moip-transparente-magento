@@ -1,0 +1,369 @@
+<?php $islogin=0; if(Mage::getSingleton('customer/session')->isLoggedIn()) $islogin=1; ?>
+<?php $customer = Mage::getSingleton('customer/session')->getCustomer(); ?>
+<?php $name = $customer->getFirstname(); ?>
+<form id="onestep_form" autocomplete="off" action="<?php echo $this->getUrl('onestepcheckout/index/updateordermethod') ?>" method="POST" class="scaffold-form">
+	<?php echo $this->getBlockHtml('formkey') ?>
+	<input type="hidden" name="ship_to_same_address" value="1">
+    <div class="col-sm-3" id="address-info">
+	    	<div class="row">
+	    		<div class="col-sm-12">
+	   				<div class="page-title">
+	   					<h2>Endereço de <strong>Entrega</strong></h2>
+	   				</div>
+	   				<div class="sub-name-customer">
+	   					<p><?php echo Mage::helper('onestepcheckout')->__('Olá <strong>%s</strong> , escolha seu endereço ou crie um novo:', $name); ?></p>
+	   				</div>
+   					<?php echo $this->getChildHtml('billing',false,true);?>
+   					<?php if(Mage::getStoreConfig('onestepcheckout/layout/allowcoupon')):?>
+						<?php echo $this->getChildHtml('coupon',false,true);?>
+					<?php endif; ?>
+	   			</div>
+			</div>
+			<?php if (Mage::getSingleton('customer/session')->getCustomer()->getDefaultBilling()): ?>
+				<div class="modal fade" id="NewAddress-type" tabindex="-1" role="dialog" aria-labelledby="NovoEndereço" aria-hidden="true" data-keyboard="false">
+					<div class="vertical-center-moip">
+						<div class="modal-dialog">
+						    <div class="modal-content">
+						      	<div class="modal-header">
+						        	<h2>Novo <strong>Endereço</strong></h2>
+						      	</div>
+						      	<div class="modal-body">
+
+						      			<div class="new-address-type">
+						      				<div class="sub-tite-address">Escolha o Tipo de seu Endereço:</div>
+						      				<div class="row">
+							      				<div class="col-xs-6">
+								      					<div class="btn-group btn-group-justified" data-toggle="buttons">
+									      					<label class="btn btn-default" onclick="SendAddresShipping(0)">
+															    <input type="radio" name="ship_to_same_new_address"  value="0" class="input-radio validate-digits"  autocomplete="off">
+															    <span class="big-icon ">
+																    <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+															   	</span>
+															   	<span class="text">Apenas para Envio</span>
+															</label>
+														</div>
+								      			</div>
+												<div class="col-xs-6">
+													 		
+													<div class="btn-group btn-group-justified" data-toggle="buttons">
+													 	<label class="btn btn-default" onclick="SendAddresShipping(1)">
+														    <input type="radio" name="ship_to_same_new_address"  value="1" class="input-radio validate-digits" autocomplete="off">
+														    <span class="big-icon ">
+															  
+																  <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+																
+															</span>
+															<span class="text">Para Envio e Cobrança</span>
+														</label>
+													</div>
+												</div>
+											</div>
+						      				
+						      			</div>
+						      	</div>
+						      	<div class="modal-footer">
+						      		<div class="row">
+							      		<div class="col-xs-12">
+							      			<button type="button" class="btn btn-block btn-danger" data-dismiss="modal" aria-label="Close">Cancelar</button>
+							      		</div>
+							        </div>
+						       	</div>
+						    </div>
+						</div>
+					</div>
+				</div>
+				<div class="modal fade" id="NewAddress-billing" tabindex="-1" role="dialog" aria-labelledby="NovoEndereço" aria-hidden="true" data-keyboard="false">
+					<div class="vertical-center-moip">
+						<div class="modal-dialog">
+						    <div class="modal-content">
+						      	<div class="modal-header">
+						        	<h2>Novo <strong>Endereço</strong></h2>
+						      	</div>
+						      	<div class="modal-body">
+									<?php echo $this->getChildHtml('billing_form',false,true);?>	
+						      	</div>
+						      	<div class="modal-footer">
+						      		<div class="row">
+							      		<div class="col-xs-6">
+							      			<button type="button" class="btn btn-block btn-danger" onclick="NewAddressCancel()"  data-dimmiss="refresh">Cancelar </button>
+							      		</div>
+							      		<div class="col-xs-6">
+								        	<button type="button" class="btn btn-block btn-primary" onclick="ValideteNewAddressBilling()">Concluir</button>
+								        </div>
+							        </div>
+						       	</div>
+						    </div>
+						</div>
+					</div>
+				</div>
+				<?php if(!Mage::helper('onestepcheckout')->onlyProductDownloadable()):	?>
+						<?php if(Mage::getStoreConfig('onestepcheckout/config/allowshippingotheraddress')):?>
+						<div class="modal fade" id="NewAddress-shipping" tabindex="-1" role="dialog" aria-labelledby="NovoEndereço" aria-hidden="true" data-keyboard="false">
+							<div class="vertical-center-moip">
+								<div class="modal-dialog">
+								    <div class="modal-content">
+								      	<div class="modal-header">
+								        	<h2>Novo <strong>Endereço</strong></h2>
+								      	</div>
+								      	<div class="modal-body">												
+												<?php echo $this->getChildHtml('shipping',false,true);?>
+								      	</div>
+								      	<div class="modal-footer">
+								      		<div class="row">
+									      		<div class="col-xs-6">
+									      			<button type="button" class="btn btn-block btn-danger" onclick="NewAddressCancel()"  data-dimmiss="refresh">Cancelar </button>
+									      		</div>
+									      		<div class="col-xs-6">
+										        	<button type="button" class="btn btn-block btn-primary" onclick="ValideteNewAddressShipping()">Concluir</button>
+										        </div>
+									        </div>
+								       	</div>
+								    </div>
+								</div>
+							</div>
+						</div>
+					<?php endif; ?>
+				<?php endif;?>
+
+									
+			<?php endif; ?>
+    </div>
+    
+    <div class="col-sm-6" id="meio-de-envio">
+    	<div class="row">
+    		<div class="col-sm-12">
+            	<?php if(!Mage::helper('onestepcheckout')->onlyProductDownloadable()):?>
+						<?php echo $this->getChildHtml('shipping_method',false,true);?>
+						<?php if(Mage::getStoreConfig('onestepcheckout/layout/enable_giftmessage')):?>
+							<?php echo $this->getChildHtml('additional',false,true) ?>
+						<?php endif; ?>
+				<?php endif?>
+				
+			</div>
+		</div>
+		<div class="border-bootom"></div>
+    	<div class="row" id="meio-de-pagamento">
+    		<div class="col-sm-12">
+				<?php echo $this->getChildHtml('payment',false,true);?>
+			</div>	
+    	</div>
+    </div>
+
+    <div class="col-sm-3">
+			<div class="row">
+				<div class="col-sm-12 hidden-md hidden-lg">
+		        	<div id="onestepcheckout_place_order_button">
+		                    <button type="button" title="<?php echo $this->__('Place Order') ?>" class="btn btn-success btn-lg btn-block moip-place-order" id="checkout-onepage-buttom">
+		                        <span><span><?php echo $this->__('Place Order') ?> <i class="fa fa-arrow-right"></i></span></span></button>
+		          	</div>
+		        </div>
+				<div class="col-sm-12">
+					<div class="page-title">
+						<h2><strong>Pedido</strong></h2>
+					</div>
+					<div id="review">
+							<?php echo $this->getChildHtml('review',false,true);?>	
+					</div>
+				</div>
+			</div>
+			<div class="actions-fixed">
+		    	<div class="row">
+					<div class="col-sm-12">
+			             <?php if(Mage::getStoreConfig('onestepcheckout/layout/termos')):?>
+			             	<div class="form-group">
+			             		<label class="checkbox-inline checkbox-review">
+										<input class="required-entry checkbox required-entry" type="checkbox" title="Aceitar termos e condições da loja" name="accept_terms" value="1" checked="checked">
+										<?php echo $this->__('Eu aceito');?> <a href="#"  data-toggle="modal" data-target="#termos_modal"  href="#"><?php echo $this->__('os termos compra do site.');?></a>
+								</label>
+			             	</div>
+			             <?php endif ?>
+			             <?php if(Mage::getStoreConfig('onestepcheckout/layout/usenews')==1):?>
+			                    <?php if(Mage::helper('onestepcheckout')->issubscribed()):?>
+			                    	<div class="form-group">
+			                        	<label class="checkbox-inline checkbox-review">
+			                                <input type="checkbox" name="subscribe_newsletter" value="0" title="<?php echo $this->__('Receber novidades') ?>"> <?php echo $this->__('Receber novidades') ?>
+			                          	</label>
+			                        </div>
+			                    <?php endif?>
+			             <?php endif ?>
+			             <?php if(Mage::getStoreConfig('onestepcheckout/layout/usenews')==2):?>
+			                    <?php if(Mage::helper('onestepcheckout')->issubscribed()):?>
+			                    	<div class="form-group">
+			                        	<label class="checkbox-inline checkbox-review">
+			                                <input type="checkbox" name="subscribe_newsletter"  value="1" checked="checked" title="<?php echo $this->__('Receber novidades') ?>"> <?php echo $this->__('Receber novidades') ?>
+			                         	</label>
+			                        </div>
+			                    <?php endif?>
+			             <?php endif?>
+			             
+			             <?php if(Mage::getStoreConfig('onestepcheckout/layout/enable_messagetosystem')):?>
+			                    <div class="onestepcheckout-comments">
+			                        <label for="id_comments" class="checkbox-review"><?php echo $this->__('Comentários do Pedido:');?></label><br/>
+			                        <textarea id="id_comments" name="onestepcheckout_comments" class="form-control" cols="40" rows="4"></textarea>
+			                    </div>
+			             <?php endif;?>
+			        </div>
+			        <div class="col-sm-12">
+			        	<div id="onestepcheckout_place_order_button">
+			                    <button type="button" title="<?php echo $this->__('Place Order') ?>" class="btn btn-success btn-lg btn-block moip-place-order" id="checkout-onepage-buttom">
+			                        <span><span><?php echo $this->__('Place Order') ?></span></span></button>
+			          	</div>
+			          	
+			        </div>
+					<?php if(Mage::getStoreConfig('onestepcheckout/layout/secure')): ?>
+					<div class="col-sm-12">
+						<div class="selos-seguranca">
+							
+								<div class="secure-info">
+									<?php echo Mage::getStoreConfig('onestepcheckout/layout/block_selos'); ?>
+								</div>
+							
+						</div>
+					</div>
+					<?php endif; ?>
+				</div>
+			</div>
+	</div>
+
+</form>
+
+
+<div class="modal fade" id="modal-loading-process" tabindex="-1" role="dialog" data-toggle="modal" aria-labelledby="smallModal" aria-hidden="true">
+  <div class="vertical-center-moip">
+  		<div class="modal-dialog">
+	        <div class="progress" id="moip-loading">
+	          <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+	            Por favor, aguarde...
+	          </div>
+	        </div>
+  		</div>
+	</div>
+</div>
+
+<?php if (!Mage::getSingleton('customer/session')->getCustomer()->getDefaultBilling()): ?>
+	<div class="modal fade" id="save_address_primary_modal" tabindex="-1" role="dialog" aria-labelledby="Cadastrar Endereço">
+		<div class="vertical-center-moip">
+	        <div class="modal-dialog modal-md" role="document">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <h2>Endereço <strong>Principal</strong></h2>
+	                </div>
+	                <form id="save_address_primary" autocomplete="on"  name="save_address_primary" class="scaffold-form">
+	                	<div class="modal-body">
+	                    	<?php echo $this->getChildHtml('billing_form',false,true);?>
+	                	</div>
+	                	<div class="modal-footer">
+	                    	<button type="submit" class="btn btn-block  btn-primary"><span><span>Salvar Endereço</span></span></button>
+	                	</div>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
+    </div>
+<?php endif; ?>
+<?php if (Mage::getStoreConfig('onestepcheckout/layout/termos')): ?>
+<div class="modal fade" id="termos_modal" tabindex="-1" role="dialog" aria-labelledby="Termos">
+	<div class="vertical-center-moip">
+	    <div class="modal-dialog modal-lg" role="document">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h2 >Termos e Condições</h2>
+	            </div>
+	            <div class="modal-body">
+	                <?php echo Mage::getStoreConfig('onestepcheckout/layout/content_options');?>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
+	            </div>
+	        </div>
+	    </div>
+    </div>
+</div>
+<?php endif; ?>
+
+		
+<?php if(!$islogin):?>
+	<div class="modal fade " id="loginModel" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h4 >Entrar</h4>
+	      </div>
+	      <div class="modal-body">
+	        		<?php echo $this->getChildHtml('login',false,true);?>
+	      </div>
+	      <div class="modal-footer">
+		        <button type="button" class="button btn btn-danger" data-dismiss="modal">Cancelar</button>
+  				<button class="btn btn-lg btn-success"  title="Entrar" onclick="onepageLoginPre(this)" type="button" name="pre-login"><span><span>Entrar</span></span></button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="modal fade " id="EsqueceuSenha" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h4 >Recuperar Senha</h4>
+	      </div>
+	      <div class="modal-body">
+	        		<?php echo $this->getChildHtml('forgotpassword',false,true);?>
+	      </div>
+	       <div class="modal-footer">
+	            <button type="button" class="btn btn-danger" data-dismiss="modal" id="close-forgetpassord" aria-hidden="true">Voltar para página de login</button>
+		           <button id="btforgotpass" type="button" onclick="onepageforgotpassword(this)" title="<?php echo $this->__('Enviar') ?>" class="btn btn-success"><span ><span><?php echo $this->__('Enviar') ?></span></span></button>
+	            
+	    </div>
+	  </div>
+	</div>
+<?php endif; ?>
+
+			
+
+		
+<?php if (!Mage::getSingleton('customer/session')->getCustomer()->getDefaultBilling()): ?>
+	<script type="text/javascript">
+		jQuery('#save_address_primary :input').blur(function() {
+			if (jQuery(this).attr('id') != "billing:day" && jQuery(this).attr('id') != "billing:month") {
+				Validation.validate(jQuery(this).attr('id'));
+			};
+		});
+	    var formId = 'save_address_primary';
+	    var myForm = new VarienForm(formId, true);
+	    var postUrl = '<?php echo $this->getUrl("onestepcheckout/index/saveaddess") ?>';
+	    function doAjax() {
+	        if (myForm.validator.validate()) {
+	            new Ajax.Updater(
+	                { success:'formSuccess' }, postUrl, {
+	                    method:'post',
+	                    asynchronous:true,
+	                    evalScripts:false,
+	                    onComplete:function(request, json) {
+
+	                        location.reload();
+	                        visibilyloading('end');
+	                        
+	                    },
+	                    onLoading:function(request, json){
+	                    	
+	                       	visibilyloading();
+	                        
+	                    },
+	                    parameters: $(formId).serialize(true),
+	                }
+	            );
+	        } else {
+
+	        	
+	        	
+	        }
+	    }
+	    new Event.observe(formId, 'submit', function(e){
+	        e.stop();
+	        doAjax();
+	        
+	        
+	    });
+	</script>
+<?php endif; ?>
+		

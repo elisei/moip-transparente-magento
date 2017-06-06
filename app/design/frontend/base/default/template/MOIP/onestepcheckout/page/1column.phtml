@@ -1,60 +1,167 @@
-<?php
-/**
- * Magento
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Academic Free License (AFL 3.0)
- * that is bundled with this package in the file LICENSE_AFL.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/afl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Magento to newer
- * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
- *
- * @category    design
- * @package     base_default
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- */
-?>
-<?php
-/**
- * Template for Mage_Page_Block_Html
- */
-?>
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<?php echo $this->getChildHtml('head') ?>
-</head>
-<body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
+<html lang="pt_BR">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+        <?php echo $this->getChildHtml('head') ?>
+        <?php $color = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor'); ?>
+        <?php $header_color_text = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor_header_text'); ?>
+        <?php $footer_color = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor_footer'); ?>        
+        <?php $botao_color = "#".Mage::getStoreConfig('onestepcheckout/layout/botao_cor');?>
+        <?php $style_cor_background = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor_background');?>
+        <?php $style_cor_header = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor_header');?>
+        <?php $style_cor_step = "#".Mage::getStoreConfig('onestepcheckout/layout/style_cor_step');?>
+        <?php $botao_cor_default = "#".Mage::getStoreConfig('onestepcheckout/layout/botao_cor_default');?>
+        <?php $botao_cor_default_font = "#".Mage::getStoreConfig('onestepcheckout/layout/botao_cor_default_font');?>
+        <?php $icon_cor_default_font = "#".Mage::getStoreConfig('onestepcheckout/layout/icon_cor_default_font');?>
+        <?php $progress_bar = "#".Mage::getStoreConfig('onestepcheckout/layout/progress_bar');?>
+        <?php $botao_cor_success = "#".Mage::getStoreConfig('onestepcheckout/layout/botao_cor_success');?>
+        <?php $botao_cor_success_hover = "#".Mage::getStoreConfig('onestepcheckout/layout/botao_cor_success_hover');?>
+        <?php $botao_cor_success_qty_up = "#".Mage::getStoreConfig('onestepcheckout/layout/botao_cor_success_qty_up');?>
+        <?php $botao_cor_success_qty_down = "#".Mage::getStoreConfig('onestepcheckout/layout/botao_cor_success_qty_down');?>
+        <?php $borda_cor_success_qty = "#".Mage::getStoreConfig('onestepcheckout/layout/borda_cor_success_qty');?>
 
-
-<div class="wrapper">
-    <?php echo $this->getChildHtml('header') ?>
-    <?php echo $this->getChildHtml('global_notices') ?>
-    <div class="page container">
-        
-        <div class="container">
+        <style type="text/css">
+            <?php if(Mage::getStoreConfig('onestepcheckout/layout/useimage')) :?>
+            .modal-header h2, .modal-header .h2, .modal-header h3, .modal-header .h3 { color: #000 !important; }
+             body {
+                background: <?php echo $style_cor_background; ?>;
+                background-color: rgba(0, 0, 0, 0);
+                background: url(<?php echo Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('onestepcheckout/layout/img_bg') ?>) no-repeat bottom center fixed;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                background-size: cover;
+                -o-background-size: cover;
+                height: 100%
+              }
+              .sub-name-customer { color: #fff; }
+            <?php else: ?>
+              .moip-wrapper {background: <?php echo $style_cor_background; ?>;}
+            <?php endif; ?>
+            h2, h3, .h2, .h2 {color: <?php echo $color; ?> !important; font-family: "Arial"}
+            .full-container, .header {background: <?php echo $style_cor_header;?>; border-bottom: 1px solid #dddddd; border-top: 1px solid #dddddd;} 
+            .header {color: <?php echo $header_color_text ?>;}
+            .footer-moip, .footer-moip a{color: <?php echo $footer_color ?>;}
+            thead, tfoot {
+              background: <?php echo $style_cor_background; ?>;
+            }
+            .radio {color: <?php echo  $color ?>;} 
+            .btn-default { background: #ffffff; color: #777; border-radius: 5px !important}
+            .notes {color:  <?php echo $color; ?>;} 
+            .checkbox-review {color:  <?php echo $color; ?>;}
+            .new-address-type .radio { color: <?php echo $color; ?>;}
+            .btn-shipping-availble.active:before, .btn-address.active:before, .btn-shipping-availble:hover:before, .btn-address:hover:before, .btn-shipping-availble.active:before, .btn-address.active.btn-shipping-availble:before, .btn-address.active.icon-payment:before, .btn-payment-available.active .icon-payment:before, .btn-payment-available:hover .icon-payment:before, span.h4.address-title{ color:  <?php echo $icon_cor_default_font; ?>;}
+            .btn-default:hover, .btn-default:focus, .btn-default.active {background: <?php echo $botao_cor_default ?>;color:  <?php echo $botao_cor_default_font ?>;}
+            .btn-payment-available.active:after {border-left-color: <?php echo $botao_cor_default ?>;}
+            .bs-wizard > .bs-wizard-step > .bs-wizard-dot, .bs-wizard > .bs-wizard-step > .progress > .progress-bar, .bs-wizard > .bs-wizard-step > .bs-wizard-dot { background-color: <?php echo $header_color_text ?>; background-image: none;}
+            .bs-wizard > .bs-wizard-step .bs-wizard-stepnum { color: <?php echo $header_color_text ?>; }
+            .btn-default.active .badge, .btn-default:hover .badge { background: none !important; border: 2px solid <?php echo $icon_cor_default_font; ?>; top: 1px !important; color: <?php echo $icon_cor_default_font; ?>;}
+            .footer-content { color: <?php echo $footer_color ?>;}
+            .glyphicon {font-family: 'Glyphicons Halflings' !important;}
+            .progress-bar { background-color: <?php echo $progress_bar ?>;}
+            .progress-bar.progress-bar-striped.active {
+                background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent) !important;
+                background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent) !important;
+                background-size: 40px 40px !important;
+                -webkit-animation: progress-bar-stripes 2s linear infinite !important;
+                animation: progress-bar-stripes 2s linear infinite !important;
+            }
+            button.btn.btn-success.btn-number {
+              background: <?php echo $botao_cor_success_qty_up ?>;
+              border-color: <?php echo $borda_cor_success_qty ?>;
+              color: <?php echo $borda_cor_success_qty ?>;
+            }
+            button.btn.btn-danger.btn-number {
+              background: <?php echo $botao_cor_success_qty_down ?>;
+              border-color: <?php echo $borda_cor_success_qty ?>;
+              color: <?php echo $borda_cor_success_qty ?>;
+            }
+            button.btn.btn-number:hover, button.btn.btn-number:focus, button.btn.btn-number:active, button.btn.btn-number:active:hover  {
+             background-color: <?php echo $borda_cor_success_qty ?>;
+             color: <?php echo $botao_cor_success_qty_down ?> !important;
+              
+            }
+            .input-number {
+             border-color: <?php echo $borda_cor_success_qty ?>;
+             color: <?php echo $borda_cor_success_qty ?>;
+            }
+            .btn-success {
+                background: <?php echo $botao_cor_success ?>;
+                border-color: transparent;
+            }
+            .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success:active:hover {
+                background: <?php echo $botao_cor_success_hover ?>;
+                border-color: transparent;
+            }
+        </style>
+    </head>
+    <body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
+        <div class="moip-wrapper">
+            <?php echo $this->getChildHtml('header') ?>
+            <?php echo $this->getChildHtml('global_notices') ?>
+            <div class="container" id="checkout-moip">
                 <?php echo $this->getChildHtml('after_body_start') ?>
                 <?php echo $this->getChildHtml('global_messages') ?>
                 <?php echo $this->getChildHtml('content') ?>
-        </div>
+                <?php echo $this->getChildHtml('global_cookie_notice') ?>
+                <?php echo $this->getChildHtml('before_body_end') ?>
+            </div>
+            <div class="full-container" id="footer-inbootom">
+                <div class="container">
+                    
+                    <div class="row">
+                        <div class="footer-moip">
+                                <div class="footer-content suport-info">
+                                    <?php echo(Mage::getStoreConfig('onestepcheckout/layout/use_linha_suporte')? Mage::getStoreConfig('onestepcheckout/layout/content_linha_suporte') : "") ?>
+                                </div>
+                            
+                                <div class="footer-content copyright-info">
+                                    <?php $storeCopyright = Mage::getStoreConfig('design/footer/copyright'); echo $storeCopyright; ?>
+                                </div>
+                            
+                        </div>
+                     </div>
+                </div>
+            </div>
+         
+            <div class="modal fade" id="store_secure_content" tabindex="-1" role="dialog" data-toggle="modal" aria-labelledby="smallModal" aria-hidden="true">
+                <div class="vertical-center-moip">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">Loja Segura</h4>
+                          </div>
+                          <div class="modal-body">
+                                 <?php echo Mage::getStoreConfig('onestepcheckout/layout/secure'); ?>
+                          </div>
+                          <div class="modal-footer">
+                                <button type="button" class="btn btn-success" data-dismiss="modal"  aria-hidden="true">Entendi!</button>
+                          </div>
+                        </div>
+                      </div>   
+                  </div>
+            </div>
+            <div class="modal fade" id="ErrosFinalizacao" tabindex="-1" role="dialog" data-toggle="modal" aria-labelledby="smallModal" aria-hidden="true">
+              <div class="vertical-center-moip">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Ops, encontramos alguns erros</h4>
+                      </div>
+                      <div class="modal-body">
+                          <div class="erros_cadastro">
+                              <ul class="erros_cadastro_valores"></ul>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"  aria-hidden="true">Vou corrigir!</button>
+                      </div>
+                    </div>
+                  </div>   
+              </div>
+          </div>
 
-    </div>
-    <div class="full-container">
-        <?php # echo $this->getChildHtml('footer') ?>
-        <?php echo $this->getChildHtml('global_cookie_notice') ?>
-        <?php echo $this->getChildHtml('before_body_end') ?>
-    </div>
-</div>
-<?php echo $this->getAbsoluteFooter() ?>
-</body>
+
+          
+        </div>
+        <?php echo $this->getAbsoluteFooter() ?>
+    </body>
 </html>

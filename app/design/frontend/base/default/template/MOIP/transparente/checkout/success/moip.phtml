@@ -1,10 +1,28 @@
+
 <div class="row"> 
-	<?php echo $this->getChildTemplate(); ?>
-</div>
-<div class="row">
-	<?php echo $this->getChildHtml('details'); ?>
+	<div class="col-md-8 col-md-offset-2" id="info-payment-top">
+			<?php if ($this->getOrderId()):?>
+				<?php if ($this->getCanViewOrder()) :?>
+				  	<h1 class="h1"><?php echo $this->__('Pedido %s', sprintf('<a href="%s">#%s</a>', $this->escapeHtml($this->getViewOrderUrl()), $this->escapeHtml($this->getOrderId()))) ?></h1>
+				<?php  else :?>
+				    <h1 class="h1"><?php echo $this->__('Pedido #%s', $this->escapeHtml($this->getOrderId())) ?></h1>
+				<?php endif;?>
+			<?php endif;?>
+			<?php echo $this->getChildTemplate(); ?>
+	</div>
 </div>
 
+<?php if(Mage::getStoreConfig('moipall/success_page/detalis')): ?>
+	<hr class="line-division">
+		<?php echo $this->getChildHtml('details'); ?>
+		<div class="clearfix"></div>
+	<hr class="line-division">
+<?php endif ?>
+
+	
+	<div class="a-center">
+		<?php echo Mage::getStoreConfig('moipall/success_page/outros_funil') ?>
+	</div>
 
 
 

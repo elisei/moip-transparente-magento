@@ -76,55 +76,41 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 
 	}
 	public function getVisaImage() {
-		if (Mage::getStoreConfig('moipall/config/trocar_bandeira_cartao')) {
-			return Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_visa');
-		}else {
+		
 			return $this->getSkinUrl('MOIP/transparente/imagem/Visa.png');
-		}
+		
 	}
 	public function getMastercardImage() {
-		if (Mage::getStoreConfig('moipall/config/trocar_bandeira_cartao')) {
-			return Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_master');
-		}else {
+		
 			return $this->getSkinUrl('MOIP/transparente/imagem/Mastercard.png');
-		}
+		
 	}
 	public function getDinersImage() {
-		if (Mage::getStoreConfig('moipall/config/trocar_bandeira_cartao')) {
-			return Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_diners');
-		}else {
+		
 			return $this->getSkinUrl('MOIP/transparente/imagem/Diners.png');
-		}
+		
 	}
 	public function getAmericanExpressImage() {
-		if (Mage::getStoreConfig('moipall/config/trocar_bandeira_cartao')) {
-			return Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_american');
-		}else {
+		
 			return $this->getSkinUrl('MOIP/transparente/imagem/AmericanExpress.png');
-		}
+		
 	}
 	public function getHipercardImage() {
-		if (Mage::getStoreConfig('moipall/config/trocar_bandeira_cartao')) {
-			return Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_hipercard');
-		}else {
+		
 			return $this->getSkinUrl('MOIP/transparente/imagem/Hipercard.png');
-		}
+		
 	}
 	
 	public function getHiperImage() {
-		if (Mage::getStoreConfig('moipall/config/trocar_bandeira_cartao')) {
-			return Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_hiper');
-		}else {
+		
 			return $this->getSkinUrl('MOIP/transparente/imagem/Hiper.png');
-		}
+		
 	}
 
 	public function getEloImage() {
-		if (Mage::getStoreConfig('moipall/config/trocar_bandeira_cartao')) {
-			return Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/cartao_elo');
-		}else {
+		
 			return $this->getSkinUrl('MOIP/transparente/imagem/Elo.png');
-		}
+		
 	}
 
 	public function imageCofre($brand){

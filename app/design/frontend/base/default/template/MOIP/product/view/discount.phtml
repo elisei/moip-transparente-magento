@@ -1,4 +1,18 @@
 <?php if($this->getPercentual() &&  $this->getNewPriceDiscount()): ?>
-	<div class="line-boleto-text"><?php echo $this->__(' %s de desconto no boleto', $this->getPercentual().'%') ?></div>
-	<div class="line-boleto-price"><?php echo $this->getNewPriceDiscount(); ?></div>
+<div class="discount-info-boleto v-center">
+	<div class="col-xs-4 icon-tag-discount">
+		<div class="row">
+			<?php echo (int)$this->getPercentual() ?>%
+		</div>
+	</div>
+	<div class="col-xs-8">
+		<div class="row">
+			<div class="line-boleto-price"><?php echo $this->getNewPriceDiscount(); ?></div>
+			<div class="line-boleto-text"><?php echo $this->__('à vista no boleto') ?></div>
+		</div>
+	</div>
+	
+</div>
+	
+	
 <?php endif ?>

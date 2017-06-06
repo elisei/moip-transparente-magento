@@ -1,49 +1,45 @@
 <?php $status = $this->getCardStatus(); ?>
-
-
 <?php if($status == "CANCELLED"): ?>
-	<div class="page-title">
-		    <h1><?php echo $this->__('Pagamento Cancelado') ?></h1>
+	<h2 class="h2"><?php echo $this->__('Seu pedido foi <strong>%s</strong>', 'Cancelado'); ?></h2>
+	<div class="row">
+		<strong><?php echo  Mage::helper('transparente')->__($this->getDescriptionStatusCancel()); ?></strong>
 	</div>
-		
-	<div class="method-type-action grid12-12">
-		<ul class="messages"><li class="error-msg"><ul>
-
-		
-		<li><span>Motivo: <b><?php echo  Mage::helper('transparente')->__($this->getDescriptionStatusCancel()); ?></b></span></li>
-		<li><span><?php echo $this->__('Para escolher outro método de pagamento ou tentar novamente clique no link a baixo:') ?></span></li>
-		</ul></li></ul>
-		<p>
-			<a href="<?php echo Mage::getUrl(''); ?>sales/order/reorder/order_id/<?php echo $this->getLinkReorder() ?>/" class="link-reorder button btn-cart btn btn-success" ><span><span>Clique Aqui Escolher Outro Método de Pagamento</span></span></a>
-		</p>
-	</div>
-
+	<?php echo $this->__('As informações de seu pedido foram encaminhadas para o seu email <strong>%s</strong>.', $this->getOrder()->getCustomerEmail()) ?>
+		<div class="action-payment-secundary">
+			<a href="<?php echo Mage::getUrl(''); ?>sales/order/reorder/order_id/<?php echo $this->getLinkReorder() ?>/" class="link-reorder button btn-cart btn btn-success">
+				<span><span>Tente Novamente ou Escolha Outro Método</span></span>
+			</a>
+		</div>
 <?php elseif($status == "IN_ANALYSIS"): ?>
-	<div class="page-title">
-		 <h1><?php echo $this->__('Aguardando confirmação de pagamento') ?></h1>
-	</di>
-	<div class="method-type-action grid12-12">
-		<p><?php echo $this->__('Seu pagamento foi encaminhado para a análise, por favor aguarde a atualização automática do pedido.') ?></p>
+	<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido <strong>sucesso</strong>'); ?></h2>
+	<h3 class="h3"><?php echo $this->__('O seu pagamento foi <strong>%s</strong>', 'encaminhado para análise'); ?></h3>
+	<div class="action-payment-secundary">
+		<a href="<?php echo Mage::getUrl(''); ?>sales/order/view/order_id/<?php echo $this->getLinkReorder() ?>/" class="link-reorder button btn-cart btn btn-success">
+			<span><span>Acompanhe o seu pedido</span></span>
+		</a>
 	</div>
 <?php elseif($status == "AUTHORIZED"): ?>
-	<div class="page-title">
-		 <h1><?php echo $this->__('Pagamento Aprovado') ?></h1>
-	</di>
-	<div class="method-type-action grid12-12">
-		<p><?php echo $this->__('Seu pagamento foi aprovado.') ?></p>
+	<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
+	<h3 class="h3"><?php echo $this->__('O seu pagamento foi <strong>%s</strong>', 'autorizado'); ?></h3>
+	<div class="action-payment-secundary">
+		<a href="<?php echo Mage::getUrl(''); ?>sales/order/view/order_id/<?php echo $this->getLinkReorder() ?>/" class="link-reorder button btn-cart btn btn-success">
+			<span><span>Acompanhe o seu pedido</span></span>
+		</a>
 	</div>
 <?php elseif($status == "WAITING"): ?>
-	<div class="page-title">
-		 <h1><?php echo $this->__('Aguardando confirmação de pagamento') ?></h1>
-	</di>
-	<div class="method-type-action grid12-12">
-		<p><?php echo $this->__('Seu pagamento foi encaminhado para a análise, por favor aguarde a atualização automática do pedido.') ?></p>
+	<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
+	<h3 class="h3"><?php echo $this->__('O seu pagamento foi <strong>%s</strong>', 'encaminhado para análise'); ?></h3>
+	<div class="action-payment-secundary">
+		<a href="<?php echo Mage::getUrl(''); ?>sales/order/view/order_id/<?php echo $this->getLinkReorder() ?>/" class="link-reorder button btn-cart btn btn-success">
+			<span><span>Acompanhe o seu pedido</span></span>
+		</a>
 	</div>
 <?php else: ?>
-	<div class="method-type-payment grid12-12">
-		<h1><?php echo $this->__('Aguardando confirmação de pagamento') ?></h1>
-	</div>
-	<div class="method-type-action grid12-12">
-		<p><?php echo $this->__('Seu pagamento foi encaminhado para a análise, por favor aguarde a atualização automática do pedido.') ?></p>
+	<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
+	<h3 class="h3"><?php echo $this->__('O seu pagamento foi <strong>%s</strong>', 'encaminhado para análise'); ?></h3>
+	<div class="action-payment-secundary">
+		<a href="<?php echo Mage::getUrl(''); ?>sales/order/view/order_id/<?php echo $this->getLinkReorder() ?>/" class="link-reorder button btn-cart btn btn-success">
+			<span><span>Acompanhe o seu pedido</span></span>
+		</a>
 	</div>
 <?php endif; ?>
