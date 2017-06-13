@@ -112,7 +112,11 @@ CleanFormShipping = function(){
 	jQuery("#shipping\\:telephone").val("");
 	jQuery("#shipping\\:fax").val("");
 	jQuery("#shipping\\:postcode").val("");
+	jQuery("#shipping\\:street1").val("");
 	jQuery("#shipping\\:street2").val("");
+	jQuery("#shipping\\:street3").val("");
+	jQuery("#shipping\\:street4").val("");
+	jQuery("#billing\\:city").val("");
 };
 CleanFormBilling = function(){
 	jQuery("#billing\\:firstname").val("");
@@ -120,7 +124,11 @@ CleanFormBilling = function(){
 	jQuery("#billing\\:telephone").val("");
 	jQuery("#billing\\:fax").val("");
 	jQuery("#billing\\:postcode").val("");
+	jQuery("#billing\\:street1").val("");
 	jQuery("#billing\\:street2").val("");
+	jQuery("#billing\\:street3").val("");
+	jQuery("#billing\\:street4").val("");
+	jQuery("#billing\\:city").val("");
 };
 
 
@@ -227,20 +235,22 @@ ProxCamp = function(fields) {
 soNumeros = function(v){
     return v.replace(/\D/g,"")
 };
-getval = function(sel) {
-	if (sel == 0){
-		jQuery("#pf").prop('checked',false);
-		jQuery("#pj").prop('checked',true);
-		jQuery('.dados-pj').show();
-		jQuery('.dados-pj input:not([type=checkbox])').removeClass('required-entry');
-	}else{
-		jQuery("#pf").prop('checked',true);
-		jQuery("#pj").prop('checked',false);
-		jQuery('.dados-pj').hide();
-		jQuery('.dados-pj input:not([type=checkbox])').addClass('required-entry');
-	}
-};
 
+
+setTypePersona = function(typepersona, method){
+	if(method == "new-fileds"){
+		if(typepersona == 1){
+			jQuery('.dados-pj').hide();
+			jQuery('.dados-pj input:not([type=checkbox])').removeClass('required-entry validation-failed');
+			jQuery('#cnpj').removeClass('validar_cnpj');
+		} else {
+			jQuery('.dados-pj').show();
+			jQuery('.dados-pj input:not([type=checkbox])').addClass('required-entry').removeClass('validation-passed validation-failed');
+			jQuery('#cnpj').addClass('validar_cnpj');
+		}
+	}
+	
+};
 inbtn = function(id){
 	removeElemento = "#up_"+id;
 	jQuery(removeElemento).addClass('btn-update-qty-visible');
@@ -417,17 +427,17 @@ updatawty = function(){
 }
 
 ChangeEvents = function(){
-
+	typeselect = jQuery("input[name='billing[tipopessoa]']:checked").val();
+	setTypePersona(typeselect, 'new-fileds');
+	jQuery("input[name='billing[tipopessoa]']").change(function(){
+			console.log(typeselect);
+			typeselect = jQuery("input[name='billing[tipopessoa]']:checked").val();
+			setTypePersona(typeselect, 'new-fileds');
+			
+	});
 	updatawty();
 	jQuery('#register_new_account').val(1);
-	jQuery("#billing\\:day").attr('maxlength', '2');
-	jQuery("#billing\\:day").attr('onkeyup', 'ProxCamp(this)');
-	jQuery("#billing\\:month").attr('maxlength', '2');
-	jQuery("#billing\\:month").attr('onkeyup', 'ProxCamp(this)');
-	jQuery("#billing\\:year").attr('minlength', '4');
-	jQuery("#billing\\:year").addClass('validate-length minimum-length-4 validate-custom');
-	jQuery("#billing\\:year").attr('maxlength', '4');
-	jQuery("#billing\\:year").attr('onkeyup', 'ProxCamp(this)');
+	
 	jQuery('[id="billing:postcode"]').addClass('required-entry');
 	jQuery('[id="shipping:postcode"]').addClass('required-entry');
 	jQuery('[id="billing:region_id"]').addClass('validate-select');
