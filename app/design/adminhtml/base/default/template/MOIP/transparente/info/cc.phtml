@@ -1,0 +1,35 @@
+<?php
+/* Mage::getModel("sales/order")->getCollection()->getLastItem()->getIncrementId(); */
+
+if(Mage::app()->getRequest()->getModuleName() != "onestepcheckout" && Mage::app()->getRequest()->getModuleName() != "checkout"){
+?>
+		<?php $info = $this->_prepareInfo(); ?>
+
+				<?php echo $info['moip_card_brand']; ?> <?php echo $info['moip_card_installment']; ?> parcelas
+				<br/>
+				<?php echo $info['moip_card_fullname'] ?>
+				<br/>
+				6 Primeiros dígitos do cartão: 				<?php echo $info['moip_card_first6'] ?><br/>
+			
+			
+				4 Últimos dígitos do cartão:  				<?php echo $info['moip_card_last4'] ?><br/>
+				
+				
+
+				Pagamento n.º: 	<?php echo $info['moip_pay'] ?><br/>
+			
+
+		
+
+	
+
+<?php } else { ?>
+
+<?php $addtional = $this->getMethod()->getInfoInstance()->getAdditionalData();?>
+<?php $addtional = unserialize($addtional); ?>
+
+	<?php echo Mage::helper('transparente')->__('Nome Impresso no cartão: %s', $this->htmlEscape($this->getInfo()->getCcOwner())) ?><br/>
+	<?php echo Mage::helper('transparente')->__('Bandeira: %s', $this->htmlEscape($this->getInfo()->getCcType())) ?><br/>
+	<?php echo Mage::helper('transparente')->__('Número do cartão: xxxx-%s', $this->htmlEscape($this->getInfo()->getCcLast4())) ?><br/>
+	<?php echo Mage::helper('transparente')->__('Vencimento do cartão: %s/%s', $this->htmlEscape($this->getInfo()->getCcExpMonth()), $this->htmlEscape($this->getInfo()->getCcExpYear())) ?><br/>
+<?php } ?>

@@ -1,0 +1,23 @@
+<?php
+/* Mage::getModel("sales/order")->getCollection()->getLastItem()->getIncrementId(); */
+if(Mage::app()->getRequest()->getModuleName() != "onestepcheckout" && Mage::app()->getRequest()->getModuleName() != "checkout"){
+?>
+<?php $info = $this->_prepareInfo(); ?>
+
+		<div class="box-content">
+				<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
+				<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['moip_href_boleto']  ?>"  target="_blank" style="
+    max-width: 200px;">Imprimir Boleto</a></p>
+				<p>Código de Barras</p>
+				<p><input type="text" value="<?php echo $info['moip_linecode_boleto'] ?>" readonly="disable" style="
+    max-width: 200px; white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;"></p>
+				<p>Vencimento: <?php echo date('d-m-Y', strtotime($info['moip_expiration_boleto'])) ?></p>
+
+		</div>
+
+
+<?php } else { ?>
+	<?php echo $addtional['formapagamento_moip'] ?>
+<?php } ?>

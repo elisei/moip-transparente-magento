@@ -1,0 +1,22 @@
+
+	<?php $info = $this->_prepareInfo(); ?>
+	<?php if($info['result_meio'] == "Cartão de Crédito"): ?>
+
+	<p><strong>Cartão de Crédito</strong></p>
+	<p>Pago em <?php echo $info['creditcard_parc']; ?>:<?php $imagem = $info['image']; ?></p>
+
+			<label>6 Primeiros dígitos do cartão: <?php echo $info['first6'] ?></label>
+			<label>4 Últimos dígitos do cartão: <?php echo $info['last4'] ?> </label>
+
+	<?php endif ?>
+
+
+	<?php if($info['result_meio'] == "Boleto Bancário"): ?>
+		<p><strong>Boleto Bancário</strong></p>
+	<?php endif ?>
+
+
+
+	<?php if($info['result_meio'] == "Transferência Bancária"): ?>
+		<p><strong>Transferência Bancária</strong></p>
+	<?php endif ?>

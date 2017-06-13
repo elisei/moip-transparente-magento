@@ -13,38 +13,37 @@
 <div class="row">
     <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" class="input-hidden">
     <input type="hidden" name="billing[address_id]" title="Endereço selecionado"  value="<?php echo $this->getAddress()->getId() ?>" id="billing:address_id"class="input-hidden">
-        
          <?php if(Mage::getStoreConfig('onestepcheckout/config/enable_pj')):?>
-             <div class="col-sm-12 ">
-                <div class="row">
-                    <div class="form-group">
-                        <label for="radios-inline" class="control-label col-sm-12">Comprar Como</label>
-                        
-                        <div class="col-sm-12">
-                            <div class="col-xs-6">
-                                <label class="radio-inline" data-initialize="radio" id="radios-inline-0">
-                                    <input class="validate-digits" name="billing['tipopessoa']" id="pf" tabindex="-1" type="radio" value="0" onclick="getval(1);" checked> Pessoa Física
-                                </label>
-                            </div>
-                            <div class="col-xs-6">
-                                <label class="radio-inline" data-initialize="radio" id="radios-inline-1">
-                                    <input class="validate-digits" name="billing{'tipopessoa']" id="pj" tabindex="-1" type="radio" value="1" onclick="getval(0);">Pessoa Jurídica
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <?php if(Mage::getSingleton('customer/session')->getCustomer()->getTipopessoa() == 0): ?>
                     <script type="text/javascript">
                         jQuery(document).ready(function(){
-                            getval(0);
+                            jQuery("#pj").prop("checked", "checked");
+                            //jQuery("input[name='billing[tipopessoa]']").val(1);
                         });
                     </script>
             <?php endif ?>
+            <div class="col-md-8 col-md-offset-2">
+                    <div class="row">
+                          
+                            <label for="radios-inline" class="control-label col-sm-12">Comprar Como:</label>
+                            <div class="btn-group btn-group-justified" data-toggle="buttons">  
+                                
+                                        <label class="btn btn-primary <?php echo (Mage::getSingleton('customer/session')->getCustomer()->getTipopessoa() == 1 ? "active" : ""); ?>" data-initialize="radio" for="pf">
+                                            <input class="validate-digits" name="billing[tipopessoa]" id="pf" tabindex="-1" type="radio" value="1" <?php echo (Mage::getSingleton('customer/session')->getCustomer()->getTipopessoa() == 1 ? 'checked="checked"' : ''); ?>> Pessoa Física
+                                        </label>
+                                   
+                                        <label class="btn btn-primary <?php echo (Mage::getSingleton('customer/session')->getCustomer()->getTipopessoa() == 0 ? 'active' : ''); ?>" data-initialize="radio" for="pj">
+                                            <input class="validate-digits" name="billing[tipopessoa]" id="pj" tabindex="-1" type="radio" value="0" <?php echo (Mage::getSingleton('customer/session')->getCustomer()->getTipopessoa() == 0 ? 'checked="checked"' : ''); ?>> Pessoa Jurídica
+                                        </label>
+                                   
+                            </div>
+                    </div>
+               
+                </div>
             <div class="clearfix"></div>
             <div class="col-sm-12 dados-pj">
-                    <hr>
+                  <legend class="dados-pj">Dados do Empresa</legend>
             </div>
             <div class="clearfix"></div>
             <div class="col-sm-6 dados-pj">
@@ -73,11 +72,18 @@
                     <div class="form-group">
                         <label class="col-sm-12 control-label" for="textinput">CNPJ</label>
                         <div class="col-sm-12">
-                            <input   type="tel" title="cnpj" class="input-moip form-control " name="billing[cnpj]" id="cnpj" value="<?php echo $this->htmlEscape(Mage::getSingleton('customer/session')->getCustomer()->getCnpj()) ?>" >
+                            <input   type="tel" title="cnpj" class="input-moip form-control" name="billing[cnpj]" id="cnpj" value="<?php echo $this->htmlEscape(Mage::getSingleton('customer/session')->getCustomer()->getCnpj()) ?>" >
                         </div>
                     </div>
                 </div>
             </div>
+            <script type="text/javascript">
+                Validation.add('validar_cnpj', 'O CNPJ informado \xE9 invalido', function(v){
+                        return validaCPF(v,0);
+                });
+                jQuery('#cnpj').mask("00.000.000/0000-00", {placeholder: "__.___.___/____-__"});
+            </script>
+            
             <div class="col-sm-6 dados-pj">
                 <div class="row">
                     <div class="form-group">
@@ -90,10 +96,11 @@
             </div>
             <div class="clearfix"></div>
             
-        <?php endif; ?>
             <div class="col-sm-12">
-                    <hr>
+                <legend class="dados-pj">Dados do Comprador</legend>
             </div>
+
+        <?php endif; ?>
 
             <div class="col-sm-6">
                 <div class="row">
@@ -295,18 +302,21 @@
             </div>
             
             
-        <div class="col-sm-12  a-center">
+        <div class="col-sm-12  a-right">
             <?php if(Mage::getSingleton('customer/session')->getCustomer()->getDefaultBilling()): ?>
                  <div class="col-sm-12">
                     <hr>
                 </div>
-                <div class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-primary">
-                        <input type="checkbox" name="billing[save_in_address_book]"  <?php if (!Mage::getSingleton('customer/session')->getCustomer()->getDefaultBilling()):?> checked="checked"<?php endif;?> 
-                        title="<?php echo $this->__('Save in address book') ?>" id="billing::save_in_address_book" class="checkbox" > <?php echo $this->__('Salvar como novo endereço') ?>
-                  </label>
-                  
+                <div class="col-sm-12""> 
+                    
+
+                    <label for="save_in_address_book"> 
+                        <input class="checkbox" type="checkbox" name="billing[save_in_address_book]" id="save_in_address_book" title="Salvar como novo endereço"> 
+                        <?php echo $this->__('Salvar como novo endereço') ?>
+                    </label>
                 </div>
+
+                
                
                 
             <?php else : ?>

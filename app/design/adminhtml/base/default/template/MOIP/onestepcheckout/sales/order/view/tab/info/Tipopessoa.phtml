@@ -1,0 +1,49 @@
+<?php 
+
+$_order = Mage::registry('current_order');
+$id=$_order->getCustomerId();
+
+$customer = Mage::getModel('customer/customer')->load($id);
+if($customer->getTipopessoa() == 0):
+?>
+<div class="clear"></div>
+<div class="box-left">
+	<div class="entry-edit">
+		<div class="entry-edit-head">
+			<h4 class="icon-head head-shipping-method"><?php echo $this->helper('onestepcheckout')->__('Informação de pessoa jurídica') ?></h4>
+		</div>
+		<fieldset>
+			<table cellspacing="0" class="form-list">
+			    <tbody>
+			                <tr>
+			                    <td class="label"><label>Nome Fantasia</label></td>
+			                    <td class="value">
+			                        <?php echo $customer->getNomefantasia(); ?>
+			                    </td>
+			                </tr>
+			                <tr>
+			                    <td class="label"><label>Razão social</label></td>
+			                    <td class="value">
+			                        <?php echo $customer->getRazaosocial(); ?>
+			                    </td>
+			                </tr>
+			                                <tr>
+			                    <td class="label"><label>CNPJ</label></td>
+			                    <td class="value">
+			                        <?php echo $customer->getCnpj(); ?>
+			                    </td>
+			                </tr>
+			                <tr>
+			                    <td class="label"><label>Inscrição Estadual</label></td>
+			                    <td class="value">
+			                        <?php echo $customer->getInsestadual(); ?>
+			                    </td>
+			                </tr>
+			                
+			        </tbody>
+			</table>
+		</fieldset>
+	</div>
+</div>
+<div class="clear"></div>
+<?php endif; ?>

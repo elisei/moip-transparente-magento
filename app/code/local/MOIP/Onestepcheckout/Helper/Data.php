@@ -126,8 +126,12 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
             
             $estado = $this->_getRegionId($billing->getRegionCode());
             if(!$billing->getRegionId()){
-                $valido = !1;
-                Mage::getSingleton('core/session')->addError('O campo do endereço, Estado (UF), está inválido.'); 
+
+                if(!$billing->getRegion()){
+                    $valido = !1;
+                    Mage::getSingleton('core/session')->addError('O campo do endereço, Estado (UF), está inválido.'); 
+                }
+                
             }
             
             foreach ($data as $key => $value) {

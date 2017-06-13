@@ -294,6 +294,14 @@ textarea#gift-message-whole-message {width: 250px;}
 .gift-messages-form .item .details .form-list li.wide textarea {width: 250px !important;}
 /* Ajuste para mobiles... */
 @media only screen and (max-width: 768px) {
+    label.btn.btn-default span.text {
+        float: left;
+        white-space: normal;
+    }
+    label.btn.btn-default span.big-icon {
+        float: none;
+        text-align: center;
+    }
     .bg-payment-method {
      margin-top: 15px; 
     }
@@ -476,3 +484,4 @@ input.input-moip.form-control.valid-digits.input-number {
     text-align: center;
     padding: 16px 0px !important;
 }
+
