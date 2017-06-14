@@ -76,3 +76,6 @@ div#advice-required-entry-moip_cc_cid, div#advice-required-entry-moip_cc_number,
   border: 2px solid #a94442 !important;
   color: #ea1818;
 }
+#cvv-help {
+  width: 16px;
+}

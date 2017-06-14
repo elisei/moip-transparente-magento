@@ -600,28 +600,28 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 		if(isset($postData['tipopessoa'])){
 			$tipopessoa = $postData['tipopessoa'];
 		} else {
-			$tipopessoa = null;
+			$tipopessoa = "1";
 		}
 
 		if(isset($postData['cnpj'])){
 			$cnpj = $postData['cnpj'];
 		} else {
-			$cnpj = null;
+			$cnpj = "";
 		}
 			if(isset($postData['insestadual'])){
 			$insestadual = $postData['insestadual'];
 		} else {
-			$insestadual = null;
+			$insestadual = "";
 		}
 		if(isset($postData['nomefantasia'])){
 			$nomefantasia = $postData['nomefantasia'];
 		} else {
-			$nomefantasia = null;
+			$nomefantasia = "";
 		}
 		if(isset($postData['razaosocial'])){
 			$razaosocial = $postData['razaosocial'];
 		} else {
-			$razaosocial = null;
+			$razaosocial = "";
 		}
 		
 
@@ -756,13 +756,41 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 				$middle =  $postData['middlename'];
 				$customer->setMiddlename($middle);
 			}
+
 			if(isset($postData['tipopessoa'])){
-				$customer->setTipopessoa($postData['tipopessoa'])
-						->setRazaosocial($postData['razaosocial'])
-						->setNomefantasia($postData['nomefantasia'])
-						->setcnpj($postData['cnpj'])
-						->setinsestadual($postData['insestadual']);
+				$tipopessoa = $postData['tipopessoa'];
+			} else {
+				$tipopessoa = "1";
 			}
+
+			if(isset($postData['cnpj'])){
+				$cnpj = $postData['cnpj'];
+			} else {
+				$cnpj = "";
+			}
+				if(isset($postData['insestadual'])){
+				$insestadual = $postData['insestadual'];
+			} else {
+				$insestadual = "";
+			}
+			if(isset($postData['nomefantasia'])){
+				$nomefantasia = $postData['nomefantasia'];
+			} else {
+				$nomefantasia = "";
+			}
+			if(isset($postData['razaosocial'])){
+				$razaosocial = $postData['razaosocial'];
+			} else {
+				$razaosocial = "";
+			}
+			
+
+			
+			$customer->setTipopessoa($tipopessoa)
+					->setCnpj($cnpj)
+					->setinsestadual($insestadual)
+					->setNomefantasia($nomefantasia)
+					->setRazaosocial($razaosocial);
 			$customer->save();
 			$this->saveAddress('billing', $data_save_billing);
 		} else {
@@ -785,7 +813,36 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 				$customer->setTaxvat($taxvat);
 			}
 
+			if(isset($postData['tipopessoa'])){
+				$tipopessoa = $postData['tipopessoa'];
+			} else {
+				$tipopessoa = "1";
+			}
 
+			if(isset($postData['cnpj'])){
+				$cnpj = $postData['cnpj'];
+			} else {
+				$cnpj = "";
+			}
+				if(isset($postData['insestadual'])){
+				$insestadual = $postData['insestadual'];
+			} else {
+				$insestadual = "";
+			}
+			if(isset($postData['nomefantasia'])){
+				$nomefantasia = $postData['nomefantasia'];
+			} else {
+				$nomefantasia = "";
+			}
+			if(isset($postData['razaosocial'])){
+				$razaosocial = $postData['razaosocial'];
+			} else {
+				$razaosocial = "";
+			}
+			
+
+			
+			
 			$customer = Mage::getModel("customer/customer");
 
 			$customer ->setWebsiteId($websiteId)
@@ -793,11 +850,11 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 			            ->setFirstname($postData['firstname'])
 			            ->setLastname($postData['lastname'])
 			            ->setEmail($postData['email'])
-						->setTipopessoa($postData['tipopessoa'])
-						->setRazaosocial($postData['razaosocial'])
-						->setNomefantasia($postData['nomefantasia'])
-						->setcnpj($postData['cnpj'])
-						->setinsestadual($postData['insestadual'])
+						->setTipopessoa($tipopessoa)
+						->setCnpj($cnpj)
+						->setinsestadual($insestadual)
+						->setNomefantasia($nomefantasia)
+						->setRazaosocial($razaosocial)
 						->setPassword($postData['confirm_password']);
 
 			$customer->save();

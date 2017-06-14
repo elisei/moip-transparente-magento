@@ -112,11 +112,7 @@ CleanFormShipping = function(){
 	jQuery("#shipping\\:telephone").val("");
 	jQuery("#shipping\\:fax").val("");
 	jQuery("#shipping\\:postcode").val("");
-	jQuery("#shipping\\:street1").val("");
 	jQuery("#shipping\\:street2").val("");
-	jQuery("#shipping\\:street3").val("");
-	jQuery("#shipping\\:street4").val("");
-	jQuery("#billing\\:city").val("");
 };
 CleanFormBilling = function(){
 	jQuery("#billing\\:firstname").val("");
@@ -124,11 +120,7 @@ CleanFormBilling = function(){
 	jQuery("#billing\\:telephone").val("");
 	jQuery("#billing\\:fax").val("");
 	jQuery("#billing\\:postcode").val("");
-	jQuery("#billing\\:street1").val("");
 	jQuery("#billing\\:street2").val("");
-	jQuery("#billing\\:street3").val("");
-	jQuery("#billing\\:street4").val("");
-	jQuery("#billing\\:city").val("");
 };
 
 
@@ -235,26 +227,6 @@ ProxCamp = function(fields) {
 soNumeros = function(v){
     return v.replace(/\D/g,"")
 };
-
-
-setTypePersona = function(typepersona, method){
-	if(method == "new-fileds"){
-		if(typepersona == 1){
-			jQuery('.dados-pj').hide();
-			jQuery('.dados-pj input:not([type=checkbox])').removeClass('required-entry validation-failed');
-			jQuery('#cnpj').removeClass('validar_cnpj');
-		} else {
-			jQuery('.dados-pj').show();
-			jQuery('.dados-pj input:not([type=checkbox])').addClass('required-entry').removeClass('validation-passed validation-failed');
-			jQuery('#cnpj').addClass('validar_cnpj');
-		}
-	}
-	
-};
-inbtn = function(id){
-	removeElemento = "#up_"+id;
-	jQuery(removeElemento).addClass('btn-update-qty-visible');
-};
 visibilyloading  = function(process){
 	if(process != 'end'){
 		jQuery("#modal-loading-process").modal({backdrop: 'static', keyboard: false});	
@@ -305,66 +277,72 @@ getFormInvalidData = function(){
 	});
 
 			
-			for (var i = 0; i <= value_hash_session.length; i++) {
+	for (var i = 0; i <= value_hash_session.length; i++) {
 
-				if(value_hash_session[i] === 'billing'){
-					var address_error = jQuery("input[name='billing_address_id']:checked").val();
-					var url_edit = editaddressurl + 'EditAddress/id/' + address_error;
-					window.location.href = url_edit;
-					jQuery(".erros_cadastro_valores").append("<h4>Em endereço de cobrança</h4>");
-					jQuery(".erros_cadastro_valores").append('<li>' + value_field_title[i] + '</li>');
-					
-				} 
-				if(value_hash_session[i] === 'shipping'){
-					window.location.href = url_edit;
-					jQuery(".erros_cadastro_valores").append("<h4>Em endereço de entrega</h4>");
-					jQuery(".erros_cadastro_valores").append('<li>' + value_field_title[i] + '</li>');
-				}
-				if(value_hash_session[i] === 'payment'){
-					
-					var count_erros_payment = p++;
-					if(count_erros_payment === 1){
-						jQuery(".erros_cadastro_valores").append("<h4>Método de Pagamento</h4>");
-					}
-					jQuery(".erros_cadastro_valores").append('<li>'+ value_field_title[i] + '</li>');
-					errors = 1;
-
-				}
-				if(value_hash_session[i] === 'shipping_method'){
-					
-					var count_erros_sm = sm++;
-					if(count_erros_sm === 1){
-						jQuery(".erros_cadastro_valores").append("<h4>Método de Envio</h4>");
-						jQuery(".erros_cadastro_valores").append('<li>'+ value_field_title[i] + '</li>');
-					}
-					errors = 1;
-					
-				}
-				if(value_hash_session[i] === 'general'){
-					jQuery(".erros_cadastro_valores").append("<h4>Campos</h4>");
-					jQuery(".erros_cadastro_valores").append('<li>'+ value_field_title[i] + '</li>');
-				}
-				errors = 1;
-			}
-			return errors;
-		
+		if(value_hash_session[i] === 'billing'){
+			var address_error = jQuery("input[name='billing_address_id']:checked").val();
+			var url_edit = editaddressurl + 'EditAddress/id/' + address_error;
+			window.location.href = url_edit;
+			jQuery(".erros_cadastro_valores").append("<h4>Em endereço de cobrança</h4>");
+			jQuery(".erros_cadastro_valores").append('<li>' + value_field_title[i] + '</li>');
 			
-					
-         
+		} 
+		if(value_hash_session[i] === 'shipping'){
+			window.location.href = url_edit;
+			jQuery(".erros_cadastro_valores").append("<h4>Em endereço de entrega</h4>");
+			jQuery(".erros_cadastro_valores").append('<li>' + value_field_title[i] + '</li>');
+		}
+		if(value_hash_session[i] === 'payment'){
+			
+			var count_erros_payment = p++;
+			if(count_erros_payment === 1){
+				jQuery(".erros_cadastro_valores").append("<h4>Método de Pagamento</h4>");
+			}
+			jQuery(".erros_cadastro_valores").append('<li>'+ value_field_title[i] + '</li>');
+			errors = 1;
+
+		}
+		if(value_hash_session[i] === 'shipping_method'){
+			
+			var count_erros_sm = sm++;
+			if(count_erros_sm === 1){
+				jQuery(".erros_cadastro_valores").append("<h4>Método de Envio</h4>");
+				jQuery(".erros_cadastro_valores").append('<li>'+ value_field_title[i] + '</li>');
+			}
+			errors = 1;
+			
+		}
+		if(value_hash_session[i] === 'general'){
+			jQuery(".erros_cadastro_valores").append("<h4>Campos</h4>");
+			jQuery(".erros_cadastro_valores").append('<li>'+ value_field_title[i] + '</li>');
+		}
+		errors = 1;
+	}
+	return errors;
 };
-updatawty = function(){
+
+UpdataQtyReview = function(){
 	jQuery('.btn-number').click(function(e){
 	    e.preventDefault();
-	    
-	    fieldName = jQuery(this).attr('data-field');
-	    type      = jQuery(this).attr('data-type');
+	    var fieldName = jQuery(this).attr('data-field');
+	   
+	    var type      = jQuery(this).attr('data-type');
+	   
 	    var input = jQuery("input[name='"+fieldName+"']");
-	    var currentVal = parseInt(input.val());
+	   
+	    var currentVal = parseInt(jQuery("input[name='"+fieldName+"']").val());
+	  
+	    var oldValue = parseInt(jQuery("input[name='"+fieldName+"']").attr('data-oldValue'));
+	  
 	    if (!isNaN(currentVal)) {
+
 	        if(type == 'minus') {
 	            
 	            if(currentVal > input.attr('min')) {
-	                input.val(currentVal - 1).change();
+	            	if(parseInt(oldValue-1) == parseInt(currentVal - 1)){
+	            		input.val(currentVal - 1).change();
+	            	}
+	                
 	            } 
 	            if(parseInt(input.val()) == input.attr('min')) {
 	                jQuery(this).attr('disabled', true);
@@ -373,7 +351,9 @@ updatawty = function(){
 	        } else if(type == 'plus') {
 
 	            if(currentVal < input.attr('max')) {
-	                input.val(currentVal + 1).change();
+	            	if(parseInt(oldValue+1)  == parseInt(currentVal + 1)){
+	                	input.val(currentVal + 1).change();
+	                }
 	            }
 	            if(parseInt(input.val()) == input.attr('max')) {
 	                jQuery(this).attr('disabled', true);
@@ -425,8 +405,22 @@ updatawty = function(){
 	});
 
 }
-
+setTypePersona = function(typepersona, method){
+	if(method == "new-fileds"){
+		if(typepersona == 1){
+			jQuery('.dados-pj').hide();
+			jQuery('.dados-pj input:not([type=checkbox])').removeClass('required-entry validation-failed');
+			jQuery('#cnpj').removeClass('validar_cnpj');
+		} else {
+			jQuery('.dados-pj').show();
+			jQuery('.dados-pj input:not([type=checkbox])').addClass('required-entry').removeClass('validation-passed validation-failed');
+			jQuery('#cnpj').addClass('validar_cnpj');
+		}
+	}
+	
+};
 ChangeEvents = function(){
+	UpdataQtyReview();
 	typeselect = jQuery("input[name='billing[tipopessoa]']:checked").val();
 	setTypePersona(typeselect, 'new-fileds');
 	jQuery("input[name='billing[tipopessoa]']").change(function(){
@@ -435,9 +429,15 @@ ChangeEvents = function(){
 			setTypePersona(typeselect, 'new-fileds');
 			
 	});
-	updatawty();
 	jQuery('#register_new_account').val(1);
-	
+	jQuery("#billing\\:day").attr('maxlength', '2');
+	jQuery("#billing\\:day").attr('onkeyup', 'ProxCamp(this)');
+	jQuery("#billing\\:month").attr('maxlength', '2');
+	jQuery("#billing\\:month").attr('onkeyup', 'ProxCamp(this)');
+	jQuery("#billing\\:year").attr('minlength', '4');
+	jQuery("#billing\\:year").addClass('validate-length minimum-length-4 validate-custom');
+	jQuery("#billing\\:year").attr('maxlength', '4');
+	jQuery("#billing\\:year").attr('onkeyup', 'ProxCamp(this)');
 	jQuery('[id="billing:postcode"]').addClass('required-entry');
 	jQuery('[id="shipping:postcode"]').addClass('required-entry');
 	jQuery('[id="billing:region_id"]').addClass('validate-select');
@@ -455,7 +455,6 @@ ChangeEvents = function(){
 			
 		}
 	});
-	
 	jQuery("#shipping-address-select").change(function(){
 		updateShippingForm(this.value);
 	});
@@ -478,16 +477,6 @@ ChangeEvents = function(){
 				}
 		}
 	});
-	// jQuery('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-	//   var target = jQuery(e.target).attr("href");
-	//   if(target == "#payment-tab"){
-	//   	jQuery('.btn-in-step-address').hide();
-	//   	jQuery('.btn-in-step-payment').show();
-	//   } else {
-	//   	jQuery('.btn-in-step-payment').hide();
-	//   	jQuery('.btn-in-step-address').show();
-	//   }
-	// });
 	jQuery('.moip-place-order').bind("click",function(e){
 		e.preventDefault();
 		visibilyloading();
@@ -560,7 +549,7 @@ buscarEndereco = function(whatform) {
 			region 		= jQuery('#shipping\\:region_id');
 	}
 	if (whatform == "register") {
-			postcode 	= jQuery('#ostcode').val();
+			postcode 	= jQuery('#postcode').val();
 			street_1 	= jQuery('#street_1');
 			street_2 	= jQuery('#street_1');
 			street_4 	= jQuery('#street_4');
@@ -643,7 +632,7 @@ updateShippingMethod = function() {
 				jQuery('#checkout-review-table').replaceWith(msg);
 				updatePaymentAssociated();
 				nextPasso('payment');
-				updatawty();
+				UpdataQtyReview();
 			},
 			fail:function() {
 				updateShippingMethod();
@@ -717,7 +706,7 @@ updatePaymentAssociated = function() {
 			jQuery('#payment-progress').hide();
 			jQuery('#checkout-payment-method-load').show();
 			jQuery('#checkout-payment-method-load').replaceWith(msg);
-			updatawty();
+			UpdataQtyReview();
 		},
 	});
 };
@@ -728,7 +717,7 @@ updatePaymentMethod = function() {
 		data: jQuery("#onestep_form").serialize(),
 		success: function(msg) {
 			jQuery('#checkout-review-table').replaceWith(msg);
-			updatawty();
+			UpdataQtyReview();
 		},
 	});
 };
@@ -762,6 +751,9 @@ removeProduct = function(id) {
 		type: "POST",
 		url: removeproducturl,
 		data: "id=" + id + '&hasgiftbox=' + hasgift,
+		beforeSend: function(){
+				visibilyloading();
+		},
 		success: function(msg) {
 			jQuery.ajax({
 				type: "POST",
@@ -832,7 +824,7 @@ updateEmailmsg = function(val){
 		});
 };
 updateQty = function(){
-	visibilyloading();
+			visibilyloading();
             jQuery.ajax({
                 url: updateqtyurl,
                 data:  jQuery("#onestep_form").serialize(),

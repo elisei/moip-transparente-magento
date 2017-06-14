@@ -8,6 +8,9 @@
 .btn:focus {
   outline: none !important;
 }
+*:focus {
+  outline: none !important;
+}
 
 .bg-white {background: #fff;}
 .hidden-it {display: none;}
@@ -229,18 +232,24 @@ ul.secure-info li {
     margin: 0 auto;
 }
 #review {width: 100%}
+a.btn.btn-transparent.btn-block:focus, a.btn.btn-transparent.btn-block:active {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+}
+.box-itens {
+    max-height: 380px;
+    overflow-y: auto;
+}
+.itens-striped {
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 5px;
+    float: left;
+}
 .product-name-review {
     color: #333 !important;
 }
-tbody {
-    overflow-y: auto;
-    max-height: 280px;
-    background: #fff;
-}
 
-#review > #checkout-review-table > table > thead, #review > #checkout-review-table > table > tfoot, #review > #checkout-review-table > table.table, #review > #checkout-review-table > table > tbody {
- display: block;
-}
 td {
     border: none !important;
 }
@@ -249,6 +258,12 @@ tbody tr.separed {
 }
 .table > tbody > tr > td {
     border: none;
+}
+.itens-review-remove {
+    position: absolute;
+}
+.itens-review-image {
+  position: relative;
 }
 .qty_product_update {
   text-align: center;
@@ -263,11 +278,9 @@ tbody tr.separed {
 #btn-area {
   margin-bottom: 20px;
 }
-tr.image-product-review {
-    border-top: 1px solid #ededed;
-}
+
 img.img-thumbnail-review {
-    margin: 5px auto;
+  width: 100%;
 }
 
 .popover {
@@ -294,6 +307,9 @@ textarea#gift-message-whole-message {width: 250px;}
 .gift-messages-form .item .details .form-list li.wide textarea {width: 250px !important;}
 /* Ajuste para mobiles... */
 @media only screen and (max-width: 768px) {
+  input.input-moip.form-control.valid-digits.input-number {
+    width: 85px !important;
+}
     label.btn.btn-default span.text {
         float: left;
         white-space: normal;

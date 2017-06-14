@@ -85,7 +85,7 @@
 								<input type="tel" pattern="[0-9]*"  pattern="\d*" title="Código de Seguranção do Seu Cartão" class="form-control cvv validate-length minimum-length-3 maximum-length-4 required-entry" id="<?php echo $_code ?>_cid"  value="" maxlength="4" minlength="3">
 								<span class="input-group-addon">
 									<a href="javascript:void(0)" title="Código de Segurança" tabindex="-1" data-trigger="click" data-toggle="popover" data-placement="top" data-content="O código de segurança fica localizado no verso do seu cartão e são os 3 últimos dígitos" class="cvv-help">	
-										<span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+										<img src='<?php echo $this->getSkinUrl('MOIP/transparente/imagem/cvv.png') ?>' id="cvv-help" width="16px"/>
 									</a>
 								</span>
 						</div>
@@ -168,7 +168,7 @@
 		</div>
 		<div class="<?php echo($this->getCustomerState() ? 'personal-card-info no-display' : '') ?> col-md-12">
 			
-				<label class="control-label label-moip-pg" for="<?php echo $_code ?>_taxDocument"><?php echo $this->__('CPF do Titular do Cartão') ?></label>
+				<label class="control-label label-moip-pg" for="credito_portador_cpf"><?php echo $this->__('CPF do Titular do Cartão') ?></label>
 				<input type="tel" name="payment[<?php echo $_code ?>_taxdocument]" value="<?php echo($this->getCustomerState() ? $this->getDateCard('taxvat') : '') ?>" class="form-control required-entry" title="CPF do Titular de seu Cartão" id="credito_portador_cpf"  >
 			
 		</div>
@@ -190,8 +190,8 @@
 		<div class="col-md-12">
 			
 				<div class="checkbox">
-					<label >
-						<input type="checkbox" name="payment[<?php echo $_code ?>_save_card]"  title="Salvar Cartão Para Próximas Compras?" value="" class="validate-number save-card " > Salvar cartão para agilizar futuras compras <a href="javascript:void(0)" title="Compra com 1 Clique"  data-trigger="click" data-toggle="popover" data-placement="top" data-content=" Não salvaremos os dados de seu cartão. Para agilizar as próximas compras, apenas pegaremos uma autorização de sua operadora de cartão para você comprar passando somente o código de segurança do cartão."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+					<label for="<?php echo $_code ?>_save_card">
+						<input id="<?php echo $_code ?>_save_card" type="checkbox" name="payment[<?php echo $_code ?>_save_card]"  title="Salvar Cartão Para Próximas Compras?" value="" class="validate-number save-card " > Agilizar futuras compras com esse cartão <a href="javascript:void(0)" title="Compra com 1 Clique"  data-trigger="click" data-toggle="popover" data-placement="top" data-content=" Não salvaremos os dados de seu cartão. Para agilizar as próximas compras, apenas pegaremos uma autorização de sua operadora de cartão para você comprar passando somente o código de segurança do cartão."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
 					</label>
 				</div>
 			
@@ -200,8 +200,9 @@
 		<?php if($cofre != "false"): ?>
 			<div class="col-md-12">
 				
-					<label >
-			      	<input type="checkbox" name="payment[<?php echo $_code ?>_payment_in_cofre]" title="Usar um novo cartão?" value="0" class="new-card validate-number ">Usar outro Cartão não listado?</label>
+					<label for="<?php echo $_code ?>_payment_in_cofre" >
+			      		<input type="checkbox" name="payment[<?php echo $_code ?>_payment_in_cofre]" id="<?php echo $_code ?>_payment_in_cofre"title="Usar um novo cartão?" value="0" class="new-card validate-number "> Usar outro Cartão não listado?
+			      	</label>
 				
 			</div>
 		<?php else: ?>

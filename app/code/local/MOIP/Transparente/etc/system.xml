@@ -94,13 +94,26 @@
                             <validate>required-entry</validate>
                             <sort_order>11</sort_order>
                             <show_in_default>1</show_in_default>
-                            
                         </order_status>
-                       
+                        <type_status_init>
+                            <label>Tipo de Status Secundário</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>MOIP_Transparente_Model_Source_TypeState</source_model>
+                            <comment><![CDATA[
+                                        <p>Após recebido o pedido é possível determinar o status secundário entre "Pedidos Segurados" ou como "Pagamentos Pendentes"</p>
+                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.]]>
+                            </comment>
+                            <validate>required-entry</validate>
+                            <sort_order>12</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </type_status_init>
                         <order_status_holded translate="label">
                             <label>Status em Análise</label>
                             <frontend_type>select</frontend_type>
                             <validate>required-entry</validate>
+                            <depends>
+                                <type_status_init>onhold</type_status_init>
+                            </depends>
                             <source_model>MOIP_Transparente_Model_Source_Holded</source_model>
                             <comment><![CDATA[
                                         <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
@@ -108,13 +121,15 @@
                             </comment>
                             <sort_order>13</sort_order>
                             <show_in_default>1</show_in_default>
-                            
                         </order_status_holded>
                         <order_status_holded_boleto translate="label">
                             <label>Status para Boleto em Aberto</label>
                             <frontend_type>select</frontend_type>
                             <validate>required-entry</validate>
                             <source_model>MOIP_Transparente_Model_Source_Holded</source_model>
+                            <depends>
+                                <type_status_init>onhold</type_status_init>
+                            </depends>
                             <comment><![CDATA[
                                         <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
                                     ]]>
@@ -128,14 +143,66 @@
                             <frontend_type>select</frontend_type>
                             <validate>required-entry</validate>
                             <source_model>MOIP_Transparente_Model_Source_Holded</source_model>
+                            <depends>
+                                <type_status_init>onhold</type_status_init>
+                            </depends>
                             <comment><![CDATA[
                                         <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
                                     ]]>
                             </comment>
                             <sort_order>15</sort_order>
                             <show_in_default>1</show_in_default>
-                            
                         </order_status_holded_tef>
+
+
+                        <order_status_pending_payment translate="label">
+                            <label>Status em Análise</label>
+                            <frontend_type>select</frontend_type>
+                            <validate>required-entry</validate>
+                            <depends>
+                                <type_status_init>pending_payment</type_status_init>
+                            </depends>
+                            <source_model>MOIP_Transparente_Model_Source_PendingPayment</source_model>
+                            <comment><![CDATA[
+                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
+                                    ]]>
+                            </comment>
+                            <sort_order>13</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </order_status_pending_payment>
+
+
+                        <order_status_pending_payment_boleto translate="label">
+                            <label>Status para Boleto em Aberto</label>
+                            <frontend_type>select</frontend_type>
+                            <validate>required-entry</validate>
+                            <source_model>MOIP_Transparente_Model_Source_PendingPayment</source_model>
+                            <depends>
+                                <type_status_init>pending_payment</type_status_init>
+                            </depends>
+                            <comment><![CDATA[
+                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
+                                    ]]>
+                            </comment>
+                            <sort_order>14</sort_order>
+                            <show_in_default>1</show_in_default>
+                            
+                        </order_status_pending_payment_boleto>
+                        <order_status_pending_payment_tef translate="label">
+                            <label>Status para Transferência em Aberto</label>
+                            <frontend_type>select</frontend_type>
+                            <validate>required-entry</validate>
+                            <source_model>MOIP_Transparente_Model_Source_PendingPayment</source_model>
+                            <depends>
+                                <type_status_init>pending_payment</type_status_init>
+                            </depends>
+                            <comment><![CDATA[
+                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
+                                    ]]>
+                            </comment>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </order_status_pending_payment_tef>
                         
                         <title_config_mage translate="label">
                             <label>Demais configurações</label>

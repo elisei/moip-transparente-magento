@@ -152,6 +152,7 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Radio_InputRadio extends Mage_
         $key = 0;
         $html = "";
         $i = "";
+        $option['id_default'] = "";
         foreach ($this->getOptions() as $key => $option) { 
            
             if($option['value'] == $option['id_default']){

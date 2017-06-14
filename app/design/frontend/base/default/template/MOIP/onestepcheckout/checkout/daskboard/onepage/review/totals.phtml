@@ -29,11 +29,18 @@
  */
 ?>
 <?php if ($this->getTotals()): ?>
-<tfoot class="foot-table-review ">
-    <?php $_colspan = 1; ?>
-    <?php echo $this->renderTotals(null, $_colspan); ?>
-    <?php echo $this->renderTotals('footer', $_colspan); ?>
-    
-</tfoot>
+			<a href="#view-table-prices" class="btn btn-transparent btn-block" data-toggle="collapse">
+                <?php echo $this->renderTotals('footer', $_colspan); ?>
+                <span class="glyphicon glyphicon-menu-down" aria-hidden="true" id="expanded-totals"></span>
+            </a>
+            <div id="view-table-prices" class="collapse box-totals">
+                <table class="table">
+                	<tfoot class="foot-table-review ">
+					    <?php $_colspan = 1; ?>
+					    <?php echo $this->renderTotals(null, $_colspan); ?>
+					</tfoot>
+                </table>
+            </div>
+
 <?php endif; ?>
 

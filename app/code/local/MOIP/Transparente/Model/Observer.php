@@ -101,42 +101,70 @@ class Moip_Transparente_Model_Observer
 
     public function setInit($order){
         if($order){
-            $mage_pay         = $order->getId();
-            $forma_pagamento  = $order->getPayment()->getMethodInstance()->getCode();
-            if ($forma_pagamento == "moip_boleto" || $forma_pagamento == "moip_tef" || $forma_pagamento == "moip_cc") {
-              if ($forma_pagamento == "moip_boleto") {
-                    $state_onhold               = $this->initState('order_status_holded_boleto');
-                    $comment                    = "Aguardando confirmação automática de pagamento.";
-                } elseif ($forma_pagamento == "moip_tef") {
-                    
-                    $state_onhold               = $this->initState('order_status_holded_tef');
-                    $comment                    = "Aguardando confirmação automática de pagamento.";
-                    
-                } elseif ($forma_pagamento == "moip_cc") {
-                    $state_onhold               = $this->initState('order_status_holded');
-                    $comment                    = "Aguardando confirmação automática de pagamento.";
+
+            if($this->getModuleConfig('type_status_init') == "onhold") {
+                $mage_pay         = $order->getId();
+                $forma_pagamento  = $order->getPayment()->getMethodInstance()->getCode();
+                if ($forma_pagamento == "moip_boleto" || $forma_pagamento == "moip_tef" || $forma_pagamento == "moip_cc") {
+                  if ($forma_pagamento == "moip_boleto") {
+                        $state_onhold               = $this->getModuleConfig('order_status_holded_boleto');
+                        $comment                    = "Aguardando confirmação automática de pagamento.";
+                    } elseif ($forma_pagamento == "moip_tef") {
+                        
+                        $state_onhold               = $this->getModuleConfig('order_status_holded_tef');
+                        $comment                    = "Aguardando confirmação automática de pagamento.";
+                        
+                    } elseif ($forma_pagamento == "moip_cc") {
+                        $state_onhold               = $this->getModuleConfig('order_status_holded');
+                        $comment                    = "Aguardando confirmação automática de pagamento.";
+                    }
+                } else {
+                    return;
                 }
-            } else {
-                return;
+
+                
+                $order->setState(Mage_Sales_Model_Order::STATE_HOLDED, $state_onhold, $comment, $notified = false, $includeComment = true);
+                $order->save();
+                
+                #$order->sendOrderUpdateEmail(true, $comment);
+                return $this;
             }
 
-            
-            $order->setState(Mage_Sales_Model_Order::STATE_HOLDED, $state_onhold, $comment, $notified = false, $includeComment = true);
-            $order->save();
-            try {
-                return $this;    
-            } catch (Exception $e) {
-                $this->getApi()->generateLog("----------- erro -  --------------", 'Moip_OrderErrorSave.log');
-                $this->getApi()->generateLog($e->getMessage(), 'Moip_OrderErrorSave.log');
-                $this->getApi()->generateLog($mage_pay, 'Moip_OrderErrorSave.log');
-                $this->getApi()->generateLog($order_moip, 'Moip_OrderErrorSave.log');
-                $this->getApi()->generateLog($responseMoip, 'Moip_OrderErrorSave.log');
+            if($this->getModuleConfig('type_status_init') == "pending_payment") {
+                $mage_pay         = $order->getId();
+                $forma_pagamento  = $order->getPayment()->getMethodInstance()->getCode();
+                if ($forma_pagamento == "moip_boleto" || $forma_pagamento == "moip_tef" || $forma_pagamento == "moip_cc") {
+                  if ($forma_pagamento == "moip_boleto") {
+                        $state_onhold               = $this->getModuleConfig('order_status_pending_payment_boleto');
+                        $comment                    = "Aguardando confirmação automática de pagamento.";
+                    } elseif ($forma_pagamento == "moip_tef") {
+                        
+                        $state_onhold               = $this->getModuleConfig('order_status_pending_payment_tef');
+                        $comment                    = "Aguardando confirmação automática de pagamento.";
+                        
+                    } elseif ($forma_pagamento == "moip_cc") {
+                        $state_onhold               = $this->getModuleConfig('order_status_pending_payment');
+                        $comment                    = "Aguardando confirmação automática de pagamento.";
+                    }
+                } else {
+                    return;
+                }
+
+                
+                $order->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, $state_onhold, $comment, $notified = false, $includeComment = true);
+                $order->save();
+                
+                #$order->sendOrderUpdateEmail(true, $comment);
+                return $this;
             }
-            #$order->sendOrderUpdateEmail(true, $comment);
-            return $this;
+
+            if($this->getModuleConfig('type_status_init') ==  "not"){
+                 $order->save();
+            }
+            
         }
     }
-    public function initState($value){
+    public function getModuleConfig($value){
         return Mage::getSingleton('transparente/standard')->getConfigData($value);
     }
     public function getMoipPayment()

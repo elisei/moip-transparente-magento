@@ -197,9 +197,14 @@
                 <title>Pagamento via Admin - Moip</title>
                 <model>MOIP_Transparente_Model_Standard</model>
                 <order_status>pending</order_status>
+                <type_status_init>onhold</type_status_init>
                 <order_status_holded>holded</order_status_holded>
                 <order_status_holded_boleto>holded</order_status_holded_boleto>
                 <order_status_holded_tef>holded</order_status_holded_tef>
+                <validopara_transparente>1</validopara_transparente>
+                <order_status_pending_payment>pending_payment</order_status_pending_payment>
+                <order_status_pending_payment_boleto>pending_payment</order_status_pending_payment_boleto>
+                <order_status_pending_payment_tef>pending_payment</order_status_pending_payment_tef>
                 <validopara_transparente>1</validopara_transparente>
                 <apelido>ALTERE PARA O NOME DA SUA EMPRESA</apelido>
                 <ambiente>producao</ambiente>
