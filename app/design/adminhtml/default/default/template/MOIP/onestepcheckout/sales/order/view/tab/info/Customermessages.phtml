@@ -1,18 +1,25 @@
-<?php 
+<?php
 
 $_order = Mage::registry('current_order');
 $orderid=$_order->getId();
 $orders=Mage::getModel('onestepcheckout/onestepcheckout')->getCollection()->addFieldToFilter('sales_order_id',$orderid);
 $class_orders=get_class($orders);	
-$o ='';
+$o = '';
+$comment = '';
 
-foreach($orders as $order)	
-{
-	$o = $order; break;		
-}
+if (count($orders) != 0):
+
+	foreach($orders as $order)	
+	{
+		$o = $order; break;		
+	}
+
+	$comment = $o->getMoipCustomercommentInfo();
+
+endif
 ?>
 
-<?php if($o->getMoipCustomercommentInfo()):?>
+<?php if($comment != ''): ?>
 <div class="box-right">
 	<div class="entry-edit">
 		<div class="entry-edit-head">
@@ -20,10 +27,10 @@ foreach($orders as $order)
 		</div>
 		<fieldset>
 		
-			<?php echo $o->getMoipCustomercommentInfo(); ?>
+			<?php echo nl2br($comment, 1); ?>
 		
 		</fieldset>
 	</div>
 </div>
 <div class="clear"></div>
-<?php endif?>
+<?php endif ?>
