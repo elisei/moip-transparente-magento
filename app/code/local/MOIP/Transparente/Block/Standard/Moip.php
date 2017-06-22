@@ -12,10 +12,12 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
     public function getSaveDate()
     {
         $order            = $this->getOrder();
-        
-        $order->sendNewOrderEmail();
-        $order->setEmailSent(true);
-        $order->save();
+        if($order){
+            $order->sendNewOrderEmail();
+            $order->setEmailSent(true);
+            $order->save();
+        }
+       
         
     }
 
