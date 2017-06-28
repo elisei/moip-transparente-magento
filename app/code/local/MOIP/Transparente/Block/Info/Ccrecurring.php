@@ -28,7 +28,7 @@
  * Base payment iformation block
  *
  */
-class MOIP_Transparente_Block_Info_Boletorecurring extends Mage_Core_Block_Template
+class MOIP_Transparente_Block_Info_Ccrecurring extends Mage_Core_Block_Template
 {
     /**
      * Payment rendered specific information
@@ -40,7 +40,7 @@ class MOIP_Transparente_Block_Info_Boletorecurring extends Mage_Core_Block_Templ
     protected function _construct()
     {
         parent::_construct();
-        $this->setTemplate('MOIP/transparente/info/boletorecurring.phtml');
+        $this->setTemplate('MOIP/transparente/info/ccrecurring.phtml');
     }
 
     /**

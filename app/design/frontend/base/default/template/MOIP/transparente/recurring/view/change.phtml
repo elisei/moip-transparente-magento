@@ -1,0 +1,118 @@
+
+<?php $type = $this->getMethodMoip(); ?>
+<?php $info = $this->getOrderInfoPayment(); ?>
+<?php if($type == "moip_ccrecurring"): ?>
+		<?php $details = $info["raw_details_info"]["customer"]["billing_info"]["credit_card"] ?>
+		<div class="box">
+            <div class="box-title">
+                <h3>Cartão de Crédito - Recorrente</h3>
+                
+            </div>
+            <div class="box-content expand">
+				
+
+				<div><?php echo $details["brand"]; ?></div>
+				<div><strong><?php echo $details["holder_name"]; ?></strong></div>
+				<div>
+					<?php echo $this->__('<strong>%sxxxxx%s</strong>', $details["first_six_digits"], $details["last_four_digits"] ); ?>
+					
+				</div>
+				<div><?php echo $this->__('<strong>%s/%s</strong>', $details["expiration_month"], $details["expiration_year"] ); ?>
+				</div>
+
+				
+
+				<div>
+					<a  href="javascript:expand('expand-content','expand');" >Editar</a>
+					<div id="expand-content" style="display: none;">
+						<form action="<?php echo $this->getUrl('Transparente/RecurringView/paymentupdate', array('profile' => $this->_profile->getId())) ?>" method="post" id="form-validate" class="scaffold-form" >
+						 <input name="form_key" type="hidden" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>" />
+
+						<legend>Insira os novos dados</legend>
+							<div class="col-md-12">
+								<label class="control-label label-moip-pg" for="moip_ccrecurring_number"><?php echo $this->__('Número do Cartão') ?></label>
+								<div class="input-box">
+									<input type="tel" pattern="[0-9]*" minlength="13" maxlength="23" id="moip_ccrecurring_number"  name="moip_ccrecurring_number" title="Número do seu Cartão de Crédito"  class="required-entry form-control validate-length"  value="">
+								</div>
+							</div>
+							<div class="col-md-12">
+								    <label for="moip_ccrecurring_expiration" class="control-label label-moip-pg"><?php echo $this->__('Expiração') ?></label>
+								    <div class="input-box">
+								        <div class="v-fix">
+								            <select name="moip_ccrecurring_exp_month" id="credito_expiracao_mes" class="validate-select form-control" title="Mês de Vencimento do seu Cartão">
+												<option value="">Mês</option>
+												<option value="01">01 - Janeiro</option>
+												<option value="02">02 - Fevereiro</option>
+												<option value="03">03 - Março</option>
+												<option value="04">04 - Abril</option>
+												<option value="05">05 - Maio</option>
+												<option value="06">06 - Junho</option>
+												<option value="07">07 - Julho</option>
+												<option value="08">08 - Agosto</option>
+												<option value="09">09 - Setembro</option>
+												<option value="10">10 - Outubro</option>
+												<option value="11">11 - Novembro</option>
+												<option value="12">12 - Dezembro</option>
+											</select>
+								        </div>
+								        <div class="v-fix">
+								           	<select name="moip_ccrecurring_exp_year" id="credito_expiracao_ano" class="validate-select form-control" title="Ano de Vencimento do seu Cartão">
+											<option value="">Ano</option>
+											<option value="17">17</option>
+											<option value="18">18</option>
+											<option value="19">19</option>
+											<option value="20">20</option>
+											<option value="21">21</option>
+											<option value="22">22</option>
+											<option value="23">23</option>
+											<option value="24">24</option>
+											<option value="25">25</option>
+											<option value="26">26</option>
+											<option value="27">27</option>
+											<option value="28">28</option>
+											<option value="29">29</option>
+											<option value="30">30</option>
+										</select>
+								        </div>
+								    </div>
+								</div>
+								
+								<div class="col-md-12">
+									<label for="moip_ccrecurring_fullname" class="control-label label-moip-pg"><?php echo $this->__('Nome do Titular Cartão') ?></label>
+									<div class="input-box">
+										<input type="text" name="moip_ccrecurring_owner"  value="<?php echo $this->getDateCard('name') ?>" class="input-moip required-entry form-control" title="Nome Impresso em seu Cartão" id="credito_portador_nome" placeholder="Nome Impresso no Cartão">
+									</div>
+								</div>
+								<div class="buttons-set">
+							        <button type="submit" title="Salvar" class="button"><span><span>Salvar</span></span></button>
+							    </div>
+						
+						</form>
+					</div>
+
+				</div>
+			</div>
+		</div>
+<?php elseif ($type == "moip_boletorecurring"):  ?>
+
+		<div class="box-content">
+				<p>Boleto Bancário - Recorrente</p>
+			
+				
+		</div>
+<?php endif; ?>
+<script type="text/javascript">
+	var dataForm = new VarienForm('form-validate', true);
+	function expand(showHideDiv, switchTextDiv) {
+		var ele = document.getElementById(showHideDiv);
+		var text = document.getElementById(switchTextDiv);
+		if(ele.style.display == "block") {
+		        ele.style.display = "none";
+		    text.innerHTML = "Editar";
+		}
+		else {
+		    ele.style.display = "block";
+		    text.innerHTML = "Cancelar";
+		}
+	}
+</script>

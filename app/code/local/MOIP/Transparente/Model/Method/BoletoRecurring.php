@@ -7,7 +7,7 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
     protected $_infoBlockType = 'transparente/info_boletorecurring';
     protected $_isGateway = true;
     protected $_canOrder = true;
-    protected $_canAuthorize = true;
+    protected $_canAuthorize = false;
     protected $_canCapture = true;
     protected $_canCapturePartial = true;
     protected $_canRefund = true;
@@ -17,7 +17,7 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = false;
     protected $_canFetchTransactionInfo = true;
-    protected $_canCreateBillingAgreement = false;
+    protected $_canCreateBillingAgreement = true;
     protected $_allowCurrencyCode = array('BRL');
     protected $_canReviewPayment = true;
     
@@ -54,8 +54,7 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
     {
         $info           = $this->getInfoInstance();
         $additionaldata = unserialize($info->getAdditionalData());
-        $session        = Mage::getSingleton('checkout/session');
-        $session->setMoipData($additionaldata);
+        
     }
 
     public function validate()
@@ -68,10 +67,7 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
         $errorMsg       = false;
         $additionaldata = unserialize($info->getAdditionalData());
         
-        $ccNumber = $info->getRecurringNumber();
-        $ccNumber = preg_replace('/[\-\s]+/', '', $ccNumber);
-        $info->setCcNumber($ccNumber);
-        $ccType = '';
+       
         
         
         if ($errorMsg) {
@@ -79,63 +75,8 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
         }
         return $this;
     }
-    public function validateCcNum($ccNumber)
-    {
-        $cardNumber = strrev($ccNumber);
-        $numSum     = 0;
-        for ($i = 0; $i < strlen($cardNumber); $i++) {
-            $currentNum = substr($cardNumber, $i, 1);
-            if ($i % 2 == 1) {
-                $currentNum *= 2;
-            }
-            if ($currentNum > 9) {
-                $firstNum   = $currentNum % 10;
-                $secondNum  = ($currentNum - $firstNum) / 10;
-                $currentNum = $firstNum + $secondNum;
-            }
-            $numSum += $currentNum;
-        }
-        return ($numSum % 10 == 0);
-    }
-    public function getVerificationRegEx()
-    {
-        $verificationExpList = array(
-            'VI' => '/^[0-9]{3}$/',
-            'MC' => '/^[0-9]{3}$/',
-            'AE' => '/^[0-9]{4}$/',
-            'DC' => '/^[0-9]{3}$/',
-            'EO' => '/^[0-9]{3}$/',
-            'HI' => '/^[0-9]{4}$/'
-        );
-        return $verificationExpList;
-    }
-    public function getValidaCPF($cpf = null)
-    {
-        if (empty($cpf)) {
-            return false;
-        } else if ($cpf == '00000000000' || $cpf == '11111111111' || $cpf == '22222222222' || $cpf == '33333333333' || $cpf == '44444444444' || $cpf == '55555555555' || $cpf == '66666666666' || $cpf == '77777777777' || $cpf == '88888888888' || $cpf == '99999999999') {
-            return false;
-        } else {
-            for ($t = 9; $t < 11; $t++) {
-                for ($d = 0, $c = 0; $c < $t; $c++) {
-                    $d += $cpf{$c} * (($t + 1) - $c);
-                }
-                $d = ((10 * $d) % 11) % 10;
-                if ($cpf{$c} != $d) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-    protected function _validateExpDate($expYear, $expMonth)
-    {
-        $date = Mage::app()->getLocale()->date();
-        if (!$expYear || !$expMonth || ($date->compareYear($expYear) == 1) || ($date->compareYear($expYear) == 0 && ($date->compareMonth($expMonth) == 1))) {
-            return false;
-        }
-        return true;
-    }
+   
+    
     public function getApiMoip()
     {
         $api = Mage::getSingleton('transparente/recurringapi');
@@ -163,14 +104,13 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
     public function submitRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile, Mage_Payment_Model_Info $payment)
     {
         
-        $api       = $this->getApiMoip();
-        $response2 = $api->searchCustomersPlans($profile, $payment);
-        $response2 = json_decode($response2, false);
-        $moip_code = $response2->code;
-        $session = Mage::getSingleton('checkout/session');
-        $link_boleto = $response2->_links->boleto->redirect_href;
+        $api                 = $this->getApiMoip();
+        $response_moip       = $api->searchCustomersPlans($profile, $payment);
+        $decode_moip         = json_decode($response_moip, true);
+        $moip_code           = $decode_moip["code"];
+       
          
-        $session->setMoipBoletoLink($link_boleto);
+        
         if ($moip_code) {
             $profile->setReferenceId($moip_code);
             $payment->setSkipTransactionCreation(true);
@@ -183,24 +123,24 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
                 $order    = $profile->createOrder($productItemInfo);
                 
                 $payment = $order->getPayment();
-                $payment->setTransactionId($moip_code)->setIsTransactionClosed(1);
+                $payment->setTransactionId($moip_code)->setIsTransactionClosed(0);
                 $order->save();
                 $profile->addOrderRelation($order->getId());
                 $order->save();
                 $payment->save();
                 
                 $transaction = Mage::getModel('sales/order_payment_transaction');
-                $transaction->setTxnId($trans_id);
+                $transaction->setTxnId($moip_code);
                 $transaction->setTxnType(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
                 $transaction->setPaymentId($payment->getId());
                 $transaction->setOrderId($order->getId());
                 $transaction->setOrderPaymentObject($payment);
-                $transaction->setIsClosed(1);
+                $transaction->setIsClosed(0);
                 $transaction->save();
                 $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
             }
             
-            $this->chargeRecurringProfile($profile, $moip_code);
+            $this->chargeRecurringProfile($profile, $response_moip);
             
             return $this;
             
@@ -239,58 +179,43 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
     
     public function updateRecurringProfileStatus(Mage_Payment_Model_Recurring_Profile $profile)
     {
-       
-        
         switch ($profile->getNewState()) {
             case Mage_Sales_Model_Recurring_Profile::STATE_ACTIVE:
                 {
-
-                $profile_id = $profile->getId();
-
-                
-                
-                $moip = $this->getApiMoip()->activateSubscription($profile_id);
-                $action = 'start';
-                break;
+                    $profile_id = $profile->getId();
+                    $moip = $this->getApiMoip()->activateSubscription($profile_id);
+                    $action = 'start';
+                    break;
                 }
             case Mage_Sales_Model_Recurring_Profile::STATE_CANCELED:
             {
 
                 $profile_id = $profile->getId();
-
-                
-                
                 $moip = $this->getApiMoip()->cancelSubscription($profile_id);
                 $action = 'cancel';
                 break;
             }
                 
             case Mage_Sales_Model_Recurring_Profile::STATE_EXPIRED:
-                $action = 'cancel';
+                    $action = 'cancel';
                 break;
             case Mage_Sales_Model_Recurring_Profile::STATE_SUSPENDED:
                 {
-
-                $profile_id = $profile->getId();
-               
-                
-                
-                $moip = $this->getApiMoip()->suspendSubscription($profile_id);
-                $action = 'stop';
-                break;
-            }
-
-             
+                    $profile_id = $profile->getId();
+                    $moip = $this->getApiMoip()->suspendSubscription($profile_id);
+                    $action = 'stop';
+                    break;
+                }
             default:
                 return $this;
         }
     }
     
     
-    public function chargeRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile, $trans_id){
-    
-        
-       
+    public function chargeRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile, $response_moip){
+            $decode_moip = json_decode($response_moip, true);
+            $moip_code = $decode_moip["code"];
+           
             $productItemInfo = new Varien_Object;
             $productItemInfo->setPaymentType(Mage_Sales_Model_Recurring_Profile::PAYMENT_TYPE_REGULAR);
             $productItemInfo->setPrice( $profile->getTaxAmount() + $profile->getBillingAmount() );
@@ -298,18 +223,25 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
             $order = $profile->createOrder($productItemInfo);
             $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
             $payment = $order->getPayment();
-            $payment->setTransactionId($trans_id)->setIsTransactionClosed(1);
+            $payment->setTransactionId($moip_code)->setAdditionalInformation(
+                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                $_data
+            )->setIsTransactionClosed(0);
             
             $profile->addOrderRelation($order->getId());
             $payment->save();
 
             $transaction= Mage::getModel('sales/order_payment_transaction');
-            $transaction->setTxnId($trans_id);
+            $transaction->setTxnId($moip_code);
             $transaction->setTxnType(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
             $transaction->setPaymentId($payment->getId());
+            $transaction->setAdditionalInformation(
+                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                $decode_moip
+            );
             $transaction->setOrderId($order->getId());
             $transaction->setOrderPaymentObject($payment);
-            $transaction->setIsClosed( 1 );
+            $transaction->setIsClosed( 0 );
 
             $transaction->save();
            

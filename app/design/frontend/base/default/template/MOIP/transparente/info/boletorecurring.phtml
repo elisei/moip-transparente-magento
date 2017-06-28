@@ -1,8 +1,13 @@
 <?php $info = $this->_prepareInfo(); ?>
-<?php if($info): ?>
-<?php $url = $info.'/print' ?>
+
+
+<?php if(is_array($info)): ?>
+		
+		
+		<?php $url = $info["raw_details_info"]["_links"]["boleto"]["redirect_href"].'/print' ?>
+		
 		<div class="box-content">
-				<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
+				<p>Boleto Bancário - Recorrente</p>
 				<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $url  ?>"  target="_blank" style="max-width: 200px;">Imprimir Boleto</a></p>
 		</div>
 <?php else: ?>

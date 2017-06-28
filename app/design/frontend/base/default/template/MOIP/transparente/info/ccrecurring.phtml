@@ -1,0 +1,20 @@
+<?php $info = $this->_prepareInfo(); ?>
+
+
+<?php if(is_array($info)): ?>
+	
+		
+		<?php $details = $info["raw_details_info"]["customer"]["billing_info"]["credit_card"] ?>
+		
+		
+		
+		<div class="box-content">
+				<p>Cartão de Crédito - Recorrente</p>
+				<div><?php echo $details["brand"]; ?></div>
+				<div><strong><?php echo $details["holder_name"]; ?></strong></div>
+				<div><?php echo $this->__('<strong>%sxxxxx%s</strong>', $details["first_six_digits"], $details["last_four_digits"] ); ?></div>
+				<div><?php echo $this->__('<strong>%s/%s</strong>', $details["expiration_month"], $details["expiration_year"] ); ?></div>
+		</div>
+<?php else: ?>
+	<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
+<?php endif; ?>

@@ -4,20 +4,21 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
     
     protected $_code = 'moip_ccrecurring';
     protected $_formBlockType = 'transparente/form_recurring';
-    
-    protected $_isGateway = false;
-    protected $_canOrder = false;
+    protected $_infoBlockType = 'transparente/info_ccrecurring';
+    protected $_isGateway = true;
+    protected $_canOrder = true;
     protected $_canAuthorize = false;
-    protected $_canCapture = false;
-    protected $_canCapturePartial = false;
-    protected $_canRefund = false;
-    protected $_canRefundInvoicePartial = false;
-    protected $_canVoid = false;
+    protected $_canCapture = true;
+    protected $_canCapturePartial = true;
+    protected $_canRefund = true;
+    protected $_canRefundInvoicePartial = true;
+    protected $_canVoid = true;
     protected $_canUseInternal = false;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = false;
     protected $_canFetchTransactionInfo = true;
-    protected $_canCreateBillingAgreement = false;
+    protected $_canCreateBillingAgreement = true;
+    protected $_allowCurrencyCode = array('BRL');
     protected $_canReviewPayment = true;
     
     public function getPayment()
@@ -66,8 +67,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
         
         $info           = $this->getInfoInstance();
         $additionaldata = unserialize($info->getAdditionalData());
-        $session        = Mage::getSingleton('checkout/session');
-        $session->setMoipData($additionaldata);
+        
     }
     public function validate()
     {
@@ -90,6 +90,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
         }
         return $this;
     }
+
     public function validateCcNum($ccNumber)
     {
         $cardNumber = strrev($ccNumber);
@@ -120,25 +121,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
         );
         return $verificationExpList;
     }
-    public function getValidaCPF($cpf = null)
-    {
-        if (empty($cpf)) {
-            return false;
-        } else if ($cpf == '00000000000' || $cpf == '11111111111' || $cpf == '22222222222' || $cpf == '33333333333' || $cpf == '44444444444' || $cpf == '55555555555' || $cpf == '66666666666' || $cpf == '77777777777' || $cpf == '88888888888' || $cpf == '99999999999') {
-            return false;
-        } else {
-            for ($t = 9; $t < 11; $t++) {
-                for ($d = 0, $c = 0; $c < $t; $c++) {
-                    $d += $cpf{$c} * (($t + 1) - $c);
-                }
-                $d = ((10 * $d) % 11) % 10;
-                if ($cpf{$c} != $d) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
+   
     protected function _validateExpDate($expYear, $expMonth)
     {
         $date = Mage::app()->getLocale()->date();
@@ -174,12 +157,13 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
     public function submitRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile, Mage_Payment_Model_Info $payment)
     {
         
-        $api       = $this->getApiMoip();
-        $response2 = $api->setCustomersPlans($profile, $payment);
-        $response2 = json_decode($response2, false);
-        $moip_code = $response2->code;
-        $session = Mage::getSingleton('checkout/session');
-        $session->setMoipBoletoLink(null);
+        $api                 = $this->getApiMoip();
+        $response_moip       = $api->searchCustomersPlans($profile, $payment);
+        $decode_moip         = json_decode($response_moip, true);
+        $moip_code           = $decode_moip["code"];
+       
+         
+        
         if ($moip_code) {
             $profile->setReferenceId($moip_code);
             $payment->setSkipTransactionCreation(true);
@@ -187,30 +171,29 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
             if ((float) $profile->getInitAmount()) {
                 $productItemInfo = new Varien_Object;
                 $productItemInfo->setPaymentType(Mage_Sales_Model_Recurring_Profile::PAYMENT_TYPE_INITIAL);
-                $productItemInfo->setPrice($profile->getInitAmount());
+                $productItemInfo->setPrice($profile->getInitAmount()-$profile->getShippingAmount());
                 
                 $order    = $profile->createOrder($productItemInfo);
                 
                 $payment = $order->getPayment();
-                $payment->setTransactionId($moip_code)->setIsTransactionClosed(1);
+                $payment->setTransactionId($moip_code)->setIsTransactionClosed(0);
                 $order->save();
                 $profile->addOrderRelation($order->getId());
                 $order->save();
-                $order->sendNewOrderEmail();
                 $payment->save();
                 
                 $transaction = Mage::getModel('sales/order_payment_transaction');
-                $transaction->setTxnId($trans_id);
+                $transaction->setTxnId($moip_code);
                 $transaction->setTxnType(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
                 $transaction->setPaymentId($payment->getId());
                 $transaction->setOrderId($order->getId());
                 $transaction->setOrderPaymentObject($payment);
-                $transaction->setIsClosed(1);
+                $transaction->setIsClosed(0);
                 $transaction->save();
                 $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
             }
             
-            $this->chargeRecurringProfile($profile, $moip_code);
+            $this->chargeRecurringProfile($profile, $response_moip);
             
             return $this;
             
@@ -297,31 +280,36 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
     }
     
     
-    public function chargeRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile, $trans_id){
-    
-        
-       
+   public function chargeRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile, $response_moip){
+            $decode_moip = json_decode($response_moip, true);
+            $moip_code = $decode_moip["code"];
+           
             $productItemInfo = new Varien_Object;
             $productItemInfo->setPaymentType(Mage_Sales_Model_Recurring_Profile::PAYMENT_TYPE_REGULAR);
             $productItemInfo->setPrice( $profile->getTaxAmount() + $profile->getBillingAmount() );
 
             $order = $profile->createOrder($productItemInfo);
             $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
-
             $payment = $order->getPayment();
-            $payment->setTransactionId($trans_id)->setIsTransactionClosed(1);
-            $order->save();
+            $payment->setTransactionId($moip_code)->setAdditionalInformation(
+                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                $_data
+            )->setIsTransactionClosed(0);
+            
             $profile->addOrderRelation($order->getId());
-            $order->sendNewOrderEmail();
             $payment->save();
 
             $transaction= Mage::getModel('sales/order_payment_transaction');
-            $transaction->setTxnId($trans_id);
+            $transaction->setTxnId($moip_code);
             $transaction->setTxnType(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
             $transaction->setPaymentId($payment->getId());
+            $transaction->setAdditionalInformation(
+                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                $decode_moip
+            );
             $transaction->setOrderId($order->getId());
             $transaction->setOrderPaymentObject($payment);
-            $transaction->setIsClosed( 1 );
+            $transaction->setIsClosed( 0 );
 
             $transaction->save();
            
