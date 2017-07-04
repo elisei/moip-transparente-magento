@@ -26,7 +26,7 @@ class Moip_Transparente_Model_Recurringapi
         $quote             = $payments->getQuote();
         $customer          = $quote->getCustomer();
         $customer_plans_id = $customer->getId();
-        $this->generateLog($customer_plans_id, 'MOIP_CreateSubscriptionsPlans.log');
+        $this->generateLog($customer_plans_id, 'MOIP_CreateSubscriptionsPlans2.log');
         $documento = 'Content-Type: application/json; charset=utf-8';
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
             $url    = self::ENDPOINT_RECURRING_TEST . "customers";

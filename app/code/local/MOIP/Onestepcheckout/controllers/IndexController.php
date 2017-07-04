@@ -171,11 +171,7 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 		$this->initpaymentmethod();
 		
 		$this->loadLayout();
-		$this->_initLayoutMessages('customer/session');
-		$this->_initLayoutMessages('checkout/session');
-		$this->_initLayoutMessages('catalog/session');
-		Mage::getSingleton('catalog/session')->getData('messages')->clear();
-		Mage::getSingleton('checkout/session')->getData('messages')->clear();
+		
 		$this->getLayout()->getBlock('head')->setTitle($this->__('Checkout'));
 
 		return true;
@@ -567,11 +563,12 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 		$postData = $this->getRequest()->getPost('billing', array());
 		$email = trim($postData['email']);
 		$websiteId = Mage::app()->getWebsite()->getId();
-		$store = Mage::app()->getStore();
+    	$store = Mage::app()->getStore();
 
 		$customer = Mage::getModel("customer/customer");
-		$customer ->setWebsiteId($websiteId)
-		         	->setStore($store)->setEmail($email)
+		$customer  ->setWebsiteId($websiteId)
+		         	
+		         	->setEmail($email)
 		            ->setFirstname($postData['firstname'])
 		            ->setLastname($postData['lastname']);
 
@@ -637,13 +634,33 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 		try{
 
 			$customer->save();
-			Mage::getSingleton('customer/session')->loginById($customer->getId());
+			$customer->sendNewAccountEmail(
+	            'registered',
+	            '',
+	            Mage::app()->getStore()->getId(),
+	            $postData['confirm_password']
+	        );
+
+			$session = Mage::getSingleton('customer/session');
+			$session->login($email, $postData['customer_password']);
+			$session->setCustomer($customer);
+			$session = $session->setCustomerAsLoggedIn($customer);
+
+			
+	      #  $this->_dispatchRegisterSuccess($customer);
 			$this->saveAddress('billing', $postData);
 			try {
-				$this->_redirect('checkout/onepage/');
-				return;
+				if( Mage::getSingleton('customer/session')->getCustomer()){
+					$this->_redirect('checkout/onepage/');
+					return;
+				} else {
+					Mage::getSingleton('core/session')->addError("Ocorreu um erro na gravação de sessão, por favor tente novamente.");
+				$this->_redirect('checkout/cart/');
+				}
+				
 			} catch (Exception $e) {
-				$this->_redirect('checkout/onepage/');
+				Mage::getSingleton('core/session')->addError($e);
+				$this->_redirect('checkout/cart/');
 				return;
 			}
 
@@ -651,11 +668,25 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 
 		}
 		catch (Exception $e) {
-		    	$this->_redirect('checkout/onepage/');
+			 	Mage::getSingleton('core/session')->addError($e);
+		    	$this->_redirect('checkout/cart/');
 				return;
 		}
 
 	}
+
+	/**
+     * Dispatch Event
+     *
+     * @param Mage_Customer_Model_Customer $customer
+     */
+    protected function _dispatchRegisterSuccess($customer)
+    {
+        Mage::dispatchEvent('customer_register_success',
+            array('account_controller' => $this, 'customer' => $customer)
+        );
+    }
+
 	public function updateloginAction() {
 		$email=$this->getRequest()->getPost('email');
 		$password=$this->getRequest()->getPost('password');
