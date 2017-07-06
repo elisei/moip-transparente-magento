@@ -298,7 +298,7 @@ class MOIP_Transparente_Model_Api
         }
 
         if($quote->getCustomerTipopessoa() == 0 && $quote->getCustomerNomefantasia()){
-            $nome = $quote->getCustomerNomefantasia();
+            $nome = $quote->getCustomerRazaosocial(). " ".$quote->getCustomerCnpj();
             $document_type = "CNPJ";
             $taxvat = $quote->getCustomerCnpj();
         } else {
