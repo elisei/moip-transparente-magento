@@ -128,11 +128,11 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 		if($order->getId()){
 
-			$order_status 	= $order->getStatus();
+			$order_status 	= $order->getState();
 			
 			if($order_status == Mage_Sales_Model_Order::STATE_NEW){
 				sleep(1);
-				$order_status 	= $order->getStatus();
+				$order_status 	= $order->getState();
 			}
 
 			elseif($status_moip == "AUTHORIZED" && $order_status != Mage_Sales_Model_Order::STATE_COMPLETE && $order_status != Mage_Sales_Model_Order::STATE_PROCESSING && $order_status != Mage_Sales_Model_Order::STATE_CLOSED){
@@ -140,7 +140,10 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 				return $upOrder;
 			} elseif($status_moip == "CANCELLED" && $order_status != Mage_Sales_Model_Order::STATE_COMPLETE && $order_status != Mage_Sales_Model_Order::STATE_PROCESSING && $order_status != Mage_Sales_Model_Order::STATE_CLOSED && $order_status != Mage_Sales_Model_Order::STATE_CANCELED){
 				 $upOrder = $this->cancelaPagamento($order,$details_cancel);
-				 return $upOrder;
+				 if($upOrder->getState == Mage_Sales_Model_Order::STATE_CANCELED) {
+				 	return $upOrder->getIncrementId() . ' alterado para  '.$upOrder->getState();	
+				 }
+				 
 			} elseif($status_moip == "REFUNDED"){
 				return $this->refundPagamento($order, $refundToStoreCreditAmount, $comment);
 			} else{
@@ -199,7 +202,11 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 		$invoice->sendEmail();
 		$invoice->setEmailSent(true);
 		$invoice->save();
-		$this->getResponse()->setHeader('HTTP/1.0','200',true);
+		try {
+			return $order;
+		} catch (Exception $exception) {
+			return $this->set404();
+		}
 	 }
 
 	public function initState($value){
@@ -219,7 +226,11 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 		$order->setState($state, $status, $comment, $notified = true, $includeComment = true);
 		$order->save();
 		$order->sendOrderUpdateEmail(true, $comment);
-		$this->getResponse()->setHeader('HTTP/1.0','200',true);
+		try {
+			return $order;
+		} catch (Exception $exception) {
+			return $this->set404();
+		}
 		return;
 	}
 
