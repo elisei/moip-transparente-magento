@@ -57,7 +57,7 @@
             <sales>
                 <rewrite>
                     <order_totals>MOIP_Transparente_Block_Sales_Order_Fee</order_totals>
-                    <recurring_profile_view>MOIP_Transparente_Block_Sales_Recurring_Profile_View</recurring_profile_view>
+                    
                 </rewrite>
             </sales>
         </blocks>

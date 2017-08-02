@@ -70,13 +70,16 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
     public function getChildTemplate()
     {
         $order = $this->getOrder();
-        $info  = $order->getPayment()->getMethodInstance()->getCode();
-        if ($info == "moip_boleto")
-            return $this->getChildHtml('transparente.boleto');
-        elseif ($info == "moip_tef")
-            return $this->getChildHtml('transparente.transferencia');
-        elseif ($info == "moip_cc")
-            return $this->getChildHtml('transparente.cartao');
+        if($order){
+            $info  = $order->getPayment()->getMethodInstance()->getCode();
+            if ($info == "moip_boleto")
+                return $this->getChildHtml('transparente.boleto');
+            elseif ($info == "moip_tef")
+                return $this->getChildHtml('transparente.transferencia');
+            elseif ($info == "moip_cc")
+                return $this->getChildHtml('transparente.cartao');
+        }
+        
     }
 
     protected function getCheckout()

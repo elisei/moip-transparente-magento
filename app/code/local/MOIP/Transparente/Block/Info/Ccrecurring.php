@@ -28,7 +28,7 @@
  * Base payment iformation block
  *
  */
-class MOIP_Transparente_Block_Info_Ccrecurring extends Mage_Core_Block_Template
+class MOIP_Transparente_Block_Info_Ccrecurring extends Mage_Payment_Block_Info
 {
     /**
      * Payment rendered specific information
@@ -43,11 +43,7 @@ class MOIP_Transparente_Block_Info_Ccrecurring extends Mage_Core_Block_Template
         $this->setTemplate('MOIP/transparente/info/ccrecurring.phtml');
     }
 
-    /**
-     * Retrieve info model
-     *
-     * @return Mage_Payment_Model_Info
-     */
+  
      protected function _prepareInfo()
     {
          $order = $this->getInfo()->getOrder();

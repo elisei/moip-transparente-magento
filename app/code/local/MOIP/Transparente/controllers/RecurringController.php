@@ -9,132 +9,171 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
         
     }
 
-    public function NewTranscitionAction()
+    
+    //$profile->setState(Mage_Sales_Model_Recurring_Profile::STATE_PENDING)->save();
+
+   
+    
+    public function NewTransactionAction()
     {
-
-
-               
+   
         $api       = $this->getApiMoip();
         $chave1 = Mage::getStoreConfig('payment/moip_transparente_standard/validador_retorno');
        
         $data = $this->getRequest()->getParams();
         $json_moip = $this->getRequest()->getRawBody();
+        
         $decode = json_decode($json_moip, false);
        
               
         $api->generateLog($json_moip, 'MOIP_Webhooks.log'); 
 
         if($data['validacao'] == $chave1){
-            $order_event = $decode->event;
+            $order_event        = $decode->event;
+            $code_id            = $decode->resource->subscription_code;
+            $data_for_payment   = json_decode($json_moip, true);
 
-            if($order_event == 'payment.status_updated'){
-
-
-
-                $api->generateLog($json_moip, 'MOIP_Webhooks.log');
-                $order_trans = $decode->resource->subscription_code;
-                $order_trans_status = $decode->resource->status->description;
-                if($order_trans_status == "Autorizado"){
-                    $new_order_data = $this->consultRecurring($order_trans);
-                    $order_create   = $this->CreateOrder($new_order_data);
-
-                    echo "criada order: ".$order_create->getId();
-                    echo "status: ".$order_trans_status;
-
-                    echo  $this->setStatesRecurring($order_create, $order_trans_status);
+            if($order_event == 'payment.created'){
+                
+                $order_exist        = $this->consultOrdersExist($code_id);
+                $order_init         = $order_exist->getFirstItem();
+                $orderId            = $order_init->getEntityId();
+                $order_load         = Mage::getModel('sales/order')->load($orderId);
+                $order_status       = $order_load->getState();
+                if($order_status === Mage_Sales_Model_Order::STATE_NEW && count($order_exist) === 1){
+                   
+                    return $this;
+                } else {
                     
-                    $order_create->sendNewOrderEmail();    
+                    $new_order      = $this->createNewOrderRecurring($code_id, $order_load, $data_for_payment["resource"]);
+                    
+                    echo $new_order->getIncrementId();
+                }
+            }
+
+            elseif($order_event == 'payment.status_updated'){
+
+
+
+                
+                $code_id             = $decode->resource->subscription_code;
+                $order_trans_status  = $decode->resource->status->description;
+                $id                  = $decode->resource->id;
+                if($order_trans_status == "Autorizado"){
+                    $order_exist    = $this->consultOrdersExist($code_id);
+
+                    $order_init     = $order_exist->getFirstItem();
+                    $orderId        = $order_init->getEntityId();
+                    $order_load     = Mage::getModel('sales/order')->load($orderId);
+                    $order_status   = $order_load->getState();
+                   
+                    if($order_status === Mage_Sales_Model_Order::STATE_NEW && count($order_exist) === 1){
+                        $this->autorizaPagamento($order_load);
+                        $this->setProfileState($code_id, "Autorizado");
+                       
+                    } else {
+                      $order_transaction = $this->consultTransactionId($id);
+                      if($order_transaction['order_id']){
+                        $order    = Mage::getModel('sales/order')->load($order_transaction['order_id']);
+                        $this->autorizaPagamento($order);
+                        $this->setProfileState($code_id, "Autorizado");
+                      }
+                      
+                    }
+                  
+                } elseif($order_trans_status == "Cancelado") {
+                    $order_exist    = $this->consultOrdersExist($code_id);
+
+                    $order_init     = $order_exist->getFirstItem();
+                    $orderId        = $order_init->getEntityId();
+                    $order_load     = Mage::getModel('sales/order')->load($orderId);
+                    $order_status   = $order_load->getState();
+                   
+                    if($order_status === Mage_Sales_Model_Order::STATE_NEW && count($order_exist) === 1){
+                        $this->cancelaPagamento($order_load);
+                        $this->setProfileState($code_id, "Cancelado");
+                       
+                    } else {
+                      $order_transaction = $this->consultTransactionId($id);
+                      if($order_transaction['order_id']){
+                        $order    = Mage::getModel('sales/order')->load($order_transaction['order_id']);
+                        $this->cancelaPagamento($order);
+                        $this->setProfileState($code_id, "Cancelado");
+                      }
+                      
+                    }
+
+
                 } else {
                    echo "Não lerei essa info";
                    return; 
                 }
                 
                 
-            } elseif($order_event == 'payment.created'){
+            } else {
                 echo "Não lerei essa info";
-               return; 
-                
-                
+               return;
             } 
 
         }
-        
-        
-    }
-    public function consultRecurring($code_id){
-        $profile           = Mage::getModel('sales/recurring_profile')->load($code_id);
-        $order             = $profile->getOrderInfo();
-        $order_id          = $order['entity_id'];
-        $customer          = $profile->getCustomerId();
-        $shipping_amount   = $profile->getShippingAmount();
-        $payment_method    = $profile->getMethodCode();
-        $shipping          = $profile->getShippingAddressInfo();
-        $dicount           = $profile->getDiscountAmount();
-        $base_dicount      = $profile->getBaseDiscountAmount();
-        $shipping_method   = $shipping['shipping_method'];
-        $shipping_description   = $shipping['shipping_description'];
-        $products          = $profile->getOrderItemInfo();        
-        $products_order = array(
-            $products['product_id'] => array(
-                'qty' => (int) $products['qty']
-            )
-        );
- 
-        $order_init = array( 
-                            'profile' => $profile,
-                            'order_info' => $order,
-                            'order_id' => $order_id,
-                            'customer_id' => $customer,
-                            'order_discount' => $dicount,
-                            'order_base_discount' => $base_dicount,
-                            'products' => $products_order,
-                            'shipping_amount' => $shipping_amount,
-                            'payment'   => $payment_method,
-                            'shipping' => $shipping_method,
-                            'shipping_description' => $shipping_description
-                        );
-  
-        return $order_init;
     }
 
-    public function CreateOrder($order_init = array(), $link = null)
-    {
-        $products_init             = $order_init['products'];
-        $payment_init              = $order_init['payment'];
-        $shipping_init             = $order_init['shipping'];
-        $shipping_description_init = $order_init['shipping_description'];
-        $shipping_price_init       = $order_init['shipping_amount'];
-        $profile                   = $order_init['profile'];
-        $customer_id               = $order_init['customer_id'];
-        $dicount                   = $order_init['order_discount'];
-        $base_dicount              = $order_init['order_base_discount'];
+    public function consultOrdersExist($code_id){
+        $profile            = Mage::getModel('sales/recurring_profile')->load($code_id);
+        $customer_id        = $profile->getCustomerId();
+        $order              = Mage::getResourceModel('sales/order_collection')
+                                ->addFieldToFilter('customer_id', $customer_id)
+                                ->addRecurringProfilesFilter($profile->getProfileId())
+                                ->setOrder('entity_id', 'asc');
+        return $order; 
+    }
+
+    public function consultTransactionId($id){
+        $readConnection = Mage::getSingleton('core/resource')->getConnection('core_read');
+        $table = (string) Mage::getConfig()->getTablePrefix().'sales_payment_transaction';
+
+        $query = "SELECT order_id FROM ". $table ." WHERE txn_id ={$id}";
+        $results = $readConnection->fetchAll($query);
+        return $results[0];
+    }
+
+    public function createNewOrderRecurring($code_id, $order, $data_for_payment){
+     
+        $content_parent     = !1;
+        $profile            = Mage::getModel('sales/recurring_profile')->load($code_id);
+        $customer_id        = $profile->getCustomerId();
+        $customer           = Mage::getModel('customer/customer')->load($customer_id);
+        $transaction        = Mage::getModel('core/resource_transaction');
+        $storeId            = $customer->getStoreId();
+        $reservedOrderId    = Mage::getSingleton('eav/config')->getEntityType('order')->fetchNewIncrementId($storeId);
+        $billing            = $customer->getDefaultBilling();
+        $address            = Mage::getModel('customer/address')->load($billing);
         
-        $customer = Mage::getModel('customer/customer')->load($customer_id);
+        
+        
 
-        $transaction     = Mage::getModel('core/resource_transaction');
-        $storeId         = $customer->getStoreId();
-        $reservedOrderId = Mage::getSingleton('eav/config')->getEntityType('order')->fetchNewIncrementId($storeId);
-
-        $order = Mage::getModel('sales/order')
+        $new_order = Mage::getModel('sales/order')
+               // ->setIncrementId($order->getIncrementId().'-1')
+               
                 ->setIncrementId($reservedOrderId)
                 ->setStoreId($storeId)
                 ->setQuoteId(0)
-                ->setGlobal_currency_code('BRL')
-                ->setBase_currency_code('BRL')
-                ->setStore_currency_code('BRL')
-                ->setOrder_currency_code('BRL');
+                ->setGlobalCurrencyCode('BRL')
+                ->setBaseCurrencyCode('BRL')
+                ->setStoreCurrencyCode('BRL')
+                ->setOrderCurrencyCode('BRL');
 
-        $order->setCustomer_email($customer->getEmail())
+        $new_order->setCustomerEmail($customer->getEmail())
                 ->setCustomerFirstname($customer->getFirstname())
                 ->setCustomerLastname($customer->getLastname())
                 ->setCustomerTaxvat($customer->getTaxvat())
                 ->setCustomerGroupId($customer->getGroupId())
-                ->setCustomer_is_guest(0)
+                ->setCustomerIsGuest(0)
                 ->setCustomer($customer);
-
-        $billing        = $customer->getDefaultBilling();
-        $address        = Mage::getModel('customer/address')->load($billing);
-        $billingAddress = Mage::getModel('sales/order_address')->setStoreId($storeId)->setAddressType(Mage_Sales_Model_Quote_Address::TYPE_BILLING)
+   
+        $billingAddress = Mage::getModel('sales/order_address')
+                            ->setStoreId($storeId)
+                            ->setAddressType(Mage_Sales_Model_Quote_Address::TYPE_BILLING)
                             ->setCustomerId($customer->getId())
                             ->setCustomerAddressId($customer->getDefaultBilling())
                             ->setPrefix($address->getPrefix())
@@ -145,20 +184,21 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
                             ->setCompany($address->getCompany())
                             ->setStreet($address->getStreet())
                             ->setCity($address->getCity())
-                            ->setCountryId($address->getCountryId())
+                            ->setCountryId("BR")
                             ->setRegion($address->getRegion())
                             ->setRegionId($address->getRegionId())
                             ->setPostcode($address->getPostcode())
                             ->setTelephone($address->getTelephone())
                             ->setFax($address->getFax())
                             ->setVatId($customer->getTaxvat());
-        $order->setBillingAddress($billingAddress);
+        $new_order->setBillingAddress($billingAddress);
 
         $shipping        = $customer->getDefaultShippingAddress();
-        $shippingAddress = Mage::getModel('sales/order_address')->setStoreId($storeId)->setAddressType(Mage_Sales_Model_Quote_Address::TYPE_SHIPPING)
+        $shippingAddress = Mage::getModel('sales/order_address')
+                            ->setStoreId($storeId)
+                            ->setAddressType(Mage_Sales_Model_Quote_Address::TYPE_SHIPPING)
                             ->setCustomerId($customer->getId())
                             ->setCustomerAddressId($customer->getDefaultShipping())
-                            ->setCustomerAddressId($shipping->getId())
                             ->setPrefix($shipping->getPrefix())
                             ->setFirstname($shipping->getFirstname())
                             ->setMiddlename($shipping->getMiddlename())
@@ -168,7 +208,7 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
                             ->setCompany($shipping->getCompany())
                             ->setStreet($shipping->getStreet())
                             ->setCity($shipping->getCity())
-                            ->setCountryId($shipping->getCountryId())
+                            ->setCountryId("BR")
                             ->setRegion($shipping->getRegion())
                             ->setRegionId($shipping->getRegionId())
                             ->setPostcode($shipping->getPostcode())
@@ -176,142 +216,174 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
                             ->setFax($shipping->getFax())
                             ->setVatId($customer->getTaxvat());
 
-        $order->setShippingAddress($shippingAddress);
-        $order->setShippingMethod($shipping_init)->setShippingDescription($shipping_description_init);
+        $new_order->setShippingAddress($shippingAddress);
+
+        $new_order->setShippingMethod($order->getShippingMethod())
+              ->setShippingDescription($order->getShippingDescription());
 
 
-        $orderPayment = Mage::getModel('sales/order_payment')->setStoreId($storeId)->setCustomerPaymentId(0)->setMethod($payment_init)->setPo_number(' – ');
-        $order->setPayment($orderPayment);
-        if($link)
-        $orderPayment->setAdditionalInformation('link_boleto', $link);
-
-        $subTotal = 0;
-        $products = $products_init;
-
-        foreach ($products as $productId => $product) {
-            $_product  = Mage::getModel('catalog/product')->load($productId);
-            $rowTotal  = $_product->getPrice() * $product['qty'];
-            $orderItem = Mage::getModel('sales/order_item')->setStoreId($storeId)->setQuoteItemId(0)->setQuoteParentItemId(NULL)->setProductId($productId)->setProductType($_product->getTypeId())->setQtyBackordered(NULL)->setTotalQtyOrdered($product['rqty'])->setQtyOrdered($product['qty'])->setName($_product->getName())->setSku($_product->getSku())->setPrice($_product->getPrice())->setBasePrice($_product->getPrice())->setOriginalPrice($_product->getPrice())->setRowTotal($rowTotal)->setBaseRowTotal($rowTotal);
-            
-            $subTotal += $rowTotal;
-            $order->addItem($orderItem);
-        }
-        $subTotal = $subTotal + $shipping_price_init;
-        $order->setSubtotal($subTotal)
-            ->setBaseSubtotal($subTotal)
-            ->setGrandTotal($subTotal)
-            ->setBaseShippingAmount($shipping_price_init)
-            ->setShippingAmount($shipping_price_init)
-            ->setBaseGrandTotal($subTotal)
-            ->setBaseDiscountAmount($base_discount)
-            ->setDiscountAmount($discount);
-
-        $transaction->addObject($order);
-        $transaction->addCommitCallback(array(
-            $order,
-            'place'
-        ));
+        
+        $orderPayment = Mage::getModel('sales/order_payment')->setStoreId($storeId)->setCustomerPaymentId(0)->setMethod($order->getPayment()->getMethod());
+        $new_order->setPayment($orderPayment);
+       
 
         $transaction->save();
+        if(!$this->isBundle($order)){
+            $products    = $this->setInfoAddItemProduct($order);
+            $new_order->addItem($products);
+        }
+        $new_order->setSubtotal($order->getSubtotal())
+            ->setBaseSubtotal($order->getBaseSubtotal())
+            ->setGrandTotal($order->getGrandTotal())
+            ->setBaseShippingAmount($order->getBaseShippingAmount())
+            ->setShippingAmount($order->getShippingAmount())
+            ->setBaseGrandTotal($order->getBaseGrandTotal())
+            ->setBaseDiscountAmount($order->getBaseDiscountAmount())
+            ->setDiscountAmount($order->getDiscountAmount())->save();
 
-
-        $profile->addOrderRelation($order->getId());
-
-        return $order;
-
-    }
-    
-    
-   
-    
-    public function setStatesRecurring($order, $status_moip)
-    {
-        $order_status = $order->getStatus();
-        $onhold       = Mage::getSingleton('transparente/standard')->getConfigData('order_status_holded_trial');
-        $paid         = Mage::getSingleton('transparente/standard')->getConfigData('order_status_processing');
+        $new_order_id = $new_order->getId();
+       
+        if($this->isBundle($order)){
+            $products    = $this->setInfoAddItemProduct($order, $new_order_id);
+            $new_order->addItem($products)->save();
+        }
+        $profile->addOrderRelation($new_order->getId());
         
-        if ($order->getId()) {
-            try {
+        $transaction = Mage::getModel('sales/order_payment_transaction');
+        $transaction->setOrderId($new_order->getId());
+        $transaction->setTxnId($data_for_payment["id"]);
+        $transaction->setTxnType(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
+        $transaction->setPaymentId($new_order->getPayment()->getId());
+        $transaction->setAdditionalInformation(
+            Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+            $data_for_payment
+        );
+       
+        $transaction->setOrderPaymentObject($new_order->getPayment());
+        $transaction->setIsClosed(1);
+        $transaction->save();
+        $new_order->setState(Mage_Sales_Model_Order::STATE_NEW)->save();
+       return $new_order;
+    }
 
-                
-                    
-                    $state   = Mage_Sales_Model_Order::STATE_PROCESSING;
-                    $status  = "processing";
-                    $comment = "Pagamento Autorizado";
-                    $order->setState($state, $status, $comment, $notified = true, $includeComment = true);
-                    $order->save();
-                    $order->sendOrderUpdateEmail(true, $comment);
-                    $invoice = $order->prepareInvoice();
-                    Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder())->save();
-                    $invoice->sendEmail();
-                    $invoice->setEmailSent(true);
-                    $invoice->save();
-               
-                    echo "Processada";
+    
+    public function isBundle($order){
+        foreach($order->getAllItems() as $item) {
+            $load_parent         = Mage::getModel('sales/order_item')->load($item->getId());
+            $parent_product_type = $load_parent->getProductType();
+            if ($parent_product_type == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE) {
+                return 1;
             }
-            catch (Exception $order) {
-                
-                Mage::throwException(Mage::helper('core')->__('Order não encontrada'));
-            }
-            
-        } else {
-            Mage::throwException(Mage::helper('core')->__('Order não encontrada'));
         }
+        return !1;
+    }
+
+    public function setInfoAddItemProduct($order, $new_order_id = null){
+        $parent_id_order = "";
+        foreach($order->getAllItems() as $item) {
+            
+                $load_parent         = Mage::getModel('sales/order_item')->load($item->getId());
+                $parent_product_type = $load_parent->getProductType();
+                
+                $orderItem = Mage::getModel('sales/order_item')
+                            
+                            ->setIsNominal($item->getIsNominal())
+                            ->setStoreId($item->getStoreId())
+                            ->setQuoteItemId($item->getQuoteItemId())
+                            ->setParentItemId($parent_id_order)
+                            ->setSku($item->getSku()) 
+                            ->setProductType($item->getProductType())
+                            ->setProductId($item->getProductId())
+                            ->setQtyBackordered($item->getQtyBackordered())
+                            ->setTotalQtyOrdered($item->getTotalQtyOrdered())
+                            ->setQtyOrdered($item->getQtyOrdered())
+                            ->setName($item->getName())
+                            ->setPrice($item->getPrice())
+                            ->setBasePrice($item->getBasePrice())
+                            ->setOriginalPrice($item->getOriginalPrice())
+                            ->setBaseOriginalPrice($item->getBaseOriginalPrice())
+                            ->setRowWeight($item->getRowWeight())
+                            ->setPriceInclTax($item->getPriceInclTax())
+                            ->setBasePriceInclTax($item->getBasePriceInclTax())
+                            ->setTaxAmount($item->getTaxAmount())
+                            ->setBaseTaxAmount($item->getBaseTaxAmount())
+                            ->setTaxPercent($item->getTaxPercent())
+                            ->setDiscountAmount($item->getDiscountAmount())
+                            ->setBaseDiscountAmount($item->getBaseDiscountAmount())
+                            ->setDiscountPercent($item->getDiscountPercent())
+                            ->setRowTotal($item->getRowTotal())
+                            ->setBaseRowTotal($item->getBaseRowTotal());
+
+                if($new_order_id){
+                    $orderItem->setOrderId($new_order_id);
+                    $orderItem->save();
+                } 
+               
+                if ($parent_product_type == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE) {
+                    $orderItem->setProductOptions($item->getProductOptions())->save();
+                    $parent_id_order = $orderItem->getItemId();
+                }
+                
+                
+        }
+      
+        return $orderItem;
+    }
+    
+    public function setProfileState($id_profile, $state){
+
+        if($state === "Cancelado"){
+            $state_profile      = Mage_Sales_Model_Recurring_Profile::STATE_PENDING;
+        } elseif($state === "Autorizado"){
+            $state_profile      = Mage_Sales_Model_Recurring_Profile::STATE_ACTIVE;
+        }
+
+        $profile                = Mage::getModel('sales/recurring_profile')->load($id_profile);
+        $profile->setState($state_profile)->save();
+        return $this;
     }
     
     
-    public function autorizaPagamento($order, $paid)
-    {
-        $state   = Mage_Sales_Model_Order::STATE_PROCESSING;
-        $status  = $paid;
-        $comment = "Pagamento Autorizado";
-        $invoice = $order->prepareInvoice();
-        if ($this->getStandard()->canCapture()) {
-            $invoice->register()->capture();
+    public function set404(){
+        $this->getResponse()->setHeader('HTTP/1.1','404 Not Found');
+        $this->getResponse()->setHeader('Status','404 File not found');
+
+        $pageId = Mage::getStoreConfig(Mage_Cms_Helper_Page::XML_PATH_NO_ROUTE_PAGE);
+        if (!Mage::helper('cms/page')->renderPage($this, $pageId)) {
+            $this->_forward('defaultNoRoute');
         }
+    }
+
+    public function autorizaPagamento($order){
+        if($order->canUnhold()) {
+            $order->unhold()->save();
+        } 
+        $invoice = $order->prepareInvoice();
+       
+        $invoice->register()->capture();
+        
         Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder())->save();
         $invoice->sendEmail();
         $invoice->setEmailSent(true);
         $invoice->save();
-        $update = $this->updateInOrder($order, $state, $status, $comment);
-        return $update;
-    }
-    
-    public function iniciaPagamento($order, $onhold)
-    {
-        $state   = Mage_Sales_Model_Order::STATE_HOLDED;
-        $status  = $onhold;
-        $comment = "Pagamento Iniciado";
-        $update  = $this->updateInOrder($order, $state, $status, $comment);
-        return $update;
-    }
-
-     public function iniciaPagamentoEspecial($order, $onhold)
-    {
-        $state   = Mage_Sales_Model_Order::STATE_NEW;
-        $status = 'pending';
-        $comment = "Order de solicitação de recorrência.";
-        $update  = $this->updateInOrder($order, $state, $status, $comment);
-        return $update;
-    }
-    
-    public function cancelaPagamento($order)
-    {
-        $state   = Mage_Sales_Model_Order::STATE_CANCELED;
-        $comment = "Pagamento Não Autorizado";
-        $status  = 'canceled';
-        $order->cancel();
-        $order->setState($state, $status, $comment, $notified = true, $includeComment = true);
-        $order->save();
-        $update = $this->updateInOrder($order, $state, $status, $comment);
-        return $update;
-    }
-    
-    public function updateInOrder($order, $state, $status, $comment){
-        $order->setState($state, $status, $comment, $notified = true, $includeComment = true);
-        $order->save();
-        $order->sendOrderUpdateEmail(true, $comment);
-        return true;
+        try {
+            return $order;
+        } catch (Exception $exception) {
+            return $this->set404();
+        }
      }
-    
+
+    public function cancelaPagamento($order){
+        if($order->canUnhold()) {
+            $order->unhold()->save();
+        } 
+        $order->cancel()->save();
+        
+        try {
+            return $order;
+        } catch (Exception $exception) {
+            return $this->set404();
+        }
+        
+    }
 }   

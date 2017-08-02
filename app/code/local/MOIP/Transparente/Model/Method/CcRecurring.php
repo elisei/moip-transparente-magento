@@ -76,7 +76,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
         parent::validate();
         $info           = $this->getInfoInstance();
         $currency_code  = Mage::app()->getStore()->getCurrentCurrencyCode();
-        $errorMsg       = false;
+        
         $additionaldata = unserialize($info->getAdditionalData());
         
         $ccNumber = $info->getRecurringNumber();
@@ -85,9 +85,6 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
         $ccType = '';
         
         
-        if ($errorMsg) {
-            Mage::throwException($errorMsg);
-        }
         return $this;
     }
 
@@ -140,7 +137,10 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
     public function canUseCheckout()
     {
         $cart = Mage::getModel('checkout/cart')->getQuote();
-        foreach ($cart->getAllItems() as $item) {
+        foreach ($cart->getAllVisibleItems() as $item) {
+            if($item->getData('just_added')){
+                return true;
+            }
             if (!$item->getProduct()->getIsRecurring())
                 return false;
         }
@@ -176,11 +176,10 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
                 $order    = $profile->createOrder($productItemInfo);
                 
                 $payment = $order->getPayment();
-                $payment->setTransactionId($moip_code)->setIsTransactionClosed(0);
-                $order->save();
+                $payment->setTransactionId($moip_code)->setIsTransactionClosed(1);
+                
                 $profile->addOrderRelation($order->getId());
-                $order->save();
-                $payment->save();
+                
                 
                 $transaction = Mage::getModel('sales/order_payment_transaction');
                 $transaction->setTxnId($moip_code);
@@ -188,7 +187,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
                 $transaction->setPaymentId($payment->getId());
                 $transaction->setOrderId($order->getId());
                 $transaction->setOrderPaymentObject($payment);
-                $transaction->setIsClosed(0);
+                $transaction->setIsClosed(1);
                 $transaction->save();
                 $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
             }
@@ -204,7 +203,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
                 $profile->save();
             }
             
-            Mage::throwException($response['msg']);
+            return Mage::throwException($response_moip);
             
         }
     }
@@ -293,11 +292,11 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
             $payment = $order->getPayment();
             $payment->setTransactionId($moip_code)->setAdditionalInformation(
                 Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
-                $_data
-            )->setIsTransactionClosed(0);
+                $moip_code
+            )->setIsTransactionClosed(1);
             
             $profile->addOrderRelation($order->getId());
-            $payment->save();
+            
 
             $transaction= Mage::getModel('sales/order_payment_transaction');
             $transaction->setTxnId($moip_code);
@@ -309,7 +308,7 @@ class MOIP_Transparente_Model_Method_CcRecurring extends Mage_Payment_Model_Meth
             );
             $transaction->setOrderId($order->getId());
             $transaction->setOrderPaymentObject($payment);
-            $transaction->setIsClosed( 0 );
+            $transaction->setIsClosed(1);
 
             $transaction->save();
            

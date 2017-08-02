@@ -197,7 +197,7 @@ class Moip_Transparente_Model_Observer
                                 );
             $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
                          ->addFieldToFilter('created_at', array('lteq' => $to_date))
-                         ->addAttributeToFilter('status',  array(
+                         ->addAttributeToFilter('state',  array(
                                                                                 'nin' => array(
                                                                                                     Mage_Sales_Model_Order::STATE_COMPLETE,
                                                                                                     Mage_Sales_Model_Order::STATE_PROCESSING,
@@ -298,7 +298,7 @@ class Moip_Transparente_Model_Observer
                                 );
             $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
                          ->addFieldToFilter('created_at', array('lteq' => $to_date))
-                         ->addAttributeToFilter('status',  array(
+                         ->addAttributeToFilter('state',  array(
                                                                                 'nin' => array(
                                                                                                     Mage_Sales_Model_Order::STATE_COMPLETE,
                                                                                                     Mage_Sales_Model_Order::STATE_PROCESSING,
@@ -392,35 +392,28 @@ class Moip_Transparente_Model_Observer
         $product = $observer->getProduct();
         if($product->getIsRecurring()){
             $recurring = $product->getRecurringProfile();
-            
+          
             if($recurring['init_amount']){
                 $setup = number_format($recurring['init_amount'], 2, '', '');    
             } else {
                 $setup = $recurring['init_amount'];    
             }
             if($recurring['trial_period_frequency']){
-                if($recurring['trial_period_unit'] ==  'day')
-                    $trial_date = $recurring['trial_period_frequency'];
-                elseif($recurring['trial_period_unit'] ==  'week')
-                     $trial_date = $recurring['trial_period_frequency']*7;
-                 elseif($recurring['trial_period_unit'] ==  'semi_month')
-                     $trial_date = $recurring['trial_period_frequency']*14;
-                  elseif($recurring['trial_period_unit'] ==  'month')
-                       $trial_date = $recurring['trial_period_frequency']*30;
-                   elseif($recurring['trial_period_unit'] ==  'year')
-                       $trial_date = $recurring['trial_period_frequency']*360;
-
-            } else {
-                       $trial_date = 0;                
+              Mage::getSingleton('core/session')->addError('Moip - No momento não suportamos período de testes');
+              return $this;
+            } 
+            if($recurring['start_date_is_editable']){
+                 Mage::getSingleton('core/session')->addError('Moip - No momento não suportamos agendamento de dia de pagamento.');
+              return $this;
             }
 
            
-            if($product->getTypeId() != "grouped"){
+            if($product->getTypeId() != "bundle"){
                 $data = array(
                             'code' => $product->getSku(),
                             'name' => $product->getName(),
                             'description' => $recurring['schedule_description'],
-                            'max_qty' => $recurring['period_max_cycles'],
+                          
                             'amount' => number_format($product->getFinalPrice(), 2, '', ''),
                             'setup_fee' => $setup,
                             'interval' => array(
@@ -437,8 +430,8 @@ class Moip_Transparente_Model_Observer
                             'code' => $product->getSku(),
                             'name' => $product->getName(),
                             'description' => $recurring['schedule_description'],
-                            'max_qty' => $recurring['period_max_cycles'],
-                            'amount' => number_format($this->getPriceBundle($product), 2, '', ''),
+                           
+                            'amount' => "100",
                             'setup_fee' => $setup,
                             'interval' => array(
                                                     'length' => $recurring['period_frequency'],

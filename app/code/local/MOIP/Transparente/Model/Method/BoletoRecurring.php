@@ -123,11 +123,10 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
                 $order    = $profile->createOrder($productItemInfo);
                 
                 $payment = $order->getPayment();
-                $payment->setTransactionId($moip_code)->setIsTransactionClosed(0);
-                $order->save();
+                $payment->setTransactionId($moip_code)->setIsTransactionClosed(1);
+               
                 $profile->addOrderRelation($order->getId());
-                $order->save();
-                $payment->save();
+                
                 
                 $transaction = Mage::getModel('sales/order_payment_transaction');
                 $transaction->setTxnId($moip_code);
@@ -135,7 +134,7 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
                 $transaction->setPaymentId($payment->getId());
                 $transaction->setOrderId($order->getId());
                 $transaction->setOrderPaymentObject($payment);
-                $transaction->setIsClosed(0);
+                $transaction->setIsClosed(1);
                 $transaction->save();
                 $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
             }
@@ -225,11 +224,11 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
             $payment = $order->getPayment();
             $payment->setTransactionId($moip_code)->setAdditionalInformation(
                 Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
-                $_data
-            )->setIsTransactionClosed(0);
+                serialize($moip_code)
+            )->setIsTransactionClosed(1);
             
             $profile->addOrderRelation($order->getId());
-            $payment->save();
+           
 
             $transaction= Mage::getModel('sales/order_payment_transaction');
             $transaction->setTxnId($moip_code);
@@ -241,7 +240,7 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
             );
             $transaction->setOrderId($order->getId());
             $transaction->setOrderPaymentObject($payment);
-            $transaction->setIsClosed( 0 );
+            $transaction->setIsClosed(1);
 
             $transaction->save();
            
