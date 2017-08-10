@@ -158,7 +158,7 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
             $texto      = "Configuração inicial do Módulo";
             $acao       = "Precisa de Ajuda?";
             $class_btn  = 'help';
-            $comentario = "Escolha a sua chave de notificação";
+            $comentario = "Cadastre a sua Validação de comunicação (campo logo a baixo)!";
             $link       = 'https://www.youtube.com/watch?v=5e5j407VLGI';
         }
         $action_setup  = "<h4>{$texto}</h4>";

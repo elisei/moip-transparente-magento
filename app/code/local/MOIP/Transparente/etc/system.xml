@@ -809,7 +809,7 @@
                     </fields>
                 </moip_tef>
                 <moip_recurring>
-                      <label><![CDATA[Moip Assinaturas - Configuração Inicial]]></label>
+                    <label><![CDATA[Moip Assinaturas - Configuração Inicial]]></label>
                     <frontend_type>text</frontend_type>
                     <comment><![CDATA[Definas as configurações para o recebimento pelo assinaturas]]></comment>
                     <sort_order>50000</sort_order>
@@ -817,38 +817,21 @@
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
-                        <order_status translate="label">
-                            <label>Status dos Pedidos Iniciados</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status_new</source_model>
+                        <assinatura_return translate="label">
+                            <label>Url de Retorno</label>
+                             <frontend_model>transparente/adminhtml_system_config_form_fieldset_modules_UrlRetornoAssinatura</frontend_model>
+                           
                             <comment><![CDATA[
-                                        <p>É o primeiro status de todo o pedido, ele signfica que foi recebida a ordem de compra.</p>
-                                        <p>No entanto o pagamento ainda não foi processado ou válidado.</p>
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.]]>
+                                        <p>Você precisa cadastrar manualmente a sua url de retorno.</p>
+                                        <p>Para isto, em <b>produção</b> <a href="https://conta.moip.com.br/configurations/subscriptions_preferences">clique aqui</a> ou em ambiente de <b>teste</b> <a href="https://conta-sandbox.moip.com.br/configurations/subscriptions_preferences">clique aqui</a> e informe a url:</p>
+                                    ]]>
                             </comment>
                             <sort_order>11</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </order_status>
-                        <api_id>
-                                <label>API Token</label>
-                                <frontend_type>obscure</frontend_type>
-                                <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
-                                <sort_order>3</sort_order>
-                                <show_in_default>1</show_in_default>
-                                <show_in_website>1</show_in_website>
-                                <show_in_store>0</show_in_store>
-                            </api_id>
-                            <api_key>
-                                <label>API Key</label>
-                                <frontend_type>obscure</frontend_type>
-                                <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
-                                <sort_order>4</sort_order>
-                                <show_in_default>1</show_in_default>
-                                <show_in_website>1</show_in_website>
-                                <show_in_store>0</show_in_store>
-                            </api_key>
+                        </assinatura_return>
+                        
                     </fields>
                 </moip_recurring>
                 <moip_ccrecurring>
@@ -869,20 +852,6 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </active>
-                        <order_status translate="label">
-                            <label>Status dos Pedidos Iniciados</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status_new</source_model>
-                            <comment><![CDATA[
-                                        <p>É o primeiro status de todo o pedido, ele signfica que foi recebida a ordem de compra.</p>
-                                        <p>No entanto o pagamento ainda não foi processado ou válidado.</p>
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.]]>
-                            </comment>
-                            <sort_order>2</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </order_status>
                         <title translate="label">
                             <label>Title</label>
                             <frontend_type>text</frontend_type>
@@ -891,21 +860,6 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </title>
-                        
-                        <order_status_holded_trial translate="label">
-                            <label>Status pedido em Trial</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>MOIP_Transparente_Model_Source_Holded</source_model>
-                            <comment><![CDATA[
-                                        <p>Saiba mais  <a href="https://youtu.be/">no video (ainda não disponível)</a>.</p>
-                                    ]]>
-                            </comment>
-                            <sort_order>5</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </order_status_holded_trial>
-                     
                         <allowspecific translate="label">
                             <label>Pagamento a partir de países aplicáveis</label>
                             <frontend_type>allowspecific</frontend_type>
@@ -953,20 +907,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </active>
-                        <order_status translate="label">
-                            <label>Status dos Pedidos Iniciados</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status_new</source_model>
-                            <comment><![CDATA[
-                                        <p>É o primeiro status de todo o pedido, ele signfica que foi recebida a ordem de compra.</p>
-                                        <p>No entanto o pagamento ainda não foi processado ou válidado.</p>
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.]]>
-                            </comment>
-                            <sort_order>2</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </order_status>
+                        
                         <title translate="label">
                             <label>Title</label>
                             <frontend_type>text</frontend_type>
@@ -976,19 +917,7 @@
                             <show_in_store>0</show_in_store>
                         </title>
                         
-                        <order_status_holded_trial translate="label">
-                            <label>Status pedido em Trial</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>MOIP_Transparente_Model_Source_Holded</source_model>
-                            <comment><![CDATA[
-                                        <p>Saiba mais  <a href="https://youtu.be/">no video (ainda não disponível)</a>.</p>
-                                    ]]>
-                            </comment>
-                            <sort_order>5</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </order_status_holded_trial>
+                      
                        
                         <allowspecific translate="label">
                             <label>Pagamento a partir de países aplicáveis</label>
@@ -1021,7 +950,6 @@
                         </sort_order>
                     </fields>
                 </moip_boletorecurring>
-
             </groups>
         </payment>
         <moipall translate="label" module="moipall">
