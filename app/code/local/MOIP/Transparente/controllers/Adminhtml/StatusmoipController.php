@@ -445,4 +445,7 @@ class MOIP_Transparente_Adminhtml_StatusmoipController extends  Mage_Adminhtml_C
     public function getStandard() {
         return Mage::getSingleton('transparente/standard');
     }
+    public function initState($value){
+        return Mage::getSingleton('transparente/standard')->getConfigData($value);
+    }
 }

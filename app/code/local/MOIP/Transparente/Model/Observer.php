@@ -553,4 +553,7 @@ class Moip_Transparente_Model_Observer
         }
         
     }
+    public function initState($value){
+        return Mage::getSingleton('transparente/standard')->getConfigData($value);
+    }
 }
