@@ -198,13 +198,13 @@ class Moip_Transparente_Model_Observer
             $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
                          ->addFieldToFilter('created_at', array('lteq' => $to_date))
                          ->addAttributeToFilter('state',  array(
-                                                                                'nin' => array(
-                                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
-                                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
-                                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
-                                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
-                                                                                                )
+                                                                'nin' => array(
+                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
+                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
+                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
+                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
                                                                                 )
+                                                                )
                                                                 
                                                 )
                          ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_cc'), array('eq' => 'moip_boleto'), array('eq' => 'moip_tef')));
@@ -246,25 +246,15 @@ class Moip_Transparente_Model_Observer
                 foreach ($value as $key => $_value) {
                             $api->generateLog($_value['event'], 'MOIP_CRON.log');
                     if($_value['event'] == "PAYMENT.AUTHORIZED"){
-                        $paid = $standard->getConfigData('order_status_processing');
-                        $upOrder = $this->autorizaPagamento($order, $paid);
+                        $upOrder = $this->autorizaPagamento($order);
                         $autorize_pagamento = 1;
                     } elseif ($_value['event'] == "PAYMENT.CANCELLED") {
     
-                                if($order->canUnhold()) {
-                                    $order->unhold()->save();
-                                }
-    
-                                $order->cancel()->save();
+                               
                                 $link = Mage::getUrl('sales/order/reorder/');
                                 $link = $link.'order_id/'.$order->getEntityId();
                                 $comment = "Cancelado por tempo limite para a notificação de pagamento, caso já tenha feito o pagamento entre em contato com o nosso atendimento, se desejar poderá refazer o seu pedido acessando: ".$link;
-                                $status = 'canceled';
-                                $order->cancel();
-                                $state = Mage_Sales_Model_Order::STATE_CANCELED;
-                                $order->setState($state, $status, $comment, $notified = true, $includeComment = true);
-                                $order->sendOrderUpdateEmail(true, $comment);
-                                $order->save();
+                                $upOrder = $this->cancelaPagamento($order, $comment);
                     } else {
                         return;
                     }
@@ -299,13 +289,13 @@ class Moip_Transparente_Model_Observer
             $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
                          ->addFieldToFilter('created_at', array('lteq' => $to_date))
                          ->addAttributeToFilter('state',  array(
-                                                                                'nin' => array(
-                                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
-                                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
-                                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
-                                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
-                                                                                                )
+                                                                'nin' => array(
+                                                                                    Mage_Sales_Model_Order::STATE_COMPLETE,
+                                                                                    Mage_Sales_Model_Order::STATE_PROCESSING,
+                                                                                    Mage_Sales_Model_Order::STATE_CLOSED,
+                                                                                    Mage_Sales_Model_Order::STATE_CANCELED
                                                                                 )
+                                                                )
                                                                 
                                                 )
                          ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_boleto')));
@@ -314,8 +304,8 @@ class Moip_Transparente_Model_Observer
              $api->generateLog($order->getEntityId(), 'MOIP_CronNotification.log');
              $order =  Mage::getModel('sales/order')->load($order->getEntityId());
              $onhold = $standard->getConfigData('order_status_holded_boleto');
-             $state = Mage_Sales_Model_Order::STATE_HOLDED;
-             $status = $onhold;
+             $state = $order->getState();
+             $status = $order->getStatus();
              $comment = "Seu boleto está próximo a vencer, caso não tenha realizado o pagamento ainda, acesse sua conta e realize agora.";
              $update = $this->updateInOrder($order, $state, $status, $comment);
         }
@@ -362,22 +352,132 @@ class Moip_Transparente_Model_Observer
         return Mage::getSingleton('transparente/standard');
     }
 
+    public function cancelaPagamento($order, $details){
+        if($this->initState('type_status_init') == "onhold") {
+            $order->unhold();
+            $order->cancel()->save();
+            $order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
+                    ->setStatus(Mage_Sales_Model_Order::STATE_CANCELED)
+                    ->save();
+            $state = Mage_Sales_Model_Order::STATE_CANCELED;
+            $link = Mage::getUrl('sales/order/reorder/');
+            $link = $link.'order_id/'.$order->getEntityId();
+            $comment = "Motivo: ".Mage::helper('transparente')->__($details)." Para refazer o pagamento acesse o link: ".$link;
+            $status = 'canceled';
+            $order->setState($state, $status, $comment, $notified = true, $includeComment = true);
+            $order->save();
+            $order->sendOrderUpdateEmail(true, $comment);
+            try {
+                return $order;
+            } catch (Exception $exception) {
+                return $this->set404();
+            }
+        }
+        if($this->initState('type_status_init') == "pending_payment") {
+            $order->cancel()->save();
 
-     public function autorizaPagamento($order, $paid){
-        if($order->canUnhold()) {
-            $order->unhold()->save();
+            $order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
+                    ->setStatus(Mage_Sales_Model_Order::STATE_CANCELED)
+                    ->save();
+            
+            $state = Mage_Sales_Model_Order::STATE_CANCELED;
+            $link = Mage::getUrl('sales/order/reorder/');
+            $link = $link.'order_id/'.$order->getEntityId();
+            $comment = "Motivo: ".Mage::helper('transparente')->__($details)." Para refazer o pagamento acesse o link: ".$link;
+            $status = 'canceled';
+            $order->setState($state, $status, $comment, $notified = true, $includeComment = true);
+            $order->save();
+            $order->sendOrderUpdateEmail(true, $comment);
+            try {
+                return $order;
+            } catch (Exception $exception) {
+                return $this->set404();
+            }
+
         }
-        
-        $invoice = $order->prepareInvoice();
-        if ($this->getStandard()->canCapture())
-        {
-                $invoice->register()->capture();
+
+        if($this->initState('type_status_init') ==  "not"){
+            $order->cancel()->save();
+
+            $order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
+                    ->setStatus(Mage_Sales_Model_Order::STATE_CANCELED)
+                    ->save();
+            $state = Mage_Sales_Model_Order::STATE_CANCELED;
+            $link = Mage::getUrl('sales/order/reorder/');
+            $link = $link.'order_id/'.$order->getEntityId();
+            $comment = "Motivo: ".Mage::helper('transparente')->__($details)." Para refazer o pagamento acesse o link: ".$link;
+            $status = 'canceled';
+            $order->setState($state, $status, $comment, $notified = true, $includeComment = true);
+            $order->save();
+            $order->sendOrderUpdateEmail(true, $comment);
+            try {
+                return $order;
+            } catch (Exception $exception) {
+                return $this->set404();
+            }
         }
-        Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder())->save();
-        $invoice->sendEmail();
-        $invoice->setEmailSent(true);
-        $invoice->save();
-        return;
+    }
+
+    public function autorizaPagamento($order){
+        if($this->initState('type_status_init') == "onhold") {
+            
+            $order->unhold();
+            $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)
+                    ->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING)
+                    ->save();
+            $invoice = $order->prepareInvoice();
+            if ($this->getStandard()->canCapture())
+            {
+                    $invoice->register()->capture();
+            }
+            Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder())->save();
+            $invoice->sendEmail();
+            $invoice->setEmailSent(true);
+            $invoice->save();
+            try {
+                return $order;
+            } catch (Exception $exception) {
+                return $this->set404();
+            }
+        }
+        if($this->initState('type_status_init') == "pending_payment") {
+            $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)
+                    ->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING)
+                    ->save();
+            $invoice = $order->prepareInvoice();
+            if ($this->getStandard()->canCapture())
+            {
+                    $invoice->register()->capture();
+            }
+            Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder())->save();
+            $invoice->sendEmail();
+            $invoice->setEmailSent(true);
+            $invoice->save();
+            try {
+                return $order;
+            } catch (Exception $exception) {
+                return $this->set404();
+            }
+        }
+        if($this->initState('type_status_init') ==  "not"){
+            $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)
+                    ->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING)
+                    ->save();
+            $invoice = $order->prepareInvoice();
+            if ($this->getStandard()->canCapture())
+            {
+                    $invoice->register()->capture();
+            }
+            Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder())->save();
+            $invoice->sendEmail();
+            $invoice->setEmailSent(true);
+            $invoice->save();
+            try {
+                return $order;
+            } catch (Exception $exception) {
+                return $this->set404();
+            }
+        }
      }
 
      public function updateInOrder($order, $state, $status, $comment){

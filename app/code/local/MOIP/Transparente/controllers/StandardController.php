@@ -224,48 +224,134 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 
 	public function autorizaPagamento($order){
-		if($order->canUnhold()) {
-			$order->unhold()->save();
-		} 
-		$invoice = $order->prepareInvoice();
-		if ($this->getStandard()->canCapture())
-		{
-				$invoice->register()->capture();
+
+		if($this->initState('type_status_init') == "onhold") {
+			
+			$order->unhold();
+			$order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)
+			        ->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING)
+			        ->save();
+			$invoice = $order->prepareInvoice();
+			if ($this->getStandard()->canCapture())
+			{
+					$invoice->register()->capture();
+			}
+			Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder())->save();
+			$invoice->sendEmail();
+			$invoice->setEmailSent(true);
+			$invoice->save();
+			try {
+				return $order;
+			} catch (Exception $exception) {
+				return $this->set404();
+			}
 		}
-		Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder())->save();
-		$invoice->sendEmail();
-		$invoice->setEmailSent(true);
-		$invoice->save();
-		try {
-			return $order;
-		} catch (Exception $exception) {
-			return $this->set404();
+		if($this->initState('type_status_init') == "pending_payment") {
+			$order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)
+			        ->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING)
+			        ->save();
+			$invoice = $order->prepareInvoice();
+			if ($this->getStandard()->canCapture())
+			{
+					$invoice->register()->capture();
+			}
+			Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder())->save();
+			$invoice->sendEmail();
+			$invoice->setEmailSent(true);
+			$invoice->save();
+        	try {
+				return $order;
+			} catch (Exception $exception) {
+				return $this->set404();
+			}
 		}
+		if($this->initState('type_status_init') ==  "not"){
+			$order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)
+			        ->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING)
+			        ->save();
+            $invoice = $order->prepareInvoice();
+			if ($this->getStandard()->canCapture())
+			{
+					$invoice->register()->capture();
+			}
+			Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder())->save();
+			$invoice->sendEmail();
+			$invoice->setEmailSent(true);
+			$invoice->save();
+			try {
+				return $order;
+			} catch (Exception $exception) {
+				return $this->set404();
+			}
+        }
+
 	 }
 
-	public function initState($value){
-        return Mage::getSingleton('transparente/standard')->getConfigData($value);
-    }
-	 
+	
 	public function cancelaPagamento($order, $details){
-	 	if($order->canUnhold()) {
-			$order->unhold()->save();
-		} 
-		$order->cancel()->save();
-		$state = Mage_Sales_Model_Order::STATE_CANCELED;
-		$link = Mage::getUrl('sales/order/reorder/');
-        $link = $link.'order_id/'.$order->getEntityId();
-		$comment = "Motivo: ".Mage::helper('transparente')->__($details)." Para refazer o pagamento acesse o link: ".$link;
-		$status = 'canceled';
-		$order->setState($state, $status, $comment, $notified = true, $includeComment = true);
-		$order->save();
-		$order->sendOrderUpdateEmail(true, $comment);
-		try {
-			return $order;
-		} catch (Exception $exception) {
-			return $this->set404();
+		if($this->initState('type_status_init') == "onhold") {
+		 	$order->unhold();
+			$order->cancel()->save();
+			$order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
+			        ->setStatus(Mage_Sales_Model_Order::STATE_CANCELED)
+			        ->save();
+			$state = Mage_Sales_Model_Order::STATE_CANCELED;
+			$link = Mage::getUrl('sales/order/reorder/');
+	        $link = $link.'order_id/'.$order->getEntityId();
+			$comment = "Motivo: ".Mage::helper('transparente')->__($details)." Para refazer o pagamento acesse o link: ".$link;
+			$status = 'canceled';
+			$order->setState($state, $status, $comment, $notified = true, $includeComment = true);
+			$order->save();
+			$order->sendOrderUpdateEmail(true, $comment);
+			try {
+				return $order;
+			} catch (Exception $exception) {
+				return $this->set404();
+			}
 		}
-		return;
+		if($this->initState('type_status_init') == "pending_payment") {
+			$order->cancel()->save();
+
+			$order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
+			        ->setStatus(Mage_Sales_Model_Order::STATE_CANCELED)
+			        ->save();
+			
+			$state = Mage_Sales_Model_Order::STATE_CANCELED;
+			$link = Mage::getUrl('sales/order/reorder/');
+	        $link = $link.'order_id/'.$order->getEntityId();
+			$comment = "Motivo: ".Mage::helper('transparente')->__($details)." Para refazer o pagamento acesse o link: ".$link;
+			$status = 'canceled';
+			$order->setState($state, $status, $comment, $notified = true, $includeComment = true);
+			$order->save();
+			$order->sendOrderUpdateEmail(true, $comment);
+			try {
+				return $order;
+			} catch (Exception $exception) {
+				return $this->set404();
+			}
+
+        }
+
+        if($this->initState('type_status_init') ==  "not"){
+        	$order->cancel()->save();
+
+        	$order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
+			        ->setStatus(Mage_Sales_Model_Order::STATE_CANCELED)
+			        ->save();
+			$state = Mage_Sales_Model_Order::STATE_CANCELED;
+			$link = Mage::getUrl('sales/order/reorder/');
+	        $link = $link.'order_id/'.$order->getEntityId();
+			$comment = "Motivo: ".Mage::helper('transparente')->__($details)." Para refazer o pagamento acesse o link: ".$link;
+			$status = 'canceled';
+			$order->setState($state, $status, $comment, $notified = true, $includeComment = true);
+			$order->save();
+			$order->sendOrderUpdateEmail(true, $comment);
+			try {
+				return $order;
+			} catch (Exception $exception) {
+				return $this->set404();
+			}
+        }
 	}
 
 	public function refundPagamento($order, $refundToStoreCreditAmount, $comment)
@@ -318,7 +404,10 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
         echo $creditmemo->getIncrementId();
 	}
 	
-
+	public function initState($value){
+        return Mage::getSingleton('transparente/standard')->getConfigData($value);
+    }
+	 
 	
 
 }
