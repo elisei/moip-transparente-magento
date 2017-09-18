@@ -215,6 +215,7 @@
             <moip_boleto>
                 <active>1</active>
                 <vcmentoboleto>3</vcmentoboleto>
+                <vcmentoboleto_diasuteis>1</vcmentoboleto_diasuteis>
                 <model>MOIP_Transparente_Model_Method_Boleto</model>
                 <title>Boleto Bancário</title>
                 <min_order_total>5</min_order_total>
@@ -244,6 +245,7 @@
             <moip_tef>
                 <active>1</active>
                 <vcmentotef>3</vcmentotef>
+                <vcmentotef_diasuteis>1</vcmentotef_diasuteis>
                 <model>MOIP_Transparente_Model_Method_Tef</model>
                 <title>Débito em Conta</title>
                 <vcmentoboleto>3</vcmentoboleto>
