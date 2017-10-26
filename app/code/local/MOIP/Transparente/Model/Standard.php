@@ -69,8 +69,9 @@ class MOIP_Transparente_Model_Standard extends Mage_Payment_Model_Method_Abstrac
 
         return $this;
     }
+
     public function getApi()
     {
-        return Mage::getModel('transparente/admin');
+        return Mage::getModel('transparente/api');
     }
 }
