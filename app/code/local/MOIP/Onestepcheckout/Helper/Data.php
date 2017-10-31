@@ -45,17 +45,17 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
                                     'street_3'  => '0',
                                     'street_4'  => '1',
                                     'telephone' => '10',
-                                    
+
                                     //'region_id' => '1'
                                 );
         $validatevaluesMax = array(
                                     'postcode'  => '9',
-                                    'street_1'  => '45',
+                                    'street_1'  => '57',
                                     'street_2'  => '6',
                                     'street_3'  => '30',
                                     'street_4'  => '60',
                                     'telephone' => '14',
-                                    
+
                                     //'region_id' => '99999'
                                 );
         if($key != 'street_3'){
