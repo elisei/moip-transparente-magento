@@ -51,7 +51,7 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
         $validatevaluesMax = array(
                                     'postcode'  => '9',
                                     'street_1'  => '45',
-                                    'street_2'  => '5',
+                                    'street_2'  => '6',
                                     'street_3'  => '30',
                                     'street_4'  => '60',
                                     'telephone' => '14',
