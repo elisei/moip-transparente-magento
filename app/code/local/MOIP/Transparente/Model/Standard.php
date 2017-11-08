@@ -10,12 +10,11 @@ class MOIP_Transparente_Model_Standard extends Mage_Payment_Model_Method_Abstrac
     protected $_canCapture = true;
     protected $_canCapturePartial = true;
     protected $_canRefund = true;
-    protected $_canRefundInvoicePartial = true;
     protected $_canVoid = true;
-    protected $_canUseInternal = true;
+    protected $_canUseInternal = false;
     protected $_canUseCheckout = false;
     protected $_canUseForMultishipping = false;
-    protected $_canSaveCc = false;
+    protected $_canSaveCc = true;
     protected $_allowCurrencyCode = array('BRL');
     protected $_canFetchTransactionInfo = true;
 

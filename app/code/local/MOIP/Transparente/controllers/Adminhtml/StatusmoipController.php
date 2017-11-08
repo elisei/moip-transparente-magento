@@ -296,7 +296,10 @@ class MOIP_Transparente_Adminhtml_StatusmoipController extends  Mage_Adminhtml_C
     }
    public function cancelaPagamento($order, $details){
         if($this->initState('type_status_init') == "onhold") {
-            $order->unhold();
+            if($order->canHold()) {
+				$order->hold()->save();
+			
+			}
             $order->cancel()->save();
             $order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
                     ->setStatus(Mage_Sales_Model_Order::STATE_CANCELED)
@@ -316,6 +319,7 @@ class MOIP_Transparente_Adminhtml_StatusmoipController extends  Mage_Adminhtml_C
             }
         }
         if($this->initState('type_status_init') == "pending_payment") {
+        	
             $order->cancel()->save();
 
             $order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
@@ -363,7 +367,10 @@ class MOIP_Transparente_Adminhtml_StatusmoipController extends  Mage_Adminhtml_C
     public function autorizaPagamento($order){
         if($this->initState('type_status_init') == "onhold") {
             
-            $order->unhold();
+            if($order->canHold()) {
+				$order->hold()->save();
+			
+			}
             $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)
                     ->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING)
                     ->save();

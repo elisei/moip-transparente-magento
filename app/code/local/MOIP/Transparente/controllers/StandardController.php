@@ -145,8 +145,16 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 			if($status_moip == "AUTHORIZED" && $order_state != Mage_Sales_Model_Order::STATE_COMPLETE && $order_state != Mage_Sales_Model_Order::STATE_PROCESSING && $order_state != Mage_Sales_Model_Order::STATE_CLOSED){
 
-				//realiza a autorização
+				
+				if($order->canHold()) {
+					$order->hold()->save();
+					try {
 
+					} catch (Mage_Core_Exception $e) {
+			            $this->_fault('status_not_changed', $e->getMessage());
+			            return $this->set404();
+			        }
+				}
 				$upOrder = $this->autorizaPagamento($order);
 
 
@@ -166,6 +174,15 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 			} elseif($status_moip == "CANCELLED" && $order_state != Mage_Sales_Model_Order::STATE_COMPLETE && $order_state != Mage_Sales_Model_Order::STATE_PROCESSING && $order_state != Mage_Sales_Model_Order::STATE_CLOSED && $order_state != Mage_Sales_Model_Order::STATE_CANCELED){
 
 				//realiza o cancelamento
+				if($order->canHold()) {
+					$order->hold()->save();
+					try {
+
+					} catch (Mage_Core_Exception $e) {
+			            $this->_fault('status_not_changed', $e->getMessage());
+			            return $this->set404();
+			        }
+				}
 				$upOrder = $this->cancelaPagamento($order,$details_cancel);
 
 				//verifica se foi aplicado
@@ -227,7 +244,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 		if($this->initState('type_status_init') == "onhold") {
 			
-			$order->unhold();
+			
 			$order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)
 			        ->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING)
 			        ->save();
@@ -290,7 +307,8 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 	
 	public function cancelaPagamento($order, $details){
 		if($this->initState('type_status_init') == "onhold") {
-		 	$order->unhold();
+		 	
+		 	
 			$order->cancel()->save();
 			$order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
 			        ->setStatus(Mage_Sales_Model_Order::STATE_CANCELED)
@@ -303,6 +321,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 			$order->setState($state, $status, $comment, $notified = true, $includeComment = true);
 			$order->save();
 			$order->sendOrderUpdateEmail(true, $comment);
+			$order->setStatus("canceled");
 			try {
 				return $order;
 			} catch (Exception $exception) {
