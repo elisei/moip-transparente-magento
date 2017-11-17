@@ -547,11 +547,13 @@ class MOIP_Transparente_Model_Api
     public function getPaymentJsonBoleto($info, $quote)
     {
         $additionaldata = unserialize($info->getAdditionalData());
+        $NDias = Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto');
+        $diasUteis = Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto_diasuteis');
         $json           = array(
             "fundingInstrument" => array(
                 "method" => "BOLETO",
                 "boleto" => array(
-                    "expirationDate" => $this->getDataVencimento(Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto')),
+                    "expirationDate" => $this->getDataVencimento($NDias, $diasUteis),
                     "instructionLines" => array(
                         "first" => "Pagamento do pedido na loja: " . Mage::getStoreConfig('payment/moip_transparente_standard/apelido'),
                         "second" => "Não Receber após o Vencimento",
@@ -566,12 +568,14 @@ class MOIP_Transparente_Model_Api
     public function getPaymentJsonTef($info, $quote)
     {
         $additionaldata = unserialize($info->getAdditionalData());
+        $NDias = Mage::getStoreConfig('payment/moip_boleto/vcmentotef');
+        $diasUteis = Mage::getStoreConfig('payment/moip_boleto/vcmentotef_diasuteis');
         $json           = array(
             "fundingInstrument" => array(
                 "method" => "ONLINE_BANK_DEBIT",
                 "onlineBankDebit" => array(
                     "bankNumber" => $additionaldata['banknumber_moip'],
-                    "expirationDate" => $this->getDataVencimento(Mage::getStoreConfig('payment/tef_boleto/vcmentotef')),
+                    "expirationDate" => $this->getDataVencimento($NDias, $diasUteis),
                     "returnUri" => Mage::getBaseUrl()
                 )
             )
@@ -579,18 +583,22 @@ class MOIP_Transparente_Model_Api
         $json           = Mage::helper('core')->jsonEncode((object) $json);
         return $json;
     }
-    public function getDataVencimento($NDias)
+    public function getDataVencimento($NDias, $diasUteis)
     {
         $DataAct = date("Ymd");
         $d       = new DateTime($DataAct);
         $t       = $d->getTimestamp();
-        for ($i = 0; $i < $NDias; $i++) {
-            $addDay  = 86400;
-            $nextDay = date('w', ($t + $addDay));
-            if ($nextDay == 0 || $nextDay == 6) {
-                $i--;
+        if ((bool) $diasUteis) {
+            for ($i = 0; $i < $NDias; $i++) {
+                $addDay = 86400;
+                $nextDay = date('w', ($t + $addDay));
+                if ($nextDay == 0 || $nextDay == 6) {
+                    $i--;
+                }
+                $t = $t + $addDay;
             }
-            $t = $t + $addDay;
+        }else {
+            $t += 86400 * $NDias;
         }
         $d->setTimestamp($t);
         return $d->format('Y-m-d');
