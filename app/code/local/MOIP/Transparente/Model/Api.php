@@ -273,7 +273,10 @@ class MOIP_Transparente_Model_Api
         $currency_code = Mage::app()->getStore()->getCurrentCurrencyCode();
         $cep           = substr(preg_replace("/[^0-9]/", "", $b->getPostcode()) . '00000000', 0, 8);
         $billing_cep   = substr(preg_replace("/[^0-9]/", "", $a->getPostcode()) . '00000000', 0, 8);
-        $dob           = Mage::app()->getLocale()->date($quote->getCustomerDob(), null, null, false)->toString('Y-MM-dd');
+        $dob           = Mage::app()->getLocale()->date($quote->getCustomerDob(), null, null, true)->toString('Y-MM-dd');
+        if(!$quote->getCustomerDob()){
+            $dob = date('Y-m-d', strtotime($dob . ' -1 day'));
+        }
         $dob           = explode('-',$dob);
         $dob_day = $dob[2];
         if(is_null($dob_day)){
