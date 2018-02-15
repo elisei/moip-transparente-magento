@@ -66,6 +66,7 @@ class MOIP_Transparente_Model_Method_Tef extends Mage_Payment_Model_Method_Abstr
     }
     public function getOrderPlaceRedirectUrl()
     {
+        $api                 = $this->getApi();
         $info                = $this->getInfoInstance();
         $quote               = $info->getQuote();
         $additionaldata      = unserialize($info->getAdditionalData());
@@ -81,7 +82,9 @@ class MOIP_Transparente_Model_Method_Tef extends Mage_Payment_Model_Method_Abstr
         $additionaldata      = array_merge($additionaldata, $additionaldataAfter);
         $info->setAdditionalData(serialize($additionaldata))->save();
         $info->setAdditionalInformation(serialize($additionaldata))->save();
-        Mage::log('json ' . $json_payment, null, 'MOIP_PaymentJsonSend.log', true);
+       
+
+        $api('json ' . $json_payment, null, 'MOIP_PaymentJsonSend.log', true);
         $this->prepare();
         if (isset($payment->errors)) {
             foreach ($payment->errors as $key => $value) {
@@ -89,8 +92,10 @@ class MOIP_Transparente_Model_Method_Tef extends Mage_Payment_Model_Method_Abstr
             }
             $session = Mage::getSingleton('checkout/session');
             $session->setMoipError($erros);
-            Mage::log('json' . $json_payment, null, 'MOIP_ErrorPayment.log', true);
-            Mage::log('Erro no pagamento moip order' . $payment, null, 'MOIP_ErrorPayment.log', true);
+
+            $api->generateLog("Erro payment - ".$json_payment, 'MOIP_PaymentError.log');
+            $this->getApi()->generateLog("Erro payment - ".$payment, 'MOIP_PaymentError.log');
+            
             return Mage::getUrl('transparente/standard/cancel', array(
                 '_secure' => true
             ));

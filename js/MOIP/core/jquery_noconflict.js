@@ -1,4 +1,5 @@
 jQuery.noConflict();
+
 var $j = jQuery.noConflict();
 //CUIDANDO DE CONFLITOS COM O PROTOTYPE VS BOOTSTRAP
 if (Prototype.BrowserFeatures.ElementExtensions) {
