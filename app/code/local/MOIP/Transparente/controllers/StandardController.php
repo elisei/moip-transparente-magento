@@ -295,6 +295,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 			        ->setStatus(Mage_Sales_Model_Order::STATE_CANCELED)
 			        ->save();
 			$state = Mage_Sales_Model_Order::STATE_CANCELED;
+			$storeId = $order->getStoreId();
 			$link_store = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
 			$link = $link_store.'sales/order/reorder/order_id/'.$order->getEntityId();
 			$comment = "Motivo: ".Mage::helper('transparente')->__($details)." Para refazer o pagamento acesse o link: ".$link;
