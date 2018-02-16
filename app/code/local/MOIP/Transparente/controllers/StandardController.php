@@ -269,7 +269,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 
 	public function autorizaPagamento($order){
-
+			$order->unhold()->save();
 			$order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)
 			        ->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING)
 			        ->save();
@@ -289,14 +289,14 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 	
 	public function cancelaPagamento($order, $details){
-
+			$order->unhold()->save();
 			$order->cancel()->save();
 			$order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
 			        ->setStatus(Mage_Sales_Model_Order::STATE_CANCELED)
 			        ->save();
 			$state = Mage_Sales_Model_Order::STATE_CANCELED;
-			$link = Mage::getUrl('sales/order/reorder/');
-	        $link = $link.'order_id/'.$order->getEntityId();
+			$link_store = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+			$link = $link_store.'/sales/order/reorder/'.$order->getEntityId();
 			$comment = "Motivo: ".Mage::helper('transparente')->__($details)." Para refazer o pagamento acesse o link: ".$link;
 			$status = 'canceled';
 			$order->setState($state, $status, $comment, $notified = true, $includeComment = true);
