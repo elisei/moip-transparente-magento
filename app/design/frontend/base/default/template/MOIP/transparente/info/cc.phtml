@@ -1,9 +1,6 @@
 <?php if(Mage::app()->getRequest()->getControllerModule() != "Mage_Checkout" && Mage::app()->getRequest()->getActionName() != "progresscheckout"): ?>
-
 		<?php $info = $this->_prepareInfo(); ?>
-
-
-	
+		<?php if(isset($info['moip_card_brand'])): ?>	
 			<h3 class="h3"><?php echo $info['moip_card_brand']; ?> <?php echo $info['moip_card_installment']; ?> parcelas</h3>
 			<div class="input-value">
 				<div><strong><?php echo $info['moip_card_fullname'] ?></strong></div>
@@ -13,7 +10,9 @@
 			<div>
 				- Nossos pedidos são processados pelo Moip Pagamentos S/A
 			</div>
-		
+		<?php else: ?>
+				<p>Não foi possível realizar o pagamento</p>
+		<?php endif; ?>
 <?php else: ?>
 	Pagamento via Cartão de Crédito
 <?php endif; ?>

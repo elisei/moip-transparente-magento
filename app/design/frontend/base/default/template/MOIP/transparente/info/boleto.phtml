@@ -1,20 +1,23 @@
 <?php if(Mage::app()->getRequest()->getControllerModule() != "Mage_Checkout" && Mage::app()->getRequest()->getActionName() != "progresscheckout"): ?>
 	<?php $info = $this->_prepareInfo(); ?>
 	<div class="box-content">
-		
-		<a  class="h3" title="Finalizar compra" href="<?php echo $info['moip_href_boleto']   ?>"  onclick="
-            popWin('<?php echo $info['moip_href_boleto']   ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">
-    		Imprimir Boleto
-        </a>
-		
-		<div>Vencimento: <?php echo date('d/m/Y', strtotime($info['moip_expiration_boleto'])) ?></div>
-		<!-- <div><input type="text" value="<?php echo $info['moip_linecode_boleto'] ?>" readonly="disable" style="max-width: 200px; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></div> -->
-		<div class="str">
-			- Pedidos pagos em boleto têm o prazo bancário de 2 dias úteis máximos para serem aprovados.
-		</div>
-		<div class="str">
-			- Nossos pedidos são processados pelo Moip Pagamentos S/A
-		</div>
+		<?php if(isset($info['moip_href_boleto'])): ?>	
+			<a  class="h3" title="Finalizar compra" href="<?php echo $info['moip_href_boleto']   ?>"  onclick="
+	            popWin('<?php echo $info['moip_href_boleto']   ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">
+	    		Imprimir Boleto
+	        </a>
+			
+			<div>Vencimento: <?php echo date('d/m/Y', strtotime($info['moip_expiration_boleto'])) ?></div>
+			<!-- <div><input type="text" value="<?php echo $info['moip_linecode_boleto'] ?>" readonly="disable" style="max-width: 200px; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></div> -->
+			<div class="str">
+				- Pedidos pagos em boleto têm o prazo bancário de 2 dias úteis máximos para serem aprovados.
+			</div>
+			<div class="str">
+				- Nossos pedidos são processados pelo Moip Pagamentos S/A
+			</div>
+		<?php else: ?>
+				<p>Não foi possível realizar o pagamento</p>
+		<?php endif; ?>
 	</div>
 <?php elseif( Mage::app()->getRequest()->getActionName() == "success"): ?>
 	<?php $info = $this->_prepareInfo(); ?>

@@ -63,7 +63,7 @@ class Moip_Transparente_Model_Observer
             $order_moip = str_replace("ORD-", "", $orderIdMoip);
             $model->setMagePay($mage_pay)->setMoipOrder($order_moip)->setCustomerEmail($email)->setCustomerId($customerId)->setFormaPagamento($forma_pagamento)->setMoipAmbiente($ambiente)->setMoipFees($fees)->setMoipPay($moipidPay);
             if ($forma_pagamento == "moip_boleto") {
-                $href                       = $responseMoip->_links->payBoleto->redirectHref;
+                $href                       = $responseMoip->_links->payBoleto->printHref;
                 $moip_boleto_expirationDate = $responseMoip->fundingInstrument->boleto->expirationDate;
                 $moip_boleto_lineCode       = $responseMoip->fundingInstrument->boleto->lineCode;
 
