@@ -149,19 +149,25 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Radio_InputRadio extends Mage_
         if (!$this->_beforeToHtml()) {
             return '';
         }
+        $option = array();
         $key = 0;
         $html = "";
         $i = "";
-        $option['id_default'] = "";
+       
         foreach ($this->getOptions() as $key => $option) { 
-           
-            if($option['value'] == $option['id_default']){
-                $_isCheckked = "checked";
-                $_isActive = "active"; 
-            } else {
+           if(isset($option['id_default'])){
+                if($option['value'] == $option['id_default']){
+                    $_isCheckked = "checked";
+                    $_isActive = "active"; 
+                } else {
+                    $_isCheckked = "";
+                    $_isActive =  ""; 
+                }
+           } else {
                 $_isCheckked = "";
                 $_isActive =  ""; 
-            }
+           }
+            
 
                 $html .="
                             <label class='btn btn-default btn-address ".$_isActive."' onclick='nextPasso()' >
