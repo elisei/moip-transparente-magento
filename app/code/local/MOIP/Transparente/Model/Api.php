@@ -28,6 +28,7 @@ class MOIP_Transparente_Model_Api
     public function normalizeComissao($comissionados){
 
        $_i = 0;
+       $controle_sellers_repeat = array();
         foreach ($comissionados as $key => $value) {
             if(!is_null($value["moipAccount"]["id"])){
                     $id_sellers[] = $value["moipAccount"]["id"];
