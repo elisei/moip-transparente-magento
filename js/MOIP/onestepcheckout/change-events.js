@@ -288,6 +288,8 @@ getFormInvalidData = function(){
 			
 		} 
 		if(value_hash_session[i] === 'shipping'){
+			var address_error = jQuery("input[name='billing_address_id']:checked").val();
+			var url_edit = editaddressurl + 'EditAddress/id/' + address_error;
 			window.location.href = url_edit;
 			jQuery(".erros_cadastro_valores").append("<h4>Em endereço de entrega</h4>");
 			jQuery(".erros_cadastro_valores").append('<li>' + value_field_title[i] + '</li>');

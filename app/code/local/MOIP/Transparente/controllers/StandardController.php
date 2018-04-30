@@ -166,27 +166,34 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 		if($order->getId()){
 
+			$order_state = $order->getState();
+
 
 			if($order_state == Mage_Sales_Model_Order::STATE_NEW &&  $this->initState('type_status_init') !=  "not"){
 				$this->set404();
 			}
 
-			if($status_moip == "AUTHORIZED" || $status_moip == "PAID" && $order_state != Mage_Sales_Model_Order::STATE_COMPLETE && $order_state != Mage_Sales_Model_Order::STATE_PROCESSING && $order_state != Mage_Sales_Model_Order::STATE_CLOSED){
+			if(		$status_moip == "AUTHORIZED" || $status_moip == "PAID" && 
+					($order_state != Mage_Sales_Model_Order::STATE_COMPLETE && $order_state != Mage_Sales_Model_Order::STATE_PROCESSING && $order_state != Mage_Sales_Model_Order::STATE_CLOSED) ){
 
-				
-				if($order->canHold()) {
-					$order->hold()->save();
-					try {
-						$upOrder = $this->autorizaPagamento($order);
-					} catch (Mage_Core_Exception $e) {
-						$transation->setMoipResponse(0)->save();
-						$api->generateLog("Não atualizou - ".$e->getMessage(), 'MOIP_WebHooksError.log');
-			            $this->_fault('status_not_changed', $e->getMessage());
-			            return !1;
-			        }
+				if($this->initState('type_status_init') ==  "onhold") {
+					if($order->canUnhold()) {
+						$order->unhold()->save();
+						try {
+							$upOrder = $this->autorizaPagamento($order);
+						} catch (Mage_Core_Exception $e) {
+							$transation->setMoipResponse(0)->save();
+							$api->generateLog("Não atualizou - ".$e->getMessage(), 'MOIP_WebHooksError.log');
+				            $this->_fault('status_not_changed', $e->getMessage());
+				            return !1;
+				        }
+					} else {
+						$api->generateLog("Não atualizou - A order não pode ser liberada...", 'MOIP_WebHooksError.log');
+					}
 				} else {
-					$upOrder = $this->autorizaPagamento($order);
+						$upOrder = $this->autorizaPagamento($order);
 				}
+				
 				
 
 
@@ -206,16 +213,23 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 			} elseif($status_moip == "CANCELLED" || $status_moip == "NOT_PAID" && $order_state != Mage_Sales_Model_Order::STATE_COMPLETE && $order_state != Mage_Sales_Model_Order::STATE_PROCESSING && $order_state != Mage_Sales_Model_Order::STATE_CLOSED && $order_state != Mage_Sales_Model_Order::STATE_CANCELED){
 
 				//solicita o cancelamento
-				if($order->canHold()) {
-					$order->hold()->save();
-					try {
-						$upOrder = $this->cancelaPagamento($order,$details_cancel);
-					} catch (Mage_Core_Exception $e) {
-						$transation->setMoipResponse(0)->save();
-						$api->generateLog("Não atualizou - ".$e->getMessage(), 'MOIP_WebHooksError.log');
-			            $this->_fault('status_not_changed', $e->getMessage());
-			            return $this->set404();
+				if($this->initState('type_status_init') ==  "onhold") {
+
+
+					if($order->canUnhold()) {
+						$order->unhold()->save();
+							try {
+								$upOrder = $this->cancelaPagamento($order,$details_cancel);
+							} catch (Mage_Core_Exception $e) {
+								$transation->setMoipResponse(0)->save();
+								$api->generateLog("Não atualizou - ".$e->getMessage(), 'MOIP_WebHooksError.log');
+					            $this->_fault('status_not_changed', $e->getMessage());
+					            return $this->set404();
+			        		}
+			        } else {
+			        	$api->generateLog("Não atualizou - A order não pode ser liberada...", 'MOIP_WebHooksError.log');
 			        }
+
 				} else {
 					$upOrder = $this->cancelaPagamento($order,$details_cancel);
 				}
@@ -269,7 +283,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
 
 	public function autorizaPagamento($order){
-			$order->unhold()->save();
+			
 			$order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true)
 			        ->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING)
 			        ->save();
@@ -288,12 +302,11 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 	 }
 
 	
-	public function cancelaPagamento($order, $details){
-			$order->unhold()->save();
+	public function cancelaPagamento($order, $details = "Indefinido"){
 			$order->cancel()->save();
-			$order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
+			/*$order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true)
 			        ->setStatus(Mage_Sales_Model_Order::STATE_CANCELED)
-			        ->save();
+			        ->save();*/
 			$state = Mage_Sales_Model_Order::STATE_CANCELED;
 			$storeId = $order->getStoreId();
 			$link_store = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
@@ -301,9 +314,9 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 			$comment = "Motivo: ".Mage::helper('transparente')->__($details)." Para refazer o pagamento acesse o link: ".$link;
 			$status = 'canceled';
 			$order->setState($state, $status, $comment, $notified = true, $includeComment = true);
-			$order->save();
 			$order->sendOrderUpdateEmail(true, $comment);
-			$order->setStatus("canceled");
+			$order->save();
+
 			return $order;
 	}
 

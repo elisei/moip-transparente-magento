@@ -102,7 +102,7 @@ class Moip_Transparente_Model_Observer
     public function setInit($order){
         if($order){
 
-            if($this->getModuleConfig('type_status_init') == "onhold") {
+            if($this->getModuleConfig('type_status_init') === "onhold") {
                 $mage_pay         = $order->getId();
                 $forma_pagamento  = $order->getPayment()->getMethodInstance()->getCode();
                 if ($forma_pagamento == "moip_boleto" || $forma_pagamento == "moip_tef" || $forma_pagamento == "moip_cc") {
@@ -130,7 +130,7 @@ class Moip_Transparente_Model_Observer
                 return $this;
             }
 
-            if($this->getModuleConfig('type_status_init') == "pending_payment") {
+            if($this->getModuleConfig('type_status_init') === "pending_payment") {
                 $mage_pay         = $order->getId();
                 $forma_pagamento  = $order->getPayment()->getMethodInstance()->getCode();
                 if ($forma_pagamento == "moip_boleto" || $forma_pagamento == "moip_tef" || $forma_pagamento == "moip_cc") {
@@ -158,8 +158,9 @@ class Moip_Transparente_Model_Observer
                 return $this;
             }
 
-            if($this->getModuleConfig('type_status_init') ==  "not"){
-                 $order->save();
+            if($this->getModuleConfig('type_status_init') ===  "not"){
+                $order->save();
+                return $this;
             }
             
         }
