@@ -21,3 +21,7 @@ a.btn-moip.help {
 .btn-moip:hover{
 	opacity: 0.7;
 }
+
+.moip-info-head td {
+    padding: 0px 25px;
+}

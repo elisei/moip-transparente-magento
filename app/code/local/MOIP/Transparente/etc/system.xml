@@ -1046,11 +1046,105 @@
                 </success_page>
                 <advanced_reset translate="label">
                     <label>Informações da configuração atual</label>
-                    <frontend_model>MOIP_Transparente_Block_Adminhtml_System_Config_Form_Fieldset_Modules_Reset</frontend_model>
+                    <frontend_type>text</frontend_type>
                     <sort_order>5</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
+                    <fields>
+                         <title_info_producao>
+                            <label>Configurações de Produção</label>
+                            <frontend_model>transparente/adminhtml_system_config_form_fieldset_modules_header</frontend_model>
+                            <comment>Configurações do ambiente de produção</comment>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </title_info_producao>
+                        <oauth_prod>
+                            <label>Token oAuth</label>
+                            <frontend_model>transparente/adminhtml_system_config_form_fieldset_modules_reset</frontend_model>
+                            <comment>O token oAuth é gerado via autorização do módulo, veja a sessão formas de pagamento para relizar a autorização ou apagar a atual.</comment>
+                            <type_consult>db</type_consult>
+                            <type_value_info>oauth_prod</type_value_info>
+                            <text_not_set><![CDATA[<p>Você ainda não tem nenhuma autorização para uso do módulo em produção, veja como gerar uma autorização válida <a href="https://youtu.be/QQ5t9UsJ_ow">no video</a>.</p>
+                                    ]]></text_not_set>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </oauth_prod>
+                        <mpa_prod>
+                            <label>MPA</label>
+                            <frontend_model>transparente/adminhtml_system_config_form_fieldset_modules_reset</frontend_model>
+                            <comment>MPA é um id da sua conta moip.</comment>
+                            <type_consult>db</type_consult>
+                            <type_value_info>mpa_prod</type_value_info>
+                            <text_not_set><![CDATA[<p>Não conseguimos capturar seu id da conta Moip, por favor refaça a autorização do módulo. Veja como gerar uma autorização válida <a href="https://youtu.be/QQ5t9UsJ_ow">no video</a>.</p>
+                                    ]]></text_not_set>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </mpa_prod>
+                        <webhooks_prod>
+                            <label>Url de retorno de status</label>
+                            <frontend_model>transparente/adminhtml_system_config_form_fieldset_modules_reset</frontend_model>
+                            <comment>MPA é um id da sua conta moip.</comment>
+                            <type_consult>external</type_consult>
+                            <type_environment>producao</type_environment>
+                            <environment_path>preferences/notifications</environment_path>
+                            <text_not_set><![CDATA[<p>Não há definições de retorno de status para sua conta.</p>
+                                    ]]></text_not_set>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </webhooks_prod>
+
+
+                        <title_info_sandbox>
+                            <label>Configurações de Sandbox</label>
+                            <frontend_model>transparente/adminhtml_system_config_form_fieldset_modules_header</frontend_model>
+                            <comment>Configurações do ambiente de teste (sandbox)</comment>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </title_info_sandbox>
+                        <oauth_dev>
+                            <label>Token oAuth</label>
+                            <frontend_model>transparente/adminhtml_system_config_form_fieldset_modules_reset</frontend_model>
+                            <comment>O token oAuth é gerado via autorização do módulo, veja a sessão formas de pagamento para relizar a autorização ou apagar a atual.</comment>
+                            <type_consult>db</type_consult>
+                            <type_value_info>oauth_dev</type_value_info>
+                            <text_not_set><![CDATA[<p>Você ainda não tem nenhuma autorização para uso do módulo em sandbox, veja como gerar uma autorização válida <a href="https://youtu.be/QQ5t9UsJ_ow">no video</a>.</p>
+                                    ]]></text_not_set>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </oauth_dev>                        
+                        <mpa_dev>
+                            <label>MPA</label>
+                            <frontend_model>transparente/adminhtml_system_config_form_fieldset_modules_reset</frontend_model>
+                            <comment>MPA é um id da sua conta moip.</comment>
+                            <type_consult>db</type_consult>
+                            <type_value_info>mpa_dev</type_value_info>
+                            <text_not_set><![CDATA[<p>Não conseguimos capturar seu id da conta Moip, por favor refaça a autorização do módulo. Veja como gerar uma autorização válida <a href="https://youtu.be/QQ5t9UsJ_ow">no video</a>.</p>
+                                    ]]></text_not_set>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </mpa_dev>
+                        <webhooks_dev>
+                            <label>Preferência de retornos definidas </label>
+                            <frontend_model>transparente/adminhtml_system_config_form_fieldset_modules_reset</frontend_model>
+                            <comment>MPA é um id da sua conta moip.</comment>
+                            <type_consult>external</type_consult>
+                            <type_environment>teste</type_environment>
+                            <environment_path>preferences/notifications</environment_path>
+                            <text_not_set><![CDATA[<p>Não há definições de retorno de status para sua conta.</p>
+                                    ]]></text_not_set>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </webhooks_dev>
+                    </fields>
                 </advanced_reset>
                 <oneclick_config>
                     <label>Compra com 1 Click</label>
