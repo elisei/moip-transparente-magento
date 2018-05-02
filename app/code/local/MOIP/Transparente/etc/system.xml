@@ -1059,6 +1059,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <sort_order>10</sort_order>
                         </title_info_producao>
                         <oauth_prod>
                             <label>Token oAuth</label>
@@ -1071,6 +1072,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <sort_order>11</sort_order>
                         </oauth_prod>
                         <mpa_prod>
                             <label>MPA</label>
@@ -1083,6 +1085,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <sort_order>12</sort_order>
                         </mpa_prod>
                         <webhooks_prod>
                             <label>Url de retorno de status</label>
@@ -1096,6 +1099,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <sort_order>13</sort_order>
                         </webhooks_prod>
 
 
@@ -1106,6 +1110,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <sort_order>20</sort_order>
                         </title_info_sandbox>
                         <oauth_dev>
                             <label>Token oAuth</label>
@@ -1118,6 +1123,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <sort_order>21</sort_order>
                         </oauth_dev>                        
                         <mpa_dev>
                             <label>MPA</label>
@@ -1130,6 +1136,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <sort_order>22</sort_order>
                         </mpa_dev>
                         <webhooks_dev>
                             <label>Preferência de retornos definidas </label>
@@ -1143,6 +1150,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <sort_order>23</sort_order>
                         </webhooks_dev>
                     </fields>
                 </advanced_reset>
