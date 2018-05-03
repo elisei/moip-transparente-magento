@@ -1222,18 +1222,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </enable_split>
-                        <mpa translate="label">
-                            <label>MPA Primário</label>
-                            <comment>MPA é o ID da conta moip.</comment>
-                            <depends>
-                                <enable_split>1</enable_split>
-                            </depends>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>1</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </mpa>
+
                         <split_type>
                             <label>Tipo de Split</label>
                             <tooltip><![CDATA[Para o calculo de split, por padrão há a configuração para pegar o atributo de um produto, pegar um atributo fixado nessa sessão ou ainda customizar o modelo de split, essa ultima versão é ideal para quem utilizar módulos adcionais de mktplace.]]>
@@ -1244,11 +1233,24 @@
                             </depends>
                             <frontend_type>select</frontend_type>
                             <source_model>MOIP_Transparente_Model_Source_SplitType</source_model>
-                            <sort_order>3</sort_order>
+                            <sort_order>1</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </split_type>
+                        <mpa translate="label">
+                            <label>MPA Primário</label>
+                            <comment>MPA é o ID da conta moip.</comment>
+                            <depends>
+                                <enable_split>1</enable_split>
+                                <split_type separator=",">attributeproduct,perstoreview,custom</split_type>
+                            </depends>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </mpa>
                         <mpa_forprod>
                             <label>Atributo de produto relacionado ao MPA</label>
                             <tooltip><![CDATA[Escolha o atributo que usará para relacionar o seu produto a conta moip do vendedor secundário.]]>
@@ -1264,10 +1266,10 @@
                             </depends>
                             <frontend_type>select</frontend_type>
                             <source_model>MOIP_Transparente_Model_Source_AttributesProduct</source_model>
-                            <sort_order>4</sort_order>
+                            <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
                         </mpa_forprod>
                         <value_forprod>
                             <label>Atributo de produto relacionado ao % da comissão.</label>
@@ -1280,10 +1282,10 @@
                             </depends>
                             <frontend_type>select</frontend_type>
                             <source_model>MOIP_Transparente_Model_Source_AttributesProduct</source_model>
-                            <sort_order>5</sort_order>
+                            <sort_order>4</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
                         </value_forprod>
                         <mpa_store translate="label">
                             <label>MPA Secundário</label>
@@ -1291,13 +1293,13 @@
                                 O vendedor já tem que ter pre-autorizado o módulo "Magento-Moip", caso necessário <a href="https://connect.moip.com.br/oauth/authorize?response_type=code&client_id=APP-AKYBMMVU1FL1&redirect_uri=http://moip.o2ti.com/magento/redirect/?client_id=http%3A%2F%2Fmoip.o2ti.com%2Fmagento%2Fredirect%2FgetMPA.php&scope=RECEIVE_FUNDS,REFUND,MANAGE_ACCOUNT_INFO,DEFINE_PREFERENCES,RETRIEVE_FINANCIAL_INFO">clique aqui</a>]]></comment>
                             <depends>
                                 <enable_split>1</enable_split>
-                                <split_type>perstoreview</split_type>
+                                <split_type separator=",">fullstoreview,perstoreview</split_type>
                             </depends>
                             <frontend_type>text</frontend_type>
-                            <sort_order>6</sort_order>
-                            <show_in_default>1</show_in_default>
+                            <sort_order>5</sort_order>
+                            <show_in_default>0</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </mpa_store>
                         <value_store translate="label">
                             <label>Percentual da comissão</label>
@@ -1308,9 +1310,9 @@
                             </depends>
                             <frontend_type>text</frontend_type>
                             <sort_order>7</sort_order>
-                            <show_in_default>1</show_in_default>
+                            <show_in_default>0</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </value_store>
                    </fields>
                 </mktplacet_config>

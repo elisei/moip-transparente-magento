@@ -4,22 +4,12 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
     public function __construct()
     {
         
-        $this->getSaveDate();
+       
         parent::__construct();
         return $this;
     }
 
-    public function getSaveDate()
-    {
-        $order            = $this->getOrder();
-        if($order){
-            $order->sendNewOrderEmail();
-            $order->setEmailSent(true);
-            $order->save();
-        }
-       
-        
-    }
+  
 
     public function getApi()
     {

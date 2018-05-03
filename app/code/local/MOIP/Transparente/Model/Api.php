@@ -28,7 +28,6 @@ class MOIP_Transparente_Model_Api
     public function normalizeComissao($comissionados){
 
        $_i = 0;
-       $controle_sellers_repeat = array();
         foreach ($comissionados as $key => $value) {
             if(!is_null($value["moipAccount"]["id"])){
                     $id_sellers[] = $value["moipAccount"]["id"];
@@ -85,10 +84,7 @@ class MOIP_Transparente_Model_Api
     public function getListaComissoesAvancadas($quote)
     {
 
-        $comissionados[0] =  array(
-                                'moipAccount' => array('id' => Mage::getStoreConfig('moipall/mktplacet_config/mpa')),
-                                'type' => "PRIMARY",
-                            );
+       
 
 
         
@@ -98,6 +94,13 @@ class MOIP_Transparente_Model_Api
         $storeId   = Mage::app()->getStore()->getStoreId();
 
         $split_type             = Mage::getStoreConfig('moipall/mktplacet_config/split_type');
+
+        if($split_type != "fullstoreview") {
+             $comissionados[0] =  array(
+                                'moipAccount' => array('id' => Mage::getStoreConfig('moipall/mktplacet_config/mpa')),
+                                'type' => "PRIMARY",
+                            );
+        }
 
         if($split_type == 'attributeproduct'){
             $attribute_mpa          = Mage::getStoreConfig('moipall/mktplacet_config/mpa_forprod');
@@ -126,8 +129,8 @@ class MOIP_Transparente_Model_Api
                 }
             }
         } elseif($split_type == 'perstoreview') {
-            $attribute_mpa          = Mage::getStoreConfig('moipall/mktplacet_config/mpa_store');
-            $attribute_commisao     = Mage::getStoreConfig('moipall/mktplacet_config/value_store');
+            $attribute_mpa          = Mage::app()->getWebsite()->getConfig('moipall/mktplacet_config/mpa_store');
+            $attribute_commisao     = Mage::app()->getWebsite()->getConfig('moipall/mktplacet_config/value_store');
     
 
             foreach ($items as $key => $item) {
@@ -146,8 +149,22 @@ class MOIP_Transparente_Model_Api
                         );
                 }
             }
+        } elseif($split_type == 'fullstoreview') {
+            
+            $mpa_secundary     = Mage::app()->getWebsite()->getConfig('moipall/mktplacet_config/mpa_store');
+          
+            $comissionados[]    = array(
+                    'moipAccount' => array('id' => $mpa_secundary),
+                    'type' => "SECONDARY",
+                    'amount' => array('fixed' => number_format($quote->getGrandTotal(), 2, '', '')),
+                    'feePayor' => "true"
+                );
+            
         } else{
-            // Você pode personalizar seu método de split aqui! :D 
+            // Você pode personalizar seu método de split aqui, ou usar o falso evento que criamos :D (coloaboraçaõ de @Denis Barboni) 
+            $splitdata = new Varien_Object(array('quote' => $quote, 'comissionados' => $comissionados));
+            Mage::dispatchEvent('moip_insert_custom_split', array('splitdata' => $splitdata)) ;
+            $comissionados = $splitdata->getComissionados();
 
         }
         
@@ -773,12 +790,11 @@ class MOIP_Transparente_Model_Api
 
         if(Mage::getSingleton('transparente/standard')->getConfigData('log') == 1){
             $dir_log = Mage::getBaseDir('var').'/log/MOIP/';
-
             if (!file_exists($dir_log)) {
                 mkdir($dir_log, 0755, true);
             }
 
-            Mage::log($variable, null, 'MOIP/'.$name_log, true);    
+            Mage::log($variable, null, 'MOIP/'.$name_log, true);
         } else {
             
         }

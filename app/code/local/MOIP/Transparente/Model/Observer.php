@@ -93,7 +93,8 @@ class Moip_Transparente_Model_Observer
                 $model->setMoipCardInstallment($moip_card_installmentCount)->setMoipCardBrand($moip_card_brand)->setMoipCardId($moip_card_id)->setMoipCardFirst6($moip_card_first6)->setMoipCardLast4($moip_card_last4)->setMoipCardBirthdate($moip_card_birthdate)->setMoipCardTaxdocument($moip_card_taxDocument)->setMoipCardFullname($moip_card_fullname);
             }
             $model->save();
-
+            $order->sendNewOrderEmail();
+            $order->setEmailSent(true);
             return $this;
 
         }
