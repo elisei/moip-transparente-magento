@@ -151,18 +151,17 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 
 	public function getCofre() {
 		if (Mage::getSingleton('customer/session')->isLoggedIn()) {
-			$data_array = array();
 			$customerData = Mage::getSingleton('customer/session')->getCustomer();
-			$resource = Mage::getSingleton('core/resource');
-
-			$readConnection = $resource->getConnection('core_read');
-			$table = (string) Mage::getConfig()->getTablePrefix().'moip_transparentev2';
-
-			$query = 'SELECT * FROM ' . $table .' WHERE customer_id='.$customerData->getID().' AND moip_card_id IS NOT NULL';
-			$results = $readConnection->fetchAll($query);
-
-			if($results){
-				return Mage::helper('core')->jsonEncode((object)$results);
+			$ambiente = Mage::getSingleton('transparente/standard')->getConfigData('ambiente');
+			$model = Mage::getModel('transparente/transparente');
+			$collection = $model->getCollection()
+							->addFieldToSelect(array('moip_card_id','moip_card_brand','moip_card_first6','moip_card_last4','moip_card_fullname'))
+							->addFieldToFilter('customer_id', array('eq' => '1'))
+							->addFieldToFilter('moip_ambiente', array('eq' => $ambiente))
+							->addFieldToFilter('moip_card_id', array('neq' => 'NULL'));
+			$collection->getSelect()->group('moip_card_id');
+			if($collection->getSize() >= 1){
+				return $collection;
 			} else {
 				return 'false';
 			}

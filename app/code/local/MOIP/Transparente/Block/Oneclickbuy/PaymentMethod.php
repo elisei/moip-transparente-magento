@@ -66,18 +66,15 @@ class MOIP_Transparente_Block_Oneclickbuy_PaymentMethod extends Mage_Payment_Blo
     }
     public function getCofre() {
         if (Mage::getSingleton('customer/session')->isLoggedIn()) {
-            $data_array = array();
-            $customerData = Mage::getSingleton( 'customer/session' )->getCustomer();
-            $resource = Mage::getSingleton('core/resource');
-
-            $readConnection = $resource->getConnection('core_read');
-            $table = Mage::getConfig()->getTablePrefix().'moip_transparentev2';
-
-            $query = 'SELECT * FROM ' . $table .' WHERE customer_id='.$customerData->getID().' AND moip_card_id IS NOT NULL';
-            $results = $readConnection->fetchAll($query);
-
-            if($results){
-                return json_encode($results, true);
+            $customerData = Mage::getSingleton('customer/session')->getCustomer();
+            $model = Mage::getModel('transparente/transparente');
+            $collection = $model->getCollection()
+                            ->addFieldToSelect(array('moip_card_id','moip_card_brand','moip_card_first6','moip_card_last4','moip_card_fullname'))
+                            ->addFieldToFilter('customer_id', array('eq' => '1'))
+                            ->addFieldToFilter('moip_card_id', array('neq' => 'NULL'));
+            $collection->getSelect()->group('moip_card_id');
+            if($collection->getSize() >= 1){
+                return $collection;
             } else {
                 return 'false';
             }

@@ -14,7 +14,7 @@ class MOIP_Transparente_Block_Info_Cc extends Mage_Payment_Block_Info
                 $customer_order = Mage::getModel('customer/customer')->load($order->getCustomerId());
                 $order =  $order->getId();
 
-                $model = Mage::getModel('transparente/write');
+                $model = Mage::getModel('transparente/transparente');
                 $result = $model->load($order, 'mage_pay')->getData();
                 
             return $result;
