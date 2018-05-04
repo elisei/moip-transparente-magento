@@ -13,7 +13,7 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
         
 		if($this->getRequest()->getParams()){
 			$data = $this->getRequest()->getParams();
-			$model = Mage::getModel('transparente/write');
+			$model = Mage::getModel('transparente/transparente');
 			$model->load($data['cofre_remove'], 'moip_card_id');
 			$model->setMoipCardId();
 			$model->save();

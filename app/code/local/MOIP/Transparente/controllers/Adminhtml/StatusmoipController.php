@@ -31,7 +31,7 @@ class MOIP_Transparente_Adminhtml_StatusmoipController extends  Mage_Adminhtml_C
 	   	$order_real_id = $order->getId();
 	   	$method = $order->getPayment()->getMethodInstance()->getCode();
 	   	
-		$model = Mage::getModel('transparente/write');
+		$model = Mage::getModel('transparente/transparente');
 		$result = $model->load($order->getId(), 'mage_pay');
 
     	$moip_ord = $result->getMoipOrder();
@@ -170,7 +170,7 @@ class MOIP_Transparente_Adminhtml_StatusmoipController extends  Mage_Adminhtml_C
 			$onhold = $this->getStandard()->getConfigData('order_status_holded');
 		}
 		$standard = $this->getStandard();
-		$model = Mage::getModel('transparente/write');
+		$model = Mage::getModel('transparente/transparente');
 		$result = $model->load($order->getId(), 'mage_pay');
 
     	$moip_pay = $result->getMoipPay();

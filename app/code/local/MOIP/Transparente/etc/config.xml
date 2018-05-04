@@ -24,12 +24,13 @@
             <transparente_mysql4>
                 <class>MOIP_Transparente_Model_Mysql4</class>
                 <entities>
-                    <write>
+                    <transparente>
                         <table>moip_transparentev2</table>
-                    </write>
+                    </transparente>
                 </entities>
             </transparente_mysql4>
         </models>
+
         <resources>
             <transparente_setup>
                 <setup>
@@ -57,7 +58,6 @@
             <sales>
                 <rewrite>
                     <order_totals>MOIP_Transparente_Block_Sales_Order_Fee</order_totals>
-                    
                 </rewrite>
             </sales>
         </blocks>
@@ -183,7 +183,7 @@
             </transparente_send_onhold>
             <transparente_set_state_all>
                 <schedule>
-                    <cron_expr>30 2 * * *</cron_expr>
+                    <cron_expr>30 3 * * *</cron_expr>
                 </schedule>
                 <run>
                     <model>transparente/observer::setStatusAll</model>
@@ -195,7 +195,7 @@
     <default>
         <payment>
             <moip_transparente_standard>
-                <active>1</active>
+                <active>0</active>
                 <log>1</log>
                 <title>Pagamento via Admin - Moip</title>
                 <model>MOIP_Transparente_Model_Standard</model>
@@ -265,9 +265,6 @@
             <config>
                 <enable_jquery>1</enable_jquery>
                 <enable_bootstrap>1</enable_bootstrap>
-                <icones_na_entrega>1</icones_na_entrega>
-                <enable_carrinho>1</enable_carrinho>
-                <transparente_layout>Horizontal</transparente_layout>
             </config>
             <success_page>
                 <detalis>1</detalis>

@@ -110,7 +110,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 			return $this->set404();
 		}
 
-		$result = Mage::getModel('transparente/write')->load(str_replace("ORD-", "",$moip_order), 'moip_order');
+		$result = Mage::getModel('transparente/transparente')->load(str_replace("ORD-", "",$moip_order), 'moip_order');
 		
 		if($result->getData()){
 			if($result->getMoipResponse() != 1){

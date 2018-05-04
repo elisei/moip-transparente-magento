@@ -101,11 +101,6 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
                     }
                 }
             }
-                
-            
-            
-                
-
             $count++;
         }
     return $json_parcelas;
@@ -171,11 +166,7 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
     }
 
      public function getInfoParcelamentoMinimo() {
-       
-        
         $valor = Mage::getStoreConfig('payment/moip_cc/valor_minimo');
-        
-       
         return $valor;
     }
 }

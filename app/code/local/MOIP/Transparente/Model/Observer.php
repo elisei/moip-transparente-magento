@@ -59,7 +59,7 @@ class Moip_Transparente_Model_Observer
             else{
                 $ambiente = "producao";
             }
-            $model = Mage::getModel('transparente/write');
+            $model = Mage::getModel('transparente/transparente');
             $order_moip = str_replace("ORD-", "", $orderIdMoip);
             $model->setMagePay($mage_pay)->setMoipOrder($order_moip)->setCustomerEmail($email)->setCustomerId($customerId)->setFormaPagamento($forma_pagamento)->setMoipAmbiente($ambiente)->setMoipFees($fees)->setMoipPay($moipidPay);
             if ($forma_pagamento == "moip_boleto") {
@@ -220,7 +220,7 @@ class Moip_Transparente_Model_Observer
     public function setStateAll($order){
         $standard = $this->getStandard();
         $api = $this->getApi();
-        $model = Mage::getModel('transparente/write');
+        $model = Mage::getModel('transparente/transparente');
         $api->generateLog("------- Set no state -------", 'MOIP_StateAll.log');
         $api->generateLog($order->getId(), 'MOIP_StateAll.log');
         $api->generateLog($moip_pay, 'MOIP_StateAll.log');
