@@ -257,8 +257,8 @@
                 <botao_cor_success>5CB85C</botao_cor_success>
                 <botao_cor_success_hover>447A18</botao_cor_success_hover>
                 <botao_cor_success_qty_up>FFFFFF</botao_cor_success_qty_up>
-                <botao_cor_success_qty_down>333333</botao_cor_success_qty_down>
-                <borda_cor_success_qty>FFFFFF</borda_cor_success_qty>
+                <botao_cor_success_qty_down>FFFFFF</botao_cor_success_qty_down>
+                <borda_cor_success_qty>333333</borda_cor_success_qty>
                 <botao_cor_default>F7F7F7</botao_cor_default>
                 <botao_cor_default_font>333333</botao_cor_default_font>
                 <icon_cor_default_font>187506</icon_cor_default_font>
