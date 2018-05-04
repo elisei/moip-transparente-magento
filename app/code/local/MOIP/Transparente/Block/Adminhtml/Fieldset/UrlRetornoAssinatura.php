@@ -1,6 +1,6 @@
 <?php
 
-class MOIP_Transparente_Block_Adminhtml_System_Config_Form_Fieldset_Modules_UrlRetornoAssinatura
+class MOIP_Transparente_Block_Adminhtml_Fieldset_UrlRetornoAssinatura
     extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Renderer_Interface
 {
     /**
