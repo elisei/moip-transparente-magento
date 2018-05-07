@@ -211,6 +211,7 @@
                 <validopara_transparente>1</validopara_transparente>
                 <apelido>ALTERE PARA O NOME DA SUA EMPRESA</apelido>
                 <ambiente>producao</ambiente>
+                <payment_action>order</payment_action>
             </moip_transparente_standard>
             <moip_boleto>
                 <active>1</active>
