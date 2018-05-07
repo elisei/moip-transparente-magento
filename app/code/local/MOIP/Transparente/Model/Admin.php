@@ -169,7 +169,7 @@ class MOIP_Transparente_Model_Admin
         $produtos  = array();
         foreach ($items as $itemId => $item) {
             if ($item->getPrice() > 0) {
-               $grandTotalProd += $item->getPrice() * $item->getQty();
+               $grandTotalProd += $item->getPrice() * $item->getQtyOrdered();
             }
         }
 

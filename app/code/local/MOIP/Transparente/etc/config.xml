@@ -212,6 +212,7 @@
                 <apelido>ALTERE PARA O NOME DA SUA EMPRESA</apelido>
                 <ambiente>producao</ambiente>
                 <payment_action>order</payment_action>
+                <order_status>holded</order_status>
             </moip_transparente_standard>
             <moip_boleto>
                 <active>1</active>

@@ -17,6 +17,7 @@ class MOIP_Transparente_Model_Standard extends Mage_Payment_Model_Method_Abstrac
     protected $_canSaveCc = true;
     protected $_allowCurrencyCode = array('BRL');
     protected $_canFetchTransactionInfo = true;
+    protected $_isInitializeNeeded = false;
 
     public function assignData($data)
     {
