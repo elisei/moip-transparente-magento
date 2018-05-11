@@ -20,60 +20,39 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 
 	
 	public function getPublicKey(){
-	if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-                   return Mage::getSingleton('transparente/standard')->getConfigData('publickey_dev');
-                } else {
-                       return Mage::getSingleton('transparente/standard')->getConfigData('publickey_prod');
-                }
-	}
-
-	
-	public function mostraCartao() {
-		if (strpos(Mage::getSingleton('transparente/standard')->getConfigData('formas_pagamento'), "CartaoCredito") !== false) {
-			return true;
-		}else {
-			return false;
-		}
-	}
-
-
-
-	public function getCartaoIcon() {
-		if (Mage::getStoreConfig('moipall/config/trocar_icone')) {
-			return Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/icone_cartao');
-		}else {
-			return $this->getSkinUrl('MOIP/transparente/imagem/abacartao.png');
-		}
+		if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
+           return Mage::getSingleton('transparente/standard')->getConfigData('publickey_dev');
+        } else {
+            return Mage::getSingleton('transparente/standard')->getConfigData('publickey_prod');
+        }
 	}
 
 	//confs de parcelamento
-	public function getParcelamentoSelect() {
+	public function getInstallmentSelect() {
+		$ammout = $this->getQuote()->getGrandTotal();
+		if($ammout){
+			$installment =  Mage::helper('transparente')->getCalcInstallment($ammout);
 		
-		$api = Mage::getSingleton('transparente/api');
-		$parcelamento = $api->getParcelamento();
 
-			
-			foreach ($parcelamento as $key => $value) {
+			$installments = array();
+         
+            foreach ($installment as $key => $_installment):      
+                $_interest = $_installment['interest'];
+                
+                if($_interest > 0)
+                    $text_interest = $this->__(' no valor total %s', $_installment['total_installment']);
+                else
+                    $text_interest = $this->__(' sem juros');
+                if($key >=2){
+                    $installments[]= $this->__('<option value="%s">%sx de %s%s</option>',$key,$key,$_installment['installment'],$text_interest);    
+                } else {
+                    $installments[]= $this->__('<option value="1">À vista no valor total %s</option>',Mage::helper('core')->currency($ammout, true, false));
+                }
+            endforeach;
 
-						if($key > 1){
-							$juros = $value['juros'];
-							$parcelas_result = $value['parcela'];
-							$total_parcelado = $value['total_parcelado'];
-							if($juros > 0)
-								$asterisco = '*';
-							else
-								$asterisco = ' sem juros';
-							$parcelas[]= '<option value="'.$key.'">'.$key.'x de '.$parcelas_result.' no total de '.$total_parcelado.$asterisco.'</option>';
-							#$parcelas[]= '<li><input type="radio" name="payment[credito_parcelamento]" title="Selecione as Parcelas" id="credito_parcelamento" class="input-radio  validate-one-required-by-name" value="'.$key.'"><label>'.$key.'x de '.$parcelas_result.' no total de '.$total_parcelado.' '.$asterisco.'</label></li>';
-						}
-						else if ($key == 0) {
-							$parcelas[]= '<option value="1">À vista no valor total sem juros</option>';
-						}
-			}
-			
 
-	return $parcelas;
-
+		return $installments;
+		}
 	}
 	public function getVisaImage() {
 		
@@ -141,8 +120,7 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 		         if(strlen($taxvat) == 11)
 		            return 1;
 		        else 
-		            return !1;
-			
+		            return !1;			
 		} else{
 			return !1;	
 		}
@@ -156,7 +134,7 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 			$model = Mage::getModel('transparente/transparente');
 			$collection = $model->getCollection()
 							->addFieldToSelect(array('moip_card_id','moip_card_brand','moip_card_first6','moip_card_last4','moip_card_fullname'))
-							->addFieldToFilter('customer_id', array('eq' => '1'))
+							->addFieldToFilter('customer_id', array('eq' => $customerData->getId()))
 							->addFieldToFilter('moip_ambiente', array('eq' => $ambiente))
 							->addFieldToFilter('moip_card_id', array('neq' => 'NULL'));
 			$collection->getSelect()->group('moip_card_id');
@@ -177,11 +155,7 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 			$checkout = $this->getQuote()->getBillingAddress();
 			if($select == "name"){
 				return  $checkout->getFirstname()." ".$checkout->getLastname();
-			} elseif($select == "telephone-ddd") {
-				return  $this->getNumberOrDDD($checkout->getTelephone(), true);
-			} elseif($select == "telephone-number") {
-				return  $this->getNumberOrDDD($checkout->getTelephone(), false);
-			}   elseif($select =="taxvat"){
+			} elseif($select =="taxvat"){
 				return $this->getQuote()->getCustomer()->getTaxvat();
 			} elseif($select == "dob"){
 				return $this->getQuote()->getCustomer()->getDob();
@@ -201,24 +175,7 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 		}
 	}
 
-	public function getNumberOrDDD($param_telefone, $param_ddd = false) {
-
-            $cust_ddd = '11';
-            $cust_telephone = preg_replace("/[^0-9]/", "", $param_telefone);
-            $st = strlen($cust_telephone) - 8;
-            if ($st > 0) {
-                $cust_ddd = substr($cust_telephone, 0, 2);
-                $cust_telephone = substr($cust_telephone, $st, 8);
-            }
-
-            if ($param_ddd === false) {
-                $retorno = $cust_telephone;
-            } else {
-                $retorno = $cust_ddd;
-            }
-
-            return $retorno;
-        }
+	
 	public function getCheckout() {
 		return Mage::getSingleton('checkout/session');
 	}
@@ -226,11 +183,6 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 
 	public function getQuote() {
 		return $this->getCheckout()->getQuote();
-	}
-
-
-	public function getOnepage() {
-		return (string)Mage::getSingleton('checkout/type_onepage');
 	}
 
 

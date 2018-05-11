@@ -18,31 +18,6 @@ class MOIP_Transparente_Block_Form_Boleto extends Mage_Payment_Block_Form {
 	}
 
 
-	public function mostraBoleto() {
-		if (strpos(Mage::getSingleton('transparente/standard')->getConfigData('formas_pagamento'), "BoletoBancario") !== false) {
-			return true;
-		}else {
-			return false;
-		}
-	}
-	
-	public function getBoletoIcon() {
-		if (Mage::getStoreConfig('moipall/config/trocar_icone')) {
-			return Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/icone_boleto');
-		}else {
-			return $this->getSkinUrl('MOIP/transparente/imagem/ababoleto.png');
-		}
-	}
-	
-	//imagem do boleto
-	public function getBoletoImage() {
-		if (Mage::getStoreConfig('moipall/config/trocar_bandeira_cartao')) {
-			return Mage::getBaseUrl('media') . "moip/alltransparente/". Mage::getStoreConfig('moipall/config/boleto');
-		}else {
-			return $this->getSkinUrl('MOIP/transparente/imagem/Bradesco.png');
-		}
-	}
-
 
 	public function getCheckout() {
 		return Mage::getSingleton('checkout/session');

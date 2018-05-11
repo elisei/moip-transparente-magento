@@ -11,162 +11,188 @@
  */
 class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
 	
-	public function getParcelas($price, $method) {
-		
-		if($price){
-			$parcelamento = $this->getParcelamentoProduct($price);
-			
-			foreach ($parcelamento as $key => $value):
-			  		if($key > 0){
-			  			$juros = $value['juros'];
-				        $parcelas_result = $value['parcela'];
-				        $total_parcelado = $value['total_parcelado'];
-				        if($juros > 0)
-				            $asterisco = '';
-				        else
-				            $asterisco = ' sem juros';
-				        $parcelas[]= '<strong>'.$key.'x</strong> '.$asterisco.' de <strong>'.$parcelas_result.'</strong>';
-			  		}
-			        
-			endforeach;
-			if($method == 'reduzido'){
-				return end($parcelas);
-			} elseif($method == 'integral') {
-				return $parcelas;
-			} else {
-				return ;
-			}
+	const MinAmmout = 5;
+    const MaxInstalment = 12;
 
-		} else {
-			return ;
-		}
-
-
-	}
-	
-
-	public function getParcelamentoProduct($valor){
-        $config_parcelas_juros = $this->getInfoParcelamentoJuros();
-        $config_parcelas_minimo = $this->getInfoParcelamentoMinimo();
-        $config_parcelas_maximo = Mage::getStoreConfig('payment/moip_cc/nummaxparcelamax');
-        $json_parcelas = array();
-        $count = 0;
-        $json_parcelas[0] = array(
-                                    'parcela' => Mage::helper('core')->currency($valor, true, false),
-                                    'total_parcelado' =>  Mage::helper('core')->currency($valor, true, false),
-                                    'total_juros' =>  0,
-                                    'juros' => 0
-                                );
-        $json_parcelas[1] = array(
-                                    'parcela' => Mage::helper('core')->currency($valor, true, false),
-                                    'total_parcelado' =>  Mage::helper('core')->currency($valor, true, false),
-                                    'total_juros' =>  0,
-                                    'juros' => 0
-                                );
-
-        
-        $max_div = (int)$valor/$config_parcelas_minimo;
-        if($max_div > $config_parcelas_maximo) {
-            $max_div = $config_parcelas_maximo;
-        } elseif ($max_div > 12) {
-            $max_div = 12;
-        } 
-        
-        foreach ($config_parcelas_juros as $key => $value) {
-            if($count <= $max_div){
-                if($value > 0){
-                    if(Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
-                        $parcela =  $this->getJurosComposto($valor, $value, $count);
-                    } else {
-                        $parcela =  $this->getJurosSimples($valor, $value, $count);
-                    }
-                    $total_parcelado = $parcela * $count;
-                    $juros = $value;
-                    if($parcela > 5 && $parcela > $config_parcelas_minimo){
-                        $json_parcelas[$count] = array(
-                            'parcela' => Mage::helper('core')->currency($parcela, true, false),
-                            'total_parcelado' =>  Mage::helper('core')->currency($total_parcelado, true, false),
-                            'total_juros' =>  $total_parcelado - $valor,
-                            'juros' => $juros,
-                        );
-                    }
+    public function getParcelas($price, $method){
+        if($price) {
+            $installment = $this->getCalcInstallment($price);
+            foreach ($installment as $key => $_installment):      
+                $_interest = $_installment['interest'];
+                
+                if($_interest > 0)
+                    $text_interest = $this->__('*');
+                else
+                    $text_interest = $this->__(' sem juros');
+                if($key >=2){
+                    $installments[]= $this->__('em até <strong>%sx</strong> de %s%s',$key,$_installment['installment'],$text_interest);    
                 } else {
-                    if($valor > 0 && $count > 0){
-                     $json_parcelas[$count] = array(
-                                        'parcela' => Mage::helper('core')->currency(($valor/$count), true, false),
-                                        'total_parcelado' =>  Mage::helper('core')->currency($valor, true, false),
-                                        'total_juros' =>  0,
-                                        'juros' => 0
-                                    );
+                    $installments[]= $this->__('À vista no valor total <strong>%s</strong>',Mage::helper('core')->currency($price, true, false));
+                }
+            endforeach;
+            if($method == 'reduzido'){
+                $last_zero_interest = $this->getFilterNoInterestRate($installment);
+                $last_text_zero_interest = end(array_keys($last_zero_interest));
+                return $installments[$last_text_zero_interest-1];
+            } elseif($method == 'integral') {
+                return $installments;
+            } else {
+                return $this;
+            }
+            return end($installment);
+        }
+    }
+    public function getCalcInstallment($ammount){
+
+       
+        $limit      = $this->getInstallmentLimit($ammount);
+        $interest   = $this->getInfoInterest();
+        $plotlist   = array();
+
+        foreach ($interest as $key => $_interest) {
+            if($key > 0 && $key <= $limit){
+                if($_interest > 0){
+                    
+                    if(Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
+                        $plotValue =  $this->getJurosComposto($ammount, $_interest, $key);
+                    } else {
+                        $plotValue =  $this->getJurosSimples($ammount, $_interest, $key);
+                    }
+                    $total = $plotValue*$key;
+                    $totalInterest  = ($plotValue*$key)-$ammount;
+                } else {
+                    $total = $ammount;
+                    $totalInterest  = 0;
+                    if(Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
+                        $plotValue =  $this->getJurosComposto($ammount, $_interest, $key);
+                    } else {
+                        $plotValue =  $this->getJurosSimples($ammount, $_interest, $key);
                     }
                 }
+                $plotlist[$key] = array(
+                                        'installment' => Mage::helper('core')->currency($plotValue, true, false),
+                                        'total_installment' =>  Mage::helper('core')->currency($total, true, false),
+                                        'total_interest' =>  $totalInterest,
+                                        'interest' => $_interest
+                                    );
             }
-            $count++;
         }
-    return $json_parcelas;
+        return $plotlist;
+    }
+    
+    public function getFilterNoInterestRate($arr){
+        $typeview = Mage::getStoreConfig('moipall/oneclick_config/type_min_installment');
+        if($typeview == "notinterest") {
+            $like = '0';
+            $result = array_filter($arr, function ($item) use ($like) {
+                if ($item['interest'] == $like) {
+                    return true;
+                }
+                return false;
+            });
+            return $result; 
+        } else {
+            return $arr;
+        }
+        
+        
+    }
+    public function getJurosComposto($valor, $juros, $parcela)
+    {
+        if($juros > 0){
+            $principal = $valor;
+            $taxa = $juros/100;
+            $valParcela = ($principal * $taxa) / (1 - (pow(1 / (1 + $taxa), $parcela)));
+            return $valParcela;
+        } else {
+            return $valor/$parcela;    
+        }
     }
 
     public function getJurosSimples($valor, $juros, $parcela)
     {
-        $principal = $valor;
-        $taxa = $juros/100;
-        $valjuros = $principal * $taxa;
-        $valParcela = ($principal + $valjuros)/$parcela;
-        return $valParcela;
-    }
-    
-    public function getJurosComposto($valor, $juros, $parcela)
-    {
-        $principal = $valor;
-        $taxa = $juros/100;
-        $valParcela = ($principal * $taxa) / (1 - (pow(1 / (1 + $taxa), $parcela)));
-        return $valParcela;
+        if($juros > 0) {
+            $principal = $valor;
+            $taxa = $juros/100;
+            $valjuros = $principal * $taxa;
+            $valParcela = ($principal + $valjuros)/$parcela;
+            return $valParcela;    
+        } else {
+            return $valor/$parcela;
+        }
     }
 
-    public function getInfoParcelamentoJuros() {
-        $juros = array();
+    public function getInfoInterest(){
+        $interest = array();
 
-        $juros['0'] = 0;
+        $interest['0'] = 0;
 
-        $juros['1'] = 0;
+        $interest['1'] = 0;
 
-        $juros['2'] =  Mage::getStoreConfig('payment/moip_cc/parcela2');
-
-        
-        $juros['3'] =  Mage::getStoreConfig('payment/moip_cc/parcela3');
+        $interest['2'] =  Mage::getStoreConfig('payment/moip_cc/parcela2');
 
         
-        $juros['4'] =  Mage::getStoreConfig('payment/moip_cc/parcela4');
+        $interest['3'] =  Mage::getStoreConfig('payment/moip_cc/parcela3');
 
         
-        $juros['5'] =  Mage::getStoreConfig('payment/moip_cc/parcela5');
+        $interest['4'] =  Mage::getStoreConfig('payment/moip_cc/parcela4');
+
+        
+        $interest['5'] =  Mage::getStoreConfig('payment/moip_cc/parcela5');
 
 
-        $juros['6'] =  Mage::getStoreConfig('payment/moip_cc/parcela6');
+        $interest['6'] =  Mage::getStoreConfig('payment/moip_cc/parcela6');
 
 
-        $juros['7'] =  Mage::getStoreConfig('payment/moip_cc/parcela7');
+        $interest['7'] =  Mage::getStoreConfig('payment/moip_cc/parcela7');
 
 
-        $juros['8'] =  Mage::getStoreConfig('payment/moip_cc/parcela8');
+        $interest['8'] =  Mage::getStoreConfig('payment/moip_cc/parcela8');
 
 
-        $juros['9'] =  Mage::getStoreConfig('payment/moip_cc/parcela9');
+        $interest['9'] =  Mage::getStoreConfig('payment/moip_cc/parcela9');
        
 
-        $juros['10'] =  Mage::getStoreConfig('payment/moip_cc/parcela10');
+        $interest['10'] =  Mage::getStoreConfig('payment/moip_cc/parcela10');
        
 
-        $juros['11'] =  Mage::getStoreConfig('payment/moip_cc/parcela11');
+        $interest['11'] =  Mage::getStoreConfig('payment/moip_cc/parcela11');
        
 
-        $juros['12'] =  Mage::getStoreConfig('payment/moip_cc/parcela12');
+        $interest['12'] =  Mage::getStoreConfig('payment/moip_cc/parcela12');
        
-        return $juros;
+        return $interest;
     }
 
-     public function getInfoParcelamentoMinimo() {
-        $valor = Mage::getStoreConfig('payment/moip_cc/valor_minimo');
-        return $valor;
+
+    public function getLimitByPortionNumber(){
+        $maxconfig = Mage::getStoreConfig('payment/moip_cc/nummaxparcelamax');
+        return ($maxconfig < self::MaxInstalment) ? $maxconfig : self::MaxInstalment;
+    }
+
+    public function getLimitByPlotPrice(){
+        $minconfig = Mage::getStoreConfig('payment/moip_cc/valor_minimo');
+        return ($minconfig > self::MinAmmout) ? $minconfig : self::MinAmmout;
+    }
+
+
+    public function getInstallmentLimit($ammount){      
+        $perNumber     = $this->getLimitByPortionNumber();
+        $perPrice      = $this->getLimitByPlotPrice();
+       
+
+        if($ammount >= $perPrice){
+            $MaxPerPrice = intval($ammount/$perPrice);
+        } else {
+            $MaxPerPrice = 1;
+        }
+
+        if($MaxPerPrice >= $perNumber) {
+            $limit = $perNumber;
+        } else {
+            $limit = $MaxPerPrice;
+        }
+
+        return $limit;
     }
 }

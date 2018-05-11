@@ -848,7 +848,10 @@ PayamentChange = function(){
 		updatePaymentMethod();
 	});
 	jQuery("#credito_parcelamento").on('change', function () {
-            		updatePaymentMethod();
+        updatePaymentMethod();
+    });
+    jQuery("#moip_cc_count_cofre").on('change', function () {
+        updatePaymentMethod();
     });
     jQuery('[data-toggle="popover"]').popover();
 	

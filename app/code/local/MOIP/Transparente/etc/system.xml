@@ -1202,6 +1202,17 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </enable_bootstrap>
+                        <type_min_installment>
+                            <label>Tipo de exibição resumida das parcelas</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>MOIP_Transparente_Model_Source_TypeViewInstallment</source_model>
+                            <comment>Para obter na saída do parcelamento nas páginas de produto e lista de produtos.</comment>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            
+                        </type_min_installment>
                     </fields>
                 </oneclick_config>
                 <mktplacet_config>

@@ -70,7 +70,7 @@ class MOIP_Transparente_Block_Oneclickbuy_PaymentMethod extends Mage_Payment_Blo
             $model = Mage::getModel('transparente/transparente');
             $collection = $model->getCollection()
                             ->addFieldToSelect(array('moip_card_id','moip_card_brand','moip_card_first6','moip_card_last4','moip_card_fullname'))
-                            ->addFieldToFilter('customer_id', array('eq' => '1'))
+                            ->addFieldToFilter('customer_id', array('eq' => $customerData->getId()))
                             ->addFieldToFilter('moip_card_id', array('neq' => 'NULL'));
             $collection->getSelect()->group('moip_card_id');
             if($collection->getSize() >= 1){

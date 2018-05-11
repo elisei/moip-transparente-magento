@@ -5,7 +5,7 @@
   		
   			
   			<div class="payment-cofre">
-  				<?php $cofre = Mage::helper('core')->jsonDecode($cofre); ?>
+  			
   				
   				
   				<div class="col-md-12">
@@ -46,10 +46,10 @@
 						<label class="col-md-12 control-label"for="<?php echo $_code ?>_installment_cofre"><?php echo $this->__('Parcelas') ?></label>
 						<select name="payment[<?php echo $_code ?>_count_cofre]"  id="<?php echo $_code ?>_count_cofre" class="validate-select form-control" title="Número de Parcelas de sua Compra - Cofre"  >
 								<option value="" select>Selecione as parcelas</option>
-								<?php $parcelas = $this->getParcelamentoSelect(); ?>
-							           <?php foreach ( $parcelas as $key => $value) { ?>
-							           		<?php echo $parcelas[$key]; ?>
-							           <?php } ?>
+								<?php $parcelas = $this->getInstallmentSelect(); ?>
+					           	<?php foreach ( $parcelas as $key => $value) { ?>
+					           		<?php echo $value; ?>
+					           	<?php } ?>
 						</select>
 					</div>
 				</div>
@@ -144,28 +144,23 @@
 		    
 		</div>
 		<div class="col-md-12">
-				
-					<label class="control-label label-moip-pg" for="<?php echo $_code ?>_installment_count"><?php echo $this->__('Parcelas') ?></label>
-					<select name="payment[<?php echo $_code ?>_installment_count]" id="credito_parcelamento" class="required-entry validate-select form-control" title="Número de Parcelas de sua Compra">
-										<option select value="">Selecione as parcelas</option>
-										<?php $parcelas = $this->getParcelamentoSelect(); ?>
-
-									           <?php foreach ( $parcelas as $key => $value) { ?>
-									           		<?php echo $parcelas[$key]; ?>
-									           <?php } ?>
-					</select>
-				
+			<label class="control-label label-moip-pg" for="<?php echo $_code ?>_installment_count"><?php echo $this->__('Parcelas') ?></label>
+			<select name="payment[<?php echo $_code ?>_installment_count]" id="credito_parcelamento" class="required-entry validate-select form-control" title="Número de Parcelas de sua Compra">
+				<option value="" select>Selecione as parcelas</option>
+				<?php $parcelas = $this->getInstallmentSelect(); ?>
+				<?php foreach ( $parcelas as $key => $value) { ?>
+					<?php echo $value; ?>
+				<?php } ?>
+			</select>
 		</div>
 				
 				
 		
 		<div class="col-md-12">
-			
-					<label class="control-label label-moip-pg" for="<?php echo $_code ?>_fullname">
-						<?php echo $this->__('Nome completo do titular (idêntico ao do cartão)') ?>
-					</label>
-					<input type="text" name="payment[<?php echo $_code ?>_owner]"  value="" class="form-control required-entry" title="Nome Impresso em seu Cartão" id="moip_cc_owner" >
-			
+			<label class="control-label label-moip-pg" for="<?php echo $_code ?>_fullname">
+				<?php echo $this->__('Nome completo do titular (idêntico ao do cartão)') ?>
+			</label>
+			<input type="text" name="payment[<?php echo $_code ?>_owner]"  value="" class="form-control required-entry" title="Nome Impresso em seu Cartão" id="moip_cc_owner" >
 		</div>
 		<div class="<?php echo($this->getCustomerState() ? 'personal-card-info no-display' : '') ?> col-md-12">
 			

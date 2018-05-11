@@ -1,23 +1,41 @@
 <?php 
 class MOIP_Transparente_Block_Oneclickbuy_UpdateParcelas extends Mage_Core_Block_Template
 {
-	public function getParcelamentoSelect() {
-		$api = Mage::getSingleton('transparente/api');
-		$parcelamento = $api->getParcelamento();
-		foreach ($parcelamento as $key => $value) {
-			if($key > 0){
-				$juros = $value['juros'];
-				$parcelas_result = $value['parcela'];
-				$total_parcelado = $value['total_parcelado'];
-				if($juros > 0)
-					$asterisco = '*';
-				else
-					$asterisco = '';
-				$parcelas[]= '<option value="'.$key.'">'.$key.'x de '.$parcelas_result.' no total de '.$total_parcelado.$asterisco.'</option>';
-			} else {
-				$parcelas[]= '<option value="1">Valor à vista</option>';
-			}
+
+	public function getInstallmentSelect() {
+		$ammout = $this->getQuote()->getGrandTotal();
+		if($ammout){
+			$installment =  Mage::helper('transparente')->getCalcInstallment($ammout);
+		
+
+			$installments = array();
+         
+            foreach ($installment as $key => $_installment):      
+                $_interest = $_installment['interest'];
+                
+                if($_interest > 0)
+                    $text_interest = $this->__(' no valor total %s', $_installment['total_installment']);
+                else
+                    $text_interest = $this->__(' sem juros');
+                if($key >=2){
+                    $installments[]= $this->__('<option value="%s">%sx de %s%s</option>',$key,$key,$_installment['installment'],$text_interest);    
+                } else {
+                    $installments[]= $this->__('<option value="1">À vista no valor total %s</option>',Mage::helper('core')->currency($ammout, true, false));
+                }
+            endforeach;
+
+
+		return $installments;
 		}
-		return $parcelas;
 	}
+
+	public function getCheckout() {
+		return Mage::getSingleton('checkout/session');
+	}
+
+
+	public function getQuote() {
+		return $this->getCheckout()->getQuote();
+	}
+	
 }
