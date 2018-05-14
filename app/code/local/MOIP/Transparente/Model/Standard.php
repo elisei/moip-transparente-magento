@@ -16,7 +16,7 @@ class MOIP_Transparente_Model_Standard extends Mage_Payment_Model_Method_Abstrac
     protected $_canUseForMultishipping = false;
     protected $_canSaveCc = true;
     protected $_allowCurrencyCode = array('BRL');
-    protected $_canFetchTransactionInfo = true;
+    protected $_canFetchTransactionInfo = false;
     protected $_isInitializeNeeded = false;
 
     public function assignData($data)
@@ -89,6 +89,7 @@ class MOIP_Transparente_Model_Standard extends Mage_Payment_Model_Method_Abstrac
                 'link_cc' => $link_cc
             );
             $info->setAdditionalData(serialize($additionaldata))->save()->setAdditionalInformation(serialize($additionaldata))->save();
+
             return $this;
 
         }

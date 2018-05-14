@@ -88,13 +88,22 @@
 			    </catalog_product_save_after>
                 <sales_order_place_moip_after>
                     <observers>
-                        <teste>
+                        <transparente>
                             <type>singleton</type>
                             <class>transparente/observer</class>
                             <method>paymentCapture</method>
-                        </teste>
+                        </transparente>
                     </observers>
                 </sales_order_place_moip_after>
+                <admin_system_config_changed_section_payment>
+                    <observers>
+                        <transparente>
+                            <type>singleton</type>
+                            <class>transparente/observer</class>
+                            <method>changeAPP</method>
+                        </transparente>
+                    </observers>
+                </admin_system_config_changed_section_payment>
         </events>
 
     </global>
@@ -200,6 +209,8 @@
                 <title>Pagamento via Admin - Moip</title>
                 <model>MOIP_Transparente_Model_Standard</model>
                 <order_status>pending</order_status>
+                <type_app>fluxo</type_app>
+                <type_old_app>fluxo</type_old_app>
                 <type_status_init>onhold</type_status_init>
                 <order_status_holded>holded</order_status_holded>
                 <order_status_holded_boleto>holded</order_status_holded_boleto>
@@ -212,7 +223,6 @@
                 <apelido>ALTERE PARA O NOME DA SUA EMPRESA</apelido>
                 <ambiente>producao</ambiente>
                 <payment_action>order</payment_action>
-                <order_status>holded</order_status>
             </moip_transparente_standard>
             <moip_boleto>
                 <active>1</active>

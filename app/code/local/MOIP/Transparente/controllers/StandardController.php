@@ -158,6 +158,8 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 			}
 		} elseif($method == "moip_tef"){
 			$details_cancel 	= "Prazo para pagamento excedido";
+		} elseif($method == "moip_transparente_standard"){
+			$details_cancel 	= "Prazo para pagamento excedido";
 		} else {
 			$api->generateLog("Metodo de pagamento inexistente: ".$method, 'MOIP_WebHooksError.log');
 			return $this->set404();

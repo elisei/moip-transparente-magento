@@ -4,12 +4,7 @@ class MOIP_Transparente_Block_Adminhtml_Fieldset_Oauth
 extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Renderer_Interface
 {
 
-    const EndPointProd  = "https://connect.moip.com.br/oauth/authorize";
-    const EndPointDev   = "https://connect-sandbox.moip.com.br/oauth/authorize";
-    const AppIdDev      = "APP-9MUFQ39Y4CQU";
-    const AppIdProd     = "APP-AKYBMMVU1FL1";
-    const SCOPE_APP     = "RECEIVE_FUNDS,REFUND,MANAGE_ACCOUNT_INFO,DEFINE_PREFERENCES,RETRIEVE_FINANCIAL_INFO";
-    const responseType  = "code";
+   
     
     public function render(Varien_Data_Form_Element_Abstract $element)
     {
@@ -106,16 +101,16 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
     public function getLinkMoipApp(){
         
         if(Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste"){
-            $endpoint       = self::EndPointDev;
-            $responseType   = self::responseType;
-            $appId          = self::AppIdDev; 
-            $scope          = self::SCOPE_APP;
+            $endpoint       = $this->getApi()::EndPointOauthDev;
+            $responseType   = $this->getApi()::responseType;
+            $appId          = $this->getApi()->getAppId("teste"); 
+            $scope          = $this->getApi()::SCOPE_APP;
             $redirectUri    = $this->getRedirectUri();
         } else {
-            $endpoint       = self::EndPointProd;
-            $responseType   = self::responseType;
-            $appId          = self::AppIdProd; 
-            $scope          = self::SCOPE_APP;
+            $endpoint       = $this->getApi()::EndPointOauthProd;
+            $responseType   = $this->getApi()::responseType;
+            $appId          = $this->getApi()->getAppId("prod"); 
+            $scope          = $this->getApi()::SCOPE_APP;
             $redirectUri    = $this->getRedirectUri();
         }
 
@@ -166,6 +161,12 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
         $action_setup .= "<p class='p-actin-moip'><a href='{$link}' class='btn-moip {$class_btn}'>{$acao}</a></p>";
         
         return $action_setup;
+    }
+
+    public function getApi()
+    {
+        $api = Mage::getModel('transparente/api');
+        return $api;
     }
 }
 ?>

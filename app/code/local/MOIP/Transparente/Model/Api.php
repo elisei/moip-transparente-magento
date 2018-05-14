@@ -1,12 +1,16 @@
 <?php
 class MOIP_Transparente_Model_Api
 {
-    const TOKEN_TEST = "8OKLQFT5XQZXU7CKXX43GPJOMIJPMSMF";
-    const KEY_TEST = "NT0UKOXS4ALNSVOXJVNXVKRLEOQCITHI5HDKW3LI";
-    const ENDPOINT_TEST = "https://sandbox.moip.com.br/v2/";
-    const TOKEN_PROD = "EVCHBAUMKM0U4EE4YXIA8VMC0KBEPKN2";
-    const KEY_PROD = "4NECP62EKI8HRSMN3FGYOZNVYZOMBDY0EQHK9MHO";
-    const ENDPOINT_PROD = "https://api.moip.com.br/v2/";
+    const TOKEN_TEST            = "8OKLQFT5XQZXU7CKXX43GPJOMIJPMSMF";
+    const KEY_TEST              = "NT0UKOXS4ALNSVOXJVNXVKRLEOQCITHI5HDKW3LI";
+    const ENDPOINT_TEST         = "https://sandbox.moip.com.br/v2/";
+    const TOKEN_PROD            = "EVCHBAUMKM0U4EE4YXIA8VMC0KBEPKN2";
+    const KEY_PROD              = "4NECP62EKI8HRSMN3FGYOZNVYZOMBDY0EQHK9MHO";
+    const ENDPOINT_PROD         = "https://api.moip.com.br/v2/";
+    const EndPointOauthProd     = "https://connect.moip.com.br/oauth/authorize";
+    const EndPointOauthDev      = "https://connect-sandbox.moip.com.br/oauth/authorize"; 
+    const SCOPE_APP             = "RECEIVE_FUNDS,REFUND,MANAGE_ACCOUNT_INFO,DEFINE_PREFERENCES,RETRIEVE_FINANCIAL_INFO";
+    const responseType          = "code";
   
    
     public function getPayment()
@@ -25,6 +29,34 @@ class MOIP_Transparente_Model_Api
     {
         return $this->getCheckout()->getQuote();
     }
+    public function getAppId($type){
+        if($type == "prod"){
+            if(Mage::getStoreConfig('payment/moip_transparente_standard/type_app') == "d14"){
+               return "APP-2UFTVZ3XW4A8";
+            } elseif(Mage::getStoreConfig('payment/moip_transparente_standard/type_app') == "d30") {
+                return "APP-YLDWLJWZTVDG";
+            }else {
+                return "APP-AKYBMMVU1FL1";
+            }
+            
+        } else {
+            return "APP-9MUFQ39Y4CQU";
+        }
+    }
+    public function getClienteSecret($type){
+        if($type == "prod"){
+            if(Mage::getStoreConfig('payment/moip_transparente_standard/type_app') == "d14"){
+               return "589147b6fdca404c98c4b557e1286cbc";
+            } elseif(Mage::getStoreConfig('payment/moip_transparente_standard/type_app') == "d30") {
+                return "1caa2776d84e4324899efcc6a4699d24";
+            }else {
+                return "db9pavx8542khvsyn3s0tpxyu2gom2m";
+            }
+        } else {
+            return "26xa86dbc7mhdyqq2w69vscvhz47cri";
+        }
+    }
+
     public function normalizeComissao($comissionados){
 
        $_i = 0;

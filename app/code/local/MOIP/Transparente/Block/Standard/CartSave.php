@@ -62,7 +62,7 @@ class MOIP_Transparente_Block_Standard_CartSave extends Mage_Checkout_Block_Onep
 			$model = Mage::getModel('transparente/transparente');
 			$collection = $model->getCollection()
 							->addFieldToSelect(array('moip_card_id','moip_card_brand','moip_card_first6','moip_card_last4','moip_card_fullname'))
-							->addFieldToFilter('customer_id', array('eq' => '1'))
+							->addFieldToFilter('customer_id', array('eq' => $customerData->getId()))
 							->addFieldToFilter('moip_ambiente', array('eq' => $ambiente))
 							->addFieldToFilter('moip_card_id', array('neq' => 'NULL'));
 			$collection->getSelect()->group('moip_card_id');

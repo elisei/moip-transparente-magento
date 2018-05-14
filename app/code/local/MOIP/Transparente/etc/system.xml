@@ -60,8 +60,20 @@
                             <show_in_default>1</show_in_default>
                            
                         </ambiente>
-
-                         <apelido translate="label">
+                      <!--   <type_app>
+                            <label>Tipo de Recebimento</label>
+                            <tooltip><![CDATA[Escolha o tipo de APP]]>
+                            </tooltip>
+                             <comment><![CDATA[
+                                        <p>Cada APP terá taxas e tempo de recebimento específicos você pode escolher qual usar.</a></p>
+                                    ]]>
+                            </comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>MOIP_Transparente_Model_Source_TypeApp</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </type_app> -->
+                        <apelido translate="label">
                             <label>Nome Fantasia da Loja</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>4</sort_order>
