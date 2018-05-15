@@ -101,16 +101,16 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
     public function getLinkMoipApp(){
         
         if(Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste"){
-            $endpoint       = $this->getApi()::EndPointOauthDev;
-            $responseType   = $this->getApi()::responseType;
+            $endpoint       = MOIP_Transparente_Model_Api::EndPointOauthDev;
+            $responseType   = MOIP_Transparente_Model_Api::responseType;
             $appId          = $this->getApi()->getAppId("teste"); 
-            $scope          = $this->getApi()::SCOPE_APP;
+            $scope          = MOIP_Transparente_Model_Api::SCOPE_APP;
             $redirectUri    = $this->getRedirectUri();
         } else {
-            $endpoint       = $this->getApi()::EndPointOauthProd;
-            $responseType   = $this->getApi()::responseType;
+            $endpoint       = MOIP_Transparente_Model_Api::EndPointOauthProd;
+            $responseType   = MOIP_Transparente_Model_Api::responseType;
             $appId          = $this->getApi()->getAppId("prod"); 
-            $scope          = $this->getApi()::SCOPE_APP;
+            $scope          = MOIP_Transparente_Model_Api::SCOPE_APP;
             $redirectUri    = $this->getRedirectUri();
         }
 

@@ -69,7 +69,7 @@
 				<div class="col-md-8">
 					<label class="control-label label-moip-pg" for="<?php echo $_code ?>_number"><?php echo $this->__('Número do Cartão') ?></label>
 					<div class="input-group">
-						<input type="tel" pattern="[0-9]*" minlength="17" maxlength="23" id="<?php echo $_code ?>_number"  title="Número do seu Cartão de Crédito"  class="required-entry form-control validate-length"  value="">
+						<input type="tel" id="<?php echo $_code ?>_number"  title="Número do seu Cartão de Crédito"  class="required-entry form-control"  value="">
 					  		<span class="input-group-addon">
 					  			<span class="glyphicon glyphicon-credit-card" id="card-clean"></span>
 					  		</span>
@@ -160,7 +160,7 @@
 			<label class="control-label label-moip-pg" for="<?php echo $_code ?>_fullname">
 				<?php echo $this->__('Nome completo do titular (idêntico ao do cartão)') ?>
 			</label>
-			<input type="text" name="payment[<?php echo $_code ?>_owner]"  value="" class="form-control required-entry" title="Nome Impresso em seu Cartão" id="moip_cc_owner" >
+			<input type="text" name="payment[<?php echo $_code ?>_owner]"  value="" class="form-control required-entry validate-alpha-with-spaces" title="Nome Impresso em seu Cartão" id="moip_cc_owner" >
 		</div>
 		<div class="<?php echo($this->getCustomerState() ? 'personal-card-info no-display' : '') ?> col-md-12">
 			
@@ -211,6 +211,9 @@
 <script type="text/javascript" src="<?php echo $this->getSkinUrl('MOIP/transparente/js/moip.js') ?>"></script>
 <script type="text/javascript">
           jQuery(document).ready(function(){
+          		Validation.add('validate-alpha-with-spaces','Informe um nome válido',function(v){
+				    return Validation.get('IsEmpty').test(v) ||  /^[a-zA-Z ]+$/.test(v)
+				});  
 				Validation.add('validate-credit-card-moip', 'Os dados de cartão de crédito não estão válidos, por favor verifique o Número do Cartão, o Código de Segurança e também a data de expiração.', function(v) {
 					CreditCardMoip = jQuery("#encrypted_value").val();
 
