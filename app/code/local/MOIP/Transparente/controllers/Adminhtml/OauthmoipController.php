@@ -21,11 +21,11 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
     	$documento = 'Content-Type: application/json; charset=utf-8';
         
         if ($data['environment'] == "teste") {
-            $url = $this->getApi()::ENDPOINT_TEST."preferences/notifications/".$data['id'];
+            $url = MOIP_Transparente_Model_Api::ENDPOINT_TEST."preferences/notifications/".$data['id'];
             $header = "Authorization: OAuth " . Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
             
         } else {
-            $url = $this->getApi()::ENDPOINT_PROD."preferences/notifications/".$data['id'];
+            $url = MOIP_Transparente_Model_Api::ENDPOINT_PROD."preferences/notifications/".$data['id'];
             $header = "Authorization: OAuth " . Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
         }
 
@@ -129,7 +129,7 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 	}
 
 	public function OauthAction() {
-		$api = $this->getApi();
+		$api = MOIP_Transparente_Model_Api;
 		$standard = $this->getStandard();
 		$data = $this->getRequest()->getParams();
 		$model = new Mage_Core_Model_Config();
@@ -175,15 +175,15 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 
 
 	public function getOauthAcess($code) {
-		$api = $this->getApi();
+		$api = MOIP_Transparente_Model_Api;
 		$documento = 'Content-Type: application/x-www-form-urlencoded; charset=utf-8';
 		$api->generateLog($code, 'MOIP_Oauth.log');
 		 if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
 	          	$url = "https://connect-sandbox.moip.com.br/oauth/token";
-	        	$header = "Authorization: Basic " . base64_encode($this->getApi()::TOKEN_TEST . ":" . $this->getApi()::KEY_TEST);
+	        	$header = "Authorization: Basic " . base64_encode(MOIP_Transparente_Model_Api::TOKEN_TEST . ":" . MOIP_Transparente_Model_Api::KEY_TEST);
 	        	$array_json = array(
-		        	'client_id' => $this->getApi()->getAppId("teste"),
-		        	'client_secret' => $this->getApi()->getClienteSecret("teste"),
+		        	'client_id' => MOIP_Transparente_Model_Api->getAppId("teste"),
+		        	'client_secret' => MOIP_Transparente_Model_Api->getClienteSecret("teste"),
 					'redirect_uri' => 'http://moip.o2ti.com/magento/redirect/',
 					'grant_type' => 'authorization_code',
 					'code' => $code
@@ -192,10 +192,10 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 	      }
 	      else {
               	$url = "https://connect.moip.com.br/oauth/token";
-		        $header = "Authorization: Basic " . base64_encode($this->getApi()::TOKEN_PROD . ":" . $this->getApi()::KEY_PROD);
+		        $header = "Authorization: Basic " . base64_encode(MOIP_Transparente_Model_Api::TOKEN_PROD . ":" . MOIP_Transparente_Model_Api::KEY_PROD);
 		        $array_json = array(
-			        	'client_id' =>  $this->getApi()->getAppId("prod"),
-			        	'client_secret' => $this->getApi()->getClienteSecret("prod"),
+			        	'client_id' =>  MOIP_Transparente_Model_Api->getAppId("prod"),
+			        	'client_secret' => MOIP_Transparente_Model_Api->getClienteSecret("prod"),
 						'redirect_uri' => 'http://moip.o2ti.com/magento/redirect/',
 						'grant_type' => 'authorization_code',
 						'code' => $code
@@ -218,7 +218,7 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 	}
 
 	public function getKeyPublic($oauth) {
-		$api = $this->getApi();
+		$api = MOIP_Transparente_Model_Api;
 		$api->generateLog($oauth, 'MOIP_Oauth.log');
 		$documento = 'Content-Type: application/json; charset=utf-8';
 			if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
