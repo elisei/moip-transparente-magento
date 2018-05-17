@@ -4,25 +4,15 @@
 if(Mage::app()->getRequest()->getModuleName() != "onestepcheckout" && Mage::app()->getRequest()->getModuleName() != "checkout"){
 ?>
 		<?php $info = $this->_prepareInfo(); ?>
-
-				<?php echo $info['moip_card_brand']; ?> <?php echo $info['moip_card_installment']; ?> parcelas
-				<br/>
-				<?php echo $info['moip_card_fullname'] ?>
-				<br/>
+			<?php if(isset($info['moip_card_brand'])): ?>	
+				<?php echo $info['moip_card_brand']; ?> <?php echo $info['moip_card_installment']; ?> parcelas<br/>
+				<?php echo $info['moip_card_fullname'] ?><br/>
 				6 Primeiros dígitos do cartão: 				<?php echo $info['moip_card_first6'] ?><br/>
-			
-			
 				4 Últimos dígitos do cartão:  				<?php echo $info['moip_card_last4'] ?><br/>
-				
-				
-
 				Pagamento n.º: 	<?php echo $info['moip_pay'] ?><br/>
-			
-
-		
-
-	
-
+			<?php else: ?>
+					<p>Não foi possível realizar o pagamento</p>
+			<?php endif; ?>
 <?php } else { ?>
 
 <?php $addtional = $this->getMethod()->getInfoInstance()->getAdditionalData();?>

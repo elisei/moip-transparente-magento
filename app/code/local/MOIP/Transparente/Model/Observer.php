@@ -180,11 +180,8 @@ class Moip_Transparente_Model_Observer
         $new = Mage::getStoreConfig('payment/moip_transparente_standard/type_app');
         $old = Mage::getStoreConfig('payment/moip_transparente_standard/type_old_app');
         if($new != $old){
-            $model = new Mage_Core_Model_Config();
-            $model->saveConfig('payment/moip_transparente_standard/type_old_app', $new, 'default', 0);
-            $model->deleteConfig('payment/moip_transparente_standard/webhook_key_prod');
-            $model->deleteConfig('payment/moip_transparente_standard/oauth_prod');
-            Mage::app()->cleanCache();
+            Mage::getSingleton('core/session')->addSuccess("Ao alterar o tipo de recebimento você deverá realizar nova autorização agora para sua nova taxa.");
+            return Mage::helper('transparente')->ClearMoip();
         }
         
         return $this;
