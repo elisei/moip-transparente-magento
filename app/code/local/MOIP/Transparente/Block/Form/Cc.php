@@ -101,7 +101,7 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 			$image_brand = $this->getAmericanExpressImage();
 		} elseif ($brand == "DINERS") {
 			$image_brand = $this->getDinersImage();
-		} elseif ($brand == "HIPPERCARD") {
+		} elseif ($brand == "HIPERCARD") {
 			$image_brand = $this->getHipercardImage();
 		} elseif ($brand == "HIPER") {
 			$image_brand = $this->getHiperImage();
