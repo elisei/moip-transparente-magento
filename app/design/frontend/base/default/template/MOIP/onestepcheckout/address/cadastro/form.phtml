@@ -1,0 +1,240 @@
+<div class="page-title">
+    <h2>Você ainda não tem um cadastro, <strong>crie sua conta</strong>
+    <span class="goback">
+      <small><a href="javascript:void(0)" onclick="gobackemail()"> ou entre com outro email</a></small>
+    </span>
+  </h2>
+</div>
+<div class="content-tab-moip">
+  
+  <form id="form-new-address" autocomplete="on" action="<?php echo $this->getUrl('onestepcheckout/index/formPostCreate') ?>" method="POST" class="valid-form scaffold-form">
+  <fieldset>
+    <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" class="input-hidden">
+    <input type="hidden" name="_form_id" value="0" class="input-hidden">
+    <input type="hidden" name="_form_type" value="new" class="input-hidden">
+    <input type="hidden" name="confirmation"  id="confirmation" >
+
+    <?php $_taxvat = $this->getLayout()->createBlock('customer/widget_taxvat')->setTemplate('MOIP/onestepcheckout/customer/taxvat.phtml');  ?>
+    <?php $_dob = $this->getLayout()->createBlock('customer/widget_dob')->setTemplate('MOIP/onestepcheckout/customer/dob.phtml'); ?>
+    <?php $_tipopessoa = $this->getLayout()->createBlock('onestepcheckout/checkout_customer_tipopessoa')->setFieldParams('onchange="setTypePersona(this)"'); ?>
+    <?php $_gender = $this->getLayout()->createBlock('customer/widget_gender')->setTemplate('MOIP/onestepcheckout/customer/gender.phtml') ?>
+            
+    <div class="row">
+      <div class="col-sm-6 p-0">
+            <div class="form-group">
+                <label for="billing:email" class="col-sm-12 control-label">Endereço de Email</label>
+                    <div class="col-sm-12">
+                        <input   type="email" name="email" id="email" value="<?php echo $this->escapeHtml($this->getFormData()->getEmail()) ?>" title="Endereço de e-mail" class="input-moip form-control validate-email required-entry validate-if-email-exist"  autocomplete="off">
+                    </div>
+            </div>
+      </div>
+      <div class="col-sm-6 p-0">
+          <div class="form-group">
+              <label for="password" class="col-sm-12 control-label">Crie sua Senha</label>
+              <div class="col-sm-12">
+                  <input type="password" name="password" id="password" title="Senha" class="input-moip form-control  required-entry validate-password"  data-toggle="password" onblur="SetUniquePassword()" autocomplete="new-password">
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <hr>
+      </div>
+    </div>
+    <?php if(Mage::getStoreConfig('onestepcheckout/config/enable_pj')):?>
+      
+          <?php echo $_tipopessoa->setTipopessoa($this->getFormData()->getTipopessoa())->toHtml() ?>
+     
+    <?php endif; ?>
+
+    <div class="row">
+      <div class="col-sm-6 p-0">
+            <div class="form-group">
+                <label class="col-sm-12 control-label" for="firstname">Nome</label>
+                <div class="col-sm-12">
+                    <input type="text" name="firstname" id="firstname" value="<?php echo  $this->htmlEscape($this->getAddress()->getFirstname()) ?>" title="Nome" class="form-control required-entry" placeholder="Nome" autocomplete="given-name">
+                </div>
+            </div>
+      </div>
+
+      <div class="col-sm-6 p-0">
+            <div class="form-group">
+                <label class="col-sm-12 control-label" for="lastname">Sobrenome</label>
+                <div class="col-sm-12">
+                    <input type="text" name="lastname" id="lastname" value="<?php echo  $this->htmlEscape($this->getAddress()->getLastname()) ?>" title="Sobrenome" class="form-control required-entry" placeholder="Sobrenome" autocomplete="family-name">
+                </div>
+            </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6 p-0">
+              <div class="form-group">
+                  <label class="col-sm-12 control-label" for="telephone">Telefone</label>
+                  <div class="col-sm-12">
+                      <input type="tel" name="telephone" id="telephone" value="<?php echo $this->htmlEscape($this->getAddress()->getTelephone()) ?>" title="Telefone" class="form-control required-entry validate-tel-brazil" placeholder="Telefone" autocomplete="telephone">
+                  </div>
+              </div>
+      </div>
+      <div class="col-sm-6 p-0">
+            <div class="form-group">
+                <label class="col-sm-12 control-label" for="fax">Celular</label>
+                <div class="col-sm-12">
+                    <input type="tel" name="fax" id="fax" value="<?php echo $this->htmlEscape($this->getAddress()->getFax()) ?>" title="Celular" class="form-control validate-tel-brazil" autocomplete="mobile" placeholder="Celular">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    
+            
+    <div class="row">       
+      <div class="col-sm-6 p-0">
+         <?php echo $_taxvat->setTaxvat($this->getFormData()->getTaxvat())->toHtml() ?>
+      </div>
+      <div class="col-sm-6 p-0">
+        <?php echo $_dob->setDate($this->getFormData()->getDob())->setFieldIdFormat('%s')->setFieldNameFormat('%s')->toHtml() ?>
+      </div>
+    </div>
+
+    <?php if ($_gender->isEnabled()): ?>
+      <div class="row">
+        <div class="col-sm-6 p-0">
+          <?php echo $_gender->setGender($this->getFormData()->getGender())->toHtml() ?>
+        </div>
+      </div>
+    <?php endif ?>
+
+    <div class="row">
+      <div class="col-xs-6 p-0">
+            <div class="form-group">
+                <label class="col-sm-12 control-label" for="textinput">Cep 
+                  <span><a href="http://www.buscacep.correios.com.br/" target="_blank" tabindex="-1" class="f-right not-zip-code hidden-xs">Não sabe o CEP?</a></span>
+                </label>
+                <div class="col-sm-12">
+                    <input type="tel" name="postcode" title="CEP" id="postcode" value="<?php echo $this->htmlEscape($this->getAddress()->getPostcode()) ?>" class="form-control required-entry validate-zip-international moipzip" onchange="javascript:buscarEndereco();" placeholder="CEP" autocomplete="postal-code">
+                </div>
+            </div>
+      </div>
+      <div class="col-xs-6 p-0">
+          <button type="button" name="button" id="buscarcep" tabindex="-1" onclick="javascript:buscarEndereco()"  class="btn btn-default" aria-label="Buscar endereço">Buscar Endereço</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6 p-0 hide-zip-code">
+        <div class="form-group">
+            <label class="col-sm-12 control-label" for="textinput">Rua</label>
+            <div class="col-sm-12">
+                <input type="text" name="street[]" id="street1"  value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(1)) ?>" title="Endereço da rua" class="form-control required-entry validate-length minimum-length-4 maximum-length-57" placeholder="Endereço" autocomplete="street-address">
+            </div>
+        </div>
+      </div>
+      <div class="col-sm-2 p-0 hide-zip-code">
+          <div class="form-group">
+              <label class="col-sm-12 control-label" for="textinput">Número</label>
+              <div class="col-sm-12">
+                  <input type="tel" name="street[]" id="street2" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(2)) ?>" title="Número" class="form-control required-entry validate-length minimum-length-1 maximum-length-6" placeholder="Número" autocomplete="street-address-2">
+              </div>
+          </div>
+      </div>
+      
+      <div class="col-sm-4 p-0 hide-zip-code">
+        <div class="form-group">
+            <label class="col-sm-12 control-label" for="textinput">Complemento</label>
+            <div class="col-sm-12">
+                <input type="text" name="street[]" id="street3" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(3)) ?>" title="Complemento" class="form-control validate-length minimum-length-1 maximum-length-30" placeholder="Complemento" autocomplete="off">
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 p-0 hide-zip-code">
+              <div class="form-group">
+                  <label class="col-sm-12 control-label" for="textinput">Bairro</label>
+                  <div class="col-sm-12">
+                      <input type="text" name="street[]" id="street4" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(4)) ?>" title="Bairro" class="form-control required-entry validate-length minimum-length-1 maximum-length-60"  placeholder="Bairro" automcomplete="street-address-3">
+                  </div>
+              </div>
+      </div>
+      <div class="col-sm-6 p-0 hide-zip-code">
+              <div class="form-group">
+                  <label class="col-sm-12 control-label" for="textinput">Cidade</label>
+                  <div class="col-sm-12">
+                      <input type="text" name="city" id="city" value="<?php echo $this->htmlEscape($this->getAddress()->getCity()) ?>" class="form-control required-entry" title="Cidade" autocomplete="address-level1" placeholder="Cidade" autocomplete="address-level2">
+                  </div>
+              </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 p-0 hide-zip-code">
+          <div class="form-group">
+                <label class="col-sm-12 control-label" for="textinput">Estado</label>
+                <div class="col-sm-12">
+                    <select name="region_id" id="region_id" title="<?php echo Mage::helper('core')->quoteEscape($this->__('State/Province')) ?>" class="validate-select form-control">
+                        <option value="">
+                            <?php echo $this->__('Please select region, state or province') ?>
+                        </option>
+                    </select>
+                    <input type="text" name="region" id="region" value="<?php echo $this->escapeHtml($this->getAddress()->getRegion()) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('State/Province')) ?>" id="region" class=" form-control no-display <?php echo $this->helper('customer/address')->getAttributeValidationClass('region') ?>" autocomplete="off">
+                </div>
+          </div>
+      </div>
+      <div class="col-sm-6 p-0 hide-zip-code">
+            <div class="form-group">
+                <label class="col-sm-12 control-label" for="textinput">País</label>
+                <div class="col-sm-12">
+                    <?php echo $this->getCountryHtmlSelect() ?>
+                </div>
+            </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <?php if(Mage::getStoreConfig('onestepcheckout/layout/usenews')==1):?>
+                
+                  <div class="form-group">
+                      <label class="checkbox-inline checkbox-review">
+                            <input type="checkbox" name="is_subscribed" value="0" title="<?php echo $this->__('Receber novidades') ?>"> <?php echo $this->__('Desejo receber ofertas por email') ?>
+                        </label>
+                    </div>
+                
+        <?php endif ?>
+        <?php if(Mage::getStoreConfig('onestepcheckout/layout/usenews')==2):?>
+                
+                  <div class="form-group">
+                      <label class="checkbox-inline checkbox-review">
+                            <input type="checkbox" name="is_subscribed"  value="1" checked="checked" title="<?php echo $this->__('Receber novidades') ?>"> <?php echo $this->__('Desejo receber ofertas por email') ?>
+                      </label>
+                    </div>
+                
+        <?php endif?>
+        <?php echo $this->getChildHtml('agreements',false,true) ?>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <hr>
+      </div>
+    </div>
+      <input type="hidden" name="default_billing" value="1" />
+      <input type="hidden" name="default_shipping" value="1" />
+      <input type="hidden" name="create_address" value="1" />
+  </fieldset>
+  <button type="button" onclick="SaveAddress('0', 'new');" class="btn btn-success btn-block">
+      <?php echo Mage::helper('onestepcheckout')->__('Criar Conta'); ?>
+  </button>
+</form>
+   
+</div>
+<script type="text/javascript">
+
+    jQuery("#country").addClass('form-control');
+    jQuery('#region_id').attr('defaultValue', "<?php echo $this->getAddress()->getRegionId() ?>");
+    new RegionUpdater('country', 'region', 'region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'zip');
+    validateOnBlur('form-new-address');
+</script>

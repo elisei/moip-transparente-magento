@@ -2,20 +2,28 @@
 <config>
     <modules>
         <MOIP_Transparente>
-            <version>0.2.3</version>
+            <version>1.0.2</version>
         </MOIP_Transparente>
     </modules>
-    <fieldsets>
-        <sales_convert_quote_address>
-            <fee_amount_moip>
-                <to_order>*</to_order>
-            </fee_amount_moip>
-            <base_fee_amount_moip>
-                <to_order>*</to_order>
-            </base_fee_amount_moip>
-        </sales_convert_quote_address>
-    </fieldsets>
     <global>
+         <fieldsets>
+            <sales_convert_quote_address>
+                <fee_moip>
+                    <to_order>*</to_order>
+                </fee_moip>
+                <base_fee_moip>
+                    <to_order>*</to_order>
+                </base_fee_moip>
+            </sales_convert_quote_address>
+            <sales_convert_quote_item>
+                <fee_moip>
+                    <to_order_item>*</to_order_item>
+                </fee_moip>
+                <base_fee_moip>
+                    <to_order_item>*</to_order_item>
+                </base_fee_moip>
+            </sales_convert_quote_item>
+        </fieldsets>
         <models>
             <transparente>
                 <class>MOIP_Transparente_Model</class>
@@ -30,15 +38,13 @@
                 </entities>
             </transparente_mysql4>
         </models>
-
         <resources>
             <transparente_setup>
                 <setup>
                     <module>MOIP_Transparente</module>
+                    <class>Mage_Sales_Model_Resource_Setup</class>
                 </setup>
-                <connection>
-                    <use>core_setup</use>
-                </connection>
+                
             </transparente_setup>
             <transparente_write>
                 <connection>
@@ -60,6 +66,13 @@
                     <order_totals>MOIP_Transparente_Block_Sales_Order_Fee</order_totals>
                 </rewrite>
             </sales>
+            <adminhtml>
+                <rewrite>
+                    <sales_order_totals>MOIP_Transparente_Block_Sales_Order_Fee</sales_order_totals>
+                    <sales_order_invoice_totals>MOIP_Transparente_Block_Adminhtml_Sales_Order_Invoice_Fee</sales_order_invoice_totals>
+                    <sales_order_creditmemo_totals>MOIP_Transparente_Block_Adminhtml_Sales_Order_Creditmemo_Fee</sales_order_creditmemo_totals>
+                </rewrite>
+            </adminhtml>
         </blocks>
         <helpers>
             <transparente>
@@ -69,13 +82,56 @@
         <sales>
             <quote>
                 <totals>
-                    <fee>
+                    <fee_moip>
                         <class>transparente/sales_quote_address_total_fee</class>
                         <after>subtotal</after>
-                    </fee>
+                        <before>tax</before>
+                    </fee_moip>
                 </totals>
             </quote>
+            <order_invoice>
+                <totals>
+                    <fee_moip>
+                        <class>transparente/sales_order_total_invoice_fee</class>
+                        <after>subtotal</after>
+                        <before>tax</before>
+                    </fee_moip>
+                </totals>
+            </order_invoice>
+            <order_creditmemo>
+                <totals>
+                    <fee_moip>
+                        <class>transparente/sales_order_total_creditmemo_fee</class>
+                        <after>subtotal</after>
+                        <before>tax</before>
+                    </fee_moip>
+                </totals>
+            </order_creditmemo>
         </sales>
+        <template>
+            <email>
+                <sales_email_order_moip_cancel translate="label" module="transparente">
+                    <label>Moip - Email template for order cancellation</label>
+                    <file>sales/moip/cancel.html</file>
+                    <type>html</type>
+                </sales_email_order_moip_cancel>
+                <sales_email_order_moip_cancel_guest translate="label" module="transparente">
+                    <label>Moip - Email template for order cancellation - guest</label>
+                    <file>sales/moip/cancel.html</file>
+                    <type>html</type>
+                </sales_email_order_moip_cancel_guest>
+                 <sales_email_order_moip_pending translate="label" module="transparente">
+                    <label>Moip - Email template for order pending</label>
+                    <file>sales/moip/pending.html</file>
+                    <type>html</type>
+                </sales_email_order_moip_pending>
+                <sales_email_order_moip_pending_guest translate="label" module="transparente">
+                    <label>Moip - Email template for order pending - guest</label>
+                    <file>sales/moip/pending.html</file>
+                    <type>html</type>
+                </sales_email_order_moip_pending_guest>
+            </email>
+        </template>
         <events>
         		<catalog_product_save_after>
 			        <observers>
@@ -86,15 +142,6 @@
 			            </transparente>
 			        </observers>
 			    </catalog_product_save_after>
-                <sales_order_place_moip_after>
-                    <observers>
-                        <transparente>
-                            <type>singleton</type>
-                            <class>transparente/observer</class>
-                            <method>paymentCapture</method>
-                        </transparente>
-                    </observers>
-                </sales_order_place_moip_after>
                 <admin_system_config_changed_section_payment>
                     <observers>
                         <transparente>
@@ -105,7 +152,11 @@
                     </observers>
                 </admin_system_config_changed_section_payment>
         </events>
-
+        <payment>
+            <groups>
+                <moip_transparente>Moip Transparente</moip_transparente>
+            </groups>
+        </payment>
     </global>
     <frontend>
         <secure_url>
@@ -122,11 +173,11 @@
         </routers>
         <translate>
             <modules>
-                <transparente>
+                <MOIP_Transparente>
                     <files>
                         <default>MOIP_Transparente.csv</default>
                     </files>
-                </transparente>
+                </MOIP_Transparente>
             </modules>
         </translate>
         <layout>
@@ -187,7 +238,7 @@
                     <cron_expr>30 2 * * *</cron_expr>
                 </schedule>
                 <run>
-                    <model>transparente/observer::setHoldedNotification</model>
+                    <model>transparente/cron::setPendingNotification</model>
                 </run>
             </transparente_send_onhold>
             <transparente_set_state_all>
@@ -195,7 +246,7 @@
                     <cron_expr>30 3 * * *</cron_expr>
                 </schedule>
                 <run>
-                    <model>transparente/observer::setStatusAll</model>
+                    <model>transparente/cron::setStatusAll</model>
                 </run>
             </transparente_set_state_all>
            
@@ -206,23 +257,16 @@
             <moip_transparente_standard>
                 <active>0</active>
                 <log>1</log>
-                <title>Pagamento via Admin - Moip</title>
+                <title>Envio de cobrança Moip - Admin</title>
                 <model>MOIP_Transparente_Model_Standard</model>
-                <order_status>pending</order_status>
                 <type_app>fluxo</type_app>
                 <type_old_app>fluxo</type_old_app>
-                <type_status_init>onhold</type_status_init>
-                <order_status_holded>holded</order_status_holded>
-                <order_status_holded_boleto>holded</order_status_holded_boleto>
-                <order_status_holded_tef>holded</order_status_holded_tef>
-                <validopara_transparente>1</validopara_transparente>
-                <order_status_pending_payment>pending_payment</order_status_pending_payment>
-                <order_status_pending_payment_boleto>pending_payment</order_status_pending_payment_boleto>
-                <order_status_pending_payment_tef>pending_payment</order_status_pending_payment_tef>
-                <validopara_transparente>1</validopara_transparente>
-                <apelido>ALTERE PARA O NOME DA SUA EMPRESA</apelido>
+                <apelido>NOME DA EMPRESA</apelido>
                 <ambiente>producao</ambiente>
+                <order_status>pending</order_status>
                 <payment_action>order</payment_action>
+                
+                <moip_cancel>payment_moip_transparente_standard_email_cancel</moip_cancel>
             </moip_transparente_standard>
             <moip_boleto>
                 <active>1</active>
@@ -231,6 +275,9 @@
                 <model>MOIP_Transparente_Model_Method_Boleto</model>
                 <title>Boleto Bancário</title>
                 <min_order_total>5</min_order_total>
+                <order_status>pending</order_status>
+                <payment_action>order</payment_action>
+                <group>moip_transparente</group>
             </moip_boleto>
             <moip_cc>
                 <active>1</active>
@@ -253,6 +300,9 @@
                 <nummaxparcelamax>12</nummaxparcelamax>
                 <valorminimoparcela>5</valorminimoparcela>
                 <min_order_total>5</min_order_total>
+                <order_status>pending</order_status>
+                <payment_action>order</payment_action>
+                <group>moip_transparente</group>
             </moip_cc>
             <moip_tef>
                 <active>1</active>
@@ -262,15 +312,20 @@
                 <title>Débito em Conta</title>
                 <vcmentoboleto>3</vcmentoboleto>
                 <min_order_total>5</min_order_total>
+                <order_status>pending</order_status>
+                <payment_action>order</payment_action>
+                <group>moip_transparente</group>
             </moip_tef>
             <moip_ccrecurring>
                 <order_status>pending</order_status>
                 <model>MOIP_Transparente_Model_Method_CcRecurring</model>
                 <title>Cartão de Crédito Recorrente</title>
+                <group>moip_transparente</group>
             </moip_ccrecurring>
             <moip_boletorecurring>
                 <model>MOIP_Transparente_Model_Method_BoletoRecurring</model>
                 <title>Boleto Bancário Recorrente</title>
+                <group>moip_transparente</group>
             </moip_boletorecurring>
         </payment>
         <moipall>
@@ -282,5 +337,21 @@
                 <detalis>1</detalis>
             </success_page>
         </moipall>
+        <sales_email>
+            <order_moip_cancel>
+                <enabled>1</enabled>
+                <template>sales_email_order_moip_cancel</template>
+                <guest_template>sales_email_order_moip_cancel_guest</guest_template>
+                <identity>sales</identity>
+                <copy_method>bcc</copy_method>
+            </order_moip_cancel>
+            <order_moip_pending>
+                <enabled>1</enabled>
+                <template>sales_email_order_moip_pending</template>
+                <guest_template>sales_email_order_moip_pending_guest</guest_template>
+                <identity>sales</identity>
+                <copy_method>bcc</copy_method>
+            </order_moip_pending>
+        </sales_email>
     </default>
 </config>

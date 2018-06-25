@@ -1,25 +1,31 @@
-<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
-<p><?php echo $this->__('As informações de seu pedido foram encaminhadas para o seu email <strong>%s</strong>.', $this->getOrder()->getCustomerEmail()) ?></p>
-<h3 class="h3"><strong>Faça agora o pagamento do seu boleto</strong></h3>
-
-
+<?php if(Mage::getStoreConfig('moipall/success_page/detalis')): ?>
+    <h2 class="h2">
+        <?php echo Mage::helper('transparente')->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?>        
+    </h2>
+    <p>
+        <?php echo Mage::helper('transparente')->__('As informações de seu pedido foram encaminhadas para o seu email <strong>%s</strong>.', $this->getOrder()->getCustomerEmail()) ?>
+    </p>
+<?php endif; ?>
+<h3 class="h3">
+    <?php echo Mage::helper('transparente')->__('Faça agora o pagamento do seu boleto.') ?>
+</h3>
 <div class="input-group input-group-lg">
-  <input type="text" class="form-control" readonly="disable" id="barcode-line" value="<?php echo $this->getBoletoCode() ?>">
+  <input type="text" class="form-control" readonly="disable" id="barcode-line" value="<?php echo $this->getMoipLineCode() ?>">
   <span class="input-group-btn">
-    <button class="btn btn-success" type="button"  id="copy-code"><span><span>Copiar!</span></span></button>
+    <button class="btn btn-success" type="button"  id="copy-code">
+        <span><span><?php echo Mage::helper('transparente')->__('Copiar!') ?></span></span>
+    </button>
   </span>
 </div>
 <div class="action-payment-secundary">
     <button type="button" class=" btn btn-success" title="Imprimir o boleto" onclick="
-            popWin('<?php echo $this->getBoletoLinks()  ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;"><span><span>Visualize o Boleto</span></span>
+            popWin('<?php echo $this->getMoipLinkPrint()  ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">
+                <span><span><?php echo Mage::helper('transparente')->__('Visualizar boleto.') ?></span></span>
     </button>
 </div>
-		   
-
-
 <script type="text/javascript">
 	document.getElementById("copy-code").addEventListener("click", function() {
-        jQuery("#copy-code").text('Copiado');
+        jQuery("#copy-code").text('<?php echo Mage::helper('transparente')->__('Copiado') ?>');
         copyToClipboard(document.getElementById("barcode-line"));
         
     });

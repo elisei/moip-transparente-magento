@@ -56,14 +56,24 @@ div#advice-required-entry-moip_cc_cid, div#advice-required-entry-moip_cc_number,
     background: #fff;
     z-index: 1;
 }
+.btn-cofre-save {
+    font-size: 12px;
+    background-color: #FFF;
+    color: #333;
+    border: 1px solid #8c8c8c !important;
+    
+
+}
+
+.btn-cofre-save.active{
+    background-color: #d4d4d4;
+    border-color: #8c8c8c;
+    color: #35750b;
+      
+}
+
 .title-info-pay {
     margin-left: 15px;
-}
-.btn-cofre-save {
-    background: #fff;
-    text-align: left;
-    font-size: 12px !important;
-    margin-bottom: 10px;
 }
 .bg-destaque {
     background: #F7F7F7;

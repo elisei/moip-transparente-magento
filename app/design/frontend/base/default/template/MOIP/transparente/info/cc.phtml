@@ -1,18 +1,50 @@
-<?php if(Mage::app()->getRequest()->getControllerModule() != "Mage_Checkout" && Mage::app()->getRequest()->getActionName() != "progresscheckout"): ?>
-		<?php $info = $this->_prepareInfo(); ?>
-		<?php if(isset($info['moip_card_brand'])): ?>	
-			<h3 class="h3"><?php echo $info['moip_card_brand']; ?> <?php echo $info['moip_card_installment']; ?> parcelas</h3>
-			<div class="input-value">
-				<div><strong><?php echo $info['moip_card_fullname'] ?></strong></div>
-				<div><?php echo $this->__('<strong>%sxxxxx%s</strong>', $info['moip_card_first6'], $info['moip_card_last4'] ); ?></div>
-				<div><?php echo $info['moip_pay'] ?></div>
+<div class="box-content">
+	<?php if(Mage::app()->getRequest()->getControllerModule() != "Mage_Checkout" && Mage::app()->getRequest()->getActionName() != "progresscheckout"): ?>
+
+		<?php $brand =  $this->getBrand(); ?>
+		<?php if(isset($brand)): ?>	
+			<h3 class="h3"><?php echo $this->getBrand(); ?></h3>
+			<div>
+				<?php echo  Mage::helper('transparente')->__('<strong>%s</strong>', $this->getFullname() ); ?>
+			</div>
+			<?php $installment = $this->getInstallment(); ?>
+			<?php if($installment  > 1): ?>
+				<div>
+					<?php echo Mage::helper('transparente')->__('%s parcelas', $installment); ?>
+				</div>
+			<?php endif; ?>
+			<div>
+				<?php echo  Mage::helper('transparente')->__('<strong>%sxxxxx%s</strong>', $this->getFirst6(), $this->getLast4() ); ?>
 			</div>
 			<div>
-				- Nossos pedidos são processados pelo Moip Pagamentos S/A
+				<?php echo Mage::helper('transparente')->__('Nossos pedidos são processados pelo Wirecard Brasil S.A'); ?>
 			</div>
 		<?php else: ?>
-				<p>Não foi possível realizar o pagamento</p>
+				<?php echo Mage::helper('transparente')->__('Não foi possível recuperar a informação do pagamento.'); ?>
 		<?php endif; ?>
-<?php else: ?>
-	Pagamento via Cartão de Crédito
-<?php endif; ?>
+	<?php elseif( Mage::app()->getRequest()->getActionName() == "success"): ?>
+		<?php $brand =  $this->getBrand(); ?>
+		<?php if(isset($brand)): ?>	
+			<h3 class="h3"><?php echo $this->getBrand(); ?></h3>
+			<div>
+				<?php echo  Mage::helper('transparente')->__('<strong>%s</strong>', $this->getFullname() ); ?>
+			</div>
+			<?php $installment = $this->getInstallment(); ?>
+			<?php if($installment  > 1): ?>
+				<div>
+					<?php echo Mage::helper('transparente')->__('%s parcelas', $installment); ?>
+				</div>
+			<?php endif; ?>
+			<div>
+				<?php echo  Mage::helper('transparente')->__('<strong>%sxxxxx%s</strong>', $this->getFirst6(), $this->getLast4() ); ?>
+			</div>
+			<div>
+				<?php echo Mage::helper('transparente')->__('Nossos pedidos são processados pelo Wirecard Brasil S.A'); ?>
+			</div>
+		<?php else: ?>
+				<?php echo Mage::helper('transparente')->__('Não foi possível recuperar a informação do pagamento.'); ?>
+		<?php endif; ?>
+	<?php else: ?>
+		<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
+	<?php endif; ?>
+</div>

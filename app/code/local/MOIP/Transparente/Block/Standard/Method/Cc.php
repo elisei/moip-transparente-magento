@@ -8,20 +8,14 @@ class MOIP_Transparente_Block_Standard_Method_Cc extends Mage_Checkout_Block_One
     }
     public function getCardStatus()
     {
-        $pgto             = $this->getMoipPayment();
-        $responseMoipJson = $pgto['response_moip'];
-        return $responseMoipJson->status;
+        $data             = $this->getMoipData();
+        return $data['moip_init_status'];
     }
 
     public function getDescriptionStatusCancel()
     {
-        $pgto             = $this->getMoipPayment();
-        $responseMoipJson = $pgto['response_moip'];
-
-        if($responseMoipJson->status == 'CANCELLED'){
-            $details = $responseMoipJson->cancellationDetails->description;
-        }
-        return $details;
+        $data             = $this->getMoipData();
+        return $data['moip_init_status_descrip'];
     }
 
     public function getOrder()
@@ -38,14 +32,30 @@ class MOIP_Transparente_Block_Standard_Method_Cc extends Mage_Checkout_Block_One
         return $final;
     }
 
+  
+    protected function getMoipData(){
+        $additional = $this->getOrder()->getPayment()->getAdditionalData();
+        return unserialize($additional);
+    }
 
     public function getLinkReorder()
     {
-          $order            = $this->getOrder();
-          return $order->getId();
+        $order            = $this->getOrder();
+        $orderid      = $order->getId();
+        if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
+            return $this->getUrl('sales/guest/reorder', array('order_id' => $order->getId()));
+        }
+        return $this->getUrl('sales/order/reorder', array('order_id' => $order->getId()));
     }
-    protected function getCheckout()
+
+    public function getLinkViewOrder()
     {
-        return Mage::getSingleton('checkout/session');
+        $order            = $this->getOrder();
+        $orderid      = $order->getId();
+        if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
+            return $this->getUrl('sales/guest/view', array('order_id' => $order->getId()));
+        }
+        return $this->getUrl('sales/order/view', array('order_id' => $order->getId()));
     }
+   
 }

@@ -1,0 +1,13 @@
+Dados inválidos,Dados informados inválidos. Você digitou algo errado durante o preenchimento dos dados do seu Cartão. Certifique-se de que está usando o Cartão correto e faça uma nova tentativa.
+Falha na comunicação com o Banco Emissor,"Houve uma falha de comunicação com o Banco Emissor do seu Cartão, tente novamente."
+Política do Banco Emissor,O pagamento não foi autorizado pelo Banco Emissor do seu Cartão. Entre em contato com o Banco para entender o motivo e refazer o pagamento.
+Cartão vencido,A validade do seu Cartão expirou. Escolha outra forma de pagamento para concluir o pagamento.
+Transação não autorizada,O pagamento não foi autorizado. Entre em contato com o Banco Emissor do seu Cartão.
+Transação duplicada,"Esse pagamento já foi realizado. Caso não encontre nenhuma referência ao pagamento anterior, por favor entre em contato com o nosso Atendimento."
+Política do Moip,"O pagamento não foi autorizado. Para mais informações, entre em contato com o nosso atendimento."
+Transação não processada,"O pagamento não pode ser processado. Por favor, tente novamente. Caso o erro persista, entre em contato com o nosso atendimento"
+Desconhecido,"Houve uma falha de comunicação com o Banco Emissor do seu Cartão, tente novamente."
+Política de segurança do Banco Emissor,Pagamento não autorizado para este Cartão. Entre em contato com o Banco Emissor para mais esclarecimentos.
+Valor inválido,Pagamento não autorizado. Entre em contato com o Atendimento e informe o ocorrido.
+Política de segurança do Moip,Pagamento não autorizado
+Politica do banco emissor,O pagamento não foi autorizado pelo Banco Emissor do seu Cartão. Entre em contato com o Banco para entender o motivo antes de refazer o pagamento.

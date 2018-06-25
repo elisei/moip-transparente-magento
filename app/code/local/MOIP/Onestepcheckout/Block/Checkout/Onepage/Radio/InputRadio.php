@@ -32,164 +32,84 @@
  * @package    Mage_Core
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class MOIP_Onestepcheckout_Block_Checkout_Onepage_Radio_InputRadio extends Mage_Core_Block_Abstract
+class MOIP_Onestepcheckout_Block_Checkout_Onepage_Radio_InputRadio extends Mage_Core_Block_Html_Select
 {
 
-    protected $_options = array();
-
-    /**
-     * Get options of the element
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->_options;
-    }
-
-    /**
-     * Set options for the HTML select
-     *
-     * @param array $options
-     * @return Mage_Core_Block_Html_Select
-     */
-    public function setOptions($options)
-    {
-        $this->_options = $options;
-        return $this;
-    }
-
-    /**
-     * Add an option to HTML select
-     *
-     * @param string $value  HTML value
-     * @param string $label  HTML label
-     * @param array  $params HTML attributes
-     * @return Mage_Core_Block_Html_Select
-     */
-    public function addOption($value, $label, $params=array())
-    {
-        $this->_options[] = array('value' => $value, 'label' => $label, 'params' => $params);
-        return $this;
-    }
-
-    /**
-     * Set element's HTML ID
-     *
-     * @param string $id ID
-     * @return Mage_Core_Block_Html_Select
-     */
-    public function setId($id)
-    {
-        $this->setData('id', $id);
-        return $this;
-    }
-
-    /**
-     * Set element's CSS class
-     *
-     * @param string $class Class
-     * @return Mage_Core_Block_Html_Select
-     */
-    public function setClass($class)
-    {
-        $this->setData('class', $class);
-        return $this;
-    }
-
-    /**
-     * Set element's HTML title
-     *
-     * @param string $title Title
-     * @return Mage_Core_Block_Html_Select
-     */
-    public function setTitle($title)
-    {
-        $this->setData('title', $title);
-        return $this;
-    }
-
-    /**
-     * HTML ID of the element
-     *
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->getData('id');
-    }
-
-    /**
-     * CSS class of the element
-     *
-     * @return string
-     */
-    public function getClass()
-    {
-        return $this->getData('class');
-    }
-
-    /**
-     * Returns HTML title of the element
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->getData('title');
-    }
-
-    /**
-     * Render HTML
-     *
-     * @return string
-     */
     protected function _toHtml()
     {
         if (!$this->_beforeToHtml()) {
             return '';
         }
-        $option = array();
-        $key = 0;
         $html = "";
-        $i = "";
-       
-        foreach ($this->getOptions() as $key => $option) { 
-           if(isset($option['id_default'])){
-                if($option['value'] == $option['id_default']){
-                    $_isCheckked = "checked";
-                    $_isActive = "active"; 
-                } else {
-                    $_isCheckked = "";
-                    $_isActive =  ""; 
-                }
-           } else {
-                $_isCheckked = "";
-                $_isActive =  ""; 
-           }
-            
+     
+        $values = $this->getValue();
 
-                $html .="
-                            <label class='btn btn-default btn-address ".$_isActive."' onclick='nextPasso()' >
-                                <input type='radio' onchange='updateBillingForm(".$option['value'].");' title='Selecionar Endereço' name='".$this->getName()."'  value='".$option['value']."' id='".$option['value']."' class='radio ".$this->getClass()."'  " .  $_isCheckked . "/><span class='address-line'>".$option['label']."</span>
-                            </label>
-                        ";
-                $i++;
+        if (!is_array($values)){
+            if (!is_null($values)) {
+                $values = array($values);
+            } else {
+                $values = array();
+            }
+        }
+
+        $isArrayOption = true;
+        foreach ($this->getOptions() as $key => $option) {
+            if ($isArrayOption && is_array($option)) {
+                $value  = $option['value'];
+                $label  = (string)$option['label'];
+                $params = (!empty($option['params'])) ? $option['params'] : array();
+            } else {
+                $value = (string)$key;
+                $label = (string)$option;
+                $isArrayOption = false;
+                $params = array();
             }
 
+            
+                $html .= $this->_optionToHtml(
+                    array(
+                        'value' => $value,
+                        'label' => $label,
+                        'params' => $params
+                    ),
+                    in_array($value, $values)
+                );
+            
+        }
+     
         return $html;
     }
 
-    /**
-     * Alias for toHtml()
-     *
-     * @return string
-     */
-    public function getHtml()
+    protected function _optionToHtml($option, $selected = false)
     {
-        return $this->toHtml();
-    }
+        $selectedHtml = $selected ? ' checked="checked"' : '';
 
+        $active = $selected ? ' active' : '';
+
+        if ($this->getIsRenderToJsTemplate() === true) {
+            $selectedHtml .= ' #{option_extra_attr_' . self::calcOptionHash($option['value']) . '}';
+        }
+
+        $params = '';
+        if (!empty($option['params']) && is_array($option['params'])) {
+            foreach ($option['params'] as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $keyMulti => $valueMulti) {
+                        $params .= sprintf(' %s="%s" ', $keyMulti, $valueMulti);
+                    }
+                } else {
+                    $params .= sprintf(' %s="%s" ', $key, $value);
+                }
+            }
+        }
+
+        return sprintf('<label class="btn btn-default btn-address %s"><input type="radio" value="%s"%s name="shipping_address_id" %s  class="validate-one-required-by-name radio"/><span class="address-line">%s</span></label>',
+            $active,
+            $this->escapeHtml($option['value']),
+            $selectedHtml,
+            'onchange="EditAddress(this.value,\'shipping\')"',
+            $option['label']);
+    }
 
 
 }

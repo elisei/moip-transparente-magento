@@ -95,8 +95,8 @@
     </head>
     <body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
         <div class="moip-wrapper">
-            <?php echo $this->getChildHtml('header') ?>
             <?php echo $this->getChildHtml('global_notices') ?>
+            <?php echo $this->getChildHtml('header') ?>
             <div class="container" id="checkout-moip">
                 <?php echo $this->getChildHtml('after_body_start') ?>
                 <?php echo $this->getChildHtml('global_messages') ?>

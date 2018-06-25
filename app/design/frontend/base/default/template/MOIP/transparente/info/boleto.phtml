@@ -1,36 +1,55 @@
 <?php if(Mage::app()->getRequest()->getControllerModule() != "Mage_Checkout" && Mage::app()->getRequest()->getActionName() != "progresscheckout"): ?>
-	<?php $info = $this->_prepareInfo(); ?>
+	
 	<div class="box-content">
-		<?php if(isset($info['moip_href_boleto'])): ?>	
-			<a  class="h3" title="Finalizar compra" href="<?php echo $info['moip_href_boleto']   ?>"  onclick="
-	            popWin('<?php echo $info['moip_href_boleto']   ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">
-	    		Imprimir Boleto
+		<?php $code_line = $this->getMoipLineCode(); ?>
+		<?php if(isset($code_line)): ?>	
+			<a  class="h3" title="Finalizar compra" href="<?php echo  $this->getMoipLinkPrint()   ?>"  
+
+			onclick="
+	            popWin('<?php echo $this->getMoipLinkPrint()  ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">
+	    		<?php echo Mage::helper('transparente')->__('Imprimir Boleto'); ?>
 	        </a>
-			
-			<div>Vencimento: <?php echo date('d/m/Y', strtotime($info['moip_expiration_boleto'])) ?></div>
-			<!-- <div><input type="text" value="<?php echo $info['moip_linecode_boleto'] ?>" readonly="disable" style="max-width: 200px; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></div> -->
-			<div class="str">
-				- Pedidos pagos em boleto têm o prazo bancário de 2 dias úteis máximos para serem aprovados.
+			<div>
+				<?php echo Mage::helper('transparente')->__('Código: %s', $this->getMoipLineCode()); ?>
 			</div>
-			<div class="str">
-				- Nossos pedidos são processados pelo Moip Pagamentos S/A
+			<div>
+				<?php echo Mage::helper('transparente')->__('Vencimento: %s', $this->getExpirationDate()); ?>
+			</div>
+			<div>
+				<?php echo Mage::helper('transparente')->__('Pedidos pagos em boleto têm o prazo bancário de 2 dias úteis máximos para serem aprovados.'); ?>
+				
+			</div>
+			<div>
+				<?php echo Mage::helper('transparente')->__('Nossos pedidos são processados pelo Wirecard Brasil S.A'); ?>
 			</div>
 		<?php else: ?>
-				<p>Não foi possível realizar o pagamento</p>
+				<?php echo Mage::helper('transparente')->__('Não foi possível recuperar a informação do pagamento.'); ?>
 		<?php endif; ?>
 	</div>
 <?php elseif( Mage::app()->getRequest()->getActionName() == "success"): ?>
-	<?php $info = $this->_prepareInfo(); ?>
-	<div class="box-content">
-		<div>
-			<a  class="button btn btn-default" title="Finalizar compra" href="<?php echo $info['moip_href_boleto']   ?>"  onclick="
-                popWin('<?php echo $info['moip_href_boleto']   ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">
-        		<span><span>Imprimir Boleto</span></span>        	
-            </a>
-		</div>
-		<div>Vencimento: <?php echo date('d/m/Y', strtotime($info['moip_expiration_boleto'])) ?></div>
-		<div><input type="text" value="<?php echo $info['moip_linecode_boleto'] ?>" readonly="disable" style="max-width: 200px; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></div>
-	</div>
+
+	<?php $code_line = $this->getMoipLineCode(); ?>
+		<?php if(isset($code_line)): ?>	
+			<a  class="h3" title="Finalizar compra" href="<?php echo  $this->getMoipLinkPrint()   ?>"  onclick="
+	            popWin('<?php echo $this->getMoipLinkPrint()  ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">
+	    		<?php echo Mage::helper('transparente')->__('Imprimir Boleto'); ?>
+	        </a>
+			<div>
+				<?php echo Mage::helper('transparente')->__('Código para Pagamento: %s', $this->getMoipLineCode()); ?>
+			</div>
+			<div>
+				<?php echo Mage::helper('transparente')->__('Vencimento: %s', $this->getExpirationDate()); ?>
+			</div>
+			<div>
+				<?php echo Mage::helper('transparente')->__('Pedidos pagos em boleto têm o prazo bancário de 2 dias úteis máximos para serem aprovados.'); ?>
+				
+			</div>
+			<div>
+				<?php echo Mage::helper('transparente')->__('Nossos pedidos são processados pelo Wirecard Brasil S.A'); ?>
+			</div>
+		<?php else: ?>
+				<?php echo Mage::helper('transparente')->__('Não foi possível recuperar a informação do pagamento.'); ?>
+		<?php endif; ?>
 <?php else: ?>
 	<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
 <?php endif; ?>

@@ -16,10 +16,12 @@ class MOIP_Transparente_Adminhtml_StatusmoipController extends  Mage_Adminhtml_C
         $countNonCancelOrder = 0;
         foreach ($orderIds as $orderId) {
             $order = Mage::getModel('sales/order')->load($orderId);
-            $method = $order->getPayment()->getMethodInstance()->getCode();
-            if ($method == "moip_cc" || $method == "moip_boleto" || $method == "moip_tef" ) {
-                $this->getStateInMoip($order);
-            }
+            if(!$order->getExtOrderId()) {
+	            $method = $order->getPayment()->getMethodInstance()->getCode();
+	            if ($method == "moip_cc" || $method == "moip_boleto" || $method == "moip_tef" ) {
+	                $this->getStateInMoip($order);
+	            }
+	         }
         }
         $this->_redirect('adminhtml/sales_order/index/');
     }

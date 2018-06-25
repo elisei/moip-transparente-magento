@@ -1,52 +1,31 @@
 <script type="text/javascript">countryRegions = <?php echo $this->helper('directory')->getRegionJson() ?></script>
 <script type="text/javascript">
-var customer_status = "<?php echo Mage::getSingleton('customer/session')->isLoggedIn() ?>";
-var buscacepurl = "<?php echo Mage::getUrl('onestepcheckout/index/buscaCep') ?>";
-var updateemailmsg = "<?php echo Mage::getUrl('onestepcheckout/index/updateemailmsg')?>";
-var is_virtual = 	"<?php echo Mage::helper('onestepcheckout')->onlyProductDownloadable() ?>";
-jQuery(document).ready(function(){
-	ChangeEvents();
+var customer_status 	= "<?php echo Mage::getSingleton('customer/session')->isLoggedIn() ?>";
+var url_busca_cep 		= "<?php echo Mage::getUrl('onestepcheckout/index/buscaCep') ?>";
+var url_indetify		= "<?php echo $this->getUrl('onestepcheckout/index/IdentifyUser') ?>";
+var url_authenticate 	= "<?php echo $this->getUrl('onestepcheckout/index/authenticate') ?>";
+
+
+
+var url_save_shipping 			= "<?php echo Mage::getUrl('onestepcheckout/index/saveShipping')?>";
+var url_save_billing 			= "<?php echo Mage::getUrl('onestepcheckout/index/saveBilling')?>";
+var url_save_shipping_method 	= "<?php echo Mage::getUrl('onestepcheckout/index/saveShippingMethod')?>";
+var url_save_payment_metthod 	= "<?php echo Mage::getUrl('onestepcheckout/index/savePaymentMethod')?>";
+
+var form_post_create  			= "<?php echo Mage::getUrl('onestepcheckout/index/formPostCreate')?>";
+var url_new_address  			= "<?php echo Mage::getUrl('onestepcheckout/index/NewAddress')?>";
+var url_clear_identify 			= "<?php echo Mage::getUrl('onestepcheckout/index/ClearIdentifyUser')?>";
+var updateemailmsg 		= "<?php echo Mage::getUrl('onestepcheckout/index/updateemailmsg')?>";
+var is_virtual			= "<?php echo Mage::helper('onestepcheckout')->onlyProductDownloadable() ?>";
+
+
+
+jQuery(function(){
 	Setmask();
-	jQuery('#billing\\:customer_password').on('input',function(e){
-		jQuery('#billing\\:confirm_password').val(jQuery('#billing\\:customer_password').val());
-	});
-
-	jQuery('#init-account').bind("click",function(e){
-		e.preventDefault();
-
-		var form = new VarienForm('onestep_form_account', true);
-		if(form.validator.validate())	{
-			visibilyloading();
-			var email = jQuery('#billing\\:email').val();
-			jQuery.ajax({
-					type: "POST",
-					url: "<?php echo Mage::getUrl('onestepcheckout/index/updateemailmsg')?>",
-					data:"email="+email,
-					success: function(msg){
-						if(msg==0){
-							return false;
-						}else{
-							jQuery( "#onestep_form_account" ).submit();
-						}
-					}
-				});
-		} else 	{
-			jQuery(".erros_cadastro_valores").html("");
-			var erro_dado = [];
-			var j = 0;
-			jQuery(".validation-failed").each(function() {
-				j++;
-				temp_erro = jQuery(this).attr("title");
-				if(jQuery.inArray(temp_erro, erro_dado) != 1){
-					erro_dado[j] = jQuery(this).attr("title");
-					jQuery(".erros_cadastro_valores").append('<li>'+erro_dado[j]+'</li>');
-				}
-			});
-		
-			jQuery('#ErrosFinalizacao').modal();
-
-			return false;
-		}
-	});
+	AddValidateFormCreate();
+    jQuery("#onestep_form_identify").on("submit", function(e){
+        IdentifyUser();
+        e.preventDefault();
+    });
 });
 </script>

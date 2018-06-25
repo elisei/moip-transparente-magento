@@ -1,0 +1,62 @@
+ <div class="row">
+    <div class="col-sm-12 p-0">
+      <?php $current = $this->getTipopessoa(); ?>
+		<label class="col-md-12 control-label text-center" for="<?php echo $this->getFieldId('tipopessoa')?>_<?php echo $type['value']; ?>">
+
+			<?php echo $this->__('Tipo de Pessoa') ?>
+		</label>
+		<div class="col-md-8 col-md-offset-2">
+		    <div class="btn-group btn-group-justified" data-toggle="buttons">
+
+				<?php $_i =0;  foreach ($this->getOptionsValues('tipopessoa') as $type): ?>
+					<?php if($type['value']): ?>
+						<?php if(!$current && $_i == 0) {
+							$current =  $type['value'];
+						}
+						?>
+						<label class="btn btn-default <?php echo($current == $type['value'] ? 'active' : ''); ?>" for="<?php echo $this->getFieldId('tipopessoa')?>_<?php echo $type['value']; ?>" <?php echo $this->getFieldParams() ?> data-typepersona="<?php echo $this->escapeHtml($type['label']); ?>">
+							<input  type="radio" class="btn btn-default validate-one-required-by-name" id="<?php echo $this->getFieldId('tipopessoa')?>_<?php echo $type['value']; ?>" value="<?php echo $type['value']; ?>" name="<?php echo $this->getFieldName('tipopessoa')?>" <?php echo($current ==  $type['value'] ? 'checked="checked"' : ''); ?> tabindex="-1") />
+							<?php echo $type['label']; ?>
+						</label>
+					<?php $_i++; endif; ?>
+				<?php endforeach; ?>
+			
+			</div>
+		</div>
+ 	</div>
+ </div>
+
+<div class="row">
+	<div class="col-sm-12">
+    	<hr class="dados-pj">
+  	</div>
+	<div class="col-sm-12">
+		<legend class="dados-pj">Informações da Empresa</legend>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6 dados-pj p-0">
+	    <label class="col-sm-12 control-label" for="cnpj">CNPJ</label>
+	    <div class="col-sm-12">
+	        <input type="tel" title="cnpj" class="input-moip form-control" name="cnpj" id="cnpj" value="<?php echo $this->htmlEscape(Mage::getSingleton('customer/session')->getCustomer()->getCnpj()) ?>" >
+	    </div>
+	</div>
+	<div class="col-sm-6 dados-pj p-0">
+	    <label class="col-sm-12 control-label" for="company">Empresa</label>
+	    <div class="col-sm-12">
+	        <input type="text" title="company" class="input-moip form-control" name="company" id="company" >
+	    </div>
+	</div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <hr class="dados-pj">
+  </div>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+		<legend class="dados-pj">Informações do contato administrativo</legend>
+	</div>
+</div>
+
+

@@ -9,7 +9,6 @@ setBrandMoip = function(e) {
           VISA: /^4/,
           MASTERCARD: /^5[1-5]/,
         };
-
         for (var t in i) if (e.match(i[t])) return t;
         return !1
 };
@@ -19,9 +18,7 @@ MoipPagamentosCc = function(){
               jQuery('#moip_cc_brand').removeClass();
               jQuery('.save-card').prop( "checked", true );
               jQuery('.save-card').val(1);
-              jQuery('#onestep_form :input').blur(function() {
-                Validation.validate(jQuery(this).attr('id'));
-              });
+             
               jQuery('#moip_cc_number').on("paste keyup", function() {
                     jQuery("#moip_cc_number").removeClass("validation-failed");
                     card_data = jQuery('#moip_cc_number').val();
@@ -75,9 +72,6 @@ MoipPagamentosCc = function(){
               
              
               jQuery('#moip_cc_number').focusout(function() {
-
-                  
-
                   var cc = new Moip.CreditCard({
                     number  : jQuery("#moip_cc_number").val(),
                   });
@@ -127,15 +121,15 @@ MoipPagamentosCc = function(){
                       var cc = new Moip.CreditCard({
                         number  : jQuery("#moip_cc_number").val(),
                         cvc     : jQuery("#moip_cc_cid").val(),
-                        expMonth: jQuery("#credito_expiracao_mes").val(),
-                        expYear : jQuery("#credito_expiracao_ano").val(),
-                        pubKey  : jQuery("#id-chave-publica").val()
+                        expMonth: jQuery("#moip_cc_expiration").val(),
+                        expYear : jQuery("#moip_cc_expiration_year").val(),
+                        pubKey  : jQuery("#moip_cc_publick_key").val()
                       });
                       if(cc.isValid()){
                           jQuery("#encrypted_value").val(cc.hash());
                           jQuery("#moip_cc_number").removeClass('validation-failed-moip');
                           jQuery("#moip_cc_cid").removeClass('validation-failed-moip');
-                          jQuery("#credito_expiracao_ano").removeClass('validation-failed-moip');
+                          jQuery("#moip_cc_expiration_year").removeClass('validation-failed-moip');
                       }
                       else{
                           jQuery("#encrypted_value").val('');
@@ -145,52 +139,52 @@ MoipPagamentosCc = function(){
                       var cc = new Moip.CreditCard({
                         number  : jQuery("#moip_cc_number").val(),
                         cvc     : jQuery("#moip_cc_cid").val(),
-                        expMonth: jQuery("#credito_expiracao_mes").val(),
-                        expYear : jQuery("#credito_expiracao_ano").val(),
-                        pubKey  : jQuery("#id-chave-publica").val()
+                        expMonth: jQuery("#moip_cc_expiration").val(),
+                        expYear : jQuery("#moip_cc_expiration_year").val(),
+                        pubKey  : jQuery("#moip_cc_publick_key").val()
                       });
                       if(cc.isValid()){
                           jQuery("#encrypted_value").val(cc.hash());
                           jQuery("#moip_cc_number").removeClass('validation-failed-moip');
                           jQuery("#moip_cc_cid").removeClass('validation-failed-moip');
-                          jQuery("#credito_expiracao_ano").removeClass('validation-failed-moip');
+                          jQuery("#moip_cc_expiration_year").removeClass('validation-failed-moip');
                       }
                       else{
                           jQuery("#encrypted_value").val('');
                       }
             });
 
-            jQuery("#credito_expiracao_mes").on('change', function() {
+            jQuery("#moip_cc_expiration").on('change', function() {
                       var cc = new Moip.CreditCard({
                         number  : jQuery("#moip_cc_number").val(),
                         cvc     : jQuery("#moip_cc_cid").val(),
-                        expMonth: jQuery("#credito_expiracao_mes").val(),
-                        expYear : jQuery("#credito_expiracao_ano").val(),
-                        pubKey  : jQuery("#id-chave-publica").val()
+                        expMonth: jQuery("#moip_cc_expiration").val(),
+                        expYear : jQuery("#moip_cc_expiration_year").val(),
+                        pubKey  : jQuery("#moip_cc_publick_key").val()
                       });
                       if(cc.isValid()){
                           jQuery("#encrypted_value").val(cc.hash());
                           jQuery("#moip_cc_number").removeClass('validation-failed-moip');
                           jQuery("#moip_cc_cid").removeClass('validation-failed-moip');
-                          jQuery("#credito_expiracao_ano").removeClass('validation-failed-moip');
+                          jQuery("#moip_cc_expiration_year").removeClass('validation-failed-moip');
                       }
                       else{
                           jQuery("#encrypted_value").val('');
                       }
             });
-            jQuery("#credito_expiracao_ano").on('change', function() {          
+            jQuery("#moip_cc_expiration_year").on('change', function() {          
                       var cc = new Moip.CreditCard({
                         number  : jQuery("#moip_cc_number").val(),
                         cvc     : jQuery("#moip_cc_cid").val(),
-                        expMonth: jQuery("#credito_expiracao_mes").val(),
-                        expYear : jQuery("#credito_expiracao_ano").val(),
-                        pubKey  : jQuery("#id-chave-publica").val()
+                        expMonth: jQuery("#moip_cc_expiration").val(),
+                        expYear : jQuery("#moip_cc_expiration_year").val(),
+                        pubKey  : jQuery("#moip_cc_publick_key").val()
                       });
                       if(cc.isValid()){
                           jQuery("#encrypted_value").val(cc.hash());
                           jQuery("#moip_cc_number").removeClass('validation-failed-moip');
                           jQuery("#moip_cc_cid").removeClass('validation-failed-moip');
-                          jQuery("#credito_expiracao_ano").removeClass('validation-failed-moip');
+                          jQuery("#moip_cc_expiration_year").removeClass('validation-failed-moip');
                       }
                       else{
                           jQuery("#encrypted_value").val('');
@@ -213,21 +207,6 @@ MoipPagamentosCc = function(){
                   jQuery('.save-card').val('');
             });
 
-            jQuery('.new-card').change(function(){
-                    if(this.checked){
-                        jQuery('.payment-cofre').fadeOut('slow');
-                        jQuery('.new-card').val(1);
-                        jQuery('.payment-card').fadeIn('slow');
-                    }
-                      
-                    else{
-                          jQuery('.new-card').val(0);
-                          jQuery('.payment-card').fadeOut('slow');
-                          jQuery('.payment-cofre').fadeIn('slow');
-                    }
-                }
-            );
-
             jQuery('#personal-card-info-control').change(function(){
               if(this.checked){
                  jQuery('#personal-card-info-control').val(1);
@@ -246,20 +225,22 @@ MoipPagamentosCc = function(){
 };
 
 SetCofre = function(){
-  jQuery('.payment-card').fadeOut('fast');
-  jQuery('.save-card').prop( "checked", false );
-  jQuery('.save-card').val(0);
+  jQuery('.payment-card').hide();
+  jQuery("input[name='payment[moip_cc_payment_in_cofre]']").change(function(){
+      if(this.value == 1){
+        jQuery('.payment-card').hide();
+        jQuery('.payment-cofre').show();
+      } else {
+        jQuery('.payment-cofre').hide();
+        jQuery('.payment-card').show();
+      }
+  });
 };
 
 MoipPagamentosRecurring = function(){
               jQuery('#moip_cc_brand').removeClass();
              
            
-              jQuery('#onestep_form :input').blur(function() {
-                
-                    Validation.validate(jQuery(this).attr('id'));
-                
-              });
               jQuery('#moip_ccrecurring_number').keyup(function(){
                         if(!jQuery("#moip_ccrecurring_number").val().length){
                           jQuery('#moip_ccrecurring_type li').addClass('active');
@@ -303,7 +284,6 @@ MoipPagamentosRecurring = function(){
                         alert('Ainda nao estamos trabalhando com o HIPERCARD, por favor escolha outro cartão');
                        break;
                       case 'HIPER':
-                       
                         alert('Ainda nao estamos trabalhando com o HIPER, por favor escolha outro cartão');
                        break;
                    };

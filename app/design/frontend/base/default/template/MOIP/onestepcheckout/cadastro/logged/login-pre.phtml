@@ -1,58 +1,37 @@
-<form method="post" id="form-validate" tabindex="-1" action="<?php echo Mage::getUrl('onestepcheckout/index/forgotpass')?>">			<ul class="form-list">
-			<ul class="form-list">
-				<li class="wide">
-					<label for="login-email" class="required" >Email</label>
-					<div class="input-box" >
-						 <input type="email"  name="checked-logi-email" id="checked-login-email"  title="Endereço de e-mail"   class=" form-control input-text validate-email" placeholder="Digite seu e-mail">
-					</div>
-				</li>
-				<li class="wide">
-					<label for="login-password" class="required" >Senha</label>
-					<div class="input-box">
-						 <input  type="password"  class="form-control input-text" placeholder="Digite sua senha" id="login-password-pre">
-					</div>
-				</li>
-				<li>
-					<a  href="#" data-toggle="modal" data-target="#EsqueceuSenha"  class="f-left link-recuperar-senha"><?php echo $this->__('Forgot your password?') ?></a>
-				</li>
-			</ul>
-			<div class="buttons-set">
-				<button class="btn btn-secondary btn-success"  title="Entrar" onclick="onepageLoginPre(this)" type="button" name="pre-login"><span><span>Entrar</span></span></button>
+<div  class="col-md-8 col-md-offset-2">
+	<div class="page-title">
+		<h2>Você já tem um cadastro, <strong>acesse sua conta</strong>
+			<span class="goback">
+				<a href="javascript:void(0)" onclick="gobackemail()"> ou entre com outro email</a>
+			</span>
+		</h2>
+	</div>
+	<div class="content-tab-moip">
+		<form id="form-loggin" tabindex="-1" action="<?php echo $this->getUrl('onestepcheckout/index/authenticate') ?>" method="POST" class="form-vertical">
+			<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" class="input-hidden">
+			<div class="form-group">
+				<label for="login-email" class="control-label"><?php echo $this->__('Email') ?></label>
+				<div class="input-group">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+					<input type="email"  name="login[username]" id="login-email" value="<?php echo $this->escapeHtml($this->getUsername()) ?>" class="form-control input-text validate-email" placeholder="<?php echo $this->__('Email') ?>"/>
+				</div>
+				
 			</div>
-
-			
-			<div id="dados_incorretos" style="display:none; height:90px;position: relative">
-								<ul class="messages"> <li class="error-msg">Dados incorretos, por favor tente novamente.<li><ul>
+			<div class="form-group">
+				<label for="login-password" class="control-label"><?php echo $this->__('Password') ?></label>
+				<input type="password"  name="login[password]" id="login-password"  class="form-control input-text required-entry" placeholder="<?php echo $this->__('Password') ?>"  data-toggle="password"/>
+				<p>
+					<small>
+						<a  href="#" data-toggle="modal" data-target="#EsqueceuSenha"  class="f-left link-recuperar-senha">
+							<?php echo $this->__('Forgot your password?') ?>
+						</a>
+					</small>
+				</p>
 			</div>
-			<div class="logando_aguarde" style="display:none">
-						<span>Por favor, aguarde!</span>
-						    <p id="loading_mask_loader" class="loader"><img alt="Loading..." src="<?php echo $this->getSkinUrl('MOIP/onestepcheckout/images/ajax-loader-tr.gif')?>">.</p>
-
-			</div>
-
-</form>
-
-<script type="text/javascript">
-
-	function onepageLoginPre(email,password)
-	{
-		jQuery('#dados_incorretos').hide('fast');
-		jQuery.ajax({
-			type: "POST",
-			url: "<?php echo Mage::getUrl('onestepcheckout/index/updatelogin')?>",
-			data: "email="+jQuery('#checked-login-email').val()+"&"+"password="+jQuery('#login-password-pre').val(),
-			success: function(msg){
-				if(msg==0){
-					
-					jQuery('#dados_incorretos').show('slow');
-					
-				} else {
-					jQuery('.logando_aguarde').show();
-					var url="<?php echo Mage::getUrl('checkout/onepage'); ?>";
-						jQuery(location).attr('href',url);
-					}
-				}
-		});
-	}
-
-</script>
+			<div class="error-login"></div>
+			<button class="btn btn-secondary btn-success"  title="Entrar" onclick="Authenticate()" type="button" name="submit">
+				<span><span>Entrar</span></span>
+			</button>
+		</form>
+	</div>
+</div>

@@ -1,2 +1,16 @@
-<?php echo $this->getChildHtml('shipping_form');?>
-<input type="hidden" name="shipping[same_as_billing]"  value="1"  title="<?php echo $this->__('Use Billing Address') ?>" id="ship_to_same_address" class="required-entry">
+<div class="result-address">
+	<fieldset>
+		<legend>
+			<?php echo Mage::helper('onestepcheckout')->__('Envio'); ?>
+		</legend>
+		<div class="address-buttons" data-toggle="buttons">
+			<?php echo $this->getAddressesHtmlInput('shipping', null) ?>
+		</div>
+	</fieldset>
+	<div class="btn-new-address">
+		<button type="button" onclick="EditAddress(0,'shipping')" class="btn btn-default btn-block">
+			<span><span><?php echo Mage::helper('onestepcheckout')->__('Novo Endereço'); ?></span></span>
+		</button>
+	</div>
+	
+</div>

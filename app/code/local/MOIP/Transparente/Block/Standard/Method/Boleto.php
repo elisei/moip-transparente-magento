@@ -2,25 +2,7 @@
 class MOIP_Transparente_Block_Standard_Method_Boleto extends Mage_Checkout_Block_Onepage_Success
 {
 
-	public function getMoipPayment()
-    {
-        return $this->getCheckout()->getMoipData();
-    }
-    public function getBoletoLinks()
-    {
-        $pgto             = $this->getMoipPayment();
-        $responseMoipJson = $pgto['response_moip'];
-        return $responseMoipJson->_links->payBoleto->redirectHref;
-    }
-    public function getBoletoCode()
-    {
-        $pgto             = $this->getMoipPayment();
-        $responseMoipJson = $pgto['response_moip'];
-        return $responseMoipJson->fundingInstrument->boleto->lineCode;
-    }
-
-   
-    public function getOrder()
+	public function getOrder()
     {
         $final = "";
         $orderId       = Mage::getSingleton('checkout/session')->getLastRealOrderId();
@@ -34,14 +16,25 @@ class MOIP_Transparente_Block_Standard_Method_Boleto extends Mage_Checkout_Block
         return $final;
     }
 
-    public function getLinkReorder()
-    {
-          $order            = $this->getOrder();
-          return $order->getId();
+  
+    public function getMoipLineCode(){
+        $data = $this->getMoipData();
+       return $data['line_code'];
     }
-    protected function getCheckout()
-    {
-        return Mage::getSingleton('checkout/session');
+
+    public function getMoipLinkPrint(){
+        $data = $this->getMoipData();
+       return $data['print_href'];
+    }
+
+    public function getExpirationDate(){
+        $data = $this->getMoipData();
+       return $data['expiration_date'];
+    }
+
+    protected function getMoipData(){
+        $additional = $this->getOrder()->getPayment()->getAdditionalData();
+        return unserialize($additional);
     }
 
 }

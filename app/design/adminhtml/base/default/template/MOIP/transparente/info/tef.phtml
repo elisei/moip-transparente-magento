@@ -2,17 +2,29 @@
 /* Mage::getModel("sales/order")->getCollection()->getLastItem()->getIncrementId(); */
 if(Mage::app()->getRequest()->getModuleName() != "onestepcheckout" && Mage::app()->getRequest()->getModuleName() != "checkout"){
 ?>
-<?php $info = $this->_prepareInfo(); ?>
+
 		<div class="box-content">
 			<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
-			<?php if(isset($info['moip_href_trans'])): ?>	
-				<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['moip_href_trans']  ?>"  target="_blank">Ir Ao banco</a></p>
+			<?php $url = $this->getMoipTransfHref(); ?>
+			<?php if(isset($url)): ?>
+				<div>
+					<a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $url ?>"  target="_blank">
+						<?php echo Mage::helper('transparente')->__('Ir para o site do banco %s', $this->getNameBank()); ?>
+					</a>
+				</div>
+				<div>
+					<a  class="h3" title="Finalizar compra" href="<?php echo  $this->viewInMoip()   ?>">
+						<?php echo Mage::helper('transparente')->__('Veja detalhes do pedido na conta Moip'); ?>
+					</a>
+				</div>
 			<?php else: ?>
-					<p>Não foi possível realizar o pagamento</p>
+					<div>
+						<?php echo Mage::helper('transparente')->__('Não foi possível recuperar a informação do pagamento.'); ?>
+					 </div>
 			<?php endif; ?>
 		</div>
 <?php } else { ?>
 
-<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
+<div><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></div>
 
 <?php } ?>

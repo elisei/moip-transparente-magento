@@ -1,46 +1,15 @@
-<?php
-/**
- * Magento
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Academic Free License (AFL 3.0)
- * that is bundled with this package in the file LICENSE_AFL.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/afl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Magento to newer
- * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
- *
- * @category    design
- * @package     base_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- */
-
-/**
- * @see Mage_Checkout_Block_Cart_Totals
- */
-?>
 <?php if ($this->getTotals()): ?>
-			<a href="#view-table-prices" class="btn btn-transparent btn-block" data-toggle="collapse">
-                <?php echo $this->renderTotals('footer', 1); ?>
-                <span class="glyphicon glyphicon-menu-down" aria-hidden="true" id="expanded-totals"></span>
-            </a>
-            <div id="view-table-prices" class="collapse box-totals">
-                <table class="table">
-                	<tfoot class="foot-table-review ">
-					    <?php $_colspan = 1; ?>
-					    <?php echo $this->renderTotals(null, $_colspan); ?>
-					</tfoot>
-                </table>
-            </div>
-
+   
+    <div id="view-table-prices" class="">
+        <table class="table">
+        	<tfoot class="foot-table-review ">
+    		    <?php $_colspan = 1; ?>
+    		    <?php echo $this->renderTotals(null, $_colspan); ?>
+    		</tfoot>
+        </table>
+    </div>
+    <div class="grand-total">
+        <?php echo $this->renderTotals('footer', 1); ?>
+    </div>
 <?php endif; ?>
 

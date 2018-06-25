@@ -1,18 +1,68 @@
-<?php if (!$this->getAgreements()) return; ?>
-<ol class="checkout-agreements">
-<?php foreach ($this->getAgreements() as $_a): ?>
-    <li>
-        <div class="agreement-content"<?php echo ($_a->getContentHeight() ? ' style="height:' . $_a->getContentHeight() . '"' : '')?>>
-            <?php if ($_a->getIsHtml()):?>
-                <?php echo $_a->getContent() ?>
-            <?php else:?>
-                <?php echo nl2br($this->htmlEscape($_a->getContent())) ?>
-            <?php endif; ?>
-        </div>
-        <p class="agree">
-            <input type="checkbox" id="agreement-<?php echo $_a->getId()?>" name="agreement[<?php echo $_a->getId()?>]" value="1" title="<?php echo $this->htmlEscape($_a->getCheckboxText()) ?>" class="checkbox" /><label for="agreement-<?php echo $_a->getId()?>"><?php echo $this->htmlEscape($_a->getCheckboxText()) ?></label>
-        </p>
-    </li>
-<?php endforeach ?>
-</ol>
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2006-2018 Magento, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * @see Mage_Checkout_Block_Agreements
+ */
+?>
 
+<?php if (!$this->getAgreements()) return; ?>
+
+<div class="form-group">
+<?php foreach ($this->getAgreements() as $_a): ?>
+   
+    <div class="modal fade" id="agreement-<?php echo $_a->getId()?>" tabindex="-1" role="dialog" aria-labelledby="<?php echo $_a->getIsHtml() ? $_a->getCheckboxText() : $this->escapeHtml($_a->getCheckboxText()) ?>">
+        <div class="vertical-center-moip">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 >Termos e Condições: <?php echo $_a->getIsHtml() ? $_a->getCheckboxText() : $this->escapeHtml($_a->getCheckboxText()) ?></h2>
+                    </div>
+                    <div class="modal-body">
+                         <?php if ($_a->getIsHtml()):?>
+                            <?php echo $_a->getContent() ?>
+                        <?php else:?>
+                            <?php echo nl2br($this->escapeHtml($_a->getContent())) ?>
+                        <?php endif; ?>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Aceitar e fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="checkbox">
+        <label class="checkbox-inline checkbox-review" for="agreement-<?php echo $_a->getId()?>">
+                <input class="required-entry checkbox required-entry" type="checkbox" id="agreement-<?php echo $_a->getId()?>" name="agreement[<?php echo $_a->getId()?>]" value="1"  checked="checked" title="<?php echo $_a->getIsHtml() ? $_a->getCheckboxText() : $this->escapeHtml($_a->getCheckboxText()) ?>">
+                <a href="#" title="<?php echo $this->escapeHtml($_a->getCheckboxText()) ?>" data-toggle="modal" data-target="#agreement-<?php echo $_a->getId()?>"  href="#"><?php echo $_a->getIsHtml() ? $_a->getCheckboxText() : $this->escapeHtml($_a->getCheckboxText()) ?></a>
+        </label>
+    </div>
+
+<?php endforeach ?>
+</div>

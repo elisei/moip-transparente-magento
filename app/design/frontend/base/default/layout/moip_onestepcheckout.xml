@@ -42,30 +42,12 @@
 	            <block type="core/template" name="progresso" as="progresso" template="MOIP/onestepcheckout/page/progresso.phtml" />
 			</reference>
 			<reference name="content" >
-				<block type="core/template" name="onestepcheckout.daskboard" as="daskboard" template="MOIP/onestepcheckout/cadastro/CreateAccount.phtml">
-					<block type="checkout/cart_coupon" name="checkout.onepage.coupon" as="coupon" template="MOIP/onestepcheckout/checkout/daskboard/onepage/coupon.phtml"/>
-					<block type="checkout/onepage_login" name="checkout.onepage.login" as="login-pre" template="MOIP/onestepcheckout/cadastro/logged/login-pre.phtml"/>
-					<block type="checkout/onepage_login" name="checkout.onepage.login" as="login" template="MOIP/onestepcheckout/checkout/daskboard/onepage/login.phtml"/>
+				<block type="core/messages" name="global_messages" as="global_messages" />
+				<block type="core/messages" name="messages" as="messages"/>
+				<block type="onestepcheckout/createAccount" name="onestepcheckout.daskboard" as="daskboard" template="MOIP/onestepcheckout/cadastro/CreateAccount.phtml">
+					<block type="core/template" name="onestepcheckout_identify" as="identify" template="MOIP/onestepcheckout/cadastro/identify.phtml" />
+					<block type="checkout/onepage_login" name="checkout.onepage.login" as="login" template="MOIP/onestepcheckout/cadastro/logged/login.phtml"/>
 					<block type="customer/account_forgotpassword" name="forgotpassword" as="forgotpassword" template="MOIP/onestepcheckout/cadastro/logged/forgotpassword.phtml"/>
-					<block type="onestepcheckout/checkout_onepage_billing" name="checkout.onepage.billing" as="billing" template="MOIP/onestepcheckout/cadastro/billing.phtml">
-						<block type="onestepcheckout/checkout_onepage_billing" name="checkout.onepage.billing.billingform" as="billing_form" template="MOIP/onestepcheckout/cadastro/billing/billingform.phtml"/>
-					</block>
-					<block type="checkout/onepage_review" name="checkout.onepage.review" as="review"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review.phtml">
-							<block type="checkout/onepage_review_info" name="info"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review/info.phtml">
-								<action method="addItemRender"><type>default</type><block>checkout/cart_item_renderer</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>bundle</type><block>bundle/checkout_cart_item_renderer</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before"/>
-								 <block type="checkout/cart_totals" name="totals"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review/totals.phtml" />
-									 <block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before" translate="label">
-									<label>Items Before</label>
-								</block>
-								<block type="core/text_list" name="checkout.onepage.review.info.items.after" as="items_after" translate="label">
-									<label>Items After</label>
-								</block>
-							</block>
-			      	</block>
 				</block>
 			</reference>
 		</checkout_onepage_cadastro>
@@ -81,7 +63,7 @@
 				 		<action method="addJs"><script>MOIP/onestepcheckout/jquery.mask.min.js</script></action>
 				 		<action method="addJs"><script>MOIP/onestepcheckout/change-events.js</script></action>
 				 		<action method="addJs"><script>MOIP/onestepcheckout/boostrap-show-password.min.js</script></action>
-				 		<action method="addItem"><type>skin_js</type><name>js/opcheckout.js</name></action>
+				 		
 
 				 		<action method="addCss"><stylesheet>MOIP/onestepcheckout/css/onestepcheckout.css</stylesheet></action>
 				 		
@@ -96,14 +78,6 @@
 					      </action>
 					   	</block>
 				 		<block type="core/template" name="onepage_js"  template="MOIP/onestepcheckout/editaddress/onepagejs.phtml" />
-				<reference name="content" >
-					<block type="core/template" name="onestepcheckout.daskboard" as="daskboard" template="MOIP/onestepcheckout/editaddress/Edit.phtml">
-						
-						<block type="onestepcheckout/checkout_onepage_billing" name="checkout.onepage.billing" as="billing" template="MOIP/onestepcheckout/editaddress/billing.phtml">
-							<block type="onestepcheckout/checkout_onepage_billing" name="checkout.onepage.billing.billingform" as="billing_form" template="MOIP/onestepcheckout/editaddress/billing/billingform.phtml"/>
-						</block>
-					</block>
-				</reference>
 			</reference>
 			<reference name="header">
 				<action method="setTemplate">
@@ -112,7 +86,11 @@
 	            <block type="core/template" name="progresso" as="progresso" template="MOIP/onestepcheckout/page/progresso.phtml" />
 			</reference>
 			<reference name="content" >
-				
+				<block type="core/template" name="onestepcheckout.editaddress" template="MOIP/onestepcheckout/editaddress/Edit.phtml">
+					<block type="onestepcheckout/checkout_address_edit" name="checkout.onepage.billing" as="billing" template="MOIP/onestepcheckout/address/edit/form.phtml">
+						
+					</block>
+				</block>
 			</reference>
 		</checkout_onepage_editaddress>
 
@@ -126,7 +104,6 @@
 			</reference>
 			
 			<reference name="head">
-
 				 		<action method="addJs" ifconfig="moipall/config/enable_jquery"><script>MOIP/core/jquery.js</script></action>
 				 		<action method="addJs"><script>MOIP/core/jquery_noconflict.js</script></action>
 				 		<action method="addJs"><script>MOIP/onestepcheckout/jquery.mask.min.js</script></action>
@@ -162,30 +139,38 @@
 
 			<reference name="content" >
 				<block type="core/template" name="onestepcheckout.daskboard" as="daskboard" template="MOIP/onestepcheckout/checkout/daskboard.phtml">
-					
-					<block type="onestepcheckout/checkout_onepage_billing" name="checkout.onepage.billing.billingform" as="billing_form" template="MOIP/onestepcheckout/checkout/daskboard/onepage/billing/billingform.phtml"/>
-
-					
+			
 					<block type="checkout/onepage_login" name="checkout.onepage.login" as="login" template="MOIP/onestepcheckout/checkout/daskboard/onepage/login.phtml"/>
 					<block type="customer/account_forgotpassword" name="checkout.onepage.forgotpassword" as="forgotpassword" template="MOIP/onestepcheckout/checkout/daskboard/onepage/forgotpassword.phtml"/>
 					
 					
 					<block type="checkout/cart_coupon" name="checkout.onepage.coupon" as="coupon" template="MOIP/onestepcheckout/checkout/daskboard/onepage/coupon.phtml"/>
-					 	<block type="checkout/onepage_shipping_method_additional" name="checkout.onepage.shipping_method.additional" as="additional" template="checkout/onepage/shipping_method/additional.phtml"/>
-						<block type="onestepcheckout/checkout_onepage_review_options" name="checkout.onepage.review.options" as="options" template="MOIP/onestepcheckout/checkout/daskboard/onepage/review/options.phtml">
-					</block>
+					 
+
+				
 					
+
 					<block type="onestepcheckout/checkout_onepage_billing" name="checkout.onepage.billing" as="billing" template="MOIP/onestepcheckout/checkout/daskboard/onepage/billing.phtml" />
-					<block type="onestepcheckout/checkout_onepage_shipping" name="checkout.onepage.shipping" as="shipping" template="MOIP/onestepcheckout/checkout/daskboard/onepage/shipping.phtml">
-						<block type="onestepcheckout/checkout_onepage_shipping" name="checkout.onepage.shipping.shippingform" as="shipping_form" template="MOIP/onestepcheckout/checkout/daskboard/onepage/shipping/shipping_form.phtml"/>
+					
+					<block type="onestepcheckout/checkout_onepage_shipping" name="checkout.onepage.shipping" as="shipping" template="MOIP/onestepcheckout/checkout/daskboard/onepage/shipping.phtml" />
+
+					
+					<block type="checkout/onepage_shipping_method" name="checkout.onepage.shipping_method" as="shipping_method" template="MOIP/onestepcheckout/checkout/daskboard/onepage/shipping_method.phtml">
+						<block type="checkout/onepage_shipping_method_available" name="onepage_shipping_method_available" template="MOIP/onestepcheckout/checkout/daskboard/onepage/shipping_method/available.phtml"/>
 					</block>
 
 
-					<block type="checkout/onepage_progress" name="checkout.onepage.shipping_method" as="shipping_method" template="MOIP/onestepcheckout/checkout/daskboard/onepage/shipping_method.phtml">
-						<block type="checkout/onepage_shipping_method_available" name="checkout.onepage.shipping_method.available" as="available"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/shipping_method/available.phtml"/>
+					<block type="checkout/onepage_payment" name="checkout.onepage.payment" as="payment" template="MOIP/onestepcheckout/checkout/daskboard/onepage/payment.phtml">
+						<block type="checkout/onepage_payment_methods" name="checkout.payment.onepage_payment_methods" as="methods" template="MOIP/onestepcheckout/checkout/daskboard/onepage/payment/methods.phtml"/>
 					</block>
-					<block type="checkout/onepage_payment" name="onestepcheckout.onepage.payment" as="payment" template="MOIP/onestepcheckout/checkout/daskboard/onepage/payment.phtml">
-						<block type="checkout/onepage_payment_methods" name="onestepcheckout.onepage.payment.methods" as="methods" template="MOIP/onestepcheckout/checkout/daskboard/onepage/payment/methods.phtml"/>
+
+					<block type="checkout/onepage_shipping_method_additional" name="checkout.onepage.shipping_method.additional" as="additional" template="checkout/onepage/shipping_method/additional.phtml"/>
+
+					 <block type="checkout/agreements" name="checkout.onepage.agreements" as="agreements" template="MOIP/onestepcheckout/checkout/daskboard/onepage/agreements.phtml"/>
+
+					<block type="checkout/cart_totals" name="totals"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review/totals.phtml" />
+						 <block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before" translate="label">
+						<label>Items Before</label>
 					</block>
 
 					<block type="checkout/onepage_review" name="checkout.onepage.review" as="review"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review.phtml">
@@ -194,11 +179,9 @@
 								<action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
 								<action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
 								<action method="addItemRender"><type>bundle</type><block>bundle/checkout_cart_item_renderer</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before"/>
-								 <block type="checkout/cart_totals" name="totals"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review/totals.phtml" />
-									 <block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before" translate="label">
-									<label>Items Before</label>
-								</block>
+								<block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before" translate="label">
+					                <label>Items Before</label>
+					            </block>
 								<block type="core/text_list" name="checkout.onepage.review.info.items.after" as="items_after" translate="label">
 									<label>Items After</label>
 								</block>
@@ -213,109 +196,7 @@
 	            </block>
 	        </reference -->
 		</checkout_onepage_index>
-
-		<onestepcheckout_index_updateshippingmethod>
-
-
-					<block type="checkout/onepage_review" name="root" as="review"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review.phtml">
-							<block type="checkout/onepage_review_info" name="info"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review/info.phtml">
-								<action method="addItemRender"><type>default</type><block>checkout/cart_item_renderer</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>bundle</type><block>bundle/checkout_cart_item_renderer</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before"/>
-								 <block type="checkout/cart_totals" name="totals"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review/totals.phtml" />
-									 <block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before" translate="label">
-									<label>Items Before</label>
-								</block>
-								<block type="core/text_list" name="checkout.onepage.review.info.items.after" as="items_after" translate="label">
-									<label>Items After</label>
-								</block>
-							</block>
-			      		</block>
-
-		</onestepcheckout_index_updateshippingmethod>
-
-
-
-
-		<onestepcheckout_index_updatepaymentmethod>
-
-
-					<block type="checkout/onepage_review" name="root" as="review"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review.phtml">
-							<block type="checkout/onepage_review_info" name="info"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review/info.phtml">
-								<action method="addItemRender"><type>default</type><block>checkout/cart_item_renderer</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>bundle</type><block>bundle/checkout_cart_item_renderer</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before"/>
-								 <block type="checkout/cart_totals" name="totals"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review/totals.phtml" />
-									 <block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before" translate="label">
-									<label>Items Before</label>
-								</block>
-								<block type="core/text_list" name="checkout.onepage.review.info.items.after" as="items_after" translate="label">
-									<label>Items After</label>
-								</block>
-							</block>
-			      		</block>
-
-		</onestepcheckout_index_updatepaymentmethod>
-
-
-		<onestepcheckout_index_updatereviewmethod>
-
-
-					<block type="checkout/onepage_review" name="root" as="review"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review.phtml">
-							<block type="checkout/onepage_review_info" name="info"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review/info.phtml">
-								<action method="addItemRender"><type>default</type><block>checkout/cart_item_renderer</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<action method="addItemRender"><type>bundle</type><block>bundle/checkout_cart_item_renderer</block><template>MOIP/onestepcheckout/checkout/daskboard/onepage/review/item.phtml</template></action>
-								<block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before"/>
-								 <block type="checkout/cart_totals" name="totals"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/review/totals.phtml" />
-									 <block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before" translate="label">
-									<label>Items Before</label>
-								</block>
-								<block type="core/text_list" name="checkout.onepage.review.info.items.after" as="items_after" translate="label">
-									<label>Items After</label>
-								</block>
-							</block>
-			      		</block>
-
-		</onestepcheckout_index_updatereviewmethod>
-
-		<onestepcheckout_index_updateshippingtype>
-				<remove name="right"/>
-		       	<remove name="left"/>
-				<block type="checkout/onepage_shipping_method_available" name="root" output="toHtml"  template="MOIP/onestepcheckout/checkout/daskboard/onepage/shipping_method/available.phtml"/>
-		</onestepcheckout_index_updateshippingtype>
-
-		<onestepcheckout_index_updatepaymenttype>
-				<remove name="right"/>
-		       		 <remove name="left"/>
-				<block type="checkout/onepage_payment_methods"  name="root" output="toHtml"    template="MOIP/onestepcheckout/checkout/daskboard/onepage/payment/methods.phtml"/>
-		</onestepcheckout_index_updatepaymenttype>
-
-		<onestepcheckout_index_updatebillingform>
-			<remove name="right"/>
-		       	<remove name="left"/>
-			<block type="MOIP_Onestepcheckout_Block_Checkout_Onepage_Billing"  name="root" output="toHtml"  as="billing_form" template="MOIP/onestepcheckout/checkout/daskboard/onepage/billing/billingform.phtml"/>
-		</onestepcheckout_index_updatebillingform>
-		<onestepcheckout_index_updateordermethod>
-			<reference name="root">
-				<action method="setTemplate"><template>MOIP/onestepcheckout/page/emptyupdate.phtml</template></action>
-			</reference>
-
-		</onestepcheckout_index_updateordermethod>
-
 		
-		<onestepcheckout_index_updateshippingform>
-			<reference name="root">
-				<action method="setTemplate"><template>MOIP/onestepcheckout/page/emptyupdate.phtml</template></action>
-			</reference>
-			<reference name="content">
-					<block type="onestepcheckout/checkout_onepage_shipping" name="checkout.onepage.shipping.shippingform" as="shipping_form" template="MOIP/onestepcheckout/checkout/daskboard/onepage/shipping/shipping_form.phtml"/>
-			</reference>
-		</onestepcheckout_index_updateshippingform>
+		
 	
 	</layout>

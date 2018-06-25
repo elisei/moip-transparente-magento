@@ -5,4 +5,31 @@
 					<action method="addCss"><stylesheet>MOIP/transparente/css/moip.css</stylesheet></action>
 				</reference>
 		</adminhtml_system_config_edit>
+		<adminhtml_sales_order_create_index>
+			<reference name="js">
+				   <block type="core/text" name="moip.cdn">
+					<action method="setText">
+				    	<text>
+				          <![CDATA[
+									
+									<script type="text/javascript" src="https://assets.moip.com.br/v2/moip.min.js"></script>
+									<script type="text/javascript">
+										jQuery.noConflict();
+										(function($) {
+											jQuery(document).ready(function(){
+											 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
+										     	Validation.creditCartTypes.set('EO', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
+										        Validation.creditCartTypes.set('HI', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
+										        Validation.creditCartTypes.set('HP', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
+										   });	
+										})(jQuery);
+									</script>
+								
+							]]>
+				        </text>
+				      </action>
+			  		</block>
+			</reference>
+		</adminhtml_sales_order_create_index>
+
 	</layout>

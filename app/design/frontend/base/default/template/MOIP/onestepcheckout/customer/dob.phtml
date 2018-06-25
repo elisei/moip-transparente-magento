@@ -1,0 +1,67 @@
+<?php
+/**
+ * @author    iamncla @ github.com
+ * @see Mage_Customer_Block_Widget_Dob
+ */
+?>
+<label for="<?php echo $this->getFieldId('month')?>" class="col-sm-12 control-label"><?php echo $this->__('Data de Nascimento') ?></label>
+
+  <div class="col-sm-4">
+    <div class="dob-day">
+      <select name="<?php echo $this->getFieldName('day'); ?>" id="<?php echo $this->getFieldId('day'); ?>" class="validate-select form-control" title="Dia de Nascimento">
+        <option value="">Dia</option>
+        <?php for ($i = 1; $i <= 31; $i++): ?>
+        <?php $day = (strlen($i) == 1) ? "0" . $i : $i; ?>
+          <option value="<?php echo $day; ?>" <?php echo ($i==$this->getDay()) ? "selected" : ""; ?>><?php echo $day; ?></option>
+        <?php endfor; ?>
+      </select>
+    </div>  
+  </div>
+  <div class="col-sm-4">
+    <div class="dob-month">
+      <select name="<?php echo $this->getFieldName('month'); ?>" id="<?php echo $this->getFieldId('month'); ?>" class="validate-select form-control" title="Mês de Nascimento">
+        <option value="">Mês</option>
+        <?php for ($i = 1; $i <= 12; $i++): ?>
+        <?php $month = (strlen($i) == 1) ? "0".$i : $i; ?>
+          <option value="<?php echo $month; ?>" <?php echo ($i==$this->getMonth()) ? "selected" : ""; ?>><?php echo $month; ?></option>
+        <?php endfor; ?>
+      </select>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="dob-year">
+      <?php $currentYear = intval(date("Y")); ?>
+      <select name="<?php echo $this->getFieldName('year'); ?>" id="<?php echo $this->getFieldId('year'); ?>" class="validate-select form-control" title="Ano de Nascimento">
+        <option value="">Ano</option>
+        <?php for ($i = $currentYear; $i >= $currentYear - 110; $i--): ?>
+          <option value="<?php echo $i; ?>" <?php echo ($i==$this->getYear()) ? "selected" : ""; ?>><?php echo $i; ?></option>
+        <?php endfor; ?>
+      </select>
+    </div>
+  </div>
+  <div class="col-sm-12">
+        <div class="dob-full" style="display:none;">
+          <div class="validation-advice" style="display:none;"></div>
+          <input type="hidden" id="<?php echo $this->getFieldId('dob')?>" name="<?php echo $this->getFieldName('dob')?>" title="Data de Nascimento" />
+        </div>
+  </div>
+    
+  
+
+<script type="text/javascript">
+//<![CDATA[
+    var DOBSelects = Class.create(Varien.DOB, {
+       initialize: function(selector, required, format) {
+            var el = $$(selector)[0];
+            var container       = {};
+            container.day       = Element.select(el, '.dob-day select')[0];
+            container.month     = Element.select(el, '.dob-month select')[0];
+            container.year      = Element.select(el, '.dob-year select')[0];
+            container.full      = Element.select(el, '.dob-full input')[0];
+            container.advice    = Element.select(el, '.validation-advice')[0];
+            new Varien.DateElement('container', container, required, format);
+        }      
+    });
+    var customer_dob = new DOBSelects('.customer-dob', <?php echo $this->isRequired() ? 'true' : 'false' ?>, '<?php echo $this->getDateFormat() ?>');
+//]]>
+</script>

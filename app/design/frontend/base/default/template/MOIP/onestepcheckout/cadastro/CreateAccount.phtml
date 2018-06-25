@@ -1,78 +1,22 @@
-<?php $islogin=0; if(Mage::getSingleton('customer/session')->isLoggedIn()) $islogin=1; ?>
-<div class="min-content-create-account">
- <div class="col-md-8 col-md-offset-2">
- <div class="vertical-center-moip">
-   <div class="tabs-checkout">
-      <div id="checkout-Tab" class="tab-content row create-account-tabs">
-
-
-         <div class="tab-pane fade active in" id="identifique">
-          
-             <div class="page-title">
-                <h2>Para prosseguir informe seu <strong>email</strong></h2>
-            </div>
-            <form id="onestep_form_identifique" autocomplete="off" action="<?php echo $this->getUrl('onestepcheckout/index/updateemailmsg') ?>" method="POST" class="scaffold-form">
-               <div class="form-contrl">
-                  <div class="input-group  input-group-lg">
-                     <input type="email" name="checked-login" id="checked-login"  title="Endereço de e-mail"  class="form-control input-text validate-email required-entry" placeholder="Digite seu e-mail">
-                     <span class="input-group-btn">
-                        <button class="btn btn-secondary btn-success"  title="Acesse com seu email" type="submit" name="pre-login"  id="pre-login"><span><span>Continuar</span></span></button>
-                     </span>
-                  </div>
-               </div>
-            </form>
-            
-            <div class="row">
-                  <div class="col-md-8 col-md-offset-2">
-                      <h3>Porque informar o email?</h3>
-                      <div class="col-md-3 visible-lg">
-                        <h1 class="center-info"><span class="glyphicon glyphicon-lock"></span></h1>
-                      </div>
-                      <div class="col-md-9">
-                        <ul class="list-item">
-                          <li><span class="glyphicon glyphicon-ok"></span> <span class="text-email-secure-info">Verificar se já possuí cadastro em nossa loja</span></li>
-                          <li><span class="glyphicon glyphicon-ok"></span> <span class="text-email-secure-info">Notificar sobre o andamento do seu pedido</span></li>
-                          <li><span class="glyphicon glyphicon-ok"></span> <span class="text-email-secure-info">Gerenciar seu histórico de compras</span></li> 
-                          <li><span class="glyphicon glyphicon-ok"></span> <span class="text-email-secure-info">Acelerar o preenchimento de suas informações</span></li>
-                        </ul>
-                      </div>
-                  </div>
-            </div>
-          
-        </div>
-
-        <div class="tab-pane fade" id="create-loggin">
-            <div  class="col-md-8 col-md-offset-2">
-              
-                <div class="page-title">
-                      <h2>
-                        Você já tem um cadastro, <strong>acesse sua conta</strong>
-                        <span class="goback">
-                              <a href="javascript:void(0)" onclick="gobackemail()"> ou entre com outro email</a>
-                        </span>
-                      </h2>
-                </div>
-                <div class="content-tab-moip">
-                  <div class="row">
-                    <?php echo $this->getChildHtml('login-pre',false,true);?>  
-                  </div>
-                </div>
-              </div>
-            
-        </div>
-
-        <div class="tab-pane fade" id="create-account">
-            
-              <?php echo $this->getChildHtml('billing',false,true);?>
-            
-        </div>
-         
-      </div>
-   </div> 
-   </div>   
-  </div> 
-</div>   
-
+  <div class="min-content-create-account">
+   	<div class="col-md-8 col-md-offset-2">
+   		<div class="vertical-center-moip">
+     			<div class="tabs-checkout">
+        			<div id="checkout-Tab" class="tab-content row create-account-tabs">
+  					<div class="tab-pane fade active in" id="identifique">
+  						<?php echo $this->getTypeLayoutForm(); ?>
+  					</div>
+  					<div class="tab-pane fade" id="create-loggin">	
+  						<div id="isCustomer"></div>						
+  					</div>
+  					<div class="tab-pane fade" id="create-account">
+  						<div id="not-isCustomer"></div>
+  					</div>
+  				</div>
+  			</div>
+  		</div>
+  	</div>   
+  </div>
 
 
   <div class="modal fade" id="modal-loading-process" tabindex="-1" role="dialog" data-toggle="modal" aria-labelledby="smallModal" aria-hidden="true">
@@ -99,8 +43,10 @@
           		<?php echo $this->getChildHtml('login',false,true);?>
         </div>
         <div class="modal-footer">
-  	            <button type="button" class="btn btn btn-danger" data-dismiss="modal">Cancelar</button>
-                <button class="btn btn-lg btn-success"  title="Entrar" onclick="onepageLogin(this)" type="button" name="pre-login"><span><span>Entrar</span></span></button>
+  	           <button type="button" class="btn btn btn-danger" data-dismiss="modal">Usar outro Email</button>
+               <button class="btn btn-secondary btn-success"  title="Entrar" onclick="Authenticate()" type="button" name="submit">
+                  <span><span>Entrar</span></span>
+                </button>
         </div>
       </div>
     </div>
@@ -130,62 +76,3 @@
   </div>
 
  
-
-
-<script type="text/javascript">
-  
-  var formId = 'onestep_form_identifique';
-    var myForm = new VarienForm(formId, true);
-    var postUrl = "<?php echo Mage::getUrl('onestepcheckout/index/updateemailmsg')?>";
-    function doAjax() {
-        if (myForm.validator.validate()) {
-            
-            new Ajax.Request(
-                 postUrl, {
-                    method:'post',
-                    parameters: "email="+jQuery('#checked-login').val(),
-                    onSuccess:function(response) {
-                        jQuery('#modal-loading-process').modal('toggle');
-                       var responsetxt = response.responseText || "0";
-                    
-                        if(responsetxt==0){
-                          
-                          var target = jQuery("#create-loggin");  
-                          jQuery(target).css('right','-'+jQuery(window).width()+'px');   
-                          var right = jQuery(target).offset().right;
-                          jQuery(target).css({right:right}).animate({"right":"0px"}, "10");
-                          jQuery('#loading-mask').hide();
-                          
-                          jQuery("#create-loggin").addClass('active in');
-                          jQuery('#identifique').removeClass('active', 'in');
-                          jQuery('#checked-login-email').val(jQuery('#checked-login').val());
-                          
-                          
-
-                        }else{
-                          var target = jQuery("#create-account");  
-                          jQuery(target).css('right','-'+jQuery(window).width()+'px');   
-                          var right = jQuery(target).offset().right;
-                          jQuery(target).css({right:right}).animate({"right":"0px"}, "10");
-                          
-                          jQuery('#identifique').removeClass('active', 'in');
-                          jQuery("#create-account").addClass('active in');
-                          jQuery('#billing\\:email').val(jQuery('#checked-login').val());
-                        }
-                    },
-                    onLoading:function(request, json){
-                        jQuery('#modal-loading-process').modal();
-                    },
-                    
-                }
-            );
-        }
-    }
-    
-    new Event.observe(formId, 'submit', function(e){
-        e.stop();
-        doAjax();
-    });
-
-
-</script>

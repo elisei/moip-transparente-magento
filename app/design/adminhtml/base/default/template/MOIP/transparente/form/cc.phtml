@@ -1,0 +1,263 @@
+<?php $_code=$this->getMethodCode() ?>
+<ul id="payment_form_<?php echo $_code ?>" class="form-list" style="display:none">
+	<?php $cofre = $this->getCofre(); ?>
+		<?php if($cofre != "false"): ?>
+  		
+  			
+  			<div class="payment-cofre">
+  			
+  				
+  				
+  				<div class="col-md-12">
+  					<div class="btn-block btn-group-lg" data-toggle="buttons">
+  						<?php $_i = 0 ?>
+						<?php foreach ($cofre  as $key => $value): ?>
+							<?php $_i++ ?>
+							<?php $cardBrand = $value['moip_card_brand'] ?>
+							<?php $cardNunber = $value['moip_card_id'] ?>
+								<label class="btn btn-block btn-md btn-cofre-save <?php echo($_i == 1 ? 'active' : '') ?>">
+										<input id="payment_card_cofre" type="radio" title="Selecione o Cartão de Crédito Salvo" class="validate-one-required-by-name" 
+										 name="payment[<?php echo $_code ?>_cofre_nb]"  value="<?php echo $cardNunber ?>" <?php echo($_i == 1 ? 'checked' : '') ?> >
+											<div class="row">
+												<div class="col-xs-3">
+													<img src="<?php echo $this->imageCofre($value['moip_card_brand']); ?>" alt="<?php echo $value['moip_card_brand']; ?>" class="img-responsive">
+												</div>
+												<div class="col-xs-9">
+													<div class="row">
+														<?php echo $value['moip_card_fullname']; ?> 	
+													</div>
+													<div class="row">
+														<?php echo $value['moip_card_first6'] ?> ** **** <?php echo $value['moip_card_last4'] ?>
+													</div>
+												</div>	
+											</div>
+								</label>
+						<?php endforeach; ?>
+					</div>	
+  				</div>
+  				<div class="col-md-12">
+					<div class="form-group">
+						<label class="col-md-12 control-label"for="<?php echo $_code ?>_cofre_id"><?php echo $this->__('Cod. de Segurança') ?></label>
+						<input type="tel" pattern="\d*" name="payment[<?php echo $_code ?>_cofre_id]" title="Código de Segurança do seu cartão" class="form-control validate-required required-entry validate-length minimum-length-3 maximum-length-4" id="<?php echo $_code ?>_cofre_id"  value="">
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="col-md-12 control-label"for="<?php echo $_code ?>_installment_cofre"><?php echo $this->__('Parcelas') ?></label>
+						<select name="payment[<?php echo $_code ?>_count_cofre]"  id="<?php echo $_code ?>_count_cofre" class="validate-select form-control" title="Número de Parcelas de sua Compra - Cofre"  >
+								<option value="" select>Selecione as parcelas</option>
+								<?php $parcelas = $this->getInstallmentSelect(); ?>
+					           	<?php foreach ( $parcelas as $key => $value) { ?>
+					           		<?php echo $value; ?>
+					           	<?php } ?>
+						</select>
+					</div>
+				</div>
+			</div>
+	<?php endif ?>
+
+	<div class="payment-card">
+
+		<div class="clearer">
+			<textarea  id="id-chave-publica" class="chave-publica-moip" style="display:none !important;"><?php echo $this->getPublicKey() ?></textarea>
+			<input id="encrypted_value" class="encrypted_value  validate-credit-card-moip" name="payment[<?php echo $_code ?>_encrypted]" type="hidden" value="" title="Os dados do cartão de crédito estão inválidos, verifique o número do cartão, o código de segurança, e a data de emissão.">
+			<input class="<?php echo $_code ?>_type" id="<?php echo $_code ?>_type" type="hidden" name="payment[<?php echo $_code ?>_type]">
+		</div>
+		
+		<div class="col-md-12">	
+			<div class="row">
+				<div class="col-md-8">
+					<label class="control-label label-moip-pg" for="<?php echo $_code ?>_number"><?php echo $this->__('Número do Cartão') ?></label>
+					<div class="input-group">
+						<input type="tel" id="<?php echo $_code ?>_number"  title="Número do seu Cartão de Crédito"  class="required-entry form-control"  value="">
+					  		<span class="input-group-addon">
+					  			<span class="glyphicon glyphicon-credit-card" id="card-clean"></span>
+					  		</span>
+					  		<span id="moip_cc_brand"></span>
+					</div>
+			
+				</div>
+				<div class="col-md-4">
+						<label class="control-label label-moip-pg" for="<?php echo $_code ?>_cid">
+							<?php echo $this->__('Cod. de Seg.') ?>
+						</label>
+						<div class="input-group">
+								<input type="tel" pattern="[0-9]*"  pattern="\d*" title="Código de Seguranção do Seu Cartão" class="form-control cvv validate-length minimum-length-3 maximum-length-4 required-entry" id="<?php echo $_code ?>_cid"  value="" maxlength="4" minlength="3">
+								<span class="input-group-addon">
+									<a href="javascript:void(0)" title="Código de Segurança" tabindex="-1" data-trigger="click" data-toggle="popover" data-placement="top" data-content="O código de segurança fica localizado no verso do seu cartão e são os 3 últimos dígitos" class="cvv-help">	
+										<img src='<?php echo $this->getSkinUrl('MOIP/transparente/imagem/cvv.png') ?>' id="cvv-help" width="16px"/>
+									</a>
+								</span>
+						</div>
+				</div>
+			</div>
+		</div>	
+			
+					
+
+		<div class="col-md-12">
+	    	
+	    		<label class="control-label label-moip-pg" for="<?php echo $_code ?>_expiration">
+	    			<?php echo $this->__('Data de validade') ?>
+	    		</label>
+	    		<div class="row">
+			    	<div class="col-md-8 col-xs-6">
+			    		<select name="payment[<?php echo $_code ?>_exp_month]" id="credito_expiracao_mes" class="validate-select form-control" title="Mês de Vencimento do seu Cartão">
+							<option value="">Mês</option>
+							<option value="01">01 - Janeiro</option>
+							<option value="02">02 - Fevereiro</option>
+							<option value="03">03 - Março</option>
+							<option value="04">04 - Abril</option>
+							<option value="05">05 - Maio</option>
+							<option value="06">06 - Junho</option>
+							<option value="07">07 - Julho</option>
+							<option value="08">08 - Agosto</option>
+							<option value="09">09 - Setembro</option>
+							<option value="10">10 - Outubro</option>
+							<option value="11">11 - Novembro</option>
+							<option value="12">12 - Dezembro</option>
+						</select>
+			    	</div>
+				    <div class="col-md-4 col-xs-6">
+			           	<select name="payment[<?php echo $_code ?>_exp_year]" id="credito_expiracao_ano" class="validate-select form-control" title="Ano de Vencimento do seu Cartão">
+							<option value="">Ano</option>
+							
+							<option value="2018">18</option>
+							<option value="2019">19</option>
+							<option value="2020">20</option>
+							<option value="2021">21</option>
+							<option value="2022">22</option>
+							<option value="2023">23</option>
+							<option value="2024">24</option>
+							<option value="2025">25</option>
+							<option value="2026">26</option>
+							<option value="2027">27</option>
+							<option value="2028">28</option>
+							<option value="2029">29</option>
+							<option value="2030">30</option>
+							<option value="2031">31</option>
+							<option value="2032">32</option>
+							<option value="2033">33</option>
+						</select>
+					</div>
+				</div>
+		    
+		</div>
+		<div class="col-md-12">
+			<label class="control-label label-moip-pg" for="<?php echo $_code ?>_installment_count"><?php echo $this->__('Parcelas') ?></label>
+			<select name="payment[<?php echo $_code ?>_installment_count]" id="credito_parcelamento" class="required-entry validate-select form-control" title="Número de Parcelas de sua Compra">
+				<option value="1" select>1x</option>
+				<option value="2" >2x</option>
+				<option value="3" >3x</option>
+				<option value="4" >4x</option>
+				<option value="5" >5x</option>
+				<option value="6" >6x</option>
+				<option value="7" >7x</option>
+				<option value="8" >8x</option>
+				<option value="9" >9x</option>
+				<option value="10" >10x</option>
+				<option value="11" >11x</option>
+				<option value="12" >12x</option>
+			</select>
+		</div>
+				
+				
+		
+		<div class="col-md-12">
+			<label class="control-label label-moip-pg" for="<?php echo $_code ?>_fullname">
+				<?php echo $this->__('Nome completo do titular (idêntico ao do cartão)') ?>
+			</label>
+			<input type="text" name="payment[<?php echo $_code ?>_owner]"  value="" class="form-control required-entry validate-alpha-with-spaces" title="Nome Impresso em seu Cartão" id="moip_cc_owner" >
+		</div>
+		<div class="<?php echo($this->getCustomerState() ? 'personal-card-info no-display' : '') ?> col-md-12">
+			
+				<label class="control-label label-moip-pg" for="credito_portador_cpf"><?php echo $this->__('CPF do Titular do Cartão') ?></label>
+				<input type="tel" name="payment[<?php echo $_code ?>_taxdocument]" value="<?php echo($this->getCustomerState() ? $this->getDateCard('taxvat') : '') ?>" class="form-control required-entry" title="CPF do Titular de seu Cartão" id="credito_portador_cpf"  >
+			
+		</div>
+		<?php if($this->getCustomerState()): ?>
+			<div class="col-md-12">
+				
+					<div class="checkbox">
+	  					<label >
+							<input type="checkbox" name="payment[<?php echo $_code ?>_personal_info]" id="personal-card-info-control" title="Você é o Titular do Cartão" value="0" class="validate-number " checked> Sou o Titular do Cartão
+						</label>
+					</div>
+				
+			</div>
+		<?php endif; ?>
+				
+				
+				
+
+		<div class="col-md-12">
+			
+				<div class="checkbox">
+					<label for="<?php echo $_code ?>_save_card">
+						<input id="<?php echo $_code ?>_save_card" type="checkbox" name="payment[<?php echo $_code ?>_save_card]"  title="Salvar Cartão Para Próximas Compras?" value="" class="validate-number save-card " > Agilizar futuras compras com esse cartão <a href="javascript:void(0)" title="Compra com 1 Clique"  data-trigger="click" data-toggle="popover" data-placement="top" data-content=" Não salvaremos os dados de seu cartão. Para agilizar as próximas compras, apenas pegaremos uma autorização de sua operadora de cartão para você comprar passando somente o código de segurança do cartão."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+					</label>
+				</div>
+			
+		</div>
+</div>
+		<?php if($cofre != "false"): ?>
+			<div class="col-md-12">
+				
+					<label for="<?php echo $_code ?>_payment_in_cofre" >
+			      		<input type="checkbox" name="payment[<?php echo $_code ?>_payment_in_cofre]" id="<?php echo $_code ?>_payment_in_cofre"title="Usar um novo cartão?" value="0" class="new-card validate-number "> Usar outro Cartão não listado?
+			      	</label>
+				
+			</div>
+		<?php else: ?>
+					<input type="hidden" name="payment[<?php echo $_code ?>_payment_in_cofre]"   title="Usar um novo cartão?" value="1"  class="new-card validate-number "> 
+		<?php endif; ?>
+	
+</ul>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS).'MOIP/core/jquery.js'; ?>"></script>
+<script type="text/javascript" src="https://assets.moip.com.br/v2/moip.min.js"></script>
+<script type="text/javascript">
+	jQuery.noConflict();
+	(function($) {
+		jQuery(document).ready(function(){
+			  
+		 	Validation.creditCartTypes.set('DC', [new RegExp('^3(?:0[0-5]|[68][0-9])[0-9]{11}$'), new RegExp('^[0-9]{3}$'), true]);
+	     	Validation.creditCartTypes.set('EO', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
+	        Validation.creditCartTypes.set('HI', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
+	        Validation.creditCartTypes.set('HP', [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]);
+	   });	
+	})(jQuery);
+</script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS).'MOIP/transparente/moip.js'; ?>"></script>
+<script type="text/javascript">
+          jQuery(document).ready(function(){
+          		Validation.add('validate-alpha-with-spaces','Informe um nome válido',function(v){
+				    return Validation.get('IsEmpty').test(v) ||  /^[a-zA-Z ]+$/.test(v)
+				});  
+				Validation.add('validate-credit-card-moip', 'Os dados de cartão de crédito não estão válidos, por favor verifique o Número do Cartão, o Código de Segurança e também a data de expiração.', function(v) {
+					CreditCardMoip = jQuery("#encrypted_value").val();
+
+					if(!CreditCardMoip){
+							jQuery("#moip_cc_number").addClass('validation-failed-moip');
+							jQuery("#moip_cc_cid").addClass('validation-failed-moip');
+							jQuery("#credito_expiracao_ano").addClass('validation-failed-moip');
+						return CreditCardMoip;
+					} else {
+							jQuery("#moip_cc_number").removeClass('validation-failed-moip');
+							jQuery("#moip_cc_cid").removeClass('validation-failed-moip');
+							jQuery("#credito_expiracao_ano").removeClass('validation-failed-moip');
+						return CreditCardMoip;	
+					}
+				});
+				MoipPagamentosCc();
+          });
+</script>
+<?php $cofre = $this->getCofre(); ?>
+<?php if($cofre != "false"): ?>
+		<script type="text/javascript">
+
+		 jQuery(document).ready(function(){
+		    SetCofre();
+		});
+
+		</script>
+<?php endif; ?>

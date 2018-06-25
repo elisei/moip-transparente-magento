@@ -1,13 +1,10 @@
-<div class="row">
-    <div class="col-sm-12">
+<div class="result-address">
 	<?php if ($this->customerHasAddresses()): ?>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="address-buttons" data-toggle="buttons">
-                    <?php echo $this->getAddressesHtmlInput('billing') ?> 
-                </div>
-            </div>
-        </div>
-    <?php endif ?>
-    </div>
-</div>   
+	    <fieldset>
+	        <legend>
+	            <?php echo Mage::helper('onestepcheckout')->__('Cobrança'); ?>
+	        </legend>
+	            <?php echo $this->getAddressesHtmlSelect('billing') ?> 
+	    </fieldset>
+	<?php endif ?>
+</div>

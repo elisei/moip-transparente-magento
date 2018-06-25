@@ -32,8 +32,14 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
             endforeach;
             if($method == 'reduzido'){
                 $last_zero_interest = $this->getFilterNoInterestRate($installment);
-                $last_text_zero_interest = end(array_keys($last_zero_interest));
-                return $installments[$last_text_zero_interest-1];
+                if(is_int($last_zero_interest)){
+                    $last_text_zero_interest = end(array_keys($last_zero_interest));
+                    return $installments[$last_text_zero_interest-1];
+                } else {
+                    return end($installments);
+                }
+                
+                
             } elseif($method == 'integral') {
                 return $installments;
             } else {
@@ -94,8 +100,6 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
         } else {
             return $arr;
         }
-        
-        
     }
     public function getJurosComposto($valor, $juros, $parcela)
     {
@@ -198,6 +202,7 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
 
     public function ClearMoip(){
         $ambiente = Mage::getSingleton('transparente/standard')->getConfigData('ambiente');
+        
         $moipdb = Mage::getModel('transparente/transparente');
         $moipcollection = $moipdb->getCollection()->addFieldToFilter('moip_ambiente', array('eq' => $ambiente))->getItems();
 

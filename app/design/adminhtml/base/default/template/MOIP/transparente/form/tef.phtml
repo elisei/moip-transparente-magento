@@ -1,0 +1,35 @@
+<?php $_code=$this->getMethodCode() ?>
+<ul id="payment_form_<?php echo $_code ?>" class="form-list" style="display:none">
+		<div class="method-info-pay col-sm-12">
+		<div class="row">
+			<div class="col-xs-2">
+				<div class="icon-large"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></div>
+			</div>
+			<div class="col-xs-10">
+				<div class="row">
+					<div class="title-info-pay">Veja abaixo detalhes sobre</div>
+					<div class="title-info-pay"><strong>débito em conta</strong> </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-12">
+				<li class="padding-top-li">
+					<label for="<?php echo $_code ?>_banknumber" class="required"><em>*</em><?php echo $this->__('Banco para Transferência On-line') ?></label>
+					<div class="input-box">
+						<select name="payment[<?php echo $_code ?>_banknumber]" class="input-box form-control required-entry validate-select" id="bamk-of-tef" title="Selecionar Banco Para Transferência">
+								
+								<!-- <option value="001">Banco do Brasil</option>
+								<option value="237">Brandesco</option> -->
+								<option value="341" select>Itaú</option>
+								<!-- <option value="041">Banrisul</option> -->
+						</select>
+					</div>
+				</li>
+				<ul class="checkout-info-boleto">
+					<li class="checkout-info-item"><p class="checkout-info-text"><?php echo Mage::helper('transparente')->__('Na próxima página, você deverá <strong>clicar no link</strong> para efetuar o pagamento.') ?></p></li>
+					<li class="checkout-info-item"><p class="checkout-info-text"><?php echo Mage::helper('transparente')->__('Você será <strong>redirecionado para uma página do Moip Pagamentos</strong aonde poderá conferir o valor.') ?></p></li>
+					<li class="checkout-info-item"><p class="checkout-info-text"><?php echo Mage::helper('transparente')->__('Após a confirmação você será <strong>redirecionado para o ambiente do seu banco, para inserir seus dados</strong>.') ?>.</p></li>
+				</ul>
+	</div>
+</ul>

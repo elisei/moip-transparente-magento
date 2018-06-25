@@ -28,7 +28,7 @@
     <div id="checkout-review-table">
         <div class="box-itens">
             <?php foreach($this->getItems() as $_item): ?>
-                <div class="itens-striped ">
+                <div class="list-group">
                     
                         <?php echo $this->getItemHtml($_item)?>
                     
@@ -36,19 +36,6 @@
                 
             <?php endforeach ?>
         </div>
-        <div class="box-detalis-price">
-            <?php  echo $this->getChildHtml('totals'); ?>
-        </div>
-        
     </div>
     
 <?php echo $this->getChildHtml('items_after'); ?>
-<script type="text/javascript">
-    jQuery('#view-table-prices').on('shown.bs.collapse', function () {
-       jQuery("#expanded-totals").removeClass("glyphicon-menu-down").addClass("glyphicon-menu-up");
-    });
-
-    jQuery('#view-table-prices').on('hidden.bs.collapse', function () {
-       jQuery("#expanded-totals").removeClass("glyphicon-menu-up").addClass("glyphicon-menu-down");
-    });
-</script>

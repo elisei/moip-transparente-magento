@@ -1,0 +1,161 @@
+<form id="form-new-address" autocomplete="off" action="<?php echo $this->getUrl('onestepcheckout/index/formPostAddress') ?>" method="POST" class="valid-form scaffold-form">
+
+            
+
+  <fieldset>
+    <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" class="input-hidden">
+    <input type="hidden" name="_form_id" value="<?php echo  $this->htmlEscape($this->getAddress()->getId()) ?>" class="input-hidden">
+    <input type="hidden" name="_form_type" value="edit" class="input-hidden">
+    <div class="row">
+      <div class="col-sm-6">
+            <div class="form-group">
+                <label class="col-sm-12 control-label" for="firstname">Nome</label>
+                <div class="col-sm-12">
+                    <input type="text" name="firstname" id="firstname" value="<?php echo  $this->htmlEscape($this->getAddress()->getFirstname()) ?>" title="Nome" class="form-control required-entry" placeholder="Nome">
+                </div>
+            </div>
+      </div>
+
+      <div class="col-sm-6">
+            <div class="form-group">
+                <label class="col-sm-12 control-label" for="lastname">Sobrenome</label>
+                <div class="col-sm-12">
+                    <input type="text" name="lastname" id="lastname" value="<?php echo  $this->htmlEscape($this->getAddress()->getLastname()) ?>" title="Sobrenome" class="form-control required-entry" placeholder="Sobrenome">
+                </div>
+            </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+              <div class="form-group">
+                  <label class="col-sm-12 control-label" for="telephone">Telefone</label>
+                  <div class="col-sm-12">
+                      <input type="tel" name="telephone" id="telephone" value="<?php echo $this->htmlEscape($this->getAddress()->getTelephone()) ?>" title="Telefone" class="form-control required-entry validate-tel-national" placeholder="Telefone">
+                  </div>
+              </div>
+      </div>
+      <div class="col-sm-6">
+            <div class="form-group">
+                <label class="col-sm-12 control-label" for="fax">Celular</label>
+                <div class="col-sm-12">
+                    <input type="tel" name="fax" id="fax" value="<?php echo $this->htmlEscape($this->getAddress()->getFax()) ?>" title="Celular" class="form-control validate-cel-national"  placeholder="Celular">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <hr>
+      </div>  
+    </div>
+
+    <div class="row">
+      <div class="col-xs-6">
+            <div class="form-group">
+                <label class="col-sm-12 control-label" for="textinput">Cep 
+                  <span><a href="http://www.buscacep.correios.com.br/" target="_blank" class="f-right not-zip-code hidden-xs">Não sabe o CEP?</a></span>
+                </label>
+                <div class="col-sm-12">
+                    <input type="tel" name="postcode" title="CEP" id="postcode" value="<?php echo $this->htmlEscape($this->getAddress()->getPostcode()) ?>" class="form-control required-entry validate-zip-international moipzip" onchange="javascript: buscarEndereco('shipping');" placeholder="CEP">
+                </div>
+            </div>
+      </div>
+      <div class="col-xs-6">
+          <button type="button" name="button" id="buscarcep" onclick="javascrip:buscarEndereco('shipping')"  class="btn btn-default" aria-label="Buscar endereço">Buscar Endereço</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6 ">
+        <div class="form-group">
+            <label class="col-sm-12 control-label" for="textinput">Rua</label>
+            <div class="col-sm-12">
+                <input type="text" name="street[]" id="street1"  value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(1)) ?>" title="Endereço da rua" class="form-control required-entry validate-length minimum-length-4 maximum-length-57" placeholder="Endereço">
+            </div>
+        </div>
+      </div>
+      <div class="col-sm-2 ">
+          <div class="form-group">
+              <label class="col-sm-12 control-label" for="textinput">Número</label>
+              <div class="col-sm-12">
+                  <input type="tel" name="street[]" id="street2" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(2)) ?>" title="Número" class="form-control required-entry validate-length minimum-length-1 maximum-length-6" placeholder="Número">
+              </div>
+          </div>
+      </div>
+      
+      <div class="col-sm-4 ">
+        <div class="form-group">
+            <label class="col-sm-12 control-label" for="textinput">Complemento</label>
+            <div class="col-sm-12">
+                <input type="text" name="street[]" id="street3" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(3)) ?>" title="Complemento" class="form-control validate-length minimum-length-1 maximum-length-30" placeholder="Complemento">
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 ">
+              <div class="form-group">
+                  <label class="col-sm-12 control-label" for="textinput">Cidade</label>
+                  <div class="col-sm-12">
+                      <input type="text" name="city" id="city" value="<?php echo $this->htmlEscape($this->getAddress()->getCity()) ?>" class="form-control required-entry" title="Cidade" placeholder="Cidade">
+                  </div>
+              </div>
+          
+      </div>
+      <div class="col-sm-6 ">
+              <div class="form-group">
+                  <label class="col-sm-12 control-label" for="textinput">Bairro</label>
+                  <div class="col-sm-12">
+                      <input type="text" name="street[]" id="street4" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(4)) ?>" title="Bairro" class="form-control required-entry validate-length minimum-length-1 maximum-length-60"  placeholder="Bairro">
+                  </div>
+              </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 ">
+          <div class="form-group">
+                <label class="col-sm-12 control-label" for="textinput">Estado</label>
+                <div class="col-sm-12">
+                    <select name="region_id" id="region_id" title="<?php echo Mage::helper('core')->quoteEscape($this->__('State/Province')) ?>" class="validate-select form-control">
+                        <option value="">
+                            <?php echo $this->__('Please select region, state or province') ?>
+                        </option>
+                    </select>
+                    <input type="text" name="region" id="region" value="<?php echo $this->escapeHtml($this->getAddress()->getRegion()) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('State/Province')) ?>" id="region" class=" form-control no-display <?php echo $this->helper('customer/address')->getAttributeValidationClass('region') ?>">
+                </div>
+          </div>
+      </div>
+      <div class="col-sm-6 ">
+            <div class="form-group">
+                <label class="col-sm-12 control-label" for="textinput">País</label>
+                <div class="col-sm-12">
+                    <?php echo $this->getCountryHtmlSelect() ?>
+                </div>
+            </div>
+      </div>
+    </div>
+   
+      <input type="hidden" name="default_billing" value="1" />
+      <input type="hidden" name="default_shipping" value="1" />
+   
+  </fieldset>
+  <div class="row">
+      <div class="col-sm-12">
+        <hr>
+      </div>  
+  </div>
+  <button type="button" onclick="SaveAddress('<?php echo  $this->htmlEscape($this->getAddress()->getId()) ?>', 'edit');" class="btn btn-success btn-block">
+      <?php echo Mage::helper('onestepcheckout')->__('Salvar Endereço'); ?>
+    </button>
+</div>
+
+<script type="text/javascript">
+    jQuery("#country").addClass('form-control');
+    jQuery('#region_id').attr('defaultValue', "<?php echo $this->getAddress()->getRegionId() ?>");
+    new RegionUpdater('country', 'region', 'region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'zip');
+    validateOnBlur('form-new-address');
+</script>
+</form>

@@ -1,0 +1,30 @@
+<div class="page-title">
+	<h2>Para prosseguir informe seu <strong>email</strong></h2>
+</div>
+<form id="onestep_form_identify" autocomplete="off" action="<?php echo $this->getUrl('onestepcheckout/index/IdentifyUser') ?>" method="POST" class="scaffold-form">
+	<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" class="input-hidden">
+	<div class="input-group  input-group-lg">
+		<input type="email" name="email" id="checked-login" value=""  title="Endereço de e-mail"  class="form-control input-text validate-email required-entry" placeholder="Digite seu e-mail" autofocus>
+		<span class="input-group-btn">
+			<button class="btn btn-secondary btn-success"  title="Acesse com seu email" type="button" onclick="IdentifyUser()">
+				<span><span>Continuar</span></span>
+			</button>
+		</span>
+	</div>
+</form>
+<div class="row">
+	<div class="col-md-8 col-md-offset-2">
+		<h3>Porque informar o email?</h3>
+		<div class="col-md-3 visible-lg">
+			<h1 class="center-info"><span class="glyphicon glyphicon-lock"></span></h1>
+		</div>
+		<div class="col-md-9">
+			<ul class="list-item">
+				<li><span class="glyphicon glyphicon-ok"></span> <span class="text-email-secure-info">Verificar se já possuí cadastro em nossa loja</span></li>
+				<li><span class="glyphicon glyphicon-ok"></span> <span class="text-email-secure-info">Notificar sobre o andamento do seu pedido</span></li>
+				<li><span class="glyphicon glyphicon-ok"></span> <span class="text-email-secure-info">Gerenciar seu histórico de compras</span></li>
+				<li><span class="glyphicon glyphicon-ok"></span> <span class="text-email-secure-info">Acelerar o preenchimento de suas informações</span></li>
+			</ul>
+		</div>
+	</div>
+</div>

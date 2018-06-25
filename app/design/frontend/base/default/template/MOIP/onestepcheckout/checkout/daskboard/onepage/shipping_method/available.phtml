@@ -1,57 +1,62 @@
-<div id="shipping-method">
-<?php if (!($_shippingRateGroups = $this->getShippingRates())): ?>
-	<div class="erro_cep sem_cep">
-    	<p>Aguardando preenchimento do CEP corretamente, para cálculo do frete.</p>
-	</div>
-<?php else: ?>
-	
-    <?php $_sole = count($this->getShippingRates()) == 1; ?> 
-    <div class="btn-block btn-group-lg btn-method-shipping col-sm-12" data-toggle="buttons">
-	    <?php foreach ($this->getShippingRates() as $code => $_rates): ?>
-	        <?php $_sole = $_sole && count($_rates) == "1"; ?>
-			<?php foreach ($_rates as $_rate): ?>
-				<?php if ($_rate->getErrorMessage()): ?>
-				   <div class="erro_cep com_cep" style="display:block;">
-				   		<?php echo $_rate->getErrorMessage() ?>
-				   </div>
-				<?php else: ?>
-				       <label class="btn btn-block btn-default btn-shipping-availble <?php if ($_sole) : ?> active  <?php endif; ?>">
+
+<div class="method-shipping-result clearfix">
+	<?php if (!($_shippingRateGroups = $this->getShippingRates())): ?>
+		<div class="progress hidden-it" id="shipping-progress">
+		    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+		        Atualizando Métodos de Envio
+		    </div>
+		</div>
+		
+	<?php else: ?>
+	<?php $_sole = count($this->getShippingRates()) == 1; ?> 
+	    <div class="btn-block btn-group-lg btn-method-shipping col-sm-12" data-toggle="buttons">
+		    <?php foreach ($this->getShippingRates() as $code => $_rates): ?>
+		        <?php $_sole = $_sole && count($_rates) == "1"; ?>
+				<?php foreach ($_rates as $_rate): ?>
+					<?php if ($_rate->getErrorMessage()): ?>
+					   <div class="erro_cep com_cep" style="display:block;">
+					   		<?php echo $_rate->getErrorMessage() ?>
+					   </div>
+					<?php else: ?>
+				       <label class="btn btn-block btn-default btn-shipping-availble <?php if($_rate->getCode()===$this->getAddressShippingMethod()) echo ' active' ?> <?php if ($_sole) : ?> active  <?php endif; ?>" onchange="saveShippingMethod()">
+
 				              <?php if ($_sole) : ?>
 				                		<span class="no-display"><input name="shipping_method" type="radio" title="Meio de Envio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>" checked="checked" class="validate-one-required-by-name"/></span>
 					                	<script type="text/javascript">
 					                		jQuery(document).ready(function(){
-												updateShippingMethod();
+												saveShippingMethod();
 											});
 					                	</script>
 				               <?php else: ?>
-				               			<input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" title="Meio de Envio" id="s_method_<?php echo $_rate->getCode() ?>" class="radio shipping_method_handle validate-one-required-by-name"/>
+				               			<input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" title="Meio de Envio" id="s_method_<?php echo $_rate->getCode() ?>" class="radio shipping_method_handle validate-one-required-by-name" <?php if($_rate->getCode()===$this->getAddressShippingMethod()) echo ' checked="checked"' ?>/>
 				               <?php endif; ?>
 				               <span class="method-shipping">
 					               <span class="a-right badge">
 					               		<?php $_excl = Mage::helper('core')->currency($_rate->getPrice(), true, false); ?>
 				                        <?php echo ($_rate->getPrice() == 0 ? 'GRÁTIS' : $_excl) ?>
-				                        
 				                        <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
 				                            (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
 				                        <?php endif; ?>
 					               </span>
 					               <?php $title =  $_rate->getMethodTitle() ?>
 					               <?php $new_title = explode(' ', $title, 2); ?>
-
 					               <span class="a-left title-send"><?php echo $new_title[0] ?></span>
-					               
-
 					               <?php if(isset($new_title[1])): ?>
 					               	 <span class="a-center time-send"><?php echo $new_title[1] ?></span>
 					               <?php endif; ?>
-
 				               </span>
 				    	</label>
-				<?php endif ?>
-			<?php endforeach; ?>
-	    <?php endforeach; ?>
-    </div>
-<?php endif; ?>
-		
-	
+					<?php endif ?>
+				<?php endforeach; ?>
+		    <?php endforeach; ?>
+	    </div>
+	<?php endif; ?>
+	<script type="text/javascript">
+			(function($) {
+				jQuery(document).ready(function(){
+					startTimeShipping();
+				});	
+			})(jQuery);
+			
+		</script>
 </div>

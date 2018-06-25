@@ -1,44 +1,44 @@
 <?php $status = $this->getCardStatus(); ?>
 <?php if($status == "CANCELLED"): ?>
-	<h2 class="h2"><?php echo $this->__('Seu pedido foi <strong>%s</strong>', 'Cancelado'); ?></h2>
+	<h2 class="h2"><?php echo Mage::helper('transparente')->__('Seu pedido foi <strong>Cancelado</strong>'); ?></h2>
 	<div class="row">
 		<strong><?php echo  Mage::helper('transparente')->__($this->getDescriptionStatusCancel()); ?></strong>
 	</div>
-	<?php echo $this->__('As informações de seu pedido foram encaminhadas para o seu email <strong>%s</strong>.', $this->getOrder()->getCustomerEmail()) ?>
+	<?php echo Mage::helper('transparente')->__('As informações de seu pedido foram encaminhadas para o seu email <strong>%s</strong>.', $this->getOrder()->getCustomerEmail()) ?>
 		<div class="action-payment-secundary">
-			<a href="<?php echo Mage::getUrl(''); ?>sales/order/reorder/order_id/<?php echo $this->getLinkReorder() ?>/" class="link-reorder button btn-cart btn btn-success">
+			<a href="<?php echo $this->getLinkReorder(); ?>" class="link-reorder button btn-cart btn btn-success">
 				<span><span>Tente Novamente ou Escolha Outro Método</span></span>
 			</a>
 		</div>
 <?php elseif($status == "IN_ANALYSIS"): ?>
-	<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido <strong>sucesso</strong>'); ?></h2>
-	<h3 class="h3"><?php echo $this->__('O seu pagamento foi <strong>%s</strong>', 'encaminhado para análise'); ?></h3>
+	<h2 class="h2"><?php echo Mage::helper('transparente')->__('Seu pedido foi recebido <strong>sucesso</strong>'); ?></h2>
+	<h3 class="h3"><?php echo Mage::helper('transparente')->__('O seu pagamento foi <strong>%s</strong>', 'encaminhado para análise'); ?></h3>
 	<div class="action-payment-secundary">
-		<a href="<?php echo Mage::getUrl(''); ?>sales/order/view/order_id/<?php echo $this->getLinkReorder() ?>/" class="link-reorder button btn-cart btn btn-success">
+		<a href="<?php echo $this->getLinkViewOrder(); ?>" class="link-reorder button btn-cart btn btn-success">
 			<span><span>Acompanhe o seu pedido</span></span>
 		</a>
 	</div>
 <?php elseif($status == "AUTHORIZED"): ?>
-	<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
-	<h3 class="h3"><?php echo $this->__('O seu pagamento foi <strong>%s</strong>', 'autorizado'); ?></h3>
+	<h2 class="h2"><?php echo Mage::helper('transparente')->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
+	<h3 class="h3"><?php echo Mage::helper('transparente')->__('O seu pagamento foi <strong>%s</strong>', 'autorizado'); ?></h3>
 	<div class="action-payment-secundary">
-		<a href="<?php echo Mage::getUrl(''); ?>sales/order/view/order_id/<?php echo $this->getLinkReorder() ?>/" class="link-reorder button btn-cart btn btn-success">
+		<a href="<?php echo $this->getLinkViewOrder(); ?>" class="link-reorder button btn-cart btn btn-success">
 			<span><span>Acompanhe o seu pedido</span></span>
 		</a>
 	</div>
 <?php elseif($status == "WAITING"): ?>
-	<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
-	<h3 class="h3"><?php echo $this->__('O seu pagamento foi <strong>%s</strong>', 'encaminhado para análise'); ?></h3>
+	<h2 class="h2"><?php echo Mage::helper('transparente')->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
+	<h3 class="h3"><?php echo Mage::helper('transparente')->__('O seu pagamento foi <strong>%s</strong>', 'encaminhado para análise'); ?></h3>
 	<div class="action-payment-secundary">
-		<a href="<?php echo Mage::getUrl(''); ?>sales/order/view/order_id/<?php echo $this->getLinkReorder() ?>/" class="link-reorder button btn-cart btn btn-success">
+		<a href="<?php echo $this->getLinkViewOrder(); ?>" class="link-reorder button btn-cart btn btn-success">
 			<span><span>Acompanhe o seu pedido</span></span>
 		</a>
 	</div>
 <?php else: ?>
-	<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
-	<h3 class="h3"><?php echo $this->__('O seu pagamento foi <strong>%s</strong>', 'encaminhado para análise'); ?></h3>
+	<h2 class="h2"><?php echo Mage::helper('transparente')->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
+	<h3 class="h3"><?php echo Mage::helper('transparente')->__('O seu pagamento foi <strong>%s</strong>', 'encaminhado para análise'); ?></h3>
 	<div class="action-payment-secundary">
-		<a href="<?php echo Mage::getUrl(''); ?>sales/order/view/order_id/<?php echo $this->getLinkReorder() ?>/" class="link-reorder button btn-cart btn btn-success">
+		<a href="<?php echo $this->getLinkViewOrder(); ?>" class="link-reorder button btn-cart btn btn-success">
 			<span><span>Acompanhe o seu pedido</span></span>
 		</a>
 	</div>

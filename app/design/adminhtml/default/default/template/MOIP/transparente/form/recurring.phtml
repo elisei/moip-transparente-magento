@@ -1,0 +1,96 @@
+<?php $_code=$this->getMethodCode() ?>
+<ul id="payment_form_<?php echo $_code ?>" style="display:none">
+	
+		
+			<div class="col-md-12">
+				
+					
+						<label class="control-label label-moip-pg" for="<?php echo $_code ?>_number"><?php echo $this->__('Número do Cartão') ?></label>
+						<div class="col-md-12">
+							<div class="row">
+								<div class="input-group">
+									<input type="tel" pattern="[0-9]*" minlength="17" maxlength="23" id="<?php echo $_code ?>_number"  name="payment[<?php echo $_code ?>_number]" title="Número do seu Cartão de Crédito"  class="required-entry form-control validate-length"  value="">
+								  		<span class="input-group-addon">
+								  			<span class="glyphicon glyphicon-credit-card" id="card-clean"></span>
+								  		</span>
+								  		<span id="moip_cc_brand"></span>
+								</div>
+							</div>
+						</div>
+						<div id="type-payment"></div>
+					
+				
+			</div>
+	
+			<div class="no-display">
+				<input class="<?php echo $_code ?>_type" id="<?php echo $_code ?>_type" type="hidden" name="payment[<?php echo $_code ?>_type]"  />
+			</div>
+		
+			
+		
+		<div class="col-md-12">
+		    <label for="<?php echo $_code ?>_expiration" class="control-label label-moip-pg"><?php echo $this->__('Expiração') ?></label>
+		    <div class="input-box">
+		        <div class="v-fix">
+		            <select name="payment[<?php echo $_code ?>_exp_month]" id="credito_expiracao_mes" class="validate-select form-control" title="Mês de Vencimento do seu Cartão">
+				<option value="">Mês</option>
+				<option value="01">01 - Janeiro</option>
+				<option value="02">02 - Fevereiro</option>
+				<option value="03">03 - Março</option>
+				<option value="04">04 - Abril</option>
+				<option value="05">05 - Maio</option>
+				<option value="06">06 - Junho</option>
+				<option value="07">07 - Julho</option>
+				<option value="08">08 - Agosto</option>
+				<option value="09">09 - Setembro</option>
+				<option value="10" selected="select">10 - Outubro</option>
+				<option value="11">11 - Novembro</option>
+				<option value="12">12 - Dezembro</option>
+			</select>
+		        </div>
+		        <div class="v-fix">
+		           	<select name="payment[<?php echo $_code ?>_exp_year]" id="credito_expiracao_ano" class="validate-select form-control" title="Ano de Vencimento do seu Cartão">
+				<option value="">Ano</option>
+
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20" selected="select">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+				<option value="23">23</option>
+				<option value="24">24</option>
+				<option value="25">25</option>
+				<option value="26">26</option>
+				<option value="27">27</option>
+				<option value="28">28</option>
+				<option value="29">29</option>
+				<option value="30">30</option>
+			</select>
+		        </div>
+		    </div>
+		</div>
+		
+		<div class="col-md-12">
+			<label for="<?php echo $_code ?>_fullname" class="control-label label-moip-pg"><?php echo $this->__('Nome do Titular Cartão') ?></label>
+			<div class="input-box">
+				<input type="text" name="payment[<?php echo $_code ?>_owner]"  value="<?php echo $this->getDateCard('name') ?>" class="input-moip required-entry form-control" title="Nome Impresso em seu Cartão" id="credito_portador_nome" placeholder="Nome Impresso no Cartão">
+			</div>
+		</div>
+		
+		
+		
+	
+	
+</ul>
+<script type="text/javascript">
+//<![CDATA[
+
+          $j(document).ready(function(){
+                MoipPagamentosRecurring();
+          });
+
+//]]>
+</script>

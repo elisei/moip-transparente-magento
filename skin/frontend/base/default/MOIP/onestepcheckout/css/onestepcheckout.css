@@ -5,13 +5,6 @@
     bottom: 0;
     padding: 20px 0px;
 }
-.btn:focus {
-  outline: none !important;
-}
-*:focus {
-  outline: none !important;
-}
-
 .bg-white {background: #fff;}
 .hidden-it {display: none;}
 .hide-zip-code {display: none;}
@@ -118,9 +111,9 @@ span.line-address {
 }
 /* Controle do background pagamento */
 
-.btn-inputs-payment {
-    margin: 0px !important;
+.p-0 {
     padding: 0px !important;
+    margin: 0px !important;
 }
 .btn-payment-available.active .icon-payment:before, .btn-payment-available:hover .icon-payment:before {
     content: "\e013";
@@ -192,10 +185,7 @@ div#advice-required-entry-checked-login, #advice-required-entry-billing\:custome
 dl#checkout-shipping-method-loadding dt {
     display: none;
 }
-#meio-de-envio {
-    margin-bottom: 15px;
-    padding-bottom: 30px;
-}
+
 /*Controles da sessão de pagamento*/
 label.btn.btn-block.btn-group.btn-payment-available img {
     display: inline-block !important;
@@ -232,51 +222,18 @@ ul.secure-info li {
     margin: 0 auto;
 }
 #review {width: 100%}
+
+
 a.btn.btn-transparent.btn-block:focus, a.btn.btn-transparent.btn-block:active {
     box-shadow: none !important;
     -webkit-box-shadow: none !important;
 }
-.box-itens {
-    max-height: 380px;
-    overflow-y: auto;
-}
+
 .itens-striped {
-    padding: 10px;
-    width: 100%;
     margin-bottom: 5px;
-    float: left;
 }
 .product-name-review {
     color: #333 !important;
-}
-
-td {
-    border: none !important;
-}
-tbody tr.separed {
-    border-top: 1px solid #ddd !important;
-}
-.table > tbody > tr > td {
-    border: none;
-}
-.itens-review-remove {
-    position: absolute;
-}
-.itens-review-image {
-  position: relative;
-}
-.qty_product_update {
-  text-align: center;
-}
-.btn-update-qty {
-    display: none !important;
-}
-.btn-update-qty-visible{
-  display: block !important;
-}
-
-#btn-area {
-  margin-bottom: 20px;
 }
 
 img.img-thumbnail-review {
@@ -286,6 +243,7 @@ img.img-thumbnail-review {
 .popover {
   z-index: 10000;
 }
+
 .bg-payment-method ul {
     padding: 0px;
     display: inline-block;
@@ -307,9 +265,7 @@ textarea#gift-message-whole-message {width: 250px;}
 .gift-messages-form .item .details .form-list li.wide textarea {width: 250px !important;}
 /* Ajuste para mobiles... */
 @media only screen and (max-width: 768px) {
-  input.input-moip.form-control.valid-digits.input-number {
-    width: 85px !important;
-}
+ 
     label.btn.btn-default span.text {
         float: left;
         white-space: normal;
@@ -420,7 +376,7 @@ label.btn.btn-block.btn-group.btn-default.btn-payment-available.active {
 .bg-payment-method {
     border: 1px solid #ccc;
     border-radius: 5px;
-    padding: 10px 0px;
+    padding: 4px 14px;
     background: #fff;
 }
 .btn-shipping-availble.active:before, .btn-shipping-availble:before {
@@ -430,9 +386,7 @@ label.btn.btn-block.btn-group.btn-default.btn-payment-available.active {
 }
 
 @media only screen and (min-width: 769px) {
-  .table {
-    display: block;
-  }
+  
   a.logo img {
     display: inline-block;
   }
@@ -448,7 +402,6 @@ label.btn.btn-block.btn-group.btn-default.btn-payment-available.active {
   }
 
   .btn-payment-available.active:after {
-    
     border-left-color: #ebebeb;
     border-width: 11px;
     margin-top: -11px;
@@ -459,16 +412,14 @@ label.btn.btn-block.btn-group.btn-default.btn-payment-available.active {
     border-width: 12px;
     margin-top: -12px;
   }
-
   .popover.top {
       min-width: 200px;
   }
-
   .btn-payment-available {
     margin-bottom: 10px !important;
   }
   .bg-payment-method {
-    min-height: 345px;
+    
     margin-left: 12px;
   }
 }
@@ -494,10 +445,44 @@ label.btn.btn-block.btn-group.btn-default.btn-payment-available.active {
 .bs-wizard > .bs-wizard-step.disabled a.bs-wizard-dot{ pointer-events: none;}
 .btn-number {
     font-size: 8px !important;
-    padding: 10px 3px !important;
 }
-input.input-moip.form-control.valid-digits.input-number {
+.input-number {
     text-align: center;
-    padding: 16px 0px !important;
 }
 
+
+.address-line {
+  font-size: 12px;
+}
+
+.btn-new-address {
+    margin: 15px 0px;
+}
+#cupom {
+    margin-top: 15px;
+}
+*.focus {
+  outline: 0 !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+}
+label:focus {
+  outline: 0 none transparent !important;
+}
+button#buscarcep {
+    margin-top: 30px;
+}
+.btn-update-qty-review, .input-number {
+  padding: 6px !important
+}
+.itens-review-remove {
+    padding-top: 5px;
+}
+.itens-review-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.grand-total {
+    text-align: center;
+}

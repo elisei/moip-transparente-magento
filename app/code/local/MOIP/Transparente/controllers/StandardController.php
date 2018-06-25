@@ -43,9 +43,47 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
         return $api;
     }
 
+    public function testAction(){
+    	$api 			= $this->getApi();
+    	$params 		= $this->getRequest()->getParams();
+		$json_moip 		= $this->getRequest()->getRawBody();
+		$json_moip = json_decode($json_moip);
+
+    	 if(isset($json_moip->resource->order->id)){
+            //recupera infos para ORD.*
+            $moip_order = $json_moip->resource->order->id;
+            $status_moip = $json_moip->resource->order->status;
+        } elseif(isset($json_moip->resource->payment)){
+            //recupera infos para PAY.*
+            $moip_order = $json_moip->resource->payment->_links->order->title;
+            $amount = $json_moip->resource->payment->amount->total/100;
+            $status_moip = $json_moip->resource->payment->status;
+            if(isset($json_moip->resource->payment->cancellationDetails)){
+				$details_cancel 	= $json_moip->resource->payment->cancellationDetails->description;	
+			} else{
+				$details_cancel 	= "Indefinido";
+			}
+        } 
+
+        
+        $order = Mage::getModel('sales/order')->load($moip_order, 'ext_order_id');
+        if($order->getId()){
+        	Mage::getModel('transparente/email_cancel')->sendEmail($order, $details_cancel);
+        }
+        
+
+
+    }
+    
     public function successAction(){
     	error_reporting(E_ALL);
 		ini_set("display_errors",1);
+		/*$localeCode = Mage::getStoreConfig('payment/moip_transparente_standard/moip_cancel');
+		$emailTemplate = Mage::getModel('core/email_template')->loadByCode($localeCode);
+
+		var_dump($localeCode );
+		var_dump($emailTemplate->getTemplateSubject());
+		die();*/
 
 		$api 			= $this->getApi();
 		
@@ -64,28 +102,37 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
         if($params['validacao'] == $this->getStandard()->getConfigData('validador_retorno')){
 
 			$json_moip = json_decode($json_moip);
-			$transation = $this->getTransationMoip($json_moip);
+
+			$newMethodForOrder = $this->newGetOrder($json_moip);
+			if($newMethodForOrder != 1 && $newMethodForOrder == "error_no_new_order"){
 
 
-			if($transation->getMoipResponse() != 1){
+
+				$transation = $this->getTransationMoip($json_moip);
 
 
-				$processing = $this->processOrder($transation, $json_moip); 
-				
+				if($transation->getMoipResponse() != 1){
 
-				if($processing){
-					$api->generateLog("processing", 'MOIP_WebHooks.log');
-					echo "Sucesso";
+
+					$processing = $this->processOrder($transation, $json_moip); 
+					
+
+					if($processing){
+						$api->generateLog("processing", 'MOIP_WebHooks.log');
+						echo "Sucesso";
+					} else {
+						return $this->set404();
+					}
+					
 				} else {
-					return $this->set404();
+					$api->generateLog("Evento em duplicidade autorizationAction", 'MOIP_WebHooksError.log');
+					echo "duplicado";
+					return;
 				}
-				
 			} else {
-				$api->generateLog("Evento em duplicidade autorizationAction", 'MOIP_WebHooksError.log');
-				echo "duplicado";
-				return;
+				echo "Sucesso";
+				return $this;
 			}
-
 
 		} else {
 			$api->generateLog("Validação de comunicação INVÁLIDA: ".$params, 'MOIP_WebHooksError.log');
@@ -93,7 +140,65 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 		}
     }
 
+    public function newGetOrder($json_moip){
+        $api            = $this->getApi();
+        
+        if(isset($json_moip->resource->order->id)){
+            //recupera infos para ORD.*
+            $moip_order = $json_moip->resource->order->id;
+            $status_moip = $json_moip->resource->order->status;
+        } elseif(isset($json_moip->resource->payment)){
+            //recupera infos para PAY.*
+            $moip_order = $json_moip->resource->payment->_links->order->title;
+            $amount = $json_moip->resource->payment->amount->total/100;
+            $status_moip = $json_moip->resource->payment->status;
+            if(isset($json_moip->resource->payment->cancellationDetails)){
+				$details_cancel 	= $json_moip->resource->payment->cancellationDetails->description;	
+			} else{
+				$details_cancel 	= "Indefinido";
+			}
+        } else {
+            $api->generateLog("MOIP ORDER não localizada: ", 'MOIP_WebHooksError.log');
+            return $this->set404();
+        }
+        $order = Mage::getModel('sales/order')->load($moip_order, 'ext_order_id');
+        $payment = $order->getPayment();
 
+        if($status_moip == "AUTHORIZED" || $status_moip == "PAID"){
+            $test = $payment->getMethodInstance()->authorize($payment, $amount);
+             try {
+                return 1;
+             } catch (Exception $e) {
+                $api->generateLog("MOIP {$moip_order} não foi processada erro: ".$e, 'MOIP_WebHooksError.log');
+                return "error_no_new_order";
+             }
+        } elseif ($status_moip == "CANCELLED" || $status_moip == "NOT_PAID") {
+
+           $transactionAuth = $payment->getMethodInstance()->cancel($payment);
+           
+           if($transactionAuth){
+           		$order->cancel()->save();
+           		Mage::getModel('transparente/email_cancel')->sendEmail($order, $details_cancel);
+           			$translate_details = Mage::helper('transparente')->__($details_cancel);
+           			$msg = Mage::helper('transparente')->__('Email de cancelamento enviado ao cliente. Motivo real: %s, motivo exibido ao cliente: %s', $details_cancel, $translate_details);
+           			$order->addStatusHistoryComment($msg);
+					$order->save();
+           		try {
+           			
+	                return 1;
+	             } catch (Exception $e) {
+	                $api->generateLog("MOIP {$moip_order} não foi processada erro: ".$e, 'MOIP_WebHooksError.log');
+	                return "error_no_new_order";
+	             }
+           } else {
+
+           } return !1;
+           	
+             
+        } else {
+            return !1;
+        }
+    }
 
 	
 

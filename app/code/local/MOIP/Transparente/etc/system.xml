@@ -60,7 +60,7 @@
                             <show_in_default>1</show_in_default>
                            
                         </ambiente>
-                      <!--   <type_app>
+                       <!--  <type_app>
                             <label>Tipo de Recebimento</label>
                             <tooltip><![CDATA[Escolha o tipo de APP]]>
                             </tooltip>
@@ -80,141 +80,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <validate>validate-length minimum-length-2 maximum-length-13</validate>
+                            <comment>Essa informação será exibida na fatura do cliente, máximo permitido de 13 caracteres</comment>
                         </apelido>
-
-
-                         <title_status translate="label">
-                            <label>Defina os status de pedidos para o nosso módulo de pagamento</label>
-                            <comment><![CDATA[
-                                        <p>Saiba mais <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
-                                    ]]>
-                            </comment>
-                            <frontend_model>transparente/adminhtml_fieldset_header</frontend_model>
-                            <sort_order>10</sort_order>
-                            <show_in_default>1</show_in_default>
-                            
-                        </title_status>
-                        <order_status translate="label">
-                            <label>Status dos Pedidos Iniciados</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status_new</source_model>
-                            <comment><![CDATA[
-                                        <p>É o primeiro status de todo o pedido, ele signfica que foi recebida a ordem de compra.</p>
-                                        <p>No entanto o pagamento ainda não foi processado ou válidado.</p>
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.]]>
-                            </comment>
-                            <validate>required-entry</validate>
-                            <sort_order>11</sort_order>
-                            <show_in_default>1</show_in_default>
-                        </order_status>
-                        <type_status_init>
-                            <label>Tipo de Status Secundário</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>MOIP_Transparente_Model_Source_TypeState</source_model>
-                            <comment><![CDATA[
-                                        <p>Após recebido o pedido é possível determinar o status secundário entre "Pedidos Segurados" ou como "Pagamentos Pendentes"</p>
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.]]>
-                            </comment>
-                            <validate>required-entry</validate>
-                            <sort_order>12</sort_order>
-                            <show_in_default>1</show_in_default>
-                        </type_status_init>
-                        <order_status_holded translate="label">
-                            <label>Status em Análise</label>
-                            <frontend_type>select</frontend_type>
-                            <validate>required-entry</validate>
-                            <depends>
-                                <type_status_init>onhold</type_status_init>
-                            </depends>
-                            <source_model>MOIP_Transparente_Model_Source_Holded</source_model>
-                            <comment><![CDATA[
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
-                                    ]]>
-                            </comment>
-                            <sort_order>13</sort_order>
-                            <show_in_default>1</show_in_default>
-                        </order_status_holded>
-                        <order_status_holded_boleto translate="label">
-                            <label>Status para Boleto em Aberto</label>
-                            <frontend_type>select</frontend_type>
-                            <validate>required-entry</validate>
-                            <source_model>MOIP_Transparente_Model_Source_Holded</source_model>
-                            <depends>
-                                <type_status_init>onhold</type_status_init>
-                            </depends>
-                            <comment><![CDATA[
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
-                                    ]]>
-                            </comment>
-                            <sort_order>14</sort_order>
-                            <show_in_default>1</show_in_default>
-                            
-                        </order_status_holded_boleto>
-                        <order_status_holded_tef translate="label">
-                            <label>Status para Transferência em Aberto</label>
-                            <frontend_type>select</frontend_type>
-                            <validate>required-entry</validate>
-                            <source_model>MOIP_Transparente_Model_Source_Holded</source_model>
-                            <depends>
-                                <type_status_init>onhold</type_status_init>
-                            </depends>
-                            <comment><![CDATA[
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
-                                    ]]>
-                            </comment>
-                            <sort_order>15</sort_order>
-                            <show_in_default>1</show_in_default>
-                        </order_status_holded_tef>
-
-
-                        <order_status_pending_payment translate="label">
-                            <label>Status em Análise</label>
-                            <frontend_type>select</frontend_type>
-                            <validate>required-entry</validate>
-                            <depends>
-                                <type_status_init>pending_payment</type_status_init>
-                            </depends>
-                            <source_model>MOIP_Transparente_Model_Source_PendingPayment</source_model>
-                            <comment><![CDATA[
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
-                                    ]]>
-                            </comment>
-                            <sort_order>13</sort_order>
-                            <show_in_default>1</show_in_default>
-                        </order_status_pending_payment>
-
-
-                        <order_status_pending_payment_boleto translate="label">
-                            <label>Status para Boleto em Aberto</label>
-                            <frontend_type>select</frontend_type>
-                            <validate>required-entry</validate>
-                            <source_model>MOIP_Transparente_Model_Source_PendingPayment</source_model>
-                            <depends>
-                                <type_status_init>pending_payment</type_status_init>
-                            </depends>
-                            <comment><![CDATA[
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
-                                    ]]>
-                            </comment>
-                            <sort_order>14</sort_order>
-                            <show_in_default>1</show_in_default>
-                            
-                        </order_status_pending_payment_boleto>
-                        <order_status_pending_payment_tef translate="label">
-                            <label>Status para Transferência em Aberto</label>
-                            <frontend_type>select</frontend_type>
-                            <validate>required-entry</validate>
-                            <source_model>MOIP_Transparente_Model_Source_PendingPayment</source_model>
-                            <depends>
-                                <type_status_init>pending_payment</type_status_init>
-                            </depends>
-                            <comment><![CDATA[
-                                        <p>Saiba mais  <a href="https://youtu.be/qs9EBHFBptU">no video</a>.</p>
-                                    ]]>
-                            </comment>
-                            <sort_order>15</sort_order>
-                            <show_in_default>1</show_in_default>
-                        </order_status_pending_payment_tef>
                         
                         <title_config_mage translate="label">
                             <label>Demais configurações</label>
@@ -1341,5 +1209,137 @@
                 </mktplacet_config>
             </groups>
         </moipall>
+        <sales_email translate="label" module="sales">
+            <groups>
+                <order_moip_cancel translate="label">
+                    <label>Moip - Pedido Cancelado</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>100</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enabled translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+                        <identity translate="label">
+                            <label>New Order Confirmation Email Sender</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_identity</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </identity>
+                        <template translate="label">
+                            <label>New Order Confirmation Template</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </template>
+                        <guest_template translate="label">
+                            <label>New Order Confirmation Template for Guest</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </guest_template>
+                        <copy_to translate="label comment">
+                            <label>Send Order Email Copy To</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Comma-separated.</comment>
+                        </copy_to>
+                        <copy_method translate="label">
+                            <label>Send Order Email Copy Method</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_method</source_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </copy_method>
+                    </fields>
+                </order_moip_cancel>
+                <order_moip_pending translate="label">
+                    <label>Moip - Pedido Pendente</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>110</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enabled translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+                        <identity translate="label">
+                            <label>New Order Confirmation Email Sender</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_identity</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </identity>
+                        <template translate="label">
+                            <label>New Order Confirmation Template</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </template>
+                        <guest_template translate="label">
+                            <label>New Order Confirmation Template for Guest</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </guest_template>
+                        <copy_to translate="label comment">
+                            <label>Send Order Email Copy To</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Comma-separated.</comment>
+                        </copy_to>
+                        <copy_method translate="label">
+                            <label>Send Order Email Copy Method</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_method</source_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </copy_method>
+                    </fields>
+                </order_moip_pending>
+            </groups>
+        </sales_email>
     </sections>
 </config>

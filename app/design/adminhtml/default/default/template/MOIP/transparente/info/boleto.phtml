@@ -1,25 +1,28 @@
-<?php
-/* Mage::getModel("sales/order")->getCollection()->getLastItem()->getIncrementId(); */
-if(Mage::app()->getRequest()->getModuleName() != "onestepcheckout" && Mage::app()->getRequest()->getModuleName() != "checkout"){
-?>
-<?php $info = $this->_prepareInfo(); ?>
-	
-		<div class="box-content">
-			<?php if(isset($info['moip_href_boleto'])): ?>	
-				<p><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></p>
-					<p><a  class="button btn-checkout btn-default" title="Finalizar compra"  href="<?php echo  $info['moip_href_boleto']  ?>"  target="_blank" style="
-	    max-width: 200px;">Imprimir Boleto</a></p>
-					<p>Código de Barras</p>
-					<p><input type="text" value="<?php echo $info['moip_linecode_boleto'] ?>" readonly="disable" style="
-	    max-width: 200px; white-space: nowrap;
-	  overflow: hidden;
-	  text-overflow: ellipsis;"></p>
-					<p>Vencimento: <?php echo date('d-m-Y', strtotime($info['moip_expiration_boleto'])) ?></p>
-			<?php else: ?>
-					<p>Não foi possível realizar o pagamento</p>
-			<?php endif; ?>
-		</div>
 
-<?php } else { ?>
-	<?php echo $addtional['formapagamento_moip'] ?>
-<?php } ?>
+	
+	<div class="box-content">
+		<?php $code_line = $this->getMoipLineCode(); ?>
+		<?php if(isset($code_line)): ?>	
+			<a  class="h3" title="Finalizar compra" href="<?php echo  $this->getMoipLinkPrint()   ?>"  
+
+			onclick="
+	            popWin('<?php echo $this->getMoipLinkPrint()  ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">
+	    		<?php echo Mage::helper('transparente')->__('Imprimir Boleto'); ?>
+	        </a>
+			<div>
+				<?php echo Mage::helper('transparente')->__('Código: %s', $this->getMoipLineCode()); ?>
+			</div>
+			<div>
+				<?php echo Mage::helper('transparente')->__('Vencimento: %s', $this->getExpirationDate()); ?>
+			</div>
+			
+			<div>
+				<a  class="h3" title="Finalizar compra" href="<?php echo  $this->viewInMoip()   ?>">
+					<?php echo Mage::helper('transparente')->__('Veja detalhes do pedido na conta Moip'); ?>
+				</a>
+			</div>
+		<?php else: ?>
+				<?php echo Mage::helper('transparente')->__('Não foi possível recuperar a informação do pagamento.'); ?>
+		<?php endif; ?>
+	</div>
+

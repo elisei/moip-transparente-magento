@@ -11,7 +11,9 @@
             
             
             <div class="row">
-                  <?php echo $this->getChildHtml('billing',false,true);?>
+               
+                  <?php echo $this->getChildHtml();?>
+            
             </div>
           
         </div>
@@ -77,60 +79,3 @@
 
 
 
-<script type="text/javascript">
-  
-  var formId = 'onestep_form_identifique';
-    var myForm = new VarienForm(formId, true);
-    var postUrl = "<?php echo Mage::getUrl('onestepcheckout/index/updateemailmsg')?>";
-    function doAjax() {
-        if (myForm.validator.validate()) {
-            
-            new Ajax.Request(
-                 postUrl, {
-                    method:'post',
-                    parameters: "email="+jQuery('#checked-login').val(),
-                    onSuccess:function(response) {
-                        jQuery('#modal-loading-process').modal('toggle');
-                       var responsetxt = response.responseText || "0";
-                    
-                        if(responsetxt==0){
-                          
-                          var target = jQuery("#create-loggin");  
-                          jQuery(target).css('right','-'+jQuery(window).width()+'px');   
-                          var right = jQuery(target).offset().right;
-                          jQuery(target).css({right:right}).animate({"right":"0px"}, "10");
-                          jQuery('#loading-mask').hide();
-                          
-                          jQuery("#create-loggin").addClass('active in');
-                          jQuery('#identifique').removeClass('active', 'in');
-                          jQuery('#checked-login-email').val(jQuery('#checked-login').val());
-                          
-                          
-
-                        }else{
-                          var target = jQuery("#create-account");  
-                          jQuery(target).css('right','-'+jQuery(window).width()+'px');   
-                          var right = jQuery(target).offset().right;
-                          jQuery(target).css({right:right}).animate({"right":"0px"}, "10");
-                          
-                          jQuery('#identifique').removeClass('active', 'in');
-                          jQuery("#create-account").addClass('active in');
-                          jQuery('#billing\\:email').val(jQuery('#checked-login').val());
-                        }
-                    },
-                    onLoading:function(request, json){
-                        jQuery('#modal-loading-process').modal();
-                    },
-                    
-                }
-            );
-        }
-    }
-    
-    new Event.observe(formId, 'submit', function(e){
-        e.stop();
-        doAjax();
-    });
-
-
-</script>

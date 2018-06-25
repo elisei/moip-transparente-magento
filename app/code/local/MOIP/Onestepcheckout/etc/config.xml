@@ -2,7 +2,7 @@
 <config>
     <modules>
         <MOIP_Onestepcheckout>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </MOIP_Onestepcheckout>
     </modules>
     <frontend>
@@ -123,21 +123,12 @@
             <moip_onestepcheckout_setup>
                 <setup>
                     <module>MOIP_Onestepcheckout</module>
+                    <class>Mage_Customer_Model_Resource_Setup</class>
                 </setup>
                 <connection>
                     <use>core_setup</use>
                 </connection>
             </moip_onestepcheckout_setup>
-            <onestepcheckout_write>
-                <connection>
-                    <use>core_write</use>
-                </connection>
-            </onestepcheckout_write>
-            <onestepcheckout_read>
-                <connection>
-                    <use>core_read</use>
-                </connection>
-            </onestepcheckout_read>
         </resources>
         <blocks>
             <onestepcheckout>
@@ -166,67 +157,69 @@
             </checkout_cart_add_product_complete>
         </events>
         <fieldsets>
+            <sales_convert_quote_address>
+                <fee_moip>
+                    <to_order>*</to_order>
+                </fee_moip>
+                <base_fee_moip>
+                    <to_order>*</to_order>
+                </base_fee_moip>
+            </sales_convert_quote_address>
+
+            <sales_convert_quote_item>
+                <fee_moip>
+                    <to_order_item>*</to_order_item>
+                </fee_moip>
+                <base_fee_moip>
+                    <to_order_item>*</to_order_item>
+                </base_fee_moip>
+                <customer_tipopessoa>
+                    <to_quote>*</to_quote>
+                </customer_tipopessoa>
+            </sales_convert_quote_item>
+
             <checkout_onepage_quote>
                 <customer_tipopessoa>
                     <to_customer>tipopessoa</to_customer>
                 </customer_tipopessoa>
-                <customer_nomefantasia>
-                    <to_customer>nomefantasia</to_customer>
-                </customer_nomefantasia>
-                <customer_razaosocial>
-                    <to_customer>razaosocial</to_customer>
-                </customer_razaosocial>
-                <customer_cnpj>
-                    <to_customer>cnpj</to_customer>
-                </customer_cnpj>
-                <customer_insestadual>
-                    <to_customer>insestadual</to_customer>
-                </customer_insestadual>
+                <customer_tipopessoa>
+                    <to_quote>*</to_quote>
+                </customer_tipopessoa>
             </checkout_onepage_quote>
+
+            <checkout_onepage_billing>
+                <customer_tipopessoa>
+                    <to_customer>tipopessoa</to_customer>
+                </customer_tipopessoa>
+                <customer_tipopessoa>
+                    <to_quote>*</to_quote>
+                </customer_tipopessoa>
+            </checkout_onepage_billing>
+
+            <sales_convert_quote>
+                <customer_tipopessoa>
+                    <to_customer>tipopessoa</to_customer>
+                </customer_tipopessoa>
+                <customer_tipopessoa>
+                    <to_quote>*</to_quote>
+                </customer_tipopessoa>
+            </sales_convert_quote>
+
+            <sales_convert_order>
+                <customer_tipopessoa>
+                    <to_customer>tipopessoa</to_customer>
+                </customer_tipopessoa>
+                <customer_tipopessoa>
+                    <to_quote>*</to_quote>
+                </customer_tipopessoa>
+            </sales_convert_order>
+
             <customer_account>
                 <tipopessoa>
                     <to_quote>customer_tipopessoa</to_quote>
                 </tipopessoa>
-                <nomefantasia>
-                    <to_quote>customer_nomefantasia</to_quote>
-                </nomefantasia>
-                <razaosocial>
-                    <to_quote>customer_razaosocial</to_quote>
-                </razaosocial>
-                <cnpj>
-                    <to_quote>customer_cnpj</to_quote>
-                </cnpj>
-                <insestadual>
-                    <to_quote>customer_insestadual</to_quote>
-                </insestadual>
             </customer_account>
-            <customer_account>
-                <tipopessoa>
-                    <create>1</create>
-                    <update>1</update>
-                    <name>1</name>
-                </tipopessoa>
-                <nomefantasia>
-                    <create>1</create>
-                    <update>1</update>
-                    <name>1</name>
-                </nomefantasia>
-                <razaosocial>
-                    <create>1</create>
-                    <update>1</update>
-                    <name>1</name>
-                </razaosocial>
-                <cnpj>
-                    <create>1</create>
-                    <update>1</update>
-                    <name>1</name>
-                </cnpj>
-                <insestadual>
-                    <create>1</create>
-                    <update>1</update>
-                    <name>1</name>
-                </insestadual>
-            </customer_account>
+
         </fieldsets>
     </global>
     <default>

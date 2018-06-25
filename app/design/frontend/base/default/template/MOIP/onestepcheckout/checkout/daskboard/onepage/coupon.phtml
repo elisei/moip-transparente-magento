@@ -22,9 +22,17 @@
                         </div>
                     <?php else: ?>
                            <div class="col-sm-12"> O cupom "<?php echo $this->getCouponCode() ?>" foi aplicado com sucesso! </div>
+                           <input type="hidden" name="remove_cupom" value="1">
                     <?php endif; ?>
                 </div>
             </div>
+            <?php if($this->getCouponCode()): ?>
+            <div class="panel-footer">
+               <button type="button"  onclick="RemoveCupom()" class="btn btn-danger btn-block">
+                 <span><span>REMOVER Cupom</span></span>
+               </button>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

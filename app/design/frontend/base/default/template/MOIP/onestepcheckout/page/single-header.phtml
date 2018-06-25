@@ -29,18 +29,22 @@
 ?>
 <div class="full-container" id="checkout-moip-header">
     <div class="container">
-        <div class="vcenter">
+            <div class="row">
                 <div class="col-lg-3 col-md-3 col-xm-12  col-xs-12">
                     <a href="<?php echo $this->getUrl('') ?>" title="<?php echo $this->getLogoAlt() ?>" class="logo"><img src="<?php echo $this->getLogoSrc() ?>" alt="<?php echo $this->getLogoAlt() ?>" /></a>
                 </div>
-                <div class="col-lg-7 col-md-7 col-xm-12  col-xs-12">
+                <div class="col-lg-6 col-md-6 col-xm-12  col-xs-12">
                     <?php echo $this->getChildHtml('progresso') ?>
                 </div>
-                <div class="col-lg-2 col-md-2 col-xm-12  col-xs-12 hidden-xs">
+                <div class="col-lg-3 col-md-3 col-xm-12  col-xs-12 hidden-xs">
+                    <?php if(Mage::getStoreConfig('onestepcheckout/layout/use_secure')): ?>
                      <a data-toggle="modal" data-target="#store_secure_content" data-toggle="modal" href="javascript:void(0);" title="Loja Segura, confira!">
                         <img src="<?php echo $this->getSkinUrl('MOIP/onestepcheckout/images/loja_segura.jpg'); ?>" class="img-modal-secure">
                       </a>
+                    <?php else: ?>
+                         <img src="<?php echo $this->getSkinUrl('MOIP/onestepcheckout/images/loja_segura.jpg'); ?>" class="img-modal-secure">
+                    <?php endif; ?>
                 </div>
-        </div>
+            </div>
     </div>
 </div>

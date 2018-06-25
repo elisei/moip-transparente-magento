@@ -25,24 +25,24 @@
  */
 ?>
 <?php $_item = $this->getItem()?>
-    
+<div class="list-group-item">
+       
+<div class="row">
 
     <?php if(Mage::getStoreConfig("onestepcheckout/addfield/showimageproduct")):?>
-        <div class="itens-review-image">
-            <?php if(Mage::getStoreConfig("onestepcheckout/addfield/allowremoveproduct")):?>
-                <div class="itens-review-remove">
-                    <a href="javascript:void(0);" title="<?php echo $this->__('Remove item')?>" class="btn-remove " onclick="removeProductId('<?php echo $this->getItem()->getId()?>');">
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    </a>
-                </div>
-            <?php endif?>
-            <img src="<?php echo $this->getProductThumbnail()->resize(175); ?>"  alt="<?php echo $this->htmlEscape($this->getProductName()) ?>" class="img-thumbnail-review"/>            
+        <div class="col-lg-4">
+
+            <div class="itens-review-image">
+                <img src="<?php echo $this->getProductThumbnail()->resize(175); ?>"  alt="<?php echo $this->htmlEscape($this->getProductName()) ?>" class="img-thumbnail-review img-thumbnail"/>            
+            </div>
+            
         </div>
     <?php endif?>
    
-    <div class="col-lg-7">
+    <div class="<?php echo (Mage::getStoreConfig("onestepcheckout/addfield/showimageproduct") ? 'col-lg-8' : '')?>">
+
         <div class="itens-review-name">
-            <?php echo $this->htmlEscape($this->getProductName()) ?>
+            <span><?php echo $this->htmlEscape($this->getProductName()) ?></span>
         </div>
 
         <?php if ($_options = $this->getOptionList()):?>
@@ -70,9 +70,7 @@
                 </div>
             
         <?php endif;?>
-    </div>
-    <div class="col-lg-5">
-        <div class="itens-review-price">
+        <div class="itens-review-price text-small">
             <?php if (Mage::helper('weee')->typeOfDisplay($_item, array(1, 4), 'sales') && $_item->getWeeeTaxAppliedAmount()): ?>
                 <span class="cart-tax-total" onclick="taxToggle('esubtotal-item-tax-details<?php echo $_item->getId(); ?>', this, 'cart-tax-total-expanded');">
             <?php else: ?>
@@ -113,30 +111,48 @@
                 <?php endif; ?>
             <?php endif; ?>
         </div>
-        <div class="itens-review-qty">
-            <?php if(Mage::getStoreConfig("onestepcheckout/addfield/useupdateqty")):?>
-                    <div class="edit-qty">
-                        <div class="input-group">
-                              <span class="input-group-btn hidden-xs">
-                                  <button type="button" class="btn btn-danger btn-number btn-update-qty-review"  data-type="minus" data-field="cart[<?php echo $_item->getId() ?>][qty]" >
-                                    <span class="glyphicon glyphicon-minus"></span>
-                                  </button>
-                              </span>
-                              <input type="tel"  
-                              name="cart[<?php echo $_item->getId() ?>][qty]" 
-                              value="<?php echo $_item->getQty() ?>" size="1" title="Qtd" class="input-moip form-control  valid-digits input-number" data-oldValue="<?php echo $_item->getQty() ?>" max="<?php echo Mage::getStoreConfig("cataloginventory/item_options/max_sale_qty") ?>" min="1" id="cart_<?php echo $_item->getId() ?>_qty">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="itens-review-qty">
+                        <?php if(Mage::getStoreConfig("onestepcheckout/addfield/useupdateqty")):?>
+                            <div class="edit-qty">
+                                <div class="input-group input-group-sm">
+                                      <span class="input-group-btn hidden-xs">
+                                          <button type="button" class="btn btn-danger btn-number btn-update-qty-review"  data-type="minus" data-field="cart[<?php echo $_item->getId() ?>][qty]" >
+                                            <span class="glyphicon glyphicon-minus"></span>
+                                          </button>
+                                      </span>
+                                      <input type="tel"  
+                                      name="cart[<?php echo $_item->getId() ?>][qty]" 
+                                      value="<?php echo $_item->getQty() ?>" size="1" title="Qtd" class="input-moip form-control  valid-digits input-number" data-oldValue="<?php echo $_item->getQty() ?>" max="<?php echo Mage::getStoreConfig("cataloginventory/item_options/max_sale_qty") ?>" min="1" id="cart_<?php echo $_item->getId() ?>_qty">
 
 
-                              <span class="input-group-btn hidden-xs">
-                                  <button type="button" class="btn btn-success btn-number btn-update-qty-review" data-type="plus" data-field="cart[<?php echo $_item->getId() ?>][qty]" >
-                                      <span class="glyphicon glyphicon-plus"></span>
-                                  </button>
-                              </span>
-                        </div>
+                                      <span class="input-group-btn hidden-xs">
+                                          <button type="button" class="btn btn-success btn-number btn-update-qty-review" data-type="plus" data-field="cart[<?php echo $_item->getId() ?>][qty]" >
+                                              <span class="glyphicon glyphicon-plus"></span>
+                                          </button>
+                                      </span>
+                                </div>
+                            </div>
+                        <?php else : ?>
+                            <div class="unid-qty"> <?php echo $_item->getQty() ?> <span class="small">un.</span></div>
+                        <?php endif; ?>
+                </div>
+            </div>
+            <div class="col-lg-4 p-0">
+                <?php if(Mage::getStoreConfig("onestepcheckout/addfield/allowremoveproduct")):?>
+                    <div class="itens-review-remove">
+                        <a href="javascript:void(0);" title="<?php echo $this->__('Remove item')?>" onclick="removeProductId('<?php echo $this->getItem()->getId()?>');">
+                            <small>
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                <?php echo Mage::helper('onestepcheckout')->__('Excluir') ?>
+                            </small>
+                        </a>
                     </div>
-                <?php else : ?>
-                    <div class="unid-qty"> <?php echo $_item->getQty() ?> <span class="small">un.</span></div>
-                <?php endif; ?>
-        </div>  
-    </div> 
+                <?php endif?>
+            </div>
+        </div>
+    </div>
     
+</div>
+</div>

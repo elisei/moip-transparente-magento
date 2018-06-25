@@ -32,12 +32,10 @@ Confira o módulo: http://moip.loja.ninja/
 
 ## Recursos Moip Checkout
 
-*   Opção usar um Pré-Cadastro e identifcação do cliente no checkout
-*   Finalização em 1 passo
+*   Checkout em 2 etapas (identificação e envio e pagamento)
 *   Remoção dos pontos de fuga
 *   Checkout otimizado para aumento da conversão
 *   Validação avançada de campos
-*   4 opções de layout
 *   Personalização avançada via Admin para informações e design da página
 
 ## Saiba mais vendo nossos videos de demonstração
@@ -48,11 +46,6 @@ Confira o módulo: http://moip.loja.ninja/
 
 ### [Moip Pagamentos - V2  - Compra Com 1 Clique](https://youtu.be/6MLxVaV2GSU "Moip Pagamentos - V2  - Compra Com 1 Clique")
 
-### [Moip Checkout - V2 - Configurações de Layout e Opções do Administrador](https://youtu.be/uCSG5O0qFOo "Moip Checkout - V2 - Configurações de Layout e Opções do Administrador")
-
-### [Moip Checkout - V2 - Cadastro de Cliente](https://youtu.be/ieGtLd8cfzA "Moip Checkout - V2 - Cadastro de Cliente")
-
-### [Moip Pagamento - V2 - Widgets para Parcelamento no Magento](https://youtu.be/uCSG5O0qFOo "Moip Pagamento - V2 - Widgets para Parcelamento no Magento")
 
 #DEMO's
 
@@ -74,22 +67,8 @@ Caso queira testar com um cartão de crédito válido use:
 | Hiper       	  | 6062825624254001							   | 123  | 10/20	  |
 | Hipercard       | 6062825624254001							   | 123  | 10/20	  |
 
-Há 4 opções em sistema de multistore:
-
-1. Layout de Checkout em 3 Colunas com a revisão na lateral fechada:
-[http://moip.loja.ninja/default/produtos-para-teste](http://moip.loja.ninja/default/produtos-para-teste)
-
-2. Layout do Checkout em 3 Colunas com a revisão do pedido na lateral e aberta:
-[http://moip.loja.ninja/layout2/produtos-para-teste](http://moip.loja.ninja/layout2/produtos-para-teste)
-
-3. Layout do Checkout em 3 Colunas com a revisão do pedido em baixo:
-[http://moip.loja.ninja/layout3/produtos-para-teste](http://moip.loja.ninja/layout3/produtos-para-teste)
-
-4. Layout do Checkout em 2 Colunas
-[http://moip.loja.ninja/layout4/produtos-para-teste](http://moip.loja.ninja/layout4/produtos-para-teste)
-
 ### Versão
-1.0.0
+2.0.0
 
 
 ### Instalação
@@ -99,6 +78,6 @@ Para instalação  [consulte nossa Wiki](https://github.com/elisei/moip-transpar
 
 
    [fag]: <https://suporte.o2ti.com/>
-   [git-repo-url]: <https://github.com/moip/moip-transparente-magento.git>
+   [git-repo-url]: <https://github.com/elisei/moip-transparente-magento.git>
    [Suporte Magento]: <mailto:magento@moip.com.br?Subject=Suporte%20Magento%20GitHub>
    [zip file]: <moip-transparente-master>

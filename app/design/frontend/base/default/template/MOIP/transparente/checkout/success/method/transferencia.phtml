@@ -1,8 +1,18 @@
-<h2 class="h2"><?php echo $this->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?></h2>
-<p><?php echo $this->__('As informações de seu pedido foram encaminhadas para o seu email <strong>%s</strong>.', $this->getOrder()->getCustomerEmail()) ?></p>
-	<?php $href = $this->getDebitLinks(); ?>
-	<h3 class="h3"><strong><?php echo $this->__('Você será redirecionado ao seu banco.') ?></strong></h3>
-	<div>Você será redirecionado para o seu banco em <strong><span id="count">10</span>s</strong>, para concluir o pagamento</div>
+<?php if(Mage::getStoreConfig('moipall/success_page/detalis')): ?>
+    <h2 class="h2">
+        <?php echo Mage::helper('transparente')->__('Seu pedido foi recebido com <strong>sucesso</strong>'); ?>        
+    </h2>
+    <p>
+        <?php echo Mage::helper('transparente')->__('As informações de seu pedido foram encaminhadas para o seu email <strong>%s</strong>.', $this->getOrder()->getCustomerEmail()) ?>
+    </p>
+<?php endif; ?>
+	<?php $href = $this->getMoipTransfHref(); ?>
+	<h3 class="h3">
+			<?php echo Mage::helper('transparente')->__('Você será redirecionado ao seu banco'); ?>
+	</h3>
+	<div>
+		<?php echo Mage::helper('transparente')->__('Você será redirecionado para o seu banco em <strong><span id="count">10</span>s</strong>, para concluir o pagamento'); ?>
+	</div>
 	<div class="action-payment-secundary">
 		<button type="button" title="Finalizar compra" class="button btn-checkout" onclick="window.location='<?php echo $href ?>'"><span><span>Ir ao Banco <i class="fa fa-arrow-right"></i></span></span></button>
 	</div>
