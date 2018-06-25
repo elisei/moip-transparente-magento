@@ -1,14 +1,9 @@
-<?php    $_product = $this->getProduct(); ?>
-<?php if(!$_product->getIsRecurring()): ?>
-<?php $price =  $_product->getFinalPrice(); ?>
-<?php $parcial =  $this->getParcelamento($price, 'reduzido'); ?>
-<?php $integral = $this->getParcelamento($price, 'integral'); ?>
+<?php $parcial =  $this->getListInstallments('reduzido'); ?>
+<?php $integral = $this->getListInstallments('integral'); ?>
 <?php if($parcial): ?>
-	<div id="parecelas-view" title="Parcelamento no Cartão de Crédito"> <?php echo $this->getParcelamento($price, 'reduzido'); ?></div>
-	
+	<div id="parecelas-view" title="Parcelamento no Cartão de Crédito"><?php echo $parcial ?></div>
 <?php endif ?>
 <?php if($integral): ?>
-	
 	<div class="popover-parcelas-content hidden" >
 		<div class="result-moip-parcelas">
 			<?php $_count = count($integral); ?>
@@ -24,7 +19,6 @@
 		</div>
 
 	</div>
-<?php endif ?>
 	<script type="text/javascript">decorateList('parcelamento_integral')
 	jQuery('#parecelas-view').popover({
 	    content: jQuery('.popover-parcelas-content').html(),
@@ -35,4 +29,3 @@
 	});
 	</script>
 <?php endif ?>
-
