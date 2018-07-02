@@ -304,7 +304,7 @@ textarea#gift-message-whole-message {width: 250px;}
   .vertical-center-moip {
         min-height: 87%;
         min-height: 87vh;
-        display: flex;
+        display: grid;
         align-items: center;
   }
 }

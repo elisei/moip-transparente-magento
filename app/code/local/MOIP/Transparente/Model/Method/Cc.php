@@ -31,8 +31,13 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
 
     public function getCheckout()
     {
-        //erro com admin depois tenho que corrigir. 
-        return Mage::getSingleton('checkout/session');
+        
+        if(!Mage::app()->getStore()->isAdmin()) {
+            return Mage::getSingleton('checkout/session');
+        } else {
+            return Mage::getSingleton('adminhtml/session_quote');
+        }
+
     }
 
     public function getQuote()
@@ -596,10 +601,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                 $address->setBaseGrandTotal($address->getBaseGrandTotal() + $balance);
                 $address->save();    
             }
-        } 
-        
-            
-        
+        }
         return $this;
     }
 }

@@ -12,9 +12,9 @@
         <span class="label-edit-shipping">Cartão</span>
              <div class="col-xs-12">
                 <div class="select-type-cc">
-                    <?php $decode = json_decode($cofre, true); ?>
+                    
                     <div class="btn btn-block" data-toggle="buttons" id="card-save">
-                        <?php foreach ($decode  as $key => $value): ?>
+                        <?php foreach ($cofre  as $key => $value): ?>
                         <?php $cardBrand = $value['moip_card_brand'] ?>
                         <?php $cardNunber = $value['moip_card_id'] ?>
                                 
