@@ -39,11 +39,6 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
         return Mage::getStoreConfigFlag(self::XML_CSRF_USE_FLAG_CONFIG_PATH);
     }
 
-     protected function isFormkeyValidationOnCheckoutEnabled()
-    {
-        return Mage::getStoreConfigFlag('admin/security/validate_formkey_checkout');
-    }
-
     public function cadastroAction() {
 
         $this->_initLayoutMessages('checkout/session');

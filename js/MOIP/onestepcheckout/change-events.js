@@ -227,7 +227,7 @@ SaveAddress = function(id, context){
 			}
 
 		} else {
-			if(context == "billing" || context == 'shipping'){			
+			if(context == "billing" || context == 'shipping' || context == 'new'){			
 				visibilyloading();
 				jQuery.ajax({
 					type: "POST",
@@ -240,9 +240,11 @@ SaveAddress = function(id, context){
 						{    
 							if(result.update == "billing"){
 								jQuery('#endereco-de-cobranca').html(result.html);
-							} else{
+							} else if (result.update == "billing"){
 								jQuery('#endereco-de-envio').html(result.html);
 								saveShipping();
+							} else {
+								window.location.reload();
 							}
 							visibilyloading('end');
 							jQuery("#new-address").modal('hide');
@@ -256,7 +258,6 @@ SaveAddress = function(id, context){
 				});
 			} else if(context == "edit"){
 				//edição de endereço
-				alert("olarrrrr");
 				jQuery("#form-new-address").submit();
 			} else {
 				//criação da conta
@@ -330,9 +331,9 @@ EditAddress = function(isEdit, context) {
 		        success: function(result) {
 		        	if(result.success)
 					{    
-						alert(resul);
+						alert(result);
 					} else {
-						alert(resul);
+						alert(result);
 			        }
 		        }
 		    });

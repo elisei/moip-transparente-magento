@@ -36,8 +36,10 @@ Validation.add('validate-zip-international', 'Entre com um cep válido: 99999-99
 	jQuery(document).ready(function(){
 		if(!address_status){
 			EditAddress(0, "new");
-		} 
-		ChangeEvents();	
+		} else {
+			ChangeEvents();		
+		}
+		
 		Setmask();
 		
 		if(!is_virtual){
