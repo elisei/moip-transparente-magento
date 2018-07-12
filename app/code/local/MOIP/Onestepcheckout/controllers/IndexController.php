@@ -427,6 +427,12 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 
     }
 
+     protected function isFormkeyValidationOnCheckoutEnabled() 
+    { 
+        return Mage::getStoreConfigFlag('admin/security/validate_formkey_checkout'); 
+    } 
+
+
     public function saveShippingAction()
     {
         if ($this->_expireAjax()) {
