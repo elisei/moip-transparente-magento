@@ -227,7 +227,7 @@ SaveAddress = function(id, context){
 			}
 
 		} else {
-			if(context == "billing" || context == 'shipping' || context == 'new'){			
+			if(context == "billing" || context == 'shipping' ){			
 				visibilyloading();
 				jQuery.ajax({
 					type: "POST",
@@ -256,7 +256,7 @@ SaveAddress = function(id, context){
 						}
 					}
 				});
-			} else if(context == "edit"){
+			} else if(context == "edit" || context == 'new'){
 				//edição de endereço
 				jQuery("#form-new-address").submit();
 			} else {

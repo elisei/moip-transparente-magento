@@ -79,7 +79,12 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
         } else {
             $customerForm->compactData($customerData);
             $customer->setPassword($request->getPost('password'));
-            $customer->setPasswordConfirmation($request->getPost('confirmation'));
+            if (version_compare(Mage::getVersion(),"1.9.1.0",">="))
+            {
+                $customer->setPasswordConfirmation($request->getPost('confirmation'));
+            } else {
+                $customer->setConfirmation($request->getPost('confirmation'));
+            }
             $customerErrors = $customer->validate();
             if (is_array($customerErrors)) {
                 $errors = array_merge($customerErrors, $errors);
@@ -222,7 +227,10 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
             $errors = $this->_getCustomerErrors($customer);
 
             if (empty($errors)) {
-                $customer->cleanPasswordsValidationData();
+                if (version_compare(Mage::getVersion(),"1.9.1.0",">="))
+                {
+                    $customer->cleanPasswordsValidationData();
+                }
                 $customer->setPasswordCreatedAt(time());
                 $customer->save();
                 $this->_dispatchRegisterSuccess($customer);
