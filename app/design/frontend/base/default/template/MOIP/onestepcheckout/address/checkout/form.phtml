@@ -31,7 +31,7 @@
               <div class="form-group">
                   <label class="col-sm-12 control-label" for="telephone">Telefone</label>
                   <div class="col-sm-12">
-                      <input type="tel" name="telephone" id="telephone" value="<?php echo $this->htmlEscape($this->getAddress()->getTelephone()) ?>" title="Telefone" class="form-control required-entry validate-tel-national" placeholder="Telefone">
+                      <input type="tel" name="telephone" id="telephone" value="<?php echo $this->htmlEscape($this->getAddress()->getTelephone()) ?>" title="Telefone" class="form-control required-entry validate-tel-brazil" placeholder="Telefone">
                   </div>
               </div>
       </div>
@@ -39,7 +39,7 @@
             <div class="form-group">
                 <label class="col-sm-12 control-label" for="fax">Celular</label>
                 <div class="col-sm-12">
-                    <input type="tel" name="fax" id="fax" value="<?php echo $this->htmlEscape($this->getAddress()->getFax()) ?>" title="Celular" class="form-control validate-cel-national"  placeholder="Celular">
+                    <input type="tel" name="fax" id="fax" value="<?php echo $this->htmlEscape($this->getAddress()->getFax()) ?>" title="Celular" class="form-control validate-tel-brazil"  placeholder="Celular">
 
                 </div>
             </div>
