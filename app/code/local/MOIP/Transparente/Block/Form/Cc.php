@@ -10,8 +10,10 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 
 	protected function _prepareLayout(){
 		if($this->getLayout()->getBlock('head')){
-			$this->getLayout()->getBlock('head')->addJs('MOIP/core/jquery.js');
-        	$this->getLayout()->getBlock('head')->addJs('MOIP/core/jquery_noconflict.js');
+			if(Mage::getStoreConfig('moipall/config/enable_jquery')){
+				$this->getLayout()->getBlock('head')->addJs('MOIP/core/jquery.js');
+        		$this->getLayout()->getBlock('head')->addJs('MOIP/core/jquery_noconflict.js');
+			}
         	$this->getLayout()->getBlock('head')->addJs('MOIP/transparente/moip.js');
         	$block = $this->getLayout()->createBlock('core/template')->setTemplate('MOIP/transparente/form/external_js.phtml');
           	$this->getLayout()->getBlock('content')->append($block);
@@ -33,13 +35,8 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form {
 	public function getInstallmentSelect() {
 		$ammout = $this->getQuote()->getGrandTotal();
 		if($ammout){
-			if(!Mage::getStoreConfig('payment/moip_cc/parcelas_avancadas')){
-				$installment =  Mage::helper('transparente')->getCalcInstallment($ammout);
-			} else {
-				$installment =  Mage::helper('transparente')->getComplexCalcInstallment($ammout);	
-			}
-			
-			
+			$installment =  Mage::helper('transparente')->getCalcInstallment($ammout);
+		
 
 			$installments = array();
          
