@@ -326,7 +326,7 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
             Mage::throwException(Mage::helper('transparente')->__('Encontramos alguns erros no seu cadastro. Por favor, entre em contato com nossa equipe. Erro: %s', $erros_text));
         }
 
-        $json_payment = $this->getApi()->setJsonBoleto();
+        $json_payment = $this->getApi()->setJsonBoleto($order);
         $moip_payment = $this->getApi()->setMoipPayment($json_payment, $moip_order['id']);
 
         if(isset($moip_payment['errors']) || isset($moip_payment['ERROR'])){

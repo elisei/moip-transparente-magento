@@ -857,7 +857,7 @@ class MOIP_Transparente_Model_Api
 
 
 
-    public function setJsonBoleto()
+    public function setJsonBoleto($order)
     {
         
         $NDias = Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto');
@@ -886,7 +886,7 @@ class MOIP_Transparente_Model_Api
         $json           = json_encode($json);
         return $json;
     }
-    public function setJsonTef($info)
+    public function setJsonTef($info, $order)
     {
         $additionaldata = unserialize($info->getAdditionalData());
         $NDias = Mage::getStoreConfig('payment/moip_boleto/vcmentotef');
