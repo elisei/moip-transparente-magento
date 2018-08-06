@@ -34,7 +34,8 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
             $res = array();
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL,$url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       		curl_setopt($ch, CURLOPT_SSLVERSION, 6);
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
             curl_setopt($ch, CURLOPT_NOBODY, true); 
@@ -88,7 +89,8 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array($header, $documento));
 			curl_setopt($ch, CURLOPT_USERAGENT,'MoipMagento/2.0.0');
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       		curl_setopt($ch, CURLOPT_SSLVERSION, 6);
 			$res = curl_exec($ch);
 			$info = curl_getinfo($ch);
 		 	curl_close($ch);
@@ -146,6 +148,7 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 				$store_code = 'default';
 			}
 			if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
+				
 				$oauth =  $this->getOauthAcess($data['code']);
 				$oauth_decode = json_decode($oauth, true);
 				$api->generateLog($oauth_decode['accessToken'], 'MOIP_Oauth.log');
@@ -175,6 +178,20 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 
 
 	public function getOauthAcess($code) {
+
+
+	
+
+		/*$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "https://www.howsmyssl.com/a/check");
+		curl_setopt($ch, CURLOPT_SSLVERSION, 6);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		
+		curl_close($ch);
+*/
+
+
+
 		$api = $this->getApi();
 		$documento = 'Content-Type: application/x-www-form-urlencoded; charset=utf-8';
 		$api->generateLog($code, 'MOIP_Oauth.log');
@@ -205,15 +222,18 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 	      $result = array();
 	      $ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL,$url);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 6000);
+			
+			
 			curl_setopt($ch, CURLOPT_POST, true);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       		curl_setopt($ch, CURLOPT_SSLVERSION, 6);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array($header, $documento));
 			curl_setopt($ch,CURLOPT_USERAGENT,'MoipMagento/2.0.0');
 			$res = curl_exec($ch);
 		 	curl_close($ch);
 		 	$api->generateLog($res, 'MOIP_Oauth.log');
+		 	
 		return $res;
 	}
 
@@ -230,7 +250,8 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 		    }
 		    $result = array();
 		    $ch = curl_init();
-		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       		curl_setopt($ch, CURLOPT_SSLVERSION, 6);
 		    curl_setopt($ch, CURLOPT_URL, $url);
 		    curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
 		    curl_setopt($ch,CURLOPT_USERAGENT,'MoipMagento/2.0.0');

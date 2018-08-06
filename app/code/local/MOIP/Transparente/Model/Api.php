@@ -444,6 +444,7 @@ class MOIP_Transparente_Model_Api
         curl_setopt_array($curl, array(
           CURLOPT_URL => $url,
           CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_SSLVERSION => 6,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
           CURLOPT_TIMEOUT => 30,
@@ -496,6 +497,7 @@ class MOIP_Transparente_Model_Api
         curl_setopt_array($curl, array(
           CURLOPT_URL => $url,
           CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_SSLVERSION => 6,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
           CURLOPT_TIMEOUT => 30,
@@ -549,6 +551,7 @@ class MOIP_Transparente_Model_Api
         curl_setopt_array($curl, array(
           CURLOPT_URL => $url,
           CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_SSLVERSION => 6,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
           CURLOPT_TIMEOUT => 30,
@@ -599,6 +602,7 @@ class MOIP_Transparente_Model_Api
         curl_setopt_array($curl, array(
           CURLOPT_URL => $url,
           CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_SSLVERSION => 6,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
           CURLOPT_TIMEOUT => 30,
@@ -651,6 +655,7 @@ class MOIP_Transparente_Model_Api
         curl_setopt_array($curl, array(
           CURLOPT_URL => $url,
           CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_SSLVERSION => 6,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
           CURLOPT_TIMEOUT => 30,
@@ -703,6 +708,7 @@ class MOIP_Transparente_Model_Api
         curl_setopt_array($curl, array(
           CURLOPT_URL => $url,
           CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_SSLVERSION => 6,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
           CURLOPT_TIMEOUT => 30,
@@ -780,10 +786,9 @@ class MOIP_Transparente_Model_Api
         }
         return $retorno;
     }
-    public function setJsonCc($info, $order)
+        public function setJsonCc($info, $order)
     {
         $additionaldata = unserialize($info->getAdditionalData());
-
         $dob           = Mage::app()->getLocale()->date($order->getCustomerDob(), null, null, false)->toString('Y-MM-dd');
         $dob           = explode('-',$dob);
         $dob_day = $dob[2];
@@ -854,16 +859,11 @@ class MOIP_Transparente_Model_Api
         $json = json_encode($json);
         return $json;
     }
-
-
-
     public function setJsonBoleto($order)
     {
         
         $NDias = Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto');
         $diasUteis = Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto_diasuteis');
-
-
         $json           = array(
             "statementDescriptor" => substr(Mage::getStoreConfig('payment/moip_transparente_standard/apelido'), 0, 13),
             "fundingInstrument" => array(
@@ -882,7 +882,6 @@ class MOIP_Transparente_Model_Api
                     "userAgent" => Mage::helper('core/http')->getHttpUserAgent()
                     )
         );
-
         $json           = json_encode($json);
         return $json;
     }
