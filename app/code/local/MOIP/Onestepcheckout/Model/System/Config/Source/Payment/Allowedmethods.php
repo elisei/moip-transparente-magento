@@ -23,25 +23,23 @@
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
 class MOIP_Onestepcheckout_Model_System_Config_Source_Payment_Allowedmethods extends Mage_Adminhtml_Model_System_Config_Source_Payment_Allmethods
 {
     protected function _getPaymentMethods()
     {
-    	
         return Mage::getSingleton('payment/config')->getActiveMethods();
     }
-	
+
     public function toOptionArray()
     {
-        $methods = array(array('value'=>'', 'label'=>''));
+        $methods = [['value' => '', 'label' => '']];
         $payments = Mage::getSingleton('payment/config')->getActiveMethods();
-        foreach ($payments as $paymentCode=>$paymentModel) {
-            $paymentTitle = Mage::getStoreConfig('payment/'.$paymentCode.'/title');
-            $methods[$paymentCode] = array(
-                'label'   => $paymentTitle,
+        foreach ($payments as $paymentCode => $paymentModel) {
+            $paymentTitle = Mage::getStoreConfig('payment/' . $paymentCode . '/title');
+            $methods[$paymentCode] = [
+                'label' => $paymentTitle,
                 'value' => $paymentCode,
-            );
+            ];
         }
 
         return $methods;

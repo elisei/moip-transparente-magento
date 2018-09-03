@@ -12,7 +12,7 @@ if ($this->getAttribute('customer', 'tipopessoa', 'attribute_id')) {
 //usando padrão do OSC de https://github.com/deivisonarthur/OSC-Magento-Brasil-6-Pro
 
 if (!$this->getAttribute('customer', 'tipopessoa', 'attribute_id')) {
-    $installer->addAttribute('customer', 'tipopessoa', array(
+    $installer->addAttribute('customer', 'tipopessoa', [
         'type' => 'int',
         'input' => 'select', // o ideal seria usar o input como radio mas manteremos o padrão já existente.
         'label' => 'Tipo de Pessoa',
@@ -23,8 +23,8 @@ if (!$this->getAttribute('customer', 'tipopessoa', 'attribute_id')) {
         'sort_order' => 95,
         'visible_on_front' => 1,
         'source' => 'eav/entity_attribute_source_table',
-        'option' => array('values' => array('Física', 'Jurídica')),
-    ));
+        'option' => ['values' => ['Física', 'Jurídica']],
+    ]);
     if (version_compare(Mage::getVersion(), '1.6.0', '<=')) {
         $customer = Mage::getModel('customer/customer');
         $attrSetId = $customer->getResource()->getEntityType()->getDefaultAttributeSetId();
@@ -33,19 +33,19 @@ if (!$this->getAttribute('customer', 'tipopessoa', 'attribute_id')) {
     if (version_compare(Mage::getVersion(), '1.4.2', '>=')) {
         Mage::getSingleton('eav/config')
                 ->getAttribute('customer', 'tipopessoa')
-                ->setData('used_in_forms', array('adminhtml_customer', 'customer_account_create', 'customer_account_edit', 'checkout_register'))
+                ->setData('used_in_forms', ['adminhtml_customer', 'customer_account_create', 'customer_account_edit', 'checkout_register'])
                 ->save();
     }
 }
 if (!$this->getAttribute('customer', 'cnpj', 'attribute_id')) {
-    $installer->addAttribute('customer', 'cnpj', array(
+    $installer->addAttribute('customer', 'cnpj', [
         'input' => 'text',
         'type' => 'varchar',
         'label' => 'CNPJ',
         'visible' => 1,
         'required' => 0,
         'user_defined' => 1,
-    ));
+    ]);
     if (version_compare(Mage::getVersion(), '1.6.0', '<=')) {
         $customer = Mage::getModel('customer/customer');
         $attrSetId = $customer->getResource()->getEntityType()->getDefaultAttributeSetId();
@@ -54,7 +54,7 @@ if (!$this->getAttribute('customer', 'cnpj', 'attribute_id')) {
     if (version_compare(Mage::getVersion(), '1.4.2', '>=')) {
         Mage::getSingleton('eav/config')
                 ->getAttribute('customer', 'cnpj')
-                ->setData('used_in_forms', array('adminhtml_customer', 'customer_account_create', 'customer_account_edit', 'checkout_register'))
+                ->setData('used_in_forms', ['adminhtml_customer', 'customer_account_create', 'customer_account_edit', 'checkout_register'])
                 ->save();
     }
 }

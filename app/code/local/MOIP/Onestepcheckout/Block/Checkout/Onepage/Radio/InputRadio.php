@@ -24,7 +24,6 @@
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-
 /**
  * HTML select element block
  *
@@ -34,49 +33,46 @@
  */
 class MOIP_Onestepcheckout_Block_Checkout_Onepage_Radio_InputRadio extends Mage_Core_Block_Html_Select
 {
-
     protected function _toHtml()
     {
         if (!$this->_beforeToHtml()) {
             return '';
         }
-        $html = "";
-     
+        $html = '';
+
         $values = $this->getValue();
 
-        if (!is_array($values)){
+        if (!is_array($values)) {
             if (!is_null($values)) {
-                $values = array($values);
+                $values = [$values];
             } else {
-                $values = array();
+                $values = [];
             }
         }
 
         $isArrayOption = true;
         foreach ($this->getOptions() as $key => $option) {
             if ($isArrayOption && is_array($option)) {
-                $value  = $option['value'];
-                $label  = (string)$option['label'];
-                $params = (!empty($option['params'])) ? $option['params'] : array();
+                $value = $option['value'];
+                $label = (string)$option['label'];
+                $params = (!empty($option['params'])) ? $option['params'] : [];
             } else {
                 $value = (string)$key;
                 $label = (string)$option;
                 $isArrayOption = false;
-                $params = array();
+                $params = [];
             }
 
-            
-                $html .= $this->_optionToHtml(
-                    array(
+            $html .= $this->_optionToHtml(
+                    [
                         'value' => $value,
                         'label' => $label,
                         'params' => $params
-                    ),
+                    ],
                     in_array($value, $values)
                 );
-            
         }
-     
+
         return $html;
     }
 
@@ -103,13 +99,13 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Radio_InputRadio extends Mage_
             }
         }
 
-        return sprintf('<label class="btn btn-default btn-address %s"><input type="radio" value="%s"%s name="shipping_address_id" %s  class="validate-one-required-by-name radio"/><span class="address-line">%s</span></label>',
+        return sprintf(
+            '<label class="btn btn-default btn-address %s"><input type="radio" value="%s"%s name="shipping_address_id" %s  class="validate-one-required-by-name radio"/><span class="address-line">%s</span></label>',
             $active,
             $this->escapeHtml($option['value']),
             $selectedHtml,
             'onchange="EditAddress(this.value,\'shipping\')"',
-            $option['label']);
+            $option['label']
+        );
     }
-
-
 }

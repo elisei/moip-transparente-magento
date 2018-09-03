@@ -10,12 +10,12 @@ class MOIP_Transparente_Block_Info_Admin extends Mage_Payment_Block_Info
 
     protected function _prepareInfo()
     {
-                $order = $this->getInfo()->getAdditionalData();
-                
-                
-            return unserialize($order);
+        $order = $this->getInfo()->getAdditionalData();
+
+        return unserialize($order);
     }
-      public function getMethodInstance()
+
+    public function getMethodInstance()
     {
         if (!$this->hasMethodInstance()) {
             if ($this->getMethod()) {
@@ -23,6 +23,7 @@ class MOIP_Transparente_Block_Info_Admin extends Mage_Payment_Block_Info
                 if ($instance) {
                     $instance->setInfoInstance($this);
                     $this->setMethodInstance($instance);
+
                     return $instance;
                 }
             }
@@ -31,6 +32,4 @@ class MOIP_Transparente_Block_Info_Admin extends Mage_Payment_Block_Info
 
         return $this->_getData('method_instance');
     }
-
-   
 }

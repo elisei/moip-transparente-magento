@@ -3,21 +3,20 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
 {
     public function __construct()
     {
-        
-       
         parent::__construct();
+
         return $this;
     }
-
-  
 
     public function getApi()
     {
         $api = Mage::getModel('transparente/api');
+
         return $api;
     }
 
-    public function initState($value){
+    public function initState($value)
+    {
         return Mage::getSingleton('transparente/standard')->getConfigData($value);
     }
 
@@ -25,7 +24,7 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
     {
         return $this->getCheckout()->getMoipData();
     }
-    
+
     protected function _expireCart()
     {
         if (!Mage::getSingleton('checkout/session')->getLastRealOrderId()) {
@@ -36,17 +35,19 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
 
     public function getUrlAmbiente()
     {
-        if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste")
-            $url = "https://desenvolvedor.moip.com.br/sandbox/";
-        else
-            $url = "https://www.moip.com.br/";
+        if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == 'teste') {
+            $url = 'https://desenvolvedor.moip.com.br/sandbox/';
+        } else {
+            $url = 'https://www.moip.com.br/';
+        }
+
         return $url;
     }
 
     public function getOrder()
     {
-        $final = "";
-        $orderId       = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+        $final = '';
+        $orderId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         $current_order = Mage::getModel('sales/order')->getCollection()->addFieldToFilter('increment_id', $orderId);
         if ($current_order) {
             foreach ($current_order as $order) {
@@ -54,22 +55,23 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
                 break;
             }
         }
+
         return $final;
     }
 
     public function getChildTemplate()
     {
         $order = $this->getOrder();
-        if($order){
-            $info  = $order->getPayment()->getMethodInstance()->getCode();
-            if ($info == "moip_boleto")
+        if ($order) {
+            $info = $order->getPayment()->getMethodInstance()->getCode();
+            if ($info == 'moip_boleto') {
                 return $this->getChildHtml('transparente.boleto');
-            elseif ($info == "moip_tef")
+            } elseif ($info == 'moip_tef') {
                 return $this->getChildHtml('transparente.transferencia');
-            elseif ($info == "moip_cc")
+            } elseif ($info == 'moip_cc') {
                 return $this->getChildHtml('transparente.cartao');
+            }
         }
-        
     }
 
     protected function getCheckout()

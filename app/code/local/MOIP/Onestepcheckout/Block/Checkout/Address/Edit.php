@@ -41,17 +41,17 @@ class MOIP_Onestepcheckout_Block_Checkout_Address_Edit extends Mage_Directory_Bl
     {
         parent::_prepareLayout();
         $this->_address = Mage::getModel('customer/address');
-        
+
         // Init address object
         if ($id = $this->getRequest()->getParam('id')) {
             $this->_address->load($id);
             if ($this->_address->getCustomerId() != Mage::getSingleton('customer/session')->getCustomerId()) {
-                $this->_address->setData(array());
+                $this->_address->setData([]);
             }
         }
-        
+
         if ($typeform = $this->getRequest()->getParam('typeform')) {
-             $this->_address->setData("typeform", $typeform);
+            $this->_address->setData('typeform', $typeform);
         }
         if (!$this->_address->getId()) {
             $this->_address->setPrefix($this->getCustomer()->getPrefix())
@@ -93,10 +93,10 @@ class MOIP_Onestepcheckout_Block_Checkout_Address_Edit extends Mage_Directory_Bl
         }
         if ($this->getAddress()->getId()) {
             $title = Mage::helper('customer')->__('Edit Address');
-        }
-        else {
+        } else {
             $title = Mage::helper('customer')->__('Add New Address');
         }
+
         return $title;
     }
 
@@ -128,13 +128,13 @@ class MOIP_Onestepcheckout_Block_Checkout_Address_Edit extends Mage_Directory_Bl
             }
             $this->setData('form_data', $data);
         }
+
         return $data;
     }
 
-
     public function getSaveUrl()
     {
-        return Mage::getUrl('customer/address/formPost', array('_secure'=>true, 'id'=>$this->getAddress()->getId()));
+        return Mage::getUrl('customer/address/formPost', ['_secure' => true, 'id' => $this->getAddress()->getId()]);
     }
 
     public function getAddress()
@@ -147,6 +147,7 @@ class MOIP_Onestepcheckout_Block_Checkout_Address_Edit extends Mage_Directory_Bl
         if ($countryId = $this->getAddress()->getCountryId()) {
             return $countryId;
         }
+
         return parent::getCountryId();
     }
 
@@ -165,6 +166,7 @@ class MOIP_Onestepcheckout_Block_Checkout_Address_Edit extends Mage_Directory_Bl
         if (!$this->getAddress()->getId()) {
             return $this->getCustomerAddressCount();
         }
+
         return !$this->isDefaultBilling();
     }
 
@@ -173,18 +175,22 @@ class MOIP_Onestepcheckout_Block_Checkout_Address_Edit extends Mage_Directory_Bl
         if (!$this->getAddress()->getId()) {
             return $this->getCustomerAddressCount();
         }
-        return !$this->isDefaultShipping();;
+
+        return !$this->isDefaultShipping();
+        ;
     }
 
     public function isDefaultBilling()
     {
         $defaultBilling = Mage::getSingleton('customer/session')->getCustomer()->getDefaultBilling();
+
         return $this->getAddress()->getId() && $this->getAddress()->getId() == $defaultBilling;
     }
 
     public function isDefaultShipping()
     {
         $defaultShipping = Mage::getSingleton('customer/session')->getCustomer()->getDefaultShipping();
+
         return $this->getAddress()->getId() && $this->getAddress()->getId() == $defaultShipping;
     }
 

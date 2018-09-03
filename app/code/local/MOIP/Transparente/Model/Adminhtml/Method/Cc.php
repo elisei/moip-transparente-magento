@@ -16,52 +16,60 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
     protected $_canSaveCc = true;
-    protected $_allowCurrencyCode = array('BRL');
+    protected $_allowCurrencyCode = ['BRL'];
     protected $_canFetchTransactionInfo = true;
+
     public function getPayment()
     {
         return $this->getQuote()->getPayment();
     }
+
     public function getSession()
     {
         return Mage::getSingleton('transparente/session');
     }
+
     public function getCheckout()
     {
         return Mage::getSingleton('checkout/session');
     }
+
     public function getQuote()
     {
         return $this->getCheckout()->getQuote();
     }
+
     public function assignData($data)
     {
         if (!($data instanceof Varien_Object)) {
             $data = new Varien_Object($data);
         }
-        $info           = $this->getInfoInstance();
-        $dataNascimento = $data->getMoipCcOwnerExpDay() . "/" . $data->getMoipCcOwnerExpMonth() . "/" . $data->getMoipCcOwnerExpYear();
-        if ($data->getMoipCcPaymentInCofre() == 0)
+        $info = $this->getInfoInstance();
+        $dataNascimento = $data->getMoipCcOwnerExpDay() . '/' . $data->getMoipCcOwnerExpMonth() . '/' . $data->getMoipCcOwnerExpYear();
+        if ($data->getMoipCcPaymentInCofre() == 0) {
             $use_cofre = 1;
-        else
+        } else {
             $use_cofre = 0;
-        $additionaldata = array(
-            'taxdocument_moip' => preg_replace("/[^0-9]/", "", $data->getMoipCcTaxdocument()),
+        }
+        $additionaldata = [
+            'taxdocument_moip' => preg_replace('/[^0-9]/', '', $data->getMoipCcTaxdocument()),
             'installmentcount_moip' => $data->getMoipCcInstallmentCount(),
             'installmentcountcofre_moip' => $data->getMoipCcCountCofre(),
             'phonenumber_moip' => $data->getMoipCcPhoneNumber(),
-            'phoneddd_moip' => preg_replace("/[^0-9]/", "", $data->getMoipCcPhoneCode()),
+            'phoneddd_moip' => preg_replace('/[^0-9]/', '', $data->getMoipCcPhoneCode()),
             'birthdate_moip' => $dataNascimento,
             'hash_moip' => $data->getMoipCcEncrypted(),
             'credit_card_cofre_nb' => (string) $data->getMoipCcCofreNb(),
             'use_cofre' => (int) $use_cofre,
             'credit_card_ccv' => $data->getMoipCcCofreId(),
             'fullname_moip' => $data->getMoipCcOwner()
-        );
+        ];
         $info->setCcType($data->getMoipCcType())->setCcLast4(substr($data->getMoipCcNumber(), -4))->setCcNumber($data->getMoipCcNumber())->setCcExpMonth($data->getMoipCcExpMonth())->setCcExpYear($data->getMoipCcExpYear())->setCcCid($data->getMoipCcCid())->setCcOwner($data->getMoipCcOwner())->setAdditionalData(serialize($additionaldata))->save()->setAdditionalInformation(serialize($additionaldata))->save();
         $this->getMethodJuros();
+
         return $this;
     }
+
     public function prepareSave()
     {
         $info = $this->getInfoInstance();
@@ -70,21 +78,24 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
         }
         $info->setCcCidEnc($info->encrypt($info->getCcCid()));
         $info->setCcNumber(null)->setCcCid(null);
+
         return $this;
     }
+
     public function prepare()
     {
-        $info           = $this->getInfoInstance();
+        $info = $this->getInfoInstance();
         $additionaldata = unserialize($info->getAdditionalData());
-        $session        = Mage::getSingleton('checkout/session');
+        $session = Mage::getSingleton('checkout/session');
         $session->setMoipData($additionaldata);
     }
+
     public function validate()
     {
         parent::validate();
-        $info           = $this->getInfoInstance();
-        $currency_code  = Mage::app()->getStore()->getCurrentCurrencyCode();
-        $errorMsg       = false;
+        $info = $this->getInfoInstance();
+        $currency_code = Mage::app()->getStore()->getCurrentCurrencyCode();
+        $errorMsg = false;
         $additionaldata = unserialize($info->getAdditionalData());
         if ($additionaldata['use_cofre'] == 0) {
             $ccNumber = $info->getCcNumber();
@@ -92,7 +103,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
             $info->setCcNumber($ccNumber);
             $ccType = '';
             if ($this->validateCcNum($ccNumber)) {
-                $ccTypeRegExpList = array(
+                $ccTypeRegExpList = [
                     'VI' => '/^4[0-9]{12}([0-9]{3})?$/',
                     'MC' => '/^5[1-5][0-9]{14}$/',
                     'AE' => '/^3[47][0-9]{13}$/',
@@ -100,9 +111,9 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                     'EO' => '/^([0-9])$/',
                     'HI' => '/^([0-9])$/',
                     'HP' => '/^([0-9])$/'
-                );
-                $specifiedCCType  = $info->getCcType();
-                if ($specifiedCCType == 'VI' || $$specifiedCCType == "MC" || $$specifiedCCType == "AE" || $$specifiedCCType == "DC") {
+                ];
+                $specifiedCCType = $info->getCcType();
+                if ($specifiedCCType == 'VI' || $$specifiedCCType == 'MC' || $$specifiedCCType == 'AE' || $$specifiedCCType == 'DC') {
                     if (array_key_exists($specifiedCCType, $ccTypeRegExpList)) {
                         $ccTypeRegExp = $ccTypeRegExpList[$specifiedCCType];
                         if (!preg_match($ccTypeRegExp, $ccNumber)) {
@@ -110,23 +121,24 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                         }
                     }
                 } else {
-                    if ($specifiedCCType)
-                        $errorMsg = "";
-                    else
+                    if ($specifiedCCType) {
+                        $errorMsg = '';
+                    } else {
                         $errorMsg = Mage::helper('transparente')->__('Ops, não consigo processar o seu cartão confira o número por favor.');
+                    }
                 }
             } else {
                 $errorMsg = Mage::helper('transparente')->__('O número do cartão está inválido');
             }
             if ($errorMsg === false) {
                 $verifcationRegEx = $this->getVerificationRegEx();
-                $regExp           = isset($verifcationRegEx[$info->getCcType()]) ? $verifcationRegEx[$info->getCcType()] : '';
+                $regExp = isset($verifcationRegEx[$info->getCcType()]) ? $verifcationRegEx[$info->getCcType()] : '';
                 if (!$info->getCcCid() || !$regExp || !preg_match($regExp, $info->getCcCid())) {
                     $errorMsg = Mage::helper('transparente')->__('O Código de Segurança (cvv) está inválido');
                 }
             }
             if ($errorMsg === false) {
-                 if (!$info->getCcOwner()) {
+                if (!$info->getCcOwner()) {
                     $errorMsg = Mage::helper('transparente')->__('O nome do portador do cartão não está correto');
                 }
             }
@@ -164,7 +176,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                     $errorMsg = Mage::helper('transparente')->__('Informe o código de segurança do cartão selecionado.');
                 }
             }
-             if ($errorMsg === false) {
+            if ($errorMsg === false) {
                 if (!$additionaldata['installmentcountcofre_moip']) {
                     $errorMsg = Mage::helper('transparente')->__('Selecione o número de parcelas para o pagamento.');
                 }
@@ -173,43 +185,49 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
         if ($errorMsg) {
             Mage::throwException($errorMsg);
         }
+
         return $this;
     }
+
     public function validateCcNum($ccNumber)
     {
         $cardNumber = strrev($ccNumber);
-        $numSum     = 0;
+        $numSum = 0;
         for ($i = 0; $i < strlen($cardNumber); $i++) {
             $currentNum = substr($cardNumber, $i, 1);
             if ($i % 2 == 1) {
                 $currentNum *= 2;
             }
             if ($currentNum > 9) {
-                $firstNum   = $currentNum % 10;
-                $secondNum  = ($currentNum - $firstNum) / 10;
+                $firstNum = $currentNum % 10;
+                $secondNum = ($currentNum - $firstNum) / 10;
                 $currentNum = $firstNum + $secondNum;
             }
             $numSum += $currentNum;
         }
-        return ($numSum % 10 == 0);
+
+        return $numSum % 10 == 0;
     }
+
     public function getVerificationRegEx()
     {
-        $verificationExpList = array(
+        $verificationExpList = [
             'VI' => '/^[0-9]{3}$/',
             'MC' => '/^[0-9]{3}$/',
             'AE' => '/^[0-9]{4}$/',
             'DC' => '/^[0-9]{3}$/',
             'EO' => '/^[0-9]{3}$/',
             'HI' => '/^[0-9]{4}$/'
-        );
+        ];
+
         return $verificationExpList;
     }
+
     public function getValidaCPF($cpf = null)
     {
         if (empty($cpf)) {
             return false;
-        } else if ($cpf == '00000000000' || $cpf == '11111111111' || $cpf == '22222222222' || $cpf == '33333333333' || $cpf == '44444444444' || $cpf == '55555555555' || $cpf == '66666666666' || $cpf == '77777777777' || $cpf == '88888888888' || $cpf == '99999999999') {
+        } elseif ($cpf == '00000000000' || $cpf == '11111111111' || $cpf == '22222222222' || $cpf == '33333333333' || $cpf == '44444444444' || $cpf == '55555555555' || $cpf == '66666666666' || $cpf == '77777777777' || $cpf == '88888888888' || $cpf == '99999999999') {
             return false;
         } else {
             for ($t = 9; $t < 11; $t++) {
@@ -221,71 +239,82 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                     return false;
                 }
             }
+
             return true;
         }
     }
+
     protected function _validateExpDate($expYear, $expMonth)
     {
         $date = Mage::app()->getLocale()->date();
         if (!$expYear || !$expMonth || ($date->compareYear($expYear) == 1) || ($date->compareYear($expYear) == 0 && ($date->compareMonth($expMonth) == 1))) {
             return false;
         }
+
         return true;
     }
+
     public function getApi()
     {
         $api = Mage::getModel('transparente/api');
+
         return $api;
     }
+
     public function getOrderPlaceRedirectUrl()
     {
-        $info                = $this->getInfoInstance();
-        $quote               = $info->getQuote();
-        $additionaldata      = unserialize($info->getAdditionalData());
-        $json_order          = $this->getApi()->getDados($quote);
-        $IdMoip              = $this->getApi()->getOrderIdMoip($json_order);
-        $json_payment        = $this->getApi()->getPaymentJsonCc($info, $quote);
-        $payment             = $this->getApi()->generatePayment($json_payment, $IdMoip);
-        $additionaldataAfter = array(
+        $info = $this->getInfoInstance();
+        $quote = $info->getQuote();
+        $additionaldata = unserialize($info->getAdditionalData());
+        $json_order = $this->getApi()->getDados($quote);
+        $IdMoip = $this->getApi()->getOrderIdMoip($json_order);
+        $json_payment = $this->getApi()->getPaymentJsonCc($info, $quote);
+        $payment = $this->getApi()->generatePayment($json_payment, $IdMoip);
+        $additionaldataAfter = [
             'token_moip' => $json_order,
             'response_moip' => $payment,
             'order_moip' => (string) $IdMoip
-        );
-        $additionaldata      = array_merge($additionaldata, $additionaldataAfter);
+        ];
+        $additionaldata = array_merge($additionaldata, $additionaldataAfter);
         $info->setAdditionalData(serialize($additionaldata))->save();
         $info->setAdditionalInformation(serialize($additionaldata))->save();
         $this->prepare();
         if (isset($payment->errors)) {
             foreach ($payment->errors as $key => $value) {
-                $erros = (string) $value->description . " " . $erros;
+                $erros = (string) $value->description . ' ' . $erros;
             }
             $session = Mage::getSingleton('checkout/session');
             $session->setMoipError($erros);
-            $this->getApi()->generateLog("Erro payment - ".$json_payment, 'MOIP_PaymentError.log');
-            $this->getApi()->generateLog("Erro payment - ".$payment, 'MOIP_PaymentError.log');
-            return Mage::getUrl('transparente/standard/cancel', array(
+            $this->getApi()->generateLog('Erro payment - ' . $json_payment, 'MOIP_PaymentError.log');
+            $this->getApi()->generateLog('Erro payment - ' . $payment, 'MOIP_PaymentError.log');
+
+            return Mage::getUrl('transparente/standard/cancel', [
                 '_secure' => true
-            ));
+            ]);
         } else {
-            return Mage::getUrl('transparente/standard/redirect', array(
+            return Mage::getUrl('transparente/standard/redirect', [
                 '_secure' => true
-            ));
+            ]);
         }
     }
+
     public function getMethodJuros()
     {
-        $quote          = $this->getQuote();
-        $info           = $quote->getPayment();
+        $quote = $this->getQuote();
+        $info = $quote->getPayment();
         $additionaldata = unserialize($info->getAdditionalData());
         if ($additionaldata['installmentcount_moip']) {
             $parcela = $additionaldata['installmentcount_moip'];
         } else {
             $parcela = $additionaldata['installmentcountcofre_moip'];
         }
-        if (!$quote->getFeeAmount())
+        if (!$quote->getFeeAmount()) {
             $juros = $this->setJurosMoip($quote, $parcela);
+        }
+
         return $this;
     }
+
     public function setJurosMoip($quote, $parcela)
     {
         if (!$quote->isVirtual()) {
@@ -293,7 +322,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
         } else {
             $address = $quote->getBillingAddress();
         }
-        $api         = Mage::getSingleton('transparente/api');
+        $api = Mage::getSingleton('transparente/api');
         $total_geral = $address->getGrandTotal();
         if ($address->getFeeAmount() == 0) {
             $address->setFeeAmount(0);
@@ -302,14 +331,15 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
             $juros = $address->getFeeAmount();
             $total = $total_geral - $juros;
             Mage::log('json' . $total, null, 'MOIP_PaymentJsonSend.log', true);
-            $parcelamento   = $api->getParcelamento();
-            $balance        = $parcelamento[$parcela]['total_juros'];
+            $parcelamento = $api->getParcelamento();
+            $balance = $parcelamento[$parcela]['total_juros'];
             $address->setFeeAmount($balance);
             $address->setBaseFeeAmount($balance);
             $address->setGrandTotal($address->getGrandTotal() + $address->getFeeAmount());
             $address->setBaseGrandTotal($address->getBaseGrandTotal() + $address->getBaseFeeAmount());
             $address->save();
         }
+
         return $this;
     }
 }

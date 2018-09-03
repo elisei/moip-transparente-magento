@@ -26,7 +26,6 @@
 
 /**
  * Base payment iformation block
- *
  */
 class MOIP_Transparente_Block_Info_Ccrecurring extends Mage_Payment_Block_Info
 {
@@ -35,34 +34,29 @@ class MOIP_Transparente_Block_Info_Ccrecurring extends Mage_Payment_Block_Info
      *
      * @var Varien_Object
      */
-    
-
     protected function _construct()
     {
         parent::_construct();
         $this->setTemplate('MOIP/transparente/info/ccrecurring.phtml');
     }
 
-  
-     protected function _prepareInfo()
+    protected function _prepareInfo()
     {
-         $order = $this->getInfo()->getOrder();
-         $info_transaction = array();
-         if($order){
-                $order = $this->getInfo()->getOrder();
+        $order = $this->getInfo()->getOrder();
+        $info_transaction = [];
+        if ($order) {
+            $order = $this->getInfo()->getOrder();
 
-                $order = Mage::getModel('sales/order')->load((int)$order->getId());
-                $payment = $order->getPayment()->getId();
-                  $collection = Mage::getModel('sales/order_payment_transaction')->getCollection()
+            $order = Mage::getModel('sales/order')->load((int)$order->getId());
+            $payment = $order->getPayment()->getId();
+            $collection = Mage::getModel('sales/order_payment_transaction')->getCollection()
                 ->addPaymentIdFilter($payment);
 
-            foreach ($collection as $col)
-            {
+            foreach ($collection as $col) {
                 $info_transaction = $col->getAdditionalInformation();
             }
-                
+
             return  $info_transaction;
-         }
-            
+        }
     }
 }

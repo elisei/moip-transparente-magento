@@ -23,7 +23,6 @@
  * @copyright  Copyright (c) 2006-2018 Magento, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
 class MOIP_Onestepcheckout_Block_Checkout_Customer_Tipopessoa extends Mage_Customer_Block_Widget_Abstract
 {
     public function _construct()
@@ -47,9 +46,11 @@ class MOIP_Onestepcheckout_Block_Checkout_Customer_Tipopessoa extends Mage_Custo
         return Mage::getSingleton('customer/session')->getCustomer();
     }
 
-    public function getOptionsValues(){
+    public function getOptionsValues()
+    {
         $attribute = Mage::getModel('eav/config')->getAttribute('customer', 'tipopessoa');
         $allOptions = $attribute->getSource()->getAllOptions(true, true);
+
         return $allOptions;
     }
 }

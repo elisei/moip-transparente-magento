@@ -28,6 +28,7 @@ class MOIP_Transparente_Block_Oneclickbuy_PaymentMethod extends Mage_Payment_Blo
         if ($method = $this->getQuote()->getPayment()->getMethod()) {
             return $method;
         }
+
         return false;
     }
 
@@ -37,7 +38,7 @@ class MOIP_Transparente_Block_Oneclickbuy_PaymentMethod extends Mage_Payment_Blo
      */
     public function getPaymentMethodFormHtml(Mage_Payment_Model_Method_Abstract $method)
     {
-         return $this->getChildHtml('payment.method.' . $method->getCode());
+        return $this->getChildHtml('payment.method.' . $method->getCode());
     }
 
     /**
@@ -51,6 +52,7 @@ class MOIP_Transparente_Block_Oneclickbuy_PaymentMethod extends Mage_Payment_Blo
         if ($form && $form->hasMethodTitle()) {
             return $form->getMethodTitle();
         }
+
         return $method->getTitle();
     }
 
@@ -64,29 +66,29 @@ class MOIP_Transparente_Block_Oneclickbuy_PaymentMethod extends Mage_Payment_Blo
             return $form->getMethodLabelAfterHtml();
         }
     }
-    public function getCofre() {
+
+    public function getCofre()
+    {
         if (Mage::getSingleton('customer/session')->isLoggedIn()) {
             $customerData = Mage::getSingleton('customer/session')->getCustomer();
             $model = Mage::getModel('transparente/transparente');
             $collection = $model->getCollection()
-                            ->addFieldToSelect(array('moip_card_id','moip_card_brand','moip_card_first6','moip_card_last4','moip_card_fullname'))
-                            ->addFieldToFilter('customer_id', array('eq' => $customerData->getId()))
-                            ->addFieldToFilter('moip_card_id', array('neq' => 'NULL'));
+                            ->addFieldToSelect(['moip_card_id', 'moip_card_brand', 'moip_card_first6', 'moip_card_last4', 'moip_card_fullname'])
+                            ->addFieldToFilter('customer_id', ['eq' => $customerData->getId()])
+                            ->addFieldToFilter('moip_card_id', ['neq' => 'NULL']);
             $collection->getSelect()->group('moip_card_id');
-            if($collection->getSize() >= 1){
+            if ($collection->getSize() >= 1) {
                 return $collection;
             } else {
                 return 'false';
             }
-
         } else {
             return 'false';
         }
-
     }
 
-    public function getChildParcelas(){
+    public function getChildParcelas()
+    {
         return  $this->getLayout()->getBlock('moip.oneclickbuy.parcelas')->toHtml();
     }
-
 }

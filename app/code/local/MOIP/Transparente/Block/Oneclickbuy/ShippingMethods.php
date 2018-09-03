@@ -6,7 +6,6 @@ class MOIP_Transparente_Block_Oneclickbuy_ShippingMethods extends Mage_Checkout_
 
     public function getShippingRates()
     {
-
         if (empty($this->_rates)) {
             $this->getAddress()->collectShippingRates()->save();
 
@@ -23,14 +22,16 @@ class MOIP_Transparente_Block_Oneclickbuy_ShippingMethods extends Mage_Checkout_
         if (empty($this->_address)) {
             $this->_address = $this->getQuote()->getShippingAddress();
         }
+
         return $this->_address;
     }
 
     public function getCarrierName($carrierCode)
     {
-        if ($name = Mage::getStoreConfig('carriers/'.$carrierCode.'/title')) {
+        if ($name = Mage::getStoreConfig('carriers/' . $carrierCode . '/title')) {
             return $name;
         }
+
         return $carrierCode;
     }
 

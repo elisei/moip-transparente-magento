@@ -29,131 +29,127 @@
  *
  * @author      Magento Core Team <core@magentocommerce.com>
  */
- 
 class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    const XML_PATH_GUEST_CHECKOUT           = 'checkout/options/guest_checkout';
+    const XML_PATH_GUEST_CHECKOUT = 'checkout/options/guest_checkout';
 
     protected $_agreements = null;
 
-    public function valueForValidate($value, $key){
-
-        $validatevaluesMin = array(
-                                    'postcode'  => '8',
-                                    'street_1'  => '-',
-                                    'street_2'  => '-',
-                                    'street_3'  => '0',
-                                    'street_4'  => '1',
+    public function valueForValidate($value, $key)
+    {
+        $validatevaluesMin = [
+                                    'postcode' => '8',
+                                    'street_1' => '-',
+                                    'street_2' => '-',
+                                    'street_3' => '0',
+                                    'street_4' => '1',
                                     'telephone' => '10',
 
                                     //'region_id' => '1'
-                                );
-        $validatevaluesMax = array(
-                                    'postcode'  => '9',
-                                    'street_1'  => '57',
-                                    'street_2'  => '6',
-                                    'street_3'  => '30',
-                                    'street_4'  => '60',
+                                ];
+        $validatevaluesMax = [
+                                    'postcode' => '9',
+                                    'street_1' => '57',
+                                    'street_2' => '6',
+                                    'street_3' => '30',
+                                    'street_4' => '60',
                                     'telephone' => '14',
 
                                     //'region_id' => '99999'
-                                );
-        if($key != 'street_3'){
-            if(strlen($value) > $validatevaluesMax[$key]){
-                return strlen($value)." está maior que".$validatevaluesMax[$key];
-            } elseif(strlen($value) <= $validatevaluesMin[$key]){
+                                ];
+        if ($key != 'street_3') {
+            if (strlen($value) > $validatevaluesMax[$key]) {
+                return strlen($value) . ' está maior que' . $validatevaluesMax[$key];
+            } elseif (strlen($value) <= $validatevaluesMin[$key]) {
                 return 1;
             } else {
                 return !1;
-            }    
+            }
         } else {
             return !1;
         }
-        
-
     }
-    private function _getRegionId($sigla){ 
-        $region = Mage::getModel('directory/region')->loadByCode($sigla, 'BR'); 
+
+    private function _getRegionId($sigla)
+    {
+        $region = Mage::getModel('directory/region')->loadByCode($sigla, 'BR');
+
         return $region->getRegionId();
-        
     }
 
     private function getValidaCPF($cpf = null)
     {
-        $cpf = preg_replace("/[^0-9]/", "", $cpf);
+        $cpf = preg_replace('/[^0-9]/', '', $cpf);
         $count = strlen($cpf);
-            if (empty($cpf)) {
-                return !1;
-            } elseif ($count != 11) {
-                return !1;
+        if (empty($cpf)) {
+            return !1;
+        } elseif ($count != 11) {
+            return !1;
+        } elseif ($cpf == '00000000000' || $cpf == '11111111111' || $cpf == '22222222222' || $cpf == '33333333333' || $cpf == '44444444444' || $cpf == '55555555555' || $cpf == '66666666666' || $cpf == '77777777777' || $cpf == '88888888888' || $cpf == '99999999999') {
+            return !1;
+        } else {
+            for ($t = 9; $t < 11; $t++) {
+                for ($d = 0, $c = 0; $c < $t; $c++) {
+                    $d += $cpf{$c} * (($t + 1) - $c);
+                }
+                $d = ((10 * $d) % 11) % 10;
+                if ($cpf{$c} != $d) {
+                    return !1;
+                }
             }
 
-             elseif ($cpf == '00000000000' || $cpf == '11111111111' || $cpf == '22222222222' || $cpf == '33333333333' || $cpf == '44444444444' || $cpf == '55555555555' || $cpf == '66666666666' || $cpf == '77777777777' || $cpf == '88888888888' || $cpf == '99999999999') {
-                return !1;
-            } else {
-                for ($t = 9; $t < 11; $t++) {
-                    for ($d = 0, $c = 0; $c < $t; $c++) {
-                        $d += $cpf{$c} * (($t + 1) - $c);
-                    }
-                    $d = ((10 * $d) % 11) % 10;
-                    if ($cpf{$c} != $d) {
-                        return !1;
-                    }
-                }
-                return 1;
-            }
+            return 1;
+        }
     }
 
-    public function validate($billing_id = null, $shipping_id = null, $customer = null){
+    public function validate($billing_id = null, $shipping_id = null, $customer = null)
+    {
         $valido = 1;
-        if($billing_id){
+        if ($billing_id) {
             $billing = Mage::getModel('customer/address')->load($billing_id);
 
-            $data['postcode']     = $billing->getPostcode();
-            $data['street_1']     = $billing->getStreet(1);
-            $data['street_2']     = $billing->getStreet(2);
-            $data['street_3']     = $billing->getStreet(3);
-            $data['street_4']     = $billing->getStreet(4);
-            $data['telephone']    = $billing->getTelephone();
-            $label_campo = array(
-                                        'postcode'  => 'Cep',
-                                        'street_1'  => 'Rua, Avendida, Travessa (Logradouro)',
-                                        'street_2'  => 'Número de sua residência.',
-                                        'street_3'  => 'Complemento de sua residência.',
-                                        'street_4'  => 'Bairro',
+            $data['postcode'] = $billing->getPostcode();
+            $data['street_1'] = $billing->getStreet(1);
+            $data['street_2'] = $billing->getStreet(2);
+            $data['street_3'] = $billing->getStreet(3);
+            $data['street_4'] = $billing->getStreet(4);
+            $data['telephone'] = $billing->getTelephone();
+            $label_campo = [
+                                        'postcode' => 'Cep',
+                                        'street_1' => 'Rua, Avendida, Travessa (Logradouro)',
+                                        'street_2' => 'Número de sua residência.',
+                                        'street_3' => 'Complemento de sua residência.',
+                                        'street_4' => 'Bairro',
                                         'telephone' => 'Telefone',
-                                    );
-            
-            $estado = $this->_getRegionId($billing->getRegionCode());
-            if(!$billing->getRegionId()){
+                                    ];
 
-                if(!$billing->getRegion()){
+            $estado = $this->_getRegionId($billing->getRegionCode());
+            if (!$billing->getRegionId()) {
+                if (!$billing->getRegion()) {
                     $valido = !1;
-                    Mage::getSingleton('core/session')->addError('O campo do endereço, Estado (UF), está inválido.'); 
+                    Mage::getSingleton('core/session')->addError('O campo do endereço, Estado (UF), está inválido.');
                 }
-                
             }
-            
+
             foreach ($data as $key => $value) {
                 $valid = $this->valueForValidate($value, $key);
-                if($valid){
+                if ($valid) {
                     $valido = !1;
-                    Mage::getSingleton('core/session')->addError('O campo '.$label_campo[$key].' está inválido.'); 
+                    Mage::getSingleton('core/session')->addError('O campo ' . $label_campo[$key] . ' está inválido.');
                 }
             }
         }
-        if($customer){
-           $valid = $this->getValidaCPF($customer->getTaxvat());
-           if(!$valid){
-                    $valido = !1;
-                    Mage::getSingleton('core/session')->addError('O campo CPF está inválido.'); 
+        if ($customer) {
+            $valid = $this->getValidaCPF($customer->getTaxvat());
+            if (!$valid) {
+                $valido = !1;
+                Mage::getSingleton('core/session')->addError('O campo CPF está inválido.');
             }
         }
-        
-        
-        return $valido;
 
+        return $valido;
     }
+
     /**
      * Retrieve checkout session model
      *
@@ -179,7 +175,7 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
         return $this->getQuote()->getStore()->formatPrice($price);
     }
 
-    public function convertPrice($price, $format=true)
+    public function convertPrice($price, $format = true)
     {
         return $this->getQuote()->getStore()->convertPrice($price, $format);
     }
@@ -188,7 +184,7 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
     {
         if (is_null($this->_agreements)) {
             if (!Mage::getStoreConfigFlag('checkout/options/enable_agreements')) {
-                $this->_agreements = array();
+                $this->_agreements = [];
             } else {
                 $this->_agreements = Mage::getModel('checkout/agreement')->getCollection()
                     ->addStoreFilter(Mage::app()->getStore()->getId())
@@ -196,6 +192,7 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
                     ->getAllIds();
             }
         }
+
         return $this->_agreements;
     }
 
@@ -212,8 +209,8 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Get sales item (quote item, order item etc) price including tax based on row total and tax amount
      *
-     * @param   Varien_Object $item
-     * @return  float
+     * @param  Varien_Object $item
+     * @return float
      */
     public function getPriceInclTax($item)
     {
@@ -221,15 +218,16 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
             return $item->getPriceInclTax();
         }
         $qty = ($item->getQty() ? $item->getQty() : ($item->getQtyOrdered() ? $item->getQtyOrdered() : 1));
-        $price = (floatval($qty)) ? ($item->getRowTotal() + $item->getTaxAmount())/$qty : 0;
+        $price = (floatval($qty)) ? ($item->getRowTotal() + $item->getTaxAmount()) / $qty : 0;
+
         return Mage::app()->getStore()->roundPrice($price);
     }
 
     /**
      * Get sales item (quote item, order item etc) row total price including tax
      *
-     * @param   Varien_Object $item
-     * @return  float
+     * @param  Varien_Object $item
+     * @return float
      */
     public function getSubtotalInclTax($item)
     {
@@ -237,28 +235,31 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
             return $item->getRowTotalInclTax();
         }
         $tax = $item->getTaxAmount();
+
         return $item->getRowTotal() + $tax;
     }
 
     public function getBasePriceInclTax($item)
     {
         $qty = ($item->getQty() ? $item->getQty() : ($item->getQtyOrdered() ? $item->getQtyOrdered() : 1));
-        $price = (floatval($qty)) ? ($item->getBaseRowTotal() + $item->getBaseTaxAmount())/$qty : 0;
+        $price = (floatval($qty)) ? ($item->getBaseRowTotal() + $item->getBaseTaxAmount()) / $qty : 0;
+
         return Mage::app()->getStore()->roundPrice($price);
     }
 
     public function getBaseSubtotalInclTax($item)
     {
         $tax = ($item->getBaseTaxBeforeDiscount() ? $item->getBaseTaxBeforeDiscount() : $item->getBaseTaxAmount());
-        return $item->getBaseRowTotal()+$tax;
+
+        return $item->getBaseRowTotal() + $tax;
     }
 
     /**
      * Send email id payment was failed
      *
-     * @param Mage_Sales_Model_Quote $checkout
-     * @param string $message
-     * @param string $checkoutType
+     * @param  Mage_Sales_Model_Quote    $checkout
+     * @param  string                    $message
+     * @param  string                    $checkoutType
      * @return Mage_Checkout_Helper_Data
      */
     public function sendPaymentFailedEmail($checkout, $message, $checkoutType = 'onepage')
@@ -279,19 +280,19 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $_reciever = Mage::getStoreConfig('checkout/payment_failed/reciever', $checkout->getStoreId());
-        $sendTo = array(
-            array(
-                'email' => Mage::getStoreConfig('trans_email/ident_'.$_reciever.'/email', $checkout->getStoreId()),
-                'name'  => Mage::getStoreConfig('trans_email/ident_'.$_reciever.'/name', $checkout->getStoreId())
-            )
-        );
+        $sendTo = [
+            [
+                'email' => Mage::getStoreConfig('trans_email/ident_' . $_reciever . '/email', $checkout->getStoreId()),
+                'name' => Mage::getStoreConfig('trans_email/ident_' . $_reciever . '/name', $checkout->getStoreId())
+            ]
+        ];
 
         if ($copyTo && $copyMethod == 'copy') {
             foreach ($copyTo as $email) {
-                $sendTo[] = array(
+                $sendTo[] = [
                     'email' => $email,
-                    'name'  => null
-                );
+                    'name' => null
+                ];
             }
         }
         $shippingMethod = '';
@@ -308,19 +309,19 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
         $items = '';
         foreach ($checkout->getItemsCollection() as $_item) {
             /* @var $_item Mage_Sales_Model_Quote_Item */
-            $items .= $_item->getProduct()->getName() . '  x '. $_item->getQty() . '  '
+            $items .= $_item->getProduct()->getName() . '  x ' . $_item->getQty() . '  '
                     . $checkout->getStoreCurrencyCode() . ' ' . $_item->getProduct()->getFinalPrice($_item->getQty()) . "\n";
         }
         $total = $checkout->getStoreCurrencyCode() . ' ' . $checkout->getGrandTotal();
 
         foreach ($sendTo as $recipient) {
-            $mailTemplate->setDesignConfig(array('area'=>'frontend', 'store'=>$checkout->getStoreId()))
+            $mailTemplate->setDesignConfig(['area' => 'frontend', 'store' => $checkout->getStoreId()])
                 ->sendTransactional(
                     $template,
                     Mage::getStoreConfig('checkout/payment_failed/identity', $checkout->getStoreId()),
                     $recipient['email'],
                     $recipient['name'],
-                    array(
+                    [
                         'reason' => $message,
                         'checkoutType' => $checkoutType,
                         'dateAndTime' => Mage::app()->getLocale()->date(),
@@ -328,11 +329,11 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
                         'customerEmail' => $checkout->getCustomerEmail(),
                         'billingAddress' => $checkout->getBillingAddress(),
                         'shippingAddress' => $checkout->getShippingAddress(),
-                        'shippingMethod' => Mage::getStoreConfig('carriers/'.$shippingMethod.'/title'),
-                        'paymentMethod' => Mage::getStoreConfig('payment/'.$paymentMethod.'/title'),
+                        'shippingMethod' => Mage::getStoreConfig('carriers/' . $shippingMethod . '/title'),
+                        'paymentMethod' => Mage::getStoreConfig('payment/' . $paymentMethod . '/title'),
                         'items' => nl2br($items),
                         'total' => $total
-                    )
+                    ]
                 );
         }
 
@@ -347,6 +348,7 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
         if (!empty($data)) {
             return explode(',', $data);
         }
+
         return false;
     }
 
@@ -364,21 +366,21 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
             return $isMultiShipping;
         }
         $maximunQty = (int)Mage::getStoreConfig('shipping/option/checkout_multiple_maximum_qty');
+
         return $isMultiShipping
             && !$quote->hasItemsWithDecimalQty()
             && $quote->validateMinimumAmount(true)
             && (($quote->getItemsSummaryQty() - $quote->getItemVirtualQty()) > 0)
             && ($quote->getItemsSummaryQty() <= $maximunQty)
-            && !$quote->hasNominalItems()
-        ;
+            && !$quote->hasNominalItems();
     }
 
     /**
      * Check is allowed Guest Checkout
      * Use config settings and observer
      *
-     * @param Mage_Sales_Model_Quote $quote
-     * @param int|Mage_Core_Model_Store $store
+     * @param  Mage_Sales_Model_Quote    $quote
+     * @param  int|Mage_Core_Model_Store $store
      * @return bool
      */
     public function isAllowedGuestCheckout(Mage_Sales_Model_Quote $quote, $store = null)
@@ -391,44 +393,51 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
         if ($guestCheckout == true) {
             $result = new Varien_Object();
             $result->setIsAllowed($guestCheckout);
-            Mage::dispatchEvent('checkout_allow_guest', array(
-                'quote'  => $quote,
-                'store'  => $store,
+            Mage::dispatchEvent('checkout_allow_guest', [
+                'quote' => $quote,
+                'store' => $store,
                 'result' => $result
-            ));
+            ]);
 
             $guestCheckout = $result->getIsAllowed();
         }
 
         return $guestCheckout;
     }
-	public function onlyProductDownloadable(){		
-		$itemProduct=$this->getQuote()->getAllVisibleItems();
-		//echo sizeof($itemProduct);exit;
-		//$istrue;
-		foreach($itemProduct as $item){
-				if($item->getProduct()->getTypeId()!='downloadable' AND $item->getProduct()->getTypeId()!='virtual')
-					return false;
-		}
-		return true;
-	}
-	public function haveProductDownloadable(){		
-		$itemProduct=$this->getQuote()->getAllVisibleItems();
-		foreach($itemProduct as $item){
-				if($item->getProduct()->getTypeId()=='downloadable')
-					return true;
-		}
-		
-		return false;		
-	}	
-	public function issubscribed(){
-		$issubscribe= Mage::getModel('newsletter/subscriber')->loadByCustomer(Mage::getSingleton('customer/session')->getCustomer())->isSubscribed();
-		if(!Mage::getSingleton('customer/session')->isLoggedIn() or !$issubscribe){
-			return true;  
-		}
-		else{
-			return false;
-		}
-	}
-	
+
+    public function onlyProductDownloadable()
+    {
+        $itemProduct = $this->getQuote()->getAllVisibleItems();
+        //echo sizeof($itemProduct);exit;
+        //$istrue;
+        foreach ($itemProduct as $item) {
+            if ($item->getProduct()->getTypeId() != 'downloadable' and $item->getProduct()->getTypeId() != 'virtual') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function haveProductDownloadable()
+    {
+        $itemProduct = $this->getQuote()->getAllVisibleItems();
+        foreach ($itemProduct as $item) {
+            if ($item->getProduct()->getTypeId() == 'downloadable') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function issubscribed()
+    {
+        $issubscribe = Mage::getModel('newsletter/subscriber')->loadByCustomer(Mage::getSingleton('customer/session')->getCustomer())->isSubscribed();
+        if (!Mage::getSingleton('customer/session')->isLoggedIn() or !$issubscribe) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

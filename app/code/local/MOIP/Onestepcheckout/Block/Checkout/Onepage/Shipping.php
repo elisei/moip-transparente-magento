@@ -4,17 +4,17 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Shipping extends Mage_Checkout
     public function getAddressesHtmlSelect($type)
     {
         if ($this->isCustomerLoggedIn()) {
-            $options = array();
+            $options = [];
             foreach ($this->getCustomer()->getAddresses() as $address) {
-                $options[] = array(
+                $options[] = [
                     'value' => $address->getId(),
                     'label' => $address->format('oneline')
-                );
+                ];
             }
 
             $addressId = $this->getAddress()->getCustomerAddressId();
             if (empty($addressId)) {
-                if ($type=='billing') {
+                if ($type == 'billing') {
                     $address = $this->getCustomer()->getPrimaryBillingAddress();
                 } else {
                     $address = $this->getCustomer()->getPrimaryShippingAddress();
@@ -25,11 +25,11 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Shipping extends Mage_Checkout
             }
 
             $select = $this->getLayout()->createBlock('core/html_select')
-                ->setName($type.'_address_id')
-                ->setId($type.'-address-select')
+                ->setName($type . '_address_id')
+                ->setId($type . '-address-select')
                 ->setTitle(Mage::helper('checkout')->__('Endereço de envio'))
                 ->setClass('address-select form-control')
-                ->setExtraParams('onchange="EditAddress(!this.value,\''.$type.'\')"')
+                ->setExtraParams('onchange="EditAddress(!this.value,\'' . $type . '\')"')
                 ->setValue($addressId)
                 ->setOptions($options);
 
@@ -37,25 +37,25 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Shipping extends Mage_Checkout
 
             return $select->getHtml();
         }
+
         return '';
     }
 
     public function getAddressesHtmlInput($type)
     {
-
-       if ($this->isCustomerLoggedIn()) {
-            $options = array();
+        if ($this->isCustomerLoggedIn()) {
+            $options = [];
             foreach ($this->getCustomer()->getAddresses() as $address) {
-                $options[] = array(
+                $options[] = [
                     'value' => $address->getId(),
                     'label' => $address->format('text'),
-                    'params' => 'onchange="EditAddress(this.value,\''.$type.'\')"' 
-                );
+                    'params' => 'onchange="EditAddress(this.value,\'' . $type . '\')"'
+                ];
             }
 
             $addressId = $this->getAddress()->getCustomerAddressId();
             if (empty($addressId)) {
-                if ($type=='billing') {
+                if ($type == 'billing') {
                     $address = $this->getCustomer()->getPrimaryBillingAddress();
                 } else {
                     $address = $this->getCustomer()->getPrimaryShippingAddress();
@@ -66,15 +66,17 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Shipping extends Mage_Checkout
             }
 
             $select = $this->getLayout()->createBlock('onestepcheckout/checkout_onepage_radio_inputRadio')
-                ->setName($type.'_address_id')
-                ->setId($type.'-address-select')
+                ->setName($type . '_address_id')
+                ->setId($type . '-address-select')
                 ->setTitle(Mage::helper('checkout')->__('Endereço de cobrança'))
                 ->setClass('address-select form-control')
-                ->setExtraParams('onchange="EditAddress(this.value,\''.$type.'\')"')
+                ->setExtraParams('onchange="EditAddress(this.value,\'' . $type . '\')"')
                 ->setValue($addressId)
                 ->setOptions($options);
+
             return $select->getHtml();
         }
+
         return '';
     }
 }
