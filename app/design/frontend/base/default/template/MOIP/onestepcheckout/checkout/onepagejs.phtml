@@ -43,6 +43,8 @@ Validation.add('validate-zip-international', 'Entre com um cep válido: 99999-99
 		Setmask();
 		
 		if(!is_virtual){
+			saveShippingMethod();
+			savePaymentMethod();
 			jQuery('#moip_cc_number, #moip_cc_cid, #moip_cc_owner').focus(function() {
 				var selectShipping = jQuery("input[name='shipping_method']:checked").val();
 				if(typeof selectShipping == 'undefined'){

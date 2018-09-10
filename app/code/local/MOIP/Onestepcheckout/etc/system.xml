@@ -85,6 +85,16 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </disable_shop_cart>
+                        <enable_validade translate="label">
+                            <label>Usar validação de endereço e dados cadastrais</label>
+                            <comment>Ao habilitar essa função os dados endereço serão validados antes do cliente ter acesso ao checkout, caso esteja inválidos o cliente precisará editar esses dados antes de prosseguir</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>11</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enable_validade>
                     </fields>
                 </config>
                 <layout translate="label">
@@ -179,7 +189,7 @@
 
 
 
-                        <enable_messagetosystem translate="label">
+                        <!-- <enable_messagetosystem translate="label">
                             <label>Comentários nos pedidos</label>
                             <frontend_type>select</frontend_type>
                             <source_model>onestepcheckout/system_config_source_disablefield</source_model>
@@ -188,7 +198,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <comment>[depreciado, por hora não haverá suporte]Usado pelo cliente para comentar o pedido</comment>
-                        </enable_messagetosystem>
+                        </enable_messagetosystem> -->
                         
                         <usenews translate="label">
                             <label>Inscrição em Newsletter</label>

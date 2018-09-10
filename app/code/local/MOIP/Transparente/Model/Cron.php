@@ -37,9 +37,95 @@ class Moip_Transparente_Model_Cron
 
             foreach($orders as $order){
                  $order =  Mage::getModel('sales/order')->load($order->getEntityId());
-                 //ainda não conclui essa função por favor aguarde... 
-                 //falta dar load na order, consultar status e aplicar...
-                 return $this;
+                 
+                 if($order->getExtOrderId()){
+                    $moip_ord = $order->getExtOrderId();
+                    $payment = $order->getPayment();
+                    $state = $order->getState();
+                    $order_id = $order->getIncrementId();
+                    $order_state = $order->getState();
+
+                    if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
+                        $url = "https://sandbox.moip.com.br/v2/orders/{$moip_ord}";
+                        $oauth = trim(Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev'));
+                        $header = "Authorization: OAuth {$oauth}";
+                    } else {
+                        $url = "https://api.moip.com.br/v2/orders/{$moip_ord}";
+                        $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod') ;
+                        $header = "Authorization: OAuth {$oauth}";
+                        
+                    }
+
+                    $result = array();
+                    $ch     = curl_init();
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                        $header
+                    ));
+                    curl_setopt($ch, CURLOPT_USERAGENT, 'MoipMagento/2.0.0');
+                    $responseBody = curl_exec($ch);
+                    $info_curl = curl_getinfo($ch);
+                    curl_close($ch);
+                    $response_decode = json_decode($responseBody, true);
+                    if($response_decode['status'] == "PAID"){
+                        if($state == Mage_Sales_Model_Order::STATE_NEW){
+                            $this->_getSession()->addSuccess($this->__('O status do pedido %s será atualizado para autorizado.', $order_id));
+                            $change_status = 1;
+                        } elseif($state == Mage_Sales_Model_Order::STATE_HOLDED){ 
+                                $this->_getSession()->addSuccess($this->__('Você precisa liberar o %s antes de atualizar.', $order_id));
+                                $change_status = 0;
+                        } elseif($state == Mage_Sales_Model_Order::STATE_PROCESSING){
+                                $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
+                                $change_status = 0;
+                        } elseif($state == Mage_Sales_Model_Order::STATE_COMPLETE){
+                                $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
+                                $change_status = 0;
+                        } elseif($state == Mage_Sales_Model_Order::STATE_CLOSED){
+                                $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
+                                $change_status = 0;
+                        } elseif($state == Mage_Sales_Model_Order::STATE_CANCELED) {
+                            $this->_getSession()->addError($this->__('O pedido %s se encontra como cancelado em sua loja, no entanto ela está aprovada do moip, será necessário realizar ação manual de reorder e autorizar o novo pedido.', $order_id));
+                            $change_status = 0;
+                        } else {
+                            $this->_getSession()->addError($this->__('Erro, não foi possível analisar o status do pedido %s, por favor verefique no link: https://conta.moip.com.br/orders/%s e atualize manualmente.', $order_id, $moip_ord));
+                        }
+
+                        if($change_status){
+                            $payment->getMethodInstance()->authorize($payment, $amout_moip);
+                        }
+
+                    } elseif ($response_decode['status'] == "NOT_PAID") {
+                        if($state == Mage_Sales_Model_Order::STATE_NEW){
+                            $this->_getSession()->addSuccess($this->__('O status do pedido %s será atualizado para autorizado.', $order_id));
+                            $change_status = 1;
+                        } elseif($state == Mage_Sales_Model_Order::STATE_HOLDED){ 
+                               
+                                $change_status = 0;
+                        } elseif($state == Mage_Sales_Model_Order::STATE_PROCESSING){
+                                $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
+                                $change_status = 0;
+                        } elseif($state == Mage_Sales_Model_Order::STATE_COMPLETE){
+                                $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
+                                $change_status = 0;
+                        } elseif($state == Mage_Sales_Model_Order::STATE_CLOSED){
+                                $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
+                                $change_status = 0;
+                        } elseif($state == Mage_Sales_Model_Order::STATE_CANCELED) {
+                            $this->_getSession()->addSuccess($this->__('O status do pedido %s será atualizado para cancelado.', $order_id));
+                            $change_status = 1;
+                        } else {
+                            $this->_getSession()->addError($this->__('Erro, não foi possível analisar o status do pedido %s, por favor verefique no link: https://conta.moip.com.br/orders/%s e atualize manualmente.', $order_id, $moip_ord));
+                        }
+
+                        if($change_status){
+                            $payment->getMethodInstance()->cancel($payment);
+                        }
+                    } else {
+                        return $this;
+                    }
+                 }
+                 
             }
     }
 

@@ -55,7 +55,7 @@
 					<div class="col-md-12">
 						<label class="control-label label-moip-pg" for="<?php echo $_code ?>_installment_cofre"><?php echo $this->__('Parcelas') ?></label>
 						<select name="payment[<?php echo $_code ?>_count_cofre]"  id="<?php echo $_code ?>_count_cofre" class="form-control validate-select" title="Número de Parcelas de sua Compra - Cofre"  >
-								<option value="" select>Selecione as parcelas</option>
+								<option value="1" selected>Selecione as parcelas</option>
 								<?php $parcelas = $this->getInstallmentSelect(); ?>
 								<?php foreach ( $parcelas as $key => $value) { ?>
 									<?php echo $value; ?>
@@ -169,7 +169,7 @@
 			<div class="col-md-12">
 				<label class="control-label label-moip-pg" for="<?php echo $_code ?>_installment_count"><?php echo $this->__('Parcelas') ?></label>
 				<select name="payment[<?php echo $_code ?>_installment_count]" id="credito_parcelamento" class="required-entry validate-select form-control" title="Número de Parcelas de sua Compra">
-					<option value="" select>Selecione as parcelas</option>
+					<option value="1" selected>Selecione as parcelas</option>
 					<?php $parcelas = $this->getInstallmentSelect(); ?>
 					<?php foreach ( $parcelas as $key => $value) { ?>
 						<?php echo $value; ?>

@@ -6,6 +6,10 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
     const MOIP_AUTHORIZED = 'AUTHORIZED';
     const MOIP_PRE_AUTHORIZED = 'PRE_AUTHORIZED';
     const MOIP_CANCELLED = 'CANCELLED';
+    const MOIP_SETTLED = "SETTLED";
+    const MOIP_WAITING = "WAITING";
+    const MOIP_CREATED = "CREATED";
+    const MOIP_IN_ANALYSIS = "IN_ANALYSIS";
     protected $_code = self::METHOD_CODE;
     protected $_formBlockType = 'transparente/form_boleto';
     protected $_infoBlockType = 'transparente/info_boleto';
@@ -164,12 +168,18 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
         $moip_pay = $details['moip_pay_id'];
         if ($moip_pay) {
             $consult = $this->getApi()->getMoipPayment($moip_pay);
-            if (isset($consult['error']))
+            if(isset($consult['error']))
             {
                 Mage::throwException(Mage::helper('transparente')->__('Ocorreu um erro ao capturar o pedido %s: Msg do erro: %s', $increment_id, $consult['error']));
-            } elseif ($consult['status'] != self::MOIP_AUTHORIZED) {
+            } elseif ($consult['status'] == self::MOIP_CANCELLED) {
                     Mage::throwException(Mage::helper('transparente')->__('O Pedido %s não pode ser capturado pois ainda não foi autorizado na sua conta Moip, por favor aguarde.', $increment_id));
-            } elseif ($consult['status'] == self::MOIP_PRE_AUTHORIZED) { 
+            } elseif ($consult['status'] == self::MOIP_CREATED) {
+                    Mage::throwException(Mage::helper('transparente')->__('O Pedido %s não pode ser capturado pois ainda não foi autorizado na sua conta Moip, por favor aguarde.', $increment_id));
+            } elseif ($consult['status'] == self::MOIP_IN_ANALYSIS) {
+                    Mage::throwException(Mage::helper('transparente')->__('O Pedido %s não pode ser capturado pois ainda não foi autorizado na sua conta Moip, por favor aguarde.', $increment_id));
+            } elseif ($consult['status'] == self::MOIP_WAITING) {
+                    Mage::throwException(Mage::helper('transparente')->__('O Pedido %s não pode ser capturado pois ainda não foi autorizado na sua conta Moip, por favor aguarde.', $increment_id));
+            }  elseif ($consult['status'] == self::MOIP_PRE_AUTHORIZED) { 
                 $capture = $this->getApi()->setMoipCapture($moip_pay);
                     if (isset($capture['error'])) {
                         Mage::throwException(Mage::helper('transparente')->__('Ocorreu um erro ao capturar o pedido %s: Msg do erro: %s', $increment_id, $capture['error']));
@@ -213,12 +223,9 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
         $consult = $this->getApi()->getMoipPayment($moip_pay);
             if (!isset($consult['error']))
             {
-                if ($consult['status'] != self::MOIP_AUTHORIZED)
-                {
+                if ($consult['status'] == self::MOIP_CANCELLED) {
                     Mage::throwException(Mage::helper('transparente')->__('O Pedido %s não pode ser capturado pois ainda não foi autorizado na sua conta Moip, por favor aguarde.', $increment_id));
-                }
-                elseif ($consult['status'] == self::MOIP_PRE_AUTHORIZED)
-                {
+                } elseif ($consult['status'] == self::MOIP_PRE_AUTHORIZED) {
                     $capture = $this->getApi()->setMoipCapture($moip_pay);
                     if (isset($capture['error']))
                     {
@@ -242,7 +249,7 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
                         $order->setIsInProcess(true)->save();
                         $payment->addTransaction($transactionType, null, false, $message);
                     }
-                } else {
+                } elseif ($consult['status'] == self::MOIP_AUTHORIZED || $consult['status'] == self::MOIP_SETTLED) {
                     $payment->setTransactionId($authReferenceId.'-capture');
                     $payment->setParentTransactionId($authReferenceId);
                     $payment->setIsTransactionClosed(false);
@@ -262,6 +269,8 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
                     $payment->addTransaction($transactionType, null, false, $message);
 
                     return $this;
+                } else {
+                     Mage::throwException(Mage::helper('transparente')->__('Ocorreu um erro ao consultar pedido %s: Msg de erro: %s', $increment_id, $consult['error']));
                 }
             }
             else
@@ -366,9 +375,28 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
         $order->setExtOrderId($moip_order_id);
         return $this;
     }
+    
+
+    public function setJurosDisableMoip($quote)
+    {
+        if (!$quote->isVirtual()) {
+            $address = $quote->getShippingAddress();
+        } else {
+            $address = $quote->getBillingAddress();
+        }
+        $address->setFeeMoip(0);
+        $address->setBaseFeeMoip(0);
+        $address->save();
+        $total = $address->getGrandTotal();     
+        $address->setGrandTotal($total + 0);
+        $address->setBaseGrandTotal($total + 0);
+        $address->save();
+        return $this;
+    }
 
     public function assignData($data)
     {
+        $this->setJurosDisableMoip($this->getQuote());
         if (!($data instanceof Varien_Object))
         {
             $data = new Varien_Object($data);

@@ -699,18 +699,22 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 	}
 
 	public function getValidateAddress(){
-		$customer 		= Mage::getSingleton('customer/session')->getCustomer();
-		$billing_id 	= $customer->getDefaultBilling();
-		$shipping_id 	= $customer->getDefaultShipping();
-		$validade = Mage::helper('onestepcheckout')->validate($billing_id, $shipping_id, $customer);
+        if (Mage::getStoreConfig('onestepcheckout/config/enable_validade')) {
+    		$customer 		= Mage::getSingleton('customer/session')->getCustomer();
+    		$billing_id 	= $customer->getDefaultBilling();
+    		$shipping_id 	= $customer->getDefaultShipping();
+    		$validade = Mage::helper('onestepcheckout')->validate($billing_id, $shipping_id, $customer);
 
-		if(!$validade){
-			//'id' => 1,
-			$url_edit_address = Mage::getUrl('checkout/onepage/EditAddress', array('_secure'=>true,'id' =>$billing_id));
-			Mage::app()->getFrontController()->getResponse()->setRedirect($url_edit_address)->sendResponse();
-		} else {
-			return $this;
-		}
+    		if(!$validade){
+    			//'id' => 1,
+    			$url_edit_address = Mage::getUrl('checkout/onepage/EditAddress', array('_secure'=>true,'id' =>$billing_id));
+    			Mage::app()->getFrontController()->getResponse()->setRedirect($url_edit_address)->sendResponse();
+    		} else {
+    			return $this;
+    		}
+        } else {
+            return $this;
+        } 
 	}
 
 	private function _getRegionId($sigla){ 
@@ -1132,8 +1136,95 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 	}
 
 	public function updateordermethodAction() {
-		parent::saveOrderAction();
-		return $this;
+		if (!$this->_validateFormKey()) {
+            $this->_redirect('*/*');
+            return;
+        }
+
+        if ($this->_expireAjax()) {
+            return;
+        }
+
+        $result = array();
+        try {
+            $requiredAgreements = Mage::helper('checkout')->getRequiredAgreementIds();
+            if ($requiredAgreements) {
+                $postedAgreements = array_keys($this->getRequest()->getPost('agreement', array()));
+                $diff = array_diff($requiredAgreements, $postedAgreements);
+                if ($diff) {
+                    $result['success'] = false;
+                    $result['error'] = true;
+                    $result['error_messages'] = $this->__('Please agree to all the terms and conditions before placing the order.');
+                    $this->_prepareDataJSON($result);
+                    return;
+                }
+            }
+
+            $data = $this->getRequest()->getPost('payment', array());
+            if ($data) {
+                $data['checks'] = Mage_Payment_Model_Method_Abstract::CHECK_USE_CHECKOUT
+                    | Mage_Payment_Model_Method_Abstract::CHECK_USE_FOR_COUNTRY
+                    | Mage_Payment_Model_Method_Abstract::CHECK_USE_FOR_CURRENCY
+                    | Mage_Payment_Model_Method_Abstract::CHECK_ORDER_TOTAL_MIN_MAX
+                    | Mage_Payment_Model_Method_Abstract::CHECK_ZERO_TOTAL;
+                $this->getOnepage()->getQuote()->getPayment()->importData($data);
+            }
+
+            $this->getOnepage()->saveOrder();
+
+            $redirectUrl = $this->getOnepage()->getCheckout()->getRedirectUrl();
+            $result['success'] = true;
+            $result['error']   = false;
+        } catch (Mage_Payment_Model_Info_Exception $e) {
+            $message = $e->getMessage();
+            if (!empty($message)) {
+                $result['error_messages'] = $message;
+            }
+            $result['goto_section'] = 'payment';
+            $result['update_section'] = array(
+                'name' => 'payment-method',
+                'html' => $this->_getPaymentMethodsHtml()
+            );
+        } catch (Mage_Core_Exception $e) {
+            Mage::logException($e);
+            Mage::helper('checkout')->sendPaymentFailedEmail($this->getOnepage()->getQuote(), $e->getMessage());
+            $result['success'] = false;
+            $result['error'] = true;
+            $result['error_messages'] = $e->getMessage();
+
+            $gotoSection = $this->getOnepage()->getCheckout()->getGotoSection();
+            if ($gotoSection) {
+                $result['goto_section'] = $gotoSection;
+                $this->getOnepage()->getCheckout()->setGotoSection(null);
+            }
+            $updateSection = $this->getOnepage()->getCheckout()->getUpdateSection();
+            if ($updateSection) {
+                if (isset($this->_sectionUpdateFunctions[$updateSection])) {
+                    $updateSectionFunction = $this->_sectionUpdateFunctions[$updateSection];
+                    $result['update_section'] = array(
+                        'name' => $updateSection,
+                        'html' => $this->$updateSectionFunction()
+                    );
+                }
+                $this->getOnepage()->getCheckout()->setUpdateSection(null);
+            }
+        } catch (Exception $e) {
+            Mage::logException($e);
+            Mage::helper('checkout')->sendPaymentFailedEmail($this->getOnepage()->getQuote(), $e->getMessage());
+            $result['success']  = false;
+            $result['error']    = true;
+            $result['error_messages'] = $this->__('There was an error processing your order. Please contact us or try again later.');
+        }
+        $this->getOnepage()->getQuote()->save();
+        /**
+         * when there is redirect to third party, we don't want to save order yet.
+         * we will save the order in return action.
+         */
+        if (isset($redirectUrl)) {
+            $result['redirect'] = $redirectUrl;
+        }
+
+        $this->_prepareDataJSON($result);
 	}
 
 

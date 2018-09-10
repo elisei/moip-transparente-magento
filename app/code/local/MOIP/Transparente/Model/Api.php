@@ -34,6 +34,24 @@ class MOIP_Transparente_Model_Api
     {
         return $this->getCheckout()->getQuote();
     }
+    public function getEnvirommentUrl(){
+        if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
+            $urlapi = self::ENDPOINT_TEST;
+        } else {
+            $urlapi = self::ENDPOINT_PROD;
+        }
+        return $urlapi;
+    }
+    public function getHeaderAuthorization(){
+        if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
+            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
+            $header = "Authorization: OAuth " . $oauth;
+        } else {
+            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
+            $header = "Authorization: OAuth " . $oauth;
+        }
+        return $header;
+    }
     public function getAppId($type){
         if($type == "prod"){
             if(Mage::getStoreConfig('payment/moip_transparente_standard/type_app') == "d14"){

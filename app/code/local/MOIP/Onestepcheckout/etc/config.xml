@@ -232,6 +232,7 @@
                 <allowregister>1</allowregister>
                 <enable_buscacep>1</enable_buscacep>
                 <enable_pj>1</enable_pj>
+                <enable_validade>1</enable_validade>
             </config>
             <layout>
                 <page_titulo>Pagamento</page_titulo>

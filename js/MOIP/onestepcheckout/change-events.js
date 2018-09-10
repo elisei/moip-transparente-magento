@@ -27,7 +27,11 @@ IdentifyUser = function(){
 			evalScripts:true,
 			type: "POST",
 			data: jQuery("#onestep_form_identify").serialize(),
+			beforeSend: function(){
+				visibilyloading();
+			},
 			success: function(result) {
+				visibilyloading("end");
 				if(result.is_user){
 
 					jQuery('#isCustomer').html(result.html);
@@ -63,7 +67,11 @@ Authenticate = function(){
 			url: url_authenticate,
 			type: "POST",
 			data: jQuery("#form-loggin").serialize(),
+			beforeSend: function(){
+				visibilyloading();
+			},
 			success: function(result) {
+				visibilyloading('end');
 				if(result.success){
 					location.href = encodeURI(result.redirect);
 				} else {
@@ -104,6 +112,9 @@ savePaymentMethod = function() {
 		evalScripts:true,
 		type: "POST",
 		data: jQuery("#onestep_form").serialize(),
+		beforeSend: function() {
+			jQuery(".moip-place-order").hide();
+		},
 		success: function(result) {
 			if(result.success){
 				jQuery('#totals').html(result.html);	
@@ -112,6 +123,9 @@ savePaymentMethod = function() {
 			}
 			
 			
+		},
+		complete: function() {
+			jQuery(".moip-place-order").show();
 		},
 	});
 	return this;
@@ -124,17 +138,33 @@ saveShippingMethod = function(){
 		async: true,
 		evalScripts:true,
 		data: jQuery("#onestep_form").serialize(),
+		beforeSend: function() {
+			jQuery("#payment-progress").removeClass('hidden-it');
+			jQuery("#co-payment-form").hide();
+			jQuery(".moip-place-order").hide();
+
+		},
 		success: function(result){
-			if(result.success){
-				jQuery("#payment-method-available").html(result.html);
-				jQuery('html, body').animate({
-					scrollTop: jQuery("#meio-de-pagamento").offset().top
-				}, 2000);
+			jQuery(".moip-place-order").show();
+			jQuery("#payment-progress").addClass('hidden-it');
+			jQuery("#co-payment-form").show();
+			if(result){
+				if(result.success){
+					jQuery("#payment-method-available").html(result.html);
+					jQuery('html, body').animate({
+						scrollTop: jQuery("#meio-de-pagamento").offset().top
+					}, 2000);
+				}
+				if(result.totals){
+					jQuery('#totals').html(result.totals);
+				}
 			}
-			if(result.totals){
-				jQuery('#totals').html(result.totals);
-			}
-		}
+		},
+		complete: function() {
+			jQuery("#payment-progress").addClass('hidden-it');
+			jQuery("#co-payment-form").show();
+			jQuery(".moip-place-order").show();
+		},
 	})
 	return this;
 }
@@ -257,7 +287,7 @@ SaveAddress = function(id, context){
 					}
 				});
 			} else if(context == "edit" || context == 'new'){
-				//edição de endereço
+				visibilyloading();
 				jQuery("#form-new-address").submit();
 			} else {
 				//criação da conta
@@ -278,12 +308,18 @@ EditAddress = function(isEdit, context) {
 		        data: jQuery("#onestep_form").serialize(),
 		        evalScripts:true,
 		        dataType: "json",
+		        beforeSend: function(){
+		        	jQuery("#shipping-progress").removeClass('hidden-it');
+		        	jQuery("#shipping-method-available").addClass('hidden-it');
+		        },
 		        success: function(result) {
 		        	if(result.success)
 					{    
 						if(result.update == "billing"){
 							jQuery('#payment-method-available').html(result.html);
 						} else{
+							jQuery("#shipping-progress").addClass('hidden-it');
+							jQuery("#shipping-method-available").removeClass('hidden-it');
 							jQuery('#shipping-method-available').html(result.html);
 						}
 						if(result.totals){
@@ -583,7 +619,8 @@ updateOrderMethod = function() {
 		},
 		fail:function() {
 			location.reload();
-		},
+		}
+
 	});
 };
 ChangeEvents = function(){
@@ -773,6 +810,7 @@ updateQty = function(){
 PayamentChange = function(){
 	var payment = new Payment('co-payment-form', set_payment_form);
        	payment.init();
+
         PaymentFormActive();
 	jQuery("input[name='payment[method]']").on('change', function () {
 		savePaymentMethod();

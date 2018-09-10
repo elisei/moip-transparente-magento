@@ -5,6 +5,10 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
     const MOIP_AUTHORIZED = 'AUTHORIZED';
     const MOIP_PRE_AUTHORIZED = 'PRE_AUTHORIZED';
     const MOIP_CANCELLED = 'CANCELLED';
+    const MOIP_SETTLED = "SETTLED";
+    const MOIP_WAITING = "WAITING";
+    const MOIP_CREATED = "CREATED";
+    const MOIP_IN_ANALYSIS = "IN_ANALYSIS";
     protected $_code = self::METHOD_CODE;
     protected $_formBlockType = 'transparente/form_cc';
     protected $_infoBlockType = 'transparente/info_cc';
@@ -175,9 +179,15 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
             if (isset($consult['error']))
             {
                 Mage::throwException(Mage::helper('transparente')->__('Ocorreu um erro ao capturar o pedido %s: Msg do erro: %s', $increment_id, $consult['error']));
-            } elseif ($consult['status'] != self::MOIP_AUTHORIZED) {
+            } elseif ($consult['status'] == self::MOIP_CANCELLED) {
                     Mage::throwException(Mage::helper('transparente')->__('O Pedido %s não pode ser capturado pois ainda não foi autorizado na sua conta Moip, por favor aguarde.', $increment_id));
-            } elseif ($consult['status'] == self::MOIP_PRE_AUTHORIZED) { 
+            } elseif ($consult['status'] == self::MOIP_CREATED) {
+                    Mage::throwException(Mage::helper('transparente')->__('O Pedido %s não pode ser capturado pois ainda não foi autorizado na sua conta Moip, por favor aguarde.', $increment_id));
+            } elseif ($consult['status'] == self::MOIP_IN_ANALYSIS) {
+                    Mage::throwException(Mage::helper('transparente')->__('O Pedido %s não pode ser capturado pois ainda não foi autorizado na sua conta Moip, por favor aguarde.', $increment_id));
+            } elseif ($consult['status'] == self::MOIP_WAITING) {
+                    Mage::throwException(Mage::helper('transparente')->__('O Pedido %s não pode ser capturado pois ainda não foi autorizado na sua conta Moip, por favor aguarde.', $increment_id));
+            }  elseif ($consult['status'] == self::MOIP_PRE_AUTHORIZED) { 
                 $capture = $this->getApi()->setMoipCapture($moip_pay);
                     if (isset($capture['error'])) {
                         Mage::throwException(Mage::helper('transparente')->__('Ocorreu um erro ao capturar o pedido %s: Msg do erro: %s', $increment_id, $capture['error']));
@@ -223,12 +233,9 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
         $consult = $this->getApi()->getMoipPayment($moip_pay);
             if (!isset($consult['error']))
             {
-                if ($consult['status'] != self::MOIP_AUTHORIZED)
-                {
+                if ($consult['status'] == self::MOIP_CANCELLED) {
                     Mage::throwException(Mage::helper('transparente')->__('O Pedido %s não pode ser capturado pois ainda não foi autorizado na sua conta Moip, por favor aguarde.', $increment_id));
-                }
-                elseif ($consult['status'] == self::MOIP_PRE_AUTHORIZED)
-                {
+                } elseif ($consult['status'] == self::MOIP_PRE_AUTHORIZED) {
                     $capture = $this->getApi()->setMoipCapture($moip_pay);
                     if (isset($capture['error']))
                     {
@@ -252,7 +259,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                         $order->setIsInProcess(true)->save();
                         $payment->addTransaction($transactionType, null, false, $message);
                     }
-                } else {
+                } elseif ($consult['status'] == self::MOIP_AUTHORIZED || $consult['status'] == self::MOIP_SETTLED) {
                     $payment->setTransactionId($authReferenceId.'-capture');
                     $payment->setParentTransactionId($authReferenceId);
                     $payment->setIsTransactionClosed(false);
@@ -272,10 +279,10 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                     $payment->addTransaction($transactionType, null, false, $message);
 
                     return $this;
+                } else {
+                     Mage::throwException(Mage::helper('transparente')->__('Ocorreu um erro ao consultar pedido %s: Msg de erro: %s', $increment_id, $consult['error']));
                 }
-            }
-            else
-            {
+            } else {
                 Mage::throwException(Mage::helper('transparente')->__('Ocorreu um erro ao consultar pedido %s: Msg de erro: %s', $increment_id, $consult['error']));
             }
 
