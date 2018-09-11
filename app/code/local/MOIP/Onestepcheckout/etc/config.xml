@@ -134,11 +134,11 @@
             <onestepcheckout>
                 <class>MOIP_Onestepcheckout_Block</class>
             </onestepcheckout>
-            <adminhtml>
+           <!--  <adminhtml>
                 <rewrite>
                     <sales_order_grid>MOIP_Onestepcheckout_Block_Adminhtml_Onestepcheckout_Sales_Order_Grid_Column</sales_order_grid>
                 </rewrite>
-            </adminhtml>
+            </adminhtml> -->
         </blocks>
         <helpers>
             <onestepcheckout>

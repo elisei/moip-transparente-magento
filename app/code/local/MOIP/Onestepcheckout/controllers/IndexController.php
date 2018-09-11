@@ -742,9 +742,12 @@ class MOIP_Onestepcheckout_IndexController extends Mage_Checkout_OnepageControll
 			if($responseBody){
 				$endereco = Mage::helper('core')->jsonDecode($responseBody);
 				$endereco['ufid'] = $this->_getRegionId($endereco['uf']);
-				$this->getResponse()->setBody(Mage::helper('core')->jsonEncode((object)$endereco));
+                $this->_prepareDataJSON($endereco);
 			} else {
-				$this->getResponse()->setBody('Correios indisponível');
+                
+                $endereco = array('error' => true);
+                $this->_prepareDataJSON($endereco);
+				
 			}
 		}
 	}

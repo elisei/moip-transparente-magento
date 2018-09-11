@@ -97,9 +97,17 @@ getErroDescription = function(){
 	});
 	return this;
 }
+loadingInButton = function(type){
 
-visibilyloading  = function(process){
-	if(process != 'end'){
+		if(type != 'end'){
+			jQuery('.moip-place-order').addClass('progress-bar progress-bar-striped active').css('width','100%').prop('disabled', true);
+		} else {
+			jQuery('.moip-place-order').removeClass('progress-bar progress-bar-striped active').prop('disabled', false);
+		}
+	
+}
+visibilyloading  = function(type){
+	if(type != 'end'){
 		jQuery("#modal-loading-process").modal({backdrop: 'static', keyboard: false});	
 	} else {
 		jQuery("#modal-loading-process").modal("toggle");
@@ -113,19 +121,18 @@ savePaymentMethod = function() {
 		type: "POST",
 		data: jQuery("#onestep_form").serialize(),
 		beforeSend: function() {
-			jQuery(".moip-place-order").hide();
+			loadingInButton('start');
 		},
 		success: function(result) {
-			if(result.success){
-				jQuery('#totals').html(result.html);	
-			} else {
-				alert(result.error);
+			loadingInButton('end');
+			if(result){
+				if(result.success){
+					jQuery('#totals').html(result.html);	
+				} 
 			}
-			
-			
 		},
 		complete: function() {
-			jQuery(".moip-place-order").show();
+			loadingInButton('end');
 		},
 	});
 	return this;
@@ -140,14 +147,14 @@ saveShippingMethod = function(){
 		data: jQuery("#onestep_form").serialize(),
 		beforeSend: function() {
 			jQuery("#payment-progress").removeClass('hidden-it');
-			jQuery("#co-payment-form").hide();
-			jQuery(".moip-place-order").hide();
+			jQuery("#co-payment-form").addClass('hidden-it');
+			loadingInButton('start');
 
 		},
 		success: function(result){
-			jQuery(".moip-place-order").show();
 			jQuery("#payment-progress").addClass('hidden-it');
-			jQuery("#co-payment-form").show();
+			jQuery("#co-payment-form").removeClass('hidden-it');
+			loadingInButton('end');
 			if(result){
 				if(result.success){
 					jQuery("#payment-method-available").html(result.html);
@@ -162,8 +169,8 @@ saveShippingMethod = function(){
 		},
 		complete: function() {
 			jQuery("#payment-progress").addClass('hidden-it');
-			jQuery("#co-payment-form").show();
-			jQuery(".moip-place-order").show();
+			jQuery("#co-payment-form").removeClass('hidden-it');
+			loadingInButton('end');
 		},
 	})
 	return this;
@@ -176,8 +183,12 @@ saveShipping = function(){
 		url: url_save_shipping,
 		data: jQuery("#onestep_form").serialize(),
 		evalScripts:true,
+		beforeSend: function(){
+			loadingInButton('start');
+		},
 		success: function(result){
 			if(result.success){
+				loadingInButton('stop');
 				jQuery("#shipping-progress").addClass('hidden-it');
 				jQuery("#shipping-method-available").html(result.html);
 				jQuery('html, body').animate({
@@ -221,8 +232,9 @@ SaveAddress = function(id, context){
 								jQuery('#endereco-de-envio').html(result.html);
 								saveShipping();
 							}
+							
+							jQuery("#new-address").modal('toggle');
 							visibilyloading('end');
-							jQuery("#new-address").modal('hide');
 							
 						} else {
 							visibilyloading('end');
@@ -277,7 +289,7 @@ SaveAddress = function(id, context){
 								window.location.reload();
 							}
 							visibilyloading('end');
-							jQuery("#new-address").modal('hide');
+							jQuery("#new-address").modal('toggle');
 							
 						} else {
 							
@@ -313,23 +325,26 @@ EditAddress = function(isEdit, context) {
 		        	jQuery("#shipping-method-available").addClass('hidden-it');
 		        },
 		        success: function(result) {
-		        	if(result.success)
-					{    
-						if(result.update == "billing"){
-							jQuery('#payment-method-available').html(result.html);
-						} else{
-							jQuery("#shipping-progress").addClass('hidden-it');
-							jQuery("#shipping-method-available").removeClass('hidden-it');
-							jQuery('#shipping-method-available').html(result.html);
-						}
-						if(result.totals){
-							
-							jQuery('#totals').html(result.totals);
-						}
-					} else {
-						alert(result.error);
-						window.location.reload();
-			        }
+		        	if(result) {
+		        		if(result.success)
+						{    
+							if(result.update == "billing"){
+								jQuery('#payment-method-available').html(result.html);
+							} else{
+								jQuery("#shipping-progress").addClass('hidden-it');
+								jQuery("#shipping-method-available").removeClass('hidden-it');
+								jQuery('#shipping-method-available').html(result.html);
+							}
+							if(result.totals){
+								
+								jQuery('#totals').html(result.totals);
+							}
+						} else {
+							alert(result.error);
+							window.location.reload();
+				        }
+		        	}
+		        	
 		        }
 		    });
 		} else if (context == "billing"){
@@ -601,9 +616,12 @@ updateOrderMethod = function() {
 	jQuery.ajax({
 		type: "POST",
 		url: updateordermethodurl,
-		data: jQuery("#onestep_form").serialize(),			
+		data: jQuery("#onestep_form").serialize(),
+		beforeSend: function(){
+			loadingInButton('start');
+		},		
 		success: function(result) {
-			jQuery(".moip-place-order").show();
+			loadingInButton('end');
 			if(result.error == 1){
 				jQuery(".erros_cadastro_valores").append('<li> - '+result.error_messages+'</li>');
 				visibilyloading('end');
@@ -651,7 +669,6 @@ ChangeEvents = function(){
 	jQuery('.moip-place-order').bind("click",function(e){
 		e.preventDefault();
 		visibilyloading();
-		jQuery(".moip-place-order").hide();
 		var form = new VarienForm('onestep_form', true);
 		if(form.validator.validate())	{
 			updateOrderMethod();
@@ -685,14 +702,8 @@ buscarEndereco = function(whatform) {
 			street_4.attr('placeholder', 'Buscando Endereço');
 			city.attr('placeholder', 'Buscando Endereço');
 		},
-		success: function(data){
-			if(data){
-				var addressData = jQuery.parseJSON(data);
-				if(addressData.logradouro != "undefined"){
-					street_1.attr('placeholder', 'Rua');
-					street_2.attr('placeholder', 'N.º');
-					street_4.attr('placeholder', 'Bairro');
-					city.attr('placeholder', 'Cidade');
+		success: function(addressData){
+			if(!addressData.error){
 					street_1.val(addressData.logradouro);
 					street_4.val(addressData.bairro);
 					city.val(addressData.cidade);
@@ -701,29 +712,21 @@ buscarEndereco = function(whatform) {
 					street_4.focus();
 					city.focus();
 					region.focus();
-				}else {
-					street_1.val('');
-					street_4.val('');
-					city.val('');
-					street_1.attr('placeholder', 'Rua');
-					street_2.attr('placeholder', 'N.º');
-					street_4.attr('placeholder', 'Bairro');
-					city.attr('placeholder', 'Cidade');
-				}
-				
+					street_2.focus();
 			} else {
-				street_1.attr('placeholder', 'Rua');
-				street_2.attr('placeholder', 'N.º');
-				street_4.attr('placeholder', 'Bairro');
-				city.attr('placeholder', 'Cidade');
+				street_1.val('');
+				street_4.val('');
+				city.val('');
+				region.val('');
+				street_1.focus();
 			}
-			street_2.focus();
 		},
 		error: function(){
-			jQuery(street_1).val("");
-			jQuery(street_4).val("");
-			jQuery(city).val("");
-			jQuery(region).val("");
+			street_1.val('');
+			street_4.val('');
+			city.val('');
+			region.val('');
+			street_1.focus();
 		},
 	});
 }
