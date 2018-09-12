@@ -483,8 +483,10 @@ class MOIP_Transparente_Model_Api
         curl_close($curl);
 
         if ($err) {
-            $this->generateLog("------ Resposta de MOIP_Order ------", 'MOIP_OrderError.log');
-            $this->generateLog($response, 'MOIP_OrderError.log');
+            $this->generateLog("------ Resposta de MOIP_Order ------", 'MOIP_Order.log');
+            $this->generateLog($err, 'MOIP_Order.log');
+            $this->generateLog($info_curl, 'MOIP_Order.log');
+            $this->generateLog($response, 'MOIP_Order.log');
           return $err;
         } else {
             $this->generateLog($header, 'MOIP_Order.log');
@@ -536,8 +538,10 @@ class MOIP_Transparente_Model_Api
         curl_close($curl);
 
         if ($err) {
-            $this->generateLog("------ Resposta de MOIP_Order ------", 'MOIP_OrderError.log');
-            $this->generateLog($response, 'MOIP_OrderError.log');
+            $this->generateLog("------ Resposta de MOIP_Order ------", 'MOIP_Order.log');
+            $this->generateLog($err, 'MOIP_Order.log');
+            $this->generateLog($response, 'MOIP_Order.log');
+            $this->generateLog($info_curl, 'MOIP_Order.log');
           return $err;
         } else {
             $this->generateLog($header, 'MOIP_Order.log');
@@ -589,15 +593,17 @@ class MOIP_Transparente_Model_Api
         curl_close($curl);
 
         if ($err) {
-            $this->generateLog("------ Resposta de getMoipOrder ------", 'MOIP_getOrder_error.log');
-            $this->generateLog($response, 'MOIP_GetPaymentError.log');
+            $this->generateLog("------ Resposta de getMoipOrder ------", 'MOIP_Order.log');
+            $this->generateLog($err, 'MOIP_Order.log');
+            $this->generateLog($info_curl, 'MOIP_Order.log');
+            $this->generateLog($response, 'MOIP_Order.log');
           return $err;
         } else {
-            $this->generateLog($header, 'MOIP_GetPayment.log');
-            $this->generateLog("------ Resposta de GetPayment ------", 'MOIP_getOrder.log');
-            $this->generateLog($response, 'MOIP_getOrder.log');
-            $this->generateLog("------ CurlInfo de getMoipOrder ------", 'MOIP_getOrder.log');
-            $this->generateLog(json_encode($info_curl), 'MOIP_getOrder.log');
+            $this->generateLog($header, 'MOIP_Order.log');
+            $this->generateLog("------ Resposta de GetPayment ------", 'MOIP_Order.log');
+            $this->generateLog($response, 'MOIP_Order.log');
+            $this->generateLog("------ CurlInfo de getMoipOrder ------", 'MOIP_Order.log');
+            $this->generateLog(json_encode($info_curl), 'MOIP_Order.log');
           return json_decode($response, true);
         }
     }
@@ -640,15 +646,16 @@ class MOIP_Transparente_Model_Api
         curl_close($curl);
 
         if ($err) {
-            $this->generateLog("------ Resposta de GetPayment ------", 'MOIP_GetPaymentError.log');
-            $this->generateLog($response, 'MOIP_GetPaymentError.log');
+            $this->generateLog("------ Resposta de GetPayment ------", 'MOIP_Order.log');
+            $this->generateLog($info_curl, 'MOIP_Order.log');
+            $this->generateLog($response, 'MOIP_Order.log');
           return $err;
         } else {
-            $this->generateLog($header, 'MOIP_GetPayment.log');
-            $this->generateLog("------ Resposta de GetPayment ------", 'MOIP_GetPayment.log');
-            $this->generateLog($response, 'MOIP_GetPayment.log');
-            $this->generateLog("------ CurlInfo de GetPayment ------", 'MOIP_GetPayment.log');
-            $this->generateLog(json_encode($info_curl), 'MOIP_GetPayment.log');
+            $this->generateLog($header, 'MOIP_Order.log');
+            $this->generateLog("------ Resposta de GetPayment ------", 'MOIP_Order.log');
+            $this->generateLog($response, 'MOIP_Order.log');
+            $this->generateLog("------ CurlInfo de GetPayment ------", 'MOIP_Order.log');
+            $this->generateLog(json_encode($info_curl), 'MOIP_Order.log');
           return json_decode($response, true);
         }
     }

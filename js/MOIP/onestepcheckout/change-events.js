@@ -99,7 +99,7 @@ getErroDescription = function(){
 }
 loadingInButton = function(type){
 
-		if(type != 'end'){
+		if(type != 'stop'){
 			jQuery('.moip-place-order').addClass('progress-bar progress-bar-striped active').css('width','100%').prop('disabled', true);
 		} else {
 			jQuery('.moip-place-order').removeClass('progress-bar progress-bar-striped active').prop('disabled', false);
@@ -124,7 +124,7 @@ savePaymentMethod = function() {
 			loadingInButton('start');
 		},
 		success: function(result) {
-			loadingInButton('end');
+			loadingInButton('stop');
 			if(result){
 				if(result.success){
 					jQuery('#totals').html(result.html);	
@@ -132,7 +132,7 @@ savePaymentMethod = function() {
 			}
 		},
 		complete: function() {
-			loadingInButton('end');
+			loadingInButton('stop');
 		},
 	});
 	return this;
@@ -154,7 +154,7 @@ saveShippingMethod = function(){
 		success: function(result){
 			jQuery("#payment-progress").addClass('hidden-it');
 			jQuery("#co-payment-form").removeClass('hidden-it');
-			loadingInButton('end');
+			loadingInButton('stop');
 			if(result){
 				if(result.success){
 					jQuery("#payment-method-available").html(result.html);
@@ -170,7 +170,7 @@ saveShippingMethod = function(){
 		complete: function() {
 			jQuery("#payment-progress").addClass('hidden-it');
 			jQuery("#co-payment-form").removeClass('hidden-it');
-			loadingInButton('end');
+			loadingInButton('stop');
 		},
 	})
 	return this;
@@ -621,7 +621,7 @@ updateOrderMethod = function() {
 			loadingInButton('start');
 		},		
 		success: function(result) {
-			loadingInButton('end');
+			loadingInButton('stop');
 			if(result.error == 1){
 				jQuery(".erros_cadastro_valores").append('<li> - '+result.error_messages+'</li>');
 				visibilyloading('end');
