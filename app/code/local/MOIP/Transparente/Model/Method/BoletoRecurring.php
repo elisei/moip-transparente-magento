@@ -1,7 +1,6 @@
 <?php
 class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_Method_Abstract implements Mage_Payment_Model_Recurring_Profile_MethodInterface
 {
-    
     protected $_code = 'moip_boletorecurring';
     protected $_formBlockType = 'transparente/form_boleto';
     protected $_infoBlockType = 'transparente/info_boletorecurring';
@@ -54,13 +53,10 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
     {
         $info           = $this->getInfoInstance();
         $additionaldata = unserialize($info->getAdditionalData());
-        
     }
 
     public function validate()
     {
-        
-       
         parent::validate();
         $info           = $this->getInfoInstance();
         $currency_code  = Mage::app()->getStore()->getCurrentCurrencyCode();
@@ -81,29 +77,26 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
     {
         $api = Mage::getSingleton('transparente/recurringapi');
         return $api;
-        
     }
    
     public function canUseCheckout()
     {
         $cart = Mage::getModel('checkout/cart')->getQuote();
         foreach ($cart->getAllItems() as $item) {
-            if (!$item->getProduct()->getIsRecurring())
+            if (!$item->getProduct()->getIsRecurring()) {
                 return false;
+            }
         }
         return true;
     }
     
     public function validateRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile)
     {
-       
-        
         return $this;
     }
     
     public function submitRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile, Mage_Payment_Model_Info $payment)
     {
-        
         $api                 = $this->getApiMoip();
         $response_moip       = $api->searchCustomersPlans($profile, $payment);
         $decode_moip         = json_decode($response_moip, true);
@@ -142,37 +135,28 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
             $this->chargeRecurringProfile($profile, $response_moip);
             
             return $this;
-            
         } else {
-            
             if (!$profile->getInitMayFail()) {
                 $profile->setState(Mage_Sales_Model_Recurring_Profile::STATE_SUSPENDED);
                 $profile->save();
             }
             
             Mage::throwException($response['msg']);
-            
         }
     }
     
     public function getRecurringProfileDetails($referenceId, Varien_Object $result)
     {
-       
-        
         return $this;
     }
     
     public function canGetRecurringProfileDetails()
     {
-       
-        
         return true;
     }
     
     public function updateRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile)
     {
-       
-        
         return $this;
     }
     
@@ -211,54 +195,51 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
     }
     
     
-    public function chargeRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile, $response_moip){
-            $decode_moip = json_decode($response_moip, true);
-            $moip_code = $decode_moip["code"];
+    public function chargeRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile, $response_moip)
+    {
+        $decode_moip = json_decode($response_moip, true);
+        $moip_code = $decode_moip["code"];
            
-            $productItemInfo = new Varien_Object;
-            $productItemInfo->setPaymentType(Mage_Sales_Model_Recurring_Profile::PAYMENT_TYPE_REGULAR);
-            $productItemInfo->setPrice( $profile->getTaxAmount() + $profile->getBillingAmount() );
+        $productItemInfo = new Varien_Object;
+        $productItemInfo->setPaymentType(Mage_Sales_Model_Recurring_Profile::PAYMENT_TYPE_REGULAR);
+        $productItemInfo->setPrice($profile->getTaxAmount() + $profile->getBillingAmount());
 
-            $order = $profile->createOrder($productItemInfo);
-            $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
-            $payment = $order->getPayment();
-            $payment->setTransactionId($moip_code)->setAdditionalInformation(
+        $order = $profile->createOrder($productItemInfo);
+        $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
+        $payment = $order->getPayment();
+        $payment->setTransactionId($moip_code)->setAdditionalInformation(
                 Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
                 serialize($moip_code)
             )->setIsTransactionClosed(1);
             
-            $profile->addOrderRelation($order->getId());
+        $profile->addOrderRelation($order->getId());
            
 
-            $transaction= Mage::getModel('sales/order_payment_transaction');
-            $transaction->setTxnId($moip_code);
-            $transaction->setTxnType(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
-            $transaction->setPaymentId($payment->getId());
-            $transaction->setAdditionalInformation(
+        $transaction= Mage::getModel('sales/order_payment_transaction');
+        $transaction->setTxnId($moip_code);
+        $transaction->setTxnType(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
+        $transaction->setPaymentId($payment->getId());
+        $transaction->setAdditionalInformation(
                 Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
                 $decode_moip
             );
-            $transaction->setOrderId($order->getId());
-            $transaction->setOrderPaymentObject($payment);
-            $transaction->setIsClosed(1);
+        $transaction->setOrderId($order->getId());
+        $transaction->setOrderPaymentObject($payment);
+        $transaction->setIsClosed(1);
 
-            $transaction->save();
+        $transaction->save();
            
-            $profile->setState(Mage_Sales_Model_Recurring_Profile::STATE_ACTIVE);
+        $profile->setState(Mage_Sales_Model_Recurring_Profile::STATE_ACTIVE);
             
-            // change updated_at to one cycle ahead
-            $this->_setUpdateDateToNextPeriod($profile->getId());
+        // change updated_at to one cycle ahead
+        $this->_setUpdateDateToNextPeriod($profile->getId());
             
-            return true;
-            
-       
+        return true;
     }
     
     
     protected function _setUpdateDateToNextPeriod($profile_id)
     {
-        
-        
         $_resource = Mage::getSingleton('core/resource');
         $sql       = '
             UPDATE ' . $_resource->getTableName('sales_recurring_profile') . '
@@ -279,7 +260,6 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
     
     protected function _sendRequest($action, array $params = array())
     {
-        
         return array(
             'result' => 'SUCCESS',
             'msg' => 'Success',
@@ -287,5 +267,4 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
             'token' => 'token-' . uniqid()
         );
     }
-    
 }

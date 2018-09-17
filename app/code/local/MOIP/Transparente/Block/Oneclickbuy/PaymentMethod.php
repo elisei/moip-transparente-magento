@@ -37,7 +37,7 @@ class MOIP_Transparente_Block_Oneclickbuy_PaymentMethod extends Mage_Payment_Blo
      */
     public function getPaymentMethodFormHtml(Mage_Payment_Model_Method_Abstract $method)
     {
-         return $this->getChildHtml('payment.method.' . $method->getCode());
+        return $this->getChildHtml('payment.method.' . $method->getCode());
     }
 
     /**
@@ -64,7 +64,8 @@ class MOIP_Transparente_Block_Oneclickbuy_PaymentMethod extends Mage_Payment_Blo
             return $form->getMethodLabelAfterHtml();
         }
     }
-    public function getCofre() {
+    public function getCofre()
+    {
         if (Mage::getSingleton('customer/session')->isLoggedIn()) {
             $customerData = Mage::getSingleton('customer/session')->getCustomer();
             $model = Mage::getModel('transparente/transparente');
@@ -73,20 +74,18 @@ class MOIP_Transparente_Block_Oneclickbuy_PaymentMethod extends Mage_Payment_Blo
                             ->addFieldToFilter('customer_id', array('eq' => $customerData->getId()))
                             ->addFieldToFilter('moip_card_id', array('neq' => 'NULL'));
             $collection->getSelect()->group('moip_card_id');
-            if($collection->getSize() >= 1){
+            if ($collection->getSize() >= 1) {
                 return $collection;
             } else {
                 return 'false';
             }
-
         } else {
             return 'false';
         }
-
     }
 
-    public function getChildParcelas(){
+    public function getChildParcelas()
+    {
         return  $this->getLayout()->getBlock('moip.oneclickbuy.parcelas')->toHtml();
     }
-
 }

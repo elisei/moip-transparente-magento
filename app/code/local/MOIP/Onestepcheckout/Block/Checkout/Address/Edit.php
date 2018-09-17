@@ -51,7 +51,7 @@ class MOIP_Onestepcheckout_Block_Checkout_Address_Edit extends Mage_Directory_Bl
         }
         
         if ($typeform = $this->getRequest()->getParam('typeform')) {
-             $this->_address->setData("typeform", $typeform);
+            $this->_address->setData("typeform", $typeform);
         }
         if (!$this->_address->getId()) {
             $this->_address->setPrefix($this->getCustomer()->getPrefix())
@@ -93,8 +93,7 @@ class MOIP_Onestepcheckout_Block_Checkout_Address_Edit extends Mage_Directory_Bl
         }
         if ($this->getAddress()->getId()) {
             $title = Mage::helper('customer')->__('Edit Address');
-        }
-        else {
+        } else {
             $title = Mage::helper('customer')->__('Add New Address');
         }
         return $title;
@@ -173,7 +172,8 @@ class MOIP_Onestepcheckout_Block_Checkout_Address_Edit extends Mage_Directory_Bl
         if (!$this->getAddress()->getId()) {
             return $this->getCustomerAddressCount();
         }
-        return !$this->isDefaultShipping();;
+        return !$this->isDefaultShipping();
+        ;
     }
 
     public function isDefaultBilling()

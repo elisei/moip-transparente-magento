@@ -1,8 +1,6 @@
 <?php
 class MOIP_Transparente_Block_Standard_Method_Tef extends Mage_Checkout_Block_Onepage_Success
 {
-
-
     public function getOrder()
     {
         $final = "";
@@ -18,13 +16,15 @@ class MOIP_Transparente_Block_Standard_Method_Tef extends Mage_Checkout_Block_On
     }
 
   
-    public function getMoipTransfHref(){
+    public function getMoipTransfHref()
+    {
         $data = $this->getMoipData();
-       return $data['moip_transf_href'];
+        return $data['moip_transf_href'];
     }
         
    
-    protected function getMoipData(){
+    protected function getMoipData()
+    {
         $additional = $this->getOrder()->getPayment()->getAdditionalData();
         return unserialize($additional);
     }

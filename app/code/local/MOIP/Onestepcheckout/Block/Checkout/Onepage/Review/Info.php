@@ -33,9 +33,9 @@
  */
 class MOIP_Onestepcheckout_Block_Checkout_Review_Info extends Mage_Sales_Block_Items_Abstract
 {
-	public function _prepareLayout()
+    public function _prepareLayout()
     {
-		return parent::_prepareLayout();
+        return parent::_prepareLayout();
     }
     public function getItems()
     {

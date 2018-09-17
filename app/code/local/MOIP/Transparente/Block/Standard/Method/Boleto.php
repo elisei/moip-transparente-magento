@@ -1,8 +1,7 @@
 <?php
 class MOIP_Transparente_Block_Standard_Method_Boleto extends Mage_Checkout_Block_Onepage_Success
 {
-
-	public function getOrder()
+    public function getOrder()
     {
         $final = "";
         $orderId       = Mage::getSingleton('checkout/session')->getLastRealOrderId();
@@ -17,24 +16,27 @@ class MOIP_Transparente_Block_Standard_Method_Boleto extends Mage_Checkout_Block
     }
 
   
-    public function getMoipLineCode(){
+    public function getMoipLineCode()
+    {
         $data = $this->getMoipData();
-       return $data['line_code'];
+        return $data['line_code'];
     }
 
-    public function getMoipLinkPrint(){
+    public function getMoipLinkPrint()
+    {
         $data = $this->getMoipData();
-       return $data['print_href'];
+        return $data['print_href'];
     }
 
-    public function getExpirationDate(){
+    public function getExpirationDate()
+    {
         $data = $this->getMoipData();
-       return $data['expiration_date'];
+        return $data['expiration_date'];
     }
 
-    protected function getMoipData(){
+    protected function getMoipData()
+    {
         $additional = $this->getOrder()->getPayment()->getAdditionalData();
         return unserialize($additional);
     }
-
 }

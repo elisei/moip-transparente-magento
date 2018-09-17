@@ -28,10 +28,9 @@ class MOIP_Onestepcheckout_Model_System_Config_Source_Payment_Allowedmethods ext
 {
     protected function _getPaymentMethods()
     {
-    	
         return Mage::getSingleton('payment/config')->getActiveMethods();
     }
-	
+    
     public function toOptionArray()
     {
         $methods = array(array('value'=>'', 'label'=>''));

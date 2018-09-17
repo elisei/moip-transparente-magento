@@ -6,5 +6,4 @@ class MOIP_Transparente_Block_Info_Cc extends Mage_Payment_Block_Info
         parent::_construct();
         $this->setTemplate('MOIP/transparente/info/cc.phtml');
     }
-
 }

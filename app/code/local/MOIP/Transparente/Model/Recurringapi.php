@@ -1,7 +1,6 @@
 <?php
 class Moip_Transparente_Model_Recurringapi
 {
-    
     const ENDPOINT_RECURRING_TEST = "https://sandbox.moip.com.br/assinaturas/v1/";
     const ENDPOINT_RECURRING_PROD = "https://api.moip.com.br/assinaturas/v1/";
     
@@ -54,16 +53,17 @@ class Moip_Transparente_Model_Recurringapi
         $this->generateLog("------- Ambiente - ".Mage::getSingleton('transparente/standard')->getConfigData('ambiente')." -------", 'MOIP_Subscrition.txt');
         $this->generateLog("search", 'MOIP_Subscrition.txt');
         $this->generateLog($customer_plans_id, 'MOIP_Subscrition.txt');
-       // $this->generateLog($responseBody, 'MOIP_Subscrition.txt');
+        // $this->generateLog($responseBody, 'MOIP_Subscrition.txt');
         foreach ($decode_user_plans as $key => $value) {
             foreach ($value as $key => $value) {
                 $plans_code[] = $value['code'];
             }
         }
-        if (in_array($customer_plans_id, $plans_code))
+        if (in_array($customer_plans_id, $plans_code)) {
             return $this->generateUpdateCustomer($profile, $payments);
-        else
+        } else {
             return $this->setCustomersPlans($profile, $payments);
+        }
     }
     
     public function setCustomersPlans($profile, $payments)
@@ -137,7 +137,7 @@ class Moip_Transparente_Model_Recurringapi
             );
         }
         
-         $this->generateLog("------- Ambiente - ".Mage::getSingleton('transparente/standard')->getConfigData('ambiente')." -------", 'MOIP_Subscrition.txt');
+        $this->generateLog("------- Ambiente - ".Mage::getSingleton('transparente/standard')->getConfigData('ambiente')." -------", 'MOIP_Subscrition.txt');
         $this->generateLog("setCustomersPlans", 'MOIP_Subscrition.txt');
         $this->generateLog(json_encode($customer_plans), 'MOIP_Subscrition.txt');
         return $this->createCustomersPlans($customer_plans, $profile, $payments);
@@ -187,8 +187,6 @@ class Moip_Transparente_Model_Recurringapi
         $this->generateLog(json_encode($info_curl), 'MOIP_Subscrition.txt');
         $this->generateLog($url, 'MOIP_Subscrition.txt');
         return $responseBody;
-        
-        
     }
 
     public function createCustomersPlans($data, $profile, $payments)
@@ -211,7 +209,7 @@ class Moip_Transparente_Model_Recurringapi
                 $url = self::ENDPOINT_RECURRING_PROD . "customers?new_vault=false";
             } else {
                 $url = self::ENDPOINT_RECURRING_PROD . "customers?new_vault=true";
-            }            
+            }
             $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
             $header = "Authorization: OAuth " . $oauth;
         }
@@ -228,7 +226,7 @@ class Moip_Transparente_Model_Recurringapi
         $responseBody = curl_exec($ch);
         $info_curl    = curl_getinfo($ch);
         curl_close($ch);
-         $this->generateLog("------- Ambiente - ".Mage::getSingleton('transparente/standard')->getConfigData('ambiente')." -------", 'MOIP_Subscrition.txt');
+        $this->generateLog("------- Ambiente - ".Mage::getSingleton('transparente/standard')->getConfigData('ambiente')." -------", 'MOIP_Subscrition.txt');
         $this->generateLog("createCustomersPlans", 'MOIP_Subscrition.txt');
         $this->generateLog($data, 'MOIP_Subscrition.txt');
         $this->generateLog($responseBody, 'MOIP_Subscrition.txt');
@@ -302,7 +300,6 @@ class Moip_Transparente_Model_Recurringapi
             $this->generateLog($url, 'MOIP_Subscrition.txt');
         }
         return $this->setCreateSubscriptionsPlans($profile, $payments);
-        
     }
     
     public function cancelSubscription($prolie_id)
@@ -333,15 +330,12 @@ class Moip_Transparente_Model_Recurringapi
         $responseBody = curl_exec($ch);
         $info_curl    = curl_getinfo($ch);
         curl_close($ch);
-         $this->generateLog("------- Ambiente - ".Mage::getSingleton('transparente/standard')->getConfigData('ambiente')." -------", 'MOIP_Subscrition.txt');
+        $this->generateLog("------- Ambiente - ".Mage::getSingleton('transparente/standard')->getConfigData('ambiente')." -------", 'MOIP_Subscrition.txt');
         $this->generateLog("cancelSubscription", 'MOIP_Subscrition.txt');
         $this->generateLog($url, 'MOIP_Subscrition.txt');
         $this->generateLog(json_encode($prolie_id), 'MOIP_Subscrition.txt');
         $this->generateLog(json_encode($header), 'MOIP_Subscrition.txt');
         $this->generateLog(json_encode($info_curl), 'MOIP_Subscrition.txt');
-        
-        
-        
     }
 
     
@@ -373,15 +367,12 @@ class Moip_Transparente_Model_Recurringapi
         $responseBody = curl_exec($ch);
         $info_curl    = curl_getinfo($ch);
         curl_close($ch);
-         $this->generateLog("------- Ambiente - ".Mage::getSingleton('transparente/standard')->getConfigData('ambiente')." -------", 'MOIP_Subscrition.txt');
+        $this->generateLog("------- Ambiente - ".Mage::getSingleton('transparente/standard')->getConfigData('ambiente')." -------", 'MOIP_Subscrition.txt');
         $this->generateLog("suspendSubscription", 'MOIP_Subscrition.txt');
         $this->generateLog($url, 'MOIP_Subscrition.txt');
         $this->generateLog(json_encode($prolie_id), 'MOIP_Subscrition.txt');
         $this->generateLog(json_encode($header), 'MOIP_Subscrition.txt');
         $this->generateLog(json_encode($info_curl), 'MOIP_Subscrition.txt');
-        
-        
-        
     }
     
     public function activateSubscription($prolie_id)
@@ -418,7 +409,6 @@ class Moip_Transparente_Model_Recurringapi
         $this->generateLog(json_encode($prolie_id), 'MOIP_Subscrition.txt');
         $this->generateLog(json_encode($header), 'MOIP_Subscrition.txt');
         $this->generateLog(json_encode($info_curl), 'MOIP_Subscrition.txt');
-        
     }
 
     public function setCreateSubscriptionsPlans($profile, $payments)
@@ -514,10 +504,11 @@ class Moip_Transparente_Model_Recurringapi
                 $plans_code[] = $valueb['code'];
             }
         }
-        if (in_array($data['code'], $plans_code))
+        if (in_array($data['code'], $plans_code)) {
             return $this->setUpdatePlans($data);
-        else
+        } else {
             return $this->setCreatePlans($data);
+        }
     }
     
     public function setCreatePlans($data)
@@ -609,28 +600,28 @@ class Moip_Transparente_Model_Recurringapi
             Mage::getSingleton('core/session')->addSuccess('Plano Atualizado com sucesso');
         } else {
             Mage::getSingleton('core/session')->addError('Não foi possivel atualizar o plano resposta do servidor Moip: ' . $info_curl['http_code'] . " " . $responseBody);
-            
         }
         
         
         
         return $decode;
-        
     }
     
    
     public function getNumEndereco($endereco, $enderecob)
     {
         $numEnderecoDefault = '0';
-        if (!$endereco)
+        if (!$endereco) {
             $endereco = $enderecob;
-        else
+        } else {
             $endereco = $endereco;
+        }
         $numEndereco = trim(preg_replace("/[^0-9]/", "", $endereco));
-        if ($numEndereco)
+        if ($numEndereco) {
             return ($numEndereco);
-        else
+        } else {
             return ($numEnderecoDefault);
+        }
     }
     
     public function getNumberOrDDD($param_telefone, $param_ddd = false)
@@ -661,7 +652,6 @@ class Moip_Transparente_Model_Recurringapi
             
             Mage::log($variable, null, 'MOIP/Assinaturas/' . $name_log, true);
         } else {
-            
         }
     }
 }

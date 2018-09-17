@@ -1,7 +1,6 @@
 <?php
 
-class MOIP_Transparente_Block_Adminhtml_Fieldset_Header
-    extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Renderer_Interface
+class MOIP_Transparente_Block_Adminhtml_Fieldset_Header extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Renderer_Interface
 {
     /**
      * Render element html
@@ -14,9 +13,10 @@ class MOIP_Transparente_Block_Adminhtml_Fieldset_Header
         $useContainerId = $element->getData('use_container_id');
         return sprintf(
             '<tr class="system-fieldset-sub-head" id="row_%s"><td colspan="5" style="max-width:580px;"><h4 id="%s">%s</h4><p class="subheading-note" style="font-size:11px;font-style:italic;color:#666;"><span>%s</span></p></td></tr>',
-            $element->getHtmlId(), $element->getHtmlId(), $element->getLabel(), $element->getComment()
+            $element->getHtmlId(),
+            $element->getHtmlId(),
+            $element->getLabel(),
+            $element->getComment()
         );
-
-    
     }
 }

@@ -34,7 +34,6 @@
  */
 class MOIP_Onestepcheckout_Block_Checkout_Onepage_Radio_InputRadio extends Mage_Core_Block_Html_Select
 {
-
     protected function _toHtml()
     {
         if (!$this->_beforeToHtml()) {
@@ -44,7 +43,7 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Radio_InputRadio extends Mage_
      
         $values = $this->getValue();
 
-        if (!is_array($values)){
+        if (!is_array($values)) {
             if (!is_null($values)) {
                 $values = array($values);
             } else {
@@ -66,7 +65,7 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Radio_InputRadio extends Mage_
             }
 
             
-                $html .= $this->_optionToHtml(
+            $html .= $this->_optionToHtml(
                     array(
                         'value' => $value,
                         'label' => $label,
@@ -74,7 +73,6 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Radio_InputRadio extends Mage_
                     ),
                     in_array($value, $values)
                 );
-            
         }
      
         return $html;
@@ -103,13 +101,13 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Radio_InputRadio extends Mage_
             }
         }
 
-        return sprintf('<label class="btn btn-default btn-address %s"><input type="radio" value="%s"%s name="shipping_address_id" %s  class="validate-one-required-by-name radio"/><span class="address-line">%s</span></label>',
+        return sprintf(
+            '<label class="btn btn-default btn-address %s"><input type="radio" value="%s"%s name="shipping_address_id" %s  class="validate-one-required-by-name radio"/><span class="address-line">%s</span></label>',
             $active,
             $this->escapeHtml($option['value']),
             $selectedHtml,
             'onchange="EditAddress(this.value,\'shipping\')"',
-            $option['label']);
+            $option['label']
+        );
     }
-
-
 }

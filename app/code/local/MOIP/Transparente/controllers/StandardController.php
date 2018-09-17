@@ -72,14 +72,14 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
         if ($params['validacao'] == $this->getStandard()->getConfigData('validador_retorno')) {
             $json_moip         = json_decode($json_moip);
             $newMethodForOrder = $this->getMageOrder($json_moip);
-                if($newMethodForOrder) {
-                    $this->getResponse()->setHttpResponseCode(201);
-                    $this->getResponse()->setBody($newMethodForOrder->getState());
-                    $api->generateLog(json_encode($json_moip), 'MOIP_WebHooks.log');
-                } else {
-                    $api->generateLog(json_encode($json_moip), 'MOIP_WebHooksError.log');
-                    return $this->set404();
-                }
+            if ($newMethodForOrder) {
+                $this->getResponse()->setHttpResponseCode(201);
+                $this->getResponse()->setBody($newMethodForOrder->getState());
+                $api->generateLog(json_encode($json_moip), 'MOIP_WebHooks.log');
+            } else {
+                $api->generateLog(json_encode($json_moip), 'MOIP_WebHooksError.log');
+                return $this->set404();
+            }
                 
             return $this;
         } else {
@@ -116,21 +116,18 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
         $order_state = $order->getState();
 
         if ($status_moip == "AUTHORIZED" || $status_moip == "PAID") {
-           
             if ($order_state != Mage_Sales_Model_Order::STATE_PROCESSING) {
                 if ($order->canInvoice()) {
                     $test = $payment->getMethodInstance()->authorize($payment, $amount);
                     try {
                         return $order;
-                    }
-                    catch (Exception $e) {
+                    } catch (Exception $e) {
                         $api->generateLog("MOIP {$moip_order} não foi processada erro: " . $e, 'MOIP_WebHooksError.log');
                         return $this->set404();
                     }
                 } else {
                     return $this->set404();
                 }
-                
             }
         } elseif ($status_moip == "CANCELLED" || $status_moip == "NOT_PAID") {
             if ($order_state != Mage_Sales_Model_Order::STATE_CANCELED) {
@@ -145,12 +142,11 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
                         $order->save();
                         try {
                             return $order;
-                        }
-                        catch (Exception $e) {
+                        } catch (Exception $e) {
                             $api->generateLog("MOIP {$moip_order} não foi processada erro: " . $e, 'MOIP_WebHooksError.log');
                             return $this->set404();
                         }
-                    }else {
+                    } else {
                         return $this->set404();
                     }
                 } else {

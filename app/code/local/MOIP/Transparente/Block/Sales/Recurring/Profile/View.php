@@ -31,37 +31,37 @@ class MOIP_Transparente_Block_Sales_Recurring_Profile_View extends Mage_Sales_Bl
 {
     public function getMethodMoip()
     {
-    	$ref 			   = $this->_profile->getReferenceId();
-    	$profile           = Mage::getModel('sales/recurring_profile')->load($ref);
-    	$payment_method    = $profile->getMethodCode();
-    	return $payment_method;
+        $ref 			   = $this->_profile->getReferenceId();
+        $profile           = Mage::getModel('sales/recurring_profile')->load($ref);
+        $payment_method    = $profile->getMethodCode();
+        return $payment_method;
     }
    
-   public function getOrderInfoPayment(){
-   		$ref 			   = $this->_profile->getReferenceId();
-   		$profile           = Mage::getModel('sales/recurring_profile')->load($ref);
-   		
-   		$customer_id       = $profile->getCustomerId();
-   		$order = Mage::getResourceModel('sales/order_collection')
-  	   ->addFieldToFilter('customer_id', $customer_id)
-		   ->addRecurringProfilesFilter($profile->getProfileId())
-		   ->setOrder('entity_id', 'desc')
-		   ->getLastItem();
+    public function getOrderInfoPayment()
+    {
+        $ref 			   = $this->_profile->getReferenceId();
+        $profile           = Mage::getModel('sales/recurring_profile')->load($ref);
+        
+        $customer_id       = $profile->getCustomerId();
+        $order = Mage::getResourceModel('sales/order_collection')
+       ->addFieldToFilter('customer_id', $customer_id)
+           ->addRecurringProfilesFilter($profile->getProfileId())
+           ->setOrder('entity_id', 'desc')
+           ->getLastItem();
         
         $load_order 			   = Mage::getModel('sales/order')->load($order->getId());
         $payment 		   = $order->getPayment()->getId();
 
         $collection = Mage::getModel('sales/order_payment_transaction')
-        		->getCollection()
+                ->getCollection()
                 ->addPaymentIdFilter($payment);
 
-        foreach ($collection as $col)
-        {
+        foreach ($collection as $col) {
             $info_transaction = $col->getAdditionalInformation();
         }
 
         return $info_transaction;
         
-      /* return $load_order;*/
-   }
+        /* return $load_order;*/
+    }
 }

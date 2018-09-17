@@ -42,14 +42,13 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Shipping extends Mage_Checkout
 
     public function getAddressesHtmlInput($type)
     {
-
-       if ($this->isCustomerLoggedIn()) {
+        if ($this->isCustomerLoggedIn()) {
             $options = array();
             foreach ($this->getCustomer()->getAddresses() as $address) {
                 $options[] = array(
                     'value' => $address->getId(),
                     'label' => $address->format('text'),
-                    'params' => 'onchange="EditAddress(this.value,\''.$type.'\')"' 
+                    'params' => 'onchange="EditAddress(this.value,\''.$type.'\')"'
                 );
             }
 

@@ -9,7 +9,7 @@ class MOIP_Transparente_Block_Info_Boleto extends Mage_Payment_Block_Info
     }
 
    
-      public function getMethodInstance()
+    public function getMethodInstance()
     {
         if (!$this->hasMethodInstance()) {
             if ($this->getMethod()) {
@@ -25,6 +25,4 @@ class MOIP_Transparente_Block_Info_Boleto extends Mage_Payment_Block_Info
 
         return $this->_getData('method_instance');
     }
-
-   
 }

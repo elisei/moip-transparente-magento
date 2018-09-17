@@ -1,7 +1,6 @@
 <?php
 class MOIP_Onestepcheckout_Block_Checkout_Onepage_Billing extends Mage_Checkout_Block_Onepage_Billing
 {
-
     public function getCountries()
     {
         return Mage::getResourceModel('directory/country_collection')->loadByStore();
@@ -48,14 +47,13 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Billing extends Mage_Checkout_
 
     public function getAddressesHtmlInput($type)
     {
-
-       if ($this->isCustomerLoggedIn()) {
+        if ($this->isCustomerLoggedIn()) {
             $options = array();
             foreach ($this->getCustomer()->getAddresses() as $address) {
                 $options[] = array(
                     'value' => $address->getId(),
                     'label' => $address->format('text'),
-                    'params' => 'onchange="EditAddress(this.value,\''.$type.'\')"' 
+                    'params' => 'onchange="EditAddress(this.value,\''.$type.'\')"'
                 );
             }
 
@@ -83,7 +81,4 @@ class MOIP_Onestepcheckout_Block_Checkout_Onepage_Billing extends Mage_Checkout_
         }
         return '';
     }
-
-  
-
 }

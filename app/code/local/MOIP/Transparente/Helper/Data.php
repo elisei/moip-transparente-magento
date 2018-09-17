@@ -9,38 +9,38 @@
  * @copyright  Copyright (c) 2010 Transparente Pagamentos S/A
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
-	
-	const MINAMMOUT = 5;
+class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract
+{
+    const MINAMMOUT = 5;
     const MAXINSTALMENT = 12;
 
-    public function getParcelas($price, $method){
-        if($price) {
+    public function getParcelas($price, $method)
+    {
+        if ($price) {
             $installment = $this->getCalcInstallment($price);
-            foreach ($installment as $key => $_installment):      
+            foreach ($installment as $key => $_installment):
                 $_interest = $_installment['interest'];
                 
-                if($_interest > 0)
-                    $text_interest = $this->__('*');
-                else
-                    $text_interest = $this->__(' sem juros');
-                if($key >=2){
-                    $installments[]= $this->__('em até <strong>%sx</strong> de %s%s',$key,$_installment['installment'],$text_interest);    
-                } else {
-                    $installments[]= $this->__('À vista no valor total <strong>%s</strong>',Mage::helper('core')->currency($price, true, false));
-                }
+            if ($_interest > 0) {
+                $text_interest = $this->__('*');
+            } else {
+                $text_interest = $this->__(' sem juros');
+            }
+            if ($key >=2) {
+                $installments[]= $this->__('em até <strong>%sx</strong> de %s%s', $key, $_installment['installment'], $text_interest);
+            } else {
+                $installments[]= $this->__('À vista no valor total <strong>%s</strong>', Mage::helper('core')->currency($price, true, false));
+            }
             endforeach;
-            if($method == 'reduzido'){
+            if ($method == 'reduzido') {
                 $last_zero_interest = $this->getFilterNoInterestRate($installment);
-                if(is_int($last_zero_interest)){
+                if (is_int($last_zero_interest)) {
                     $last_text_zero_interest = end(array_keys($last_zero_interest));
                     return $installments[$last_text_zero_interest-1];
                 } else {
                     return end($installments);
                 }
-                
-                
-            } elseif($method == 'integral') {
+            } elseif ($method == 'integral') {
                 return $installments;
             } else {
                 return $this;
@@ -49,16 +49,16 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
         }
     }
 
-    public function getCalcInstallment($ammount){
+    public function getCalcInstallment($ammount)
+    {
         $limit      = $this->getInstallmentLimit($ammount);
         $interest   = $this->getInfoInterest();
         $plotlist   = array();
 
         foreach ($interest as $key => $_interest) {
-            if($key > 0 && $key <= $limit){
-                if($_interest > 0){
-                    
-                    if(Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
+            if ($key > 0 && $key <= $limit) {
+                if ($_interest > 0) {
+                    if (Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
                         $plotValue =  $this->getJurosComposto($ammount, $_interest, $key);
                     } else {
                         $plotValue =  $this->getJurosSimples($ammount, $_interest, $key);
@@ -68,7 +68,7 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
                 } else {
                     $total = $ammount;
                     $totalInterest  = 0;
-                    if(Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
+                    if (Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
                         $plotValue =  $this->getJurosComposto($ammount, $_interest, $key);
                     } else {
                         $plotValue =  $this->getJurosSimples($ammount, $_interest, $key);
@@ -84,21 +84,22 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
         }
         return $plotlist;
     }
-    public function getInterestByOrderTotal($ammount) {
-       
-        if( ($ammount >=  Mage::getStoreConfig('payment/moip_cc/condicional_1_sem_juros')) && ($ammount <  Mage::getStoreConfig('payment/moip_cc/condicional_2_sem_juros'))){
+    public function getInterestByOrderTotal($ammount)
+    {
+        if (($ammount >=  Mage::getStoreConfig('payment/moip_cc/condicional_1_sem_juros')) && ($ammount <  Mage::getStoreConfig('payment/moip_cc/condicional_2_sem_juros'))) {
             $limit =  Mage::getStoreConfig('payment/moip_cc/condicional_1_max_parcela');
-        } elseif(($ammount >=  Mage::getStoreConfig('payment/moip_cc/condicional_2_sem_juros')) && ($ammount <  Mage::getStoreConfig('payment/moip_cc/condicional_3_sem_juros'))) {
+        } elseif (($ammount >=  Mage::getStoreConfig('payment/moip_cc/condicional_2_sem_juros')) && ($ammount <  Mage::getStoreConfig('payment/moip_cc/condicional_3_sem_juros'))) {
             $limit =  Mage::getStoreConfig('payment/moip_cc/condicional_2_max_parcela');
-        } elseif($ammount >=  Mage::getStoreConfig('payment/moip_cc/condicional_3_sem_juros')) {
+        } elseif ($ammount >=  Mage::getStoreConfig('payment/moip_cc/condicional_3_sem_juros')) {
             $limit = Mage::getStoreConfig('payment/moip_cc/condicional_1_max_parcela');
         } else {
-             $limit = !1;
+            $limit = !1;
         }
         return  $limit;
     }
 
-    public function getComplexCalcInstallment($ammount){
+    public function getComplexCalcInstallment($ammount)
+    {
         //parcelas_avancadas
        
         $limit          = $this->getInstallmentLimit($ammount);
@@ -107,15 +108,14 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
         $plotlist       = array();
 
         foreach ($interest as $key => $_interest) {
-            if($key > 0 && $key <= $limit){
-                if($interestOrder) {
-                    if($interestOrder >= $key) {
+            if ($key > 0 && $key <= $limit) {
+                if ($interestOrder) {
+                    if ($interestOrder >= $key) {
                         $_interest = 0;
                     }
                 }
-                if($_interest > 0){
-                    
-                    if(Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
+                if ($_interest > 0) {
+                    if (Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
                         $plotValue =  $this->getJurosComposto($ammount, $_interest, $key);
                     } else {
                         $plotValue =  $this->getJurosSimples($ammount, $_interest, $key);
@@ -125,7 +125,7 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
                 } else {
                     $total = $ammount;
                     $totalInterest  = 0;
-                    if(Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
+                    if (Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
                         $plotValue =  $this->getJurosComposto($ammount, $_interest, $key);
                     } else {
                         $plotValue =  $this->getJurosSimples($ammount, $_interest, $key);
@@ -144,9 +144,10 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
 
 
     
-    public function getFilterNoInterestRate($arr){
+    public function getFilterNoInterestRate($arr)
+    {
         $typeview = Mage::getStoreConfig('moipall/oneclick_config/type_min_installment');
-        if($typeview == "notinterest") {
+        if ($typeview == "notinterest") {
             $like = '0';
             $result = array_filter($arr, function ($item) use ($like) {
                 if ($item['interest'] == $like) {
@@ -154,7 +155,7 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
                 }
                 return false;
             });
-            return $result; 
+            return $result;
         } else {
             return $arr;
         }
@@ -162,30 +163,31 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
 
     public function getJurosComposto($valor, $juros, $parcela)
     {
-        if($juros > 0){
+        if ($juros > 0) {
             $principal = $valor;
             $taxa = $juros/100;
             $valParcela = ($principal * $taxa) / (1 - (pow(1 / (1 + $taxa), $parcela)));
             return $valParcela;
         } else {
-            return $valor/$parcela;    
+            return $valor/$parcela;
         }
     }
 
     public function getJurosSimples($valor, $juros, $parcela)
     {
-        if($juros > 0) {
+        if ($juros > 0) {
             $principal = $valor;
             $taxa = $juros/100;
             $valjuros = $principal * $taxa;
             $valParcela = ($principal + $valjuros)/$parcela;
-            return $valParcela;    
+            return $valParcela;
         } else {
             return $valor/$parcela;
         }
     }
 
-    public function getInfoInterest(){
+    public function getInfoInterest()
+    {
         $interest = array();
 
         $interest['0'] = 0;
@@ -228,29 +230,32 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
     }
 
 
-    public function getLimitByPortionNumber(){
+    public function getLimitByPortionNumber()
+    {
         $maxconfig = Mage::getStoreConfig('payment/moip_cc/nummaxparcelamax');
         return ($maxconfig < self::MAXINSTALMENT) ? $maxconfig : self::MAXINSTALMENT;
     }
 
-    public function getLimitByPlotPrice(){
+    public function getLimitByPlotPrice()
+    {
         $minconfig = Mage::getStoreConfig('payment/moip_cc/valor_minimo');
         return ($minconfig > self::MINAMMOUT) ? $minconfig : self::MINAMMOUT;
     }
 
 
-    public function getInstallmentLimit($ammount){      
+    public function getInstallmentLimit($ammount)
+    {
         $perNumber     = $this->getLimitByPortionNumber();
         $perPrice      = $this->getLimitByPlotPrice();
        
 
-        if($ammount >= $perPrice){
+        if ($ammount >= $perPrice) {
             $MaxPerPrice = intval($ammount/$perPrice);
         } else {
             $MaxPerPrice = 1;
         }
 
-        if($MaxPerPrice >= $perNumber) {
+        if ($MaxPerPrice >= $perNumber) {
             $limit = $perNumber;
         } else {
             $limit = $MaxPerPrice;
@@ -259,7 +264,8 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
         return $limit;
     }
 
-    public function ClearMoip(){
+    public function ClearMoip()
+    {
         $ambiente = Mage::getSingleton('transparente/standard')->getConfigData('ambiente');
         
         $moipdb = Mage::getModel('transparente/transparente');
@@ -275,11 +281,9 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract {
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
             $model->deleteConfig('payment/moip_transparente_standard/webhook_key_dev');
             $model->deleteConfig('payment/moip_transparente_standard/oauth_dev');
-
         } else {
             $model->deleteConfig('payment/moip_transparente_standard/webhook_key_prod');
             $model->deleteConfig('payment/moip_transparente_standard/oauth_prod');
-            
         }
         Mage::app()->cleanCache();
         Mage::getSingleton('core/session')->addSuccess("Configurações atuais foram apagadas. Por favor, repita o processo de instalação.");

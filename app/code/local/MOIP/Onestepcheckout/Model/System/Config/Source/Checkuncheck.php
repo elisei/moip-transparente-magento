@@ -9,5 +9,4 @@ class MOIP_Onestepcheckout_Model_System_Config_Source_Checkuncheck
             array('value'=>1, 'label'=>Mage::helper('onestepcheckout')->__('Selecionado')),
         );
     }
-
 }

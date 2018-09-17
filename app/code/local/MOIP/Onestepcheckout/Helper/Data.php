@@ -36,8 +36,8 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
 
     protected $_agreements = null;
 
-    public function valueForValidate($value, $key){
-
+    public function valueForValidate($value, $key)
+    {
         $validatevaluesMin = array(
                                     'postcode'  => '8',
                                     'street_1'  => '-',
@@ -58,55 +58,52 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
 
                                     //'region_id' => '99999'
                                 );
-        if($key != 'street_3'){
-            if(strlen($value) > $validatevaluesMax[$key]){
+        if ($key != 'street_3') {
+            if (strlen($value) > $validatevaluesMax[$key]) {
                 return strlen($value)." está maior que".$validatevaluesMax[$key];
-            } elseif(strlen($value) <= $validatevaluesMin[$key]){
+            } elseif (strlen($value) <= $validatevaluesMin[$key]) {
                 return 1;
             } else {
                 return !1;
-            }    
+            }
         } else {
             return !1;
         }
-        
-
     }
-    private function _getRegionId($sigla){ 
-        $region = Mage::getModel('directory/region')->loadByCode($sigla, 'BR'); 
+    private function _getRegionId($sigla)
+    {
+        $region = Mage::getModel('directory/region')->loadByCode($sigla, 'BR');
         return $region->getRegionId();
-        
     }
 
     private function getValidaCPF($cpf = null)
     {
         $cpf = preg_replace("/[^0-9]/", "", $cpf);
         $count = strlen($cpf);
-            if (empty($cpf)) {
-                return !1;
-            } elseif ($count != 11) {
-                return !1;
-            }
-
-             elseif ($cpf == '00000000000' || $cpf == '11111111111' || $cpf == '22222222222' || $cpf == '33333333333' || $cpf == '44444444444' || $cpf == '55555555555' || $cpf == '66666666666' || $cpf == '77777777777' || $cpf == '88888888888' || $cpf == '99999999999') {
-                return !1;
-            } else {
-                for ($t = 9; $t < 11; $t++) {
-                    for ($d = 0, $c = 0; $c < $t; $c++) {
-                        $d += $cpf{$c} * (($t + 1) - $c);
-                    }
-                    $d = ((10 * $d) % 11) % 10;
-                    if ($cpf{$c} != $d) {
-                        return !1;
-                    }
+        if (empty($cpf)) {
+            return !1;
+        } elseif ($count != 11) {
+            return !1;
+        } elseif ($cpf == '00000000000' || $cpf == '11111111111' || $cpf == '22222222222' || $cpf == '33333333333' || $cpf == '44444444444' || $cpf == '55555555555' || $cpf == '66666666666' || $cpf == '77777777777' || $cpf == '88888888888' || $cpf == '99999999999') {
+            return !1;
+        } else {
+            for ($t = 9; $t < 11; $t++) {
+                for ($d = 0, $c = 0; $c < $t; $c++) {
+                    $d += $cpf{$c} * (($t + 1) - $c);
                 }
-                return 1;
+                $d = ((10 * $d) % 11) % 10;
+                if ($cpf{$c} != $d) {
+                    return !1;
+                }
             }
+            return 1;
+        }
     }
 
-    public function validate($billing_id = null, $shipping_id = null, $customer = null){
+    public function validate($billing_id = null, $shipping_id = null, $customer = null)
+    {
         $valido = 1;
-        if($billing_id){
+        if ($billing_id) {
             $billing = Mage::getModel('customer/address')->load($billing_id);
 
             $data['postcode']     = $billing->getPostcode();
@@ -125,34 +122,31 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
                                     );
             
             $estado = $this->_getRegionId($billing->getRegionCode());
-            if(!$billing->getRegionId()){
-
-                if(!$billing->getRegion()){
+            if (!$billing->getRegionId()) {
+                if (!$billing->getRegion()) {
                     $valido = !1;
-                    Mage::getSingleton('core/session')->addError('O campo do endereço, Estado (UF), está inválido.'); 
+                    Mage::getSingleton('core/session')->addError('O campo do endereço, Estado (UF), está inválido.');
                 }
-                
             }
             
             foreach ($data as $key => $value) {
                 $valid = $this->valueForValidate($value, $key);
-                if($valid){
+                if ($valid) {
                     $valido = !1;
-                    Mage::getSingleton('core/session')->addError('O campo '.$label_campo[$key].' está inválido.'); 
+                    Mage::getSingleton('core/session')->addError('O campo '.$label_campo[$key].' está inválido.');
                 }
             }
         }
-        if($customer){
-           $valid = $this->getValidaCPF($customer->getTaxvat());
-           if(!$valid){
-                    $valido = !1;
-                    Mage::getSingleton('core/session')->addError('O campo CPF está inválido.'); 
+        if ($customer) {
+            $valid = $this->getValidaCPF($customer->getTaxvat());
+            if (!$valid) {
+                $valido = !1;
+                Mage::getSingleton('core/session')->addError('O campo CPF está inválido.');
             }
         }
         
         
         return $valido;
-
     }
     /**
      * Retrieve checkout session model
@@ -402,33 +396,36 @@ class MOIP_Onestepcheckout_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $guestCheckout;
     }
-	public function onlyProductDownloadable(){		
-		$itemProduct=$this->getQuote()->getAllVisibleItems();
-		//echo sizeof($itemProduct);exit;
-		//$istrue;
-		foreach($itemProduct as $item){
-				if($item->getProduct()->getTypeId()!='downloadable' AND $item->getProduct()->getTypeId()!='virtual')
-					return false;
-		}
-		return true;
-	}
-	public function haveProductDownloadable(){		
-		$itemProduct=$this->getQuote()->getAllVisibleItems();
-		foreach($itemProduct as $item){
-				if($item->getProduct()->getTypeId()=='downloadable')
-					return true;
-		}
-		
-		return false;		
-	}	
-	public function issubscribed(){
-		$issubscribe= Mage::getModel('newsletter/subscriber')->loadByCustomer(Mage::getSingleton('customer/session')->getCustomer())->isSubscribed();
-		if(!Mage::getSingleton('customer/session')->isLoggedIn() or !$issubscribe){
-			return true;  
-		}
-		else{
-			return false;
-		}
-	}
-	
+    public function onlyProductDownloadable()
+    {
+        $itemProduct=$this->getQuote()->getAllVisibleItems();
+        //echo sizeof($itemProduct);exit;
+        //$istrue;
+        foreach ($itemProduct as $item) {
+            if ($item->getProduct()->getTypeId()!='downloadable' and $item->getProduct()->getTypeId()!='virtual') {
+                return false;
+            }
+        }
+        return true;
+    }
+    public function haveProductDownloadable()
+    {
+        $itemProduct=$this->getQuote()->getAllVisibleItems();
+        foreach ($itemProduct as $item) {
+            if ($item->getProduct()->getTypeId()=='downloadable') {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    public function issubscribed()
+    {
+        $issubscribe= Mage::getModel('newsletter/subscriber')->loadByCustomer(Mage::getSingleton('customer/session')->getCustomer())->isSubscribed();
+        if (!Mage::getSingleton('customer/session')->isLoggedIn() or !$issubscribe) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

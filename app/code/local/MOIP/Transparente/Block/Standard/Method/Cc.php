@@ -1,8 +1,7 @@
 <?php
 class MOIP_Transparente_Block_Standard_Method_Cc extends Mage_Checkout_Block_Onepage_Success
 {
-
-	public function getMoipPayment()
+    public function getMoipPayment()
     {
         return $this->getCheckout()->getMoipData();
     }
@@ -33,7 +32,8 @@ class MOIP_Transparente_Block_Standard_Method_Cc extends Mage_Checkout_Block_One
     }
 
   
-    protected function getMoipData(){
+    protected function getMoipData()
+    {
         $additional = $this->getOrder()->getPayment()->getAdditionalData();
         return unserialize($additional);
     }
@@ -57,5 +57,4 @@ class MOIP_Transparente_Block_Standard_Method_Cc extends Mage_Checkout_Block_One
         }
         return $this->getUrl('sales/order/view', array('order_id' => $order->getId()));
     }
-   
 }

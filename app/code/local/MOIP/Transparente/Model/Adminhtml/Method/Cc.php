@@ -41,10 +41,11 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
         }
         $info           = $this->getInfoInstance();
         $dataNascimento = $data->getMoipCcOwnerExpDay() . "/" . $data->getMoipCcOwnerExpMonth() . "/" . $data->getMoipCcOwnerExpYear();
-        if ($data->getMoipCcPaymentInCofre() == 0)
+        if ($data->getMoipCcPaymentInCofre() == 0) {
             $use_cofre = 1;
-        else
+        } else {
             $use_cofre = 0;
+        }
         $additionaldata = array(
             'taxdocument_moip' => preg_replace("/[^0-9]/", "", $data->getMoipCcTaxdocument()),
             'installmentcount_moip' => $data->getMoipCcInstallmentCount(),
@@ -110,10 +111,11 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                         }
                     }
                 } else {
-                    if ($specifiedCCType)
+                    if ($specifiedCCType) {
                         $errorMsg = "";
-                    else
+                    } else {
                         $errorMsg = Mage::helper('transparente')->__('Ops, não consigo processar o seu cartão confira o número por favor.');
+                    }
                 }
             } else {
                 $errorMsg = Mage::helper('transparente')->__('O número do cartão está inválido');
@@ -126,7 +128,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                 }
             }
             if ($errorMsg === false) {
-                 if (!$info->getCcOwner()) {
+                if (!$info->getCcOwner()) {
                     $errorMsg = Mage::helper('transparente')->__('O nome do portador do cartão não está correto');
                 }
             }
@@ -164,7 +166,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                     $errorMsg = Mage::helper('transparente')->__('Informe o código de segurança do cartão selecionado.');
                 }
             }
-             if ($errorMsg === false) {
+            if ($errorMsg === false) {
                 if (!$additionaldata['installmentcountcofre_moip']) {
                     $errorMsg = Mage::helper('transparente')->__('Selecione o número de parcelas para o pagamento.');
                 }
@@ -209,7 +211,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
     {
         if (empty($cpf)) {
             return false;
-        } else if ($cpf == '00000000000' || $cpf == '11111111111' || $cpf == '22222222222' || $cpf == '33333333333' || $cpf == '44444444444' || $cpf == '55555555555' || $cpf == '66666666666' || $cpf == '77777777777' || $cpf == '88888888888' || $cpf == '99999999999') {
+        } elseif ($cpf == '00000000000' || $cpf == '11111111111' || $cpf == '22222222222' || $cpf == '33333333333' || $cpf == '44444444444' || $cpf == '55555555555' || $cpf == '66666666666' || $cpf == '77777777777' || $cpf == '88888888888' || $cpf == '99999999999') {
             return false;
         } else {
             for ($t = 9; $t < 11; $t++) {
@@ -282,8 +284,9 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
         } else {
             $parcela = $additionaldata['installmentcountcofre_moip'];
         }
-        if (!$quote->getFeeAmount())
+        if (!$quote->getFeeAmount()) {
             $juros = $this->setJurosMoip($quote, $parcela);
+        }
         return $this;
     }
     public function setJurosMoip($quote, $parcela)

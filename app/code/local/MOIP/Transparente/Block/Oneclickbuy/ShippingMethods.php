@@ -6,7 +6,6 @@ class MOIP_Transparente_Block_Oneclickbuy_ShippingMethods extends Mage_Checkout_
 
     public function getShippingRates()
     {
-
         if (empty($this->_rates)) {
             $this->getAddress()->collectShippingRates()->save();
 

@@ -47,7 +47,8 @@ class MOIP_Onestepcheckout_Block_Checkout_Customer_Tipopessoa extends Mage_Custo
         return Mage::getSingleton('customer/session')->getCustomer();
     }
 
-    public function getOptionsValues(){
+    public function getOptionsValues()
+    {
         $attribute = Mage::getModel('eav/config')->getAttribute('customer', 'tipopessoa');
         $allOptions = $attribute->getSource()->getAllOptions(true, true);
         return $allOptions;

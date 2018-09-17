@@ -2,7 +2,7 @@
 $installer = $this;
 $tablePrefix = (string) Mage::getConfig()->getTablePrefix();
 $installer->startSetup();
-$table_moip = $tablePrefix."moip_transparentev2"; 
+$table_moip = $tablePrefix."moip_transparentev2";
 $installer->run("CREATE TABLE IF NOT EXISTS `".$table_moip."` (
   `entity_id_moip` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) DEFAULT NULL,
@@ -17,4 +17,3 @@ $installer->run("CREATE TABLE IF NOT EXISTS `".$table_moip."` (
   PRIMARY KEY (`entity_id_moip`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 $installer->endSetup();
-?>

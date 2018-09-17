@@ -1,7 +1,6 @@
 <?php
-class MOIP_Transparente_Model_Sales_Quote_Address_Total_Fee extends Mage_Sales_Model_Quote_Address_Total_Abstract{
-   
-
+class MOIP_Transparente_Model_Sales_Quote_Address_Total_Fee extends Mage_Sales_Model_Quote_Address_Total_Abstract
+{
     public function __construct()
     {
         $this->setCode('fee_moip');
@@ -32,13 +31,13 @@ class MOIP_Transparente_Model_Sales_Quote_Address_Total_Fee extends Mage_Sales_M
     {
         $amt = $address->getFeeMoip();
         $baseamt = $address->getBaseFeeMoip();
-        if($amt != 0){
+        if ($amt != 0) {
             $address->addTotal(array(
                     'code'=>$this->getCode(),
                     'title'=>$this->getLabel(),
                     'value'=> $amt
             ));
-        } 
+        }
         return $this;
     }
 }

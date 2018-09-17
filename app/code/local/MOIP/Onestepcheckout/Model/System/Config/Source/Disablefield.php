@@ -1,5 +1,5 @@
-<?php 
-class MOIP_Onestepcheckout_Model_System_Config_Source_Disablefield 
+<?php
+class MOIP_Onestepcheckout_Model_System_Config_Source_Disablefield
 {
     public function toOptionArray()
     {
@@ -8,5 +8,4 @@ class MOIP_Onestepcheckout_Model_System_Config_Source_Disablefield
             array('value'=>1, 'label'=>Mage::helper('adminhtml')->__('Habilitado')),
         );
     }
-
 }

@@ -1,7 +1,7 @@
 <?php
 class MOIP_Transparente_Model_Admin
 {
- 	const TOKEN_TEST = "8OKLQFT5XQZXU7CKXX43GPJOMIJPMSMF";
+    const TOKEN_TEST = "8OKLQFT5XQZXU7CKXX43GPJOMIJPMSMF";
     const KEY_TEST = "NT0UKOXS4ALNSVOXJVNXVKRLEOQCITHI5HDKW3LI";
     const ENDPOINT_TEST = "https://sandbox.moip.com.br/v2/";
     const TOKEN_PROD = "EVCHBAUMKM0U4EE4YXIA8VMC0KBEPKN2";
@@ -9,9 +9,8 @@ class MOIP_Transparente_Model_Admin
     const ENDPOINT_PROD = "https://api.moip.com.br/v2/";
   
 
-  	public function getDados($quote)
+    public function getDados($quote)
     {
-
         $id_proprio = $quote->getIncrementId();
       
         
@@ -19,7 +18,6 @@ class MOIP_Transparente_Model_Admin
             $a = $quote->getShippingAddress();
             $b = $quote->getBillingAddress();
             $this->generateLog($b->Debug(), 'MOIP_OrderDebug.log');
-            
         } else {
             $a = $quote->getShippingAddress();
             $b = $quote->getBillingAddress();
@@ -30,36 +28,36 @@ class MOIP_Transparente_Model_Admin
         $cep           = substr(preg_replace("/[^0-9]/", "", $b->getPostcode()) . '00000000', 0, 8);
         $billing_cep   = substr(preg_replace("/[^0-9]/", "", $a->getPostcode()) . '00000000', 0, 8);
         $dob           = Mage::app()->getLocale()->date($quote->getCustomerDob(), null, null, true)->toString('Y-MM-dd');
-        if(!$quote->getCustomerDob()){
+        if (!$quote->getCustomerDob()) {
             $dob = date('Y-m-d', strtotime($dob . ' -1 day'));
         }
-        $dob           = explode('-',$dob);
+        $dob           = explode('-', $dob);
         $dob_day = $dob[2];
-        if(is_null($dob_day)){
+        if (is_null($dob_day)) {
             $dob_day = 01;
         }
         $dob_month = $dob[1];
-        if(is_null($dob_month)){
+        if (is_null($dob_month)) {
             $dob_month = 01;
         }
         $dob_year = $dob[0];
-        if($dob_year < 1900){
-            $dob_year += 1900; 
+        if ($dob_year < 1900) {
+            $dob_year += 1900;
         }
         $dob = $dob_year."-".$dob_month."-".$dob_day;
         $taxvat        = $quote->getCustomerTaxvat();
         $taxvat        = preg_replace("/[^0-9]/", "", $taxvat);
-         if(strlen($taxvat) > 11){
+        if (strlen($taxvat) > 11) {
             $document_type = "CNPJ";
         } else {
             $document_type = "CPF";
         }
-        if($quote->getCustomerTipopessoa() == 0 && $quote->getCustomerNomefantasia()){
+        if ($quote->getCustomerTipopessoa() == 0 && $quote->getCustomerNomefantasia()) {
             $nome = $quote->getCustomerRazaosocial(). " ".$quote->getCustomerCnpj();
             $document_type = "CNPJ";
             $taxvat = $quote->getCustomerCnpj();
         } else {
-             $nome =  $b->getFirstname() . ' ' . $b->getLastname();
+            $nome =  $b->getFirstname() . ' ' . $b->getLastname();
         }
         $website_id    = Mage::app()->getWebsite()->getId();
         $website_name  = Mage::app()->getWebsite()->getName();
@@ -148,7 +146,7 @@ class MOIP_Transparente_Model_Admin
            
         );
         $use_split = Mage::getStoreConfig('moipall/mktplacet_config/enable_split');
-        if($use_split){
+        if ($use_split) {
             $comissoes = $this->getListaComissoesAvancadas($quote);
             $normalize = $this->normalizeComissao($comissoes);
             $array_receivers = array("receivers" => $normalize);
@@ -160,7 +158,7 @@ class MOIP_Transparente_Model_Admin
         $this->generateLog($json_order, 'MOIP_Order.log');
         return $json_order;
     }
-     public function getAuditOrder($quote, $shipping)
+    public function getAuditOrder($quote, $shipping)
     {
         $grandTotalProd = null;
        
@@ -169,7 +167,7 @@ class MOIP_Transparente_Model_Admin
         $produtos  = array();
         foreach ($items as $itemId => $item) {
             if ($item->getPrice() > 0) {
-               $grandTotalProd += $item->getPrice() * $item->getQtyOrdered();
+                $grandTotalProd += $item->getPrice() * $item->getQtyOrdered();
             }
         }
 
@@ -224,7 +222,6 @@ class MOIP_Transparente_Model_Admin
     }
     public function getOrderMoip($json_order)
     {
-        
         $documento = 'Content-Type: application/json; charset=utf-8';
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
             $url    = self::ENDPOINT_TEST."orders/";
@@ -261,28 +258,31 @@ class MOIP_Transparente_Model_Admin
     public function getNumEndereco($endereco, $enderecob)
     {
         $numEnderecoDefault = '0';
-        if (!$endereco)
+        if (!$endereco) {
             $endereco = $enderecob;
-        else
+        } else {
             $endereco = $endereco;
+        }
         $numEndereco = trim(preg_replace("/[^0-9]/", "", $endereco));
-        if ($numEndereco)
+        if ($numEndereco) {
             return ($numEndereco);
-        else
+        } else {
             return ($numEnderecoDefault);
+        }
     }
     public function getPosSeparador($endereco)
     {
         $posSeparador = strpos($endereco, ',');
-        if ($posSeparador === false)
+        if ($posSeparador === false) {
             $posSeparador = strpos($endereco, '-');
+        }
         return ($posSeparador);
     }
     public function getNumberOrDDD($param_telefone, $param_ddd = false)
     {
         $cust_ddd       = '11';
         $cust_telephone = preg_replace("/[^0-9]/", "", $param_telefone);
-        if(strlen($cust_telephone) == 11){
+        if (strlen($cust_telephone) == 11) {
             $st             = strlen($cust_telephone) - 9;
             $indice         = 9;
         } else {
@@ -301,16 +301,11 @@ class MOIP_Transparente_Model_Admin
         }
         return $retorno;
     }
-     public function generateLog($variable, $name_log){
-        
-
-        if(Mage::getSingleton('transparente/standard')->getConfigData('log') == 1){
+    public function generateLog($variable, $name_log)
+    {
+        if (Mage::getSingleton('transparente/standard')->getConfigData('log') == 1) {
             Mage::log($variable, null, 'MOIP/'.$name_log, true);
         } else {
-            
         }
-        
-
     }
 }
-

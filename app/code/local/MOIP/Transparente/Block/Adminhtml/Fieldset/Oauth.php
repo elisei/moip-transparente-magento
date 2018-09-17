@@ -1,11 +1,7 @@
 <?php
 
-class MOIP_Transparente_Block_Adminhtml_Fieldset_Oauth 
-extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Renderer_Interface
+class MOIP_Transparente_Block_Adminhtml_Fieldset_Oauth extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Renderer_Interface
 {
-
-   
-    
     public function render(Varien_Data_Form_Element_Abstract $element)
     {
         return sprintf(
@@ -22,45 +18,48 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
                     </div>
                 </td>
             </tr>',
-            $element->getHtmlId(),  $element->getHtmlId(), $this->getTitleSetup(), $this->getTextAmbiente(), $this->getActionSetup()
+            $element->getHtmlId(),
+            $element->getHtmlId(),
+            $this->getTitleSetup(),
+            $this->getTextAmbiente(),
+            $this->getActionSetup()
         );
     }
 
-    public function getTitleSetup(){
+    public function getTitleSetup()
+    {
         $validacao = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
-        if(!$validacao){
+        if (!$validacao) {
             $title = "1º Passo - Preencher e salvar campo Validação de comunicação";
         } else {
             $oauth      = $this->getIfOauth();
             $webhooks   = $this->getifWebHooks();
-            if(!$oauth) {
+            if (!$oauth) {
                 $title = "2º Passo - Autorizar APP cliclando nno botão Autorizar Moip";
             } else {
-                if($webhooks){ 
+                if ($webhooks) {
                     $title = "Configurações concluídas com sucesso!";
                 } else {
                     $title = "3ª Passo - Habilitar retorno da transação clicando no botão Configurar Retorno";
                 }
             }
-
         }
         return $title;
     }
 
-    public function getIfOauth(){
-
-        if($this->getAmbiente() == "teste"){
-            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');    
+    public function getIfOauth()
+    {
+        if ($this->getAmbiente() == "teste") {
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
         } else {
-            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');    
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
         }
         return $oauth;
-        
     }
 
-    public function getifWebHooks(){
-        if($this->getAmbiente() == "teste"){
-            
+    public function getifWebHooks()
+    {
+        if ($this->getAmbiente() == "teste") {
             $webhooks   = Mage::getSingleton('transparente/standard')->getConfigData('webhook_key_dev');
         } else {
             $webhooks   = Mage::getSingleton('transparente/standard')->getConfigData('webhook_key_prod');
@@ -68,12 +67,14 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
         return $webhooks;
     }
 
-    public function getAmbiente(){
+    public function getAmbiente()
+    {
         return Mage::getSingleton('transparente/standard')->getConfigData('ambiente');
     }
 
-    public function getTextAmbiente(){
-        if(Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste"){
+    public function getTextAmbiente()
+    {
+        if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
             $texto = "O ambiente escolhido é de <strong>Ambiente de Teste (Sandbox Moip)</strong> O Moip não irá comunicar as vendas a operadora de cartão, essa versão é apenas para testes.";
         } else {
             $texto = "O ambiente escolhido é de <b>Produção</b> - Suas vendas serão processadas normalmente.";
@@ -81,35 +82,39 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
         return $texto;
     }
 
-    public function getUrlClearMoip(){
+    public function getUrlClearMoip()
+    {
         return Mage::helper("adminhtml")->getUrl("adminhtml/adminhtml_oauthmoip/ClearMoip");
     }
 
-    public function getUrlOuathMoip(){
+    public function getUrlOuathMoip()
+    {
         return Mage::helper("adminhtml")->getUrl("adminhtml/adminhtml_oauthmoip/Oauth");
     }
-    public function getUrlEnableWebhooks(){
-       return Mage::helper("adminhtml")->getUrl("adminhtml/adminhtml_oauthmoip/EnableWebhooks");
+    public function getUrlEnableWebhooks()
+    {
+        return Mage::helper("adminhtml")->getUrl("adminhtml/adminhtml_oauthmoip/EnableWebhooks");
     }
-    public function getRedirectUri(){
+    public function getRedirectUri()
+    {
         $redirectUri = $this->getUrlOuathMoip();
         $redirectUri = urlencode($redirectUri);
         $redirectUri = "http://moip.o2ti.com/magento/redirect/?client_id=".$redirectUri; //Aqui voce pode construir sua url URI no entanto precisa estar exatamente como indicado no app construido...
         return $redirectUri;
     }
 
-    public function getLinkMoipApp(){
-        
-        if(Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste"){
+    public function getLinkMoipApp()
+    {
+        if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
             $endpoint       = MOIP_Transparente_Model_Api::ENDPOINTOAUTHDEV;
             $responseType   = MOIP_Transparente_Model_Api::RESPONSETYPE;
-            $appId          = $this->getApi()->getAppId("teste"); 
+            $appId          = $this->getApi()->getAppId("teste");
             $scope          = MOIP_Transparente_Model_Api::SCOPE_APP;
             $redirectUri    = $this->getRedirectUri();
         } else {
             $endpoint       = MOIP_Transparente_Model_Api::ENDPOINTOAUTHPROD;
             $responseType   = MOIP_Transparente_Model_Api::RESPONSETYPE;
-            $appId          = $this->getApi()->getAppId("prod"); 
+            $appId          = $this->getApi()->getAppId("prod");
             $scope          = MOIP_Transparente_Model_Api::SCOPE_APP;
             $redirectUri    = $this->getRedirectUri();
         }
@@ -118,18 +123,20 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
         return $link;
     }
 
-    public function getSrcBtnMoipOauth(){
+    public function getSrcBtnMoipOauth()
+    {
         $src =  $this->getSkinUrl('MOIP/transparente/imagem/btn-login-moip.png');
         return $src;
     }
 
-    public function getActionSetup(){
+    public function getActionSetup()
+    {
         $validacao  = Mage::getSingleton('transparente/standard')->getConfigData('validador_retorno');
         $oauth      = $this->getIfOauth();
         $webhooks   = $this->getifWebHooks();
-        if($validacao){
-            if($oauth){
-                if($webhooks){
+        if ($validacao) {
+            if ($oauth) {
+                if ($webhooks) {
                     $texto      = "Apagar configuração de permissão do módulo.";
                     $acao       = "Apagar Configuração Atual";
                     $class_btn  = 'danger';
@@ -169,4 +176,3 @@ extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Render
         return $api;
     }
 }
-?>

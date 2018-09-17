@@ -19,7 +19,7 @@ class MOIP_Transparente_Block_Adminhtml_Sales_Order_Creditmemo_Fee extends Mage_
         $total = $order->getGrandTotal();
         
         $juros = $total - $amt;
-        if($juros) {
+        if ($juros) {
             $this->addTotalBefore(new Varien_Object(array(
                         'code' => 'fee_moip',
                         'value' => $juros,
@@ -27,7 +27,5 @@ class MOIP_Transparente_Block_Adminhtml_Sales_Order_Creditmemo_Fee extends Mage_
                         'label' => $this->helper('transparente')->__('Juros de parcelamento'),
                     )), 'fee_moip');
         }
-        
     }
-
 }

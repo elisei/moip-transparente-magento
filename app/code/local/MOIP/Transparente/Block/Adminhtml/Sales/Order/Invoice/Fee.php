@@ -1,9 +1,10 @@
-<?php 
+<?php
 class MOIP_Transparente_Block_Adminhtml_Sales_Order_Invoice_Fee extends Mage_Adminhtml_Block_Sales_Totals
 {
-     protected $_code = 'fee_moip';
+    protected $_code = 'fee_moip';
 
-    protected function _initTotals() {
+    protected function _initTotals()
+    {
         parent::_initTotals();
         
         $amt = $this->getSource()->getFeeMoip();
@@ -18,6 +19,6 @@ class MOIP_Transparente_Block_Adminhtml_Sales_Order_Invoice_Fee extends Mage_Adm
                         'label' => $this->helper('transparente')->__('Juros de parcelamento'),
                     )), 'fee_moip');
             return $this;
-        } 
+        }
     }
 }

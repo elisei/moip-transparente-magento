@@ -13,4 +13,3 @@ $installer->run("
 		ALTER TABLE  `".$this->getTable('sales/creditmemo')."` ADD  `base_fee_moip` DECIMAL( 10, 4 ) NOT NULL default '0';
 	");
 $installer->endSetup();
-?>

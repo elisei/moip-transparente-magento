@@ -28,31 +28,28 @@ class MOIP_Transparente_Model_Standard extends Mage_Payment_Model_Method_Abstrac
         return $this;
     }
     
-    public function order(Varien_Object $payment, $amount){
-       
-       
+    public function order(Varien_Object $payment, $amount)
+    {
         $order             =  $payment->getOrder();
         $json_order        = $this->getApi()->getDados($order);
         $moip              = $this->getApi()->getOrderMoip($json_order);
 
-            $this->paymentCapture($moip, $payment);
+        $this->paymentCapture($moip, $payment);
         return $this;
-
     }
-    public function paymentCapture($moip, $payment){
+    public function paymentCapture($moip, $payment)
+    {
         $order  =    $payment->getOrder();
         $order_mage = Mage::getModel('sales/order')->load($order->getIncrementId(), 'increment_id');
         $order_moip = $moip->id;
        
-        if($order_mage){
-            
+        if ($order_mage) {
             $mage_pay         = $order_mage->getId();
             $forma_pagamento  = $payment->getMethodInstance()->getCode();
             
            
 
             if ($forma_pagamento == "moip_transparente_standard") {
-               
                 $orderIdMoip      = $moip->id;
                 $email            = $order->getCustomerEmail();
                 $customerId       = $order->getCustomerId();
@@ -60,17 +57,13 @@ class MOIP_Transparente_Model_Standard extends Mage_Payment_Model_Method_Abstrac
                 $responseMoip     = $moip;
                 $fees             = $moip->amount->fees;
                 $moipidPay        = $moip->id;
-                
-                
-                 
             } else {
-                return $this; 
+                return $this;
             }
 
-            if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste"){
+            if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
                 $ambiente = "teste";
-            }
-            else{
+            } else {
                 $ambiente = "producao";
             }
 
@@ -91,7 +84,6 @@ class MOIP_Transparente_Model_Standard extends Mage_Payment_Model_Method_Abstrac
             $info->setAdditionalData(serialize($additionaldata))->save()->setAdditionalInformation(serialize($additionaldata))->save();
 
             return $this;
-
         }
     }
 
@@ -116,5 +108,4 @@ class MOIP_Transparente_Model_Standard extends Mage_Payment_Model_Method_Abstrac
         $api = Mage::getModel('transparente/admin');
         return $api;
     }
-    
 }

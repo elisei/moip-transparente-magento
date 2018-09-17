@@ -1,12 +1,10 @@
 <?php
 class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_Action
 {
-    
     public function getApiMoip()
     {
         $api = Mage::getSingleton('transparente/recurringapi');
         return $api;
-        
     }
 
     
@@ -16,7 +14,6 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
     
     public function NewTransactionAction()
     {
-   
         $api       = $this->getApiMoip();
         $chave1 = Mage::getStoreConfig('payment/moip_transparente_standard/validador_retorno');
        
@@ -26,33 +23,31 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
         $decode = json_decode($json_moip, false);
        
               
-        $api->generateLog($json_moip, 'MOIP_Webhooks.log'); 
+        $api->generateLog($json_moip, 'MOIP_Webhooks.log');
 
-        if($data['validacao'] == $chave1){
+        if ($data['validacao'] == $chave1) {
             $order_event        = $decode->event;
             $code_id            = $decode->resource->subscription_code;
             $data_for_payment   = json_decode($json_moip, true);
 
-            if($order_event == 'payment.created'){
-                
+            if ($order_event == 'payment.created') {
                 $order_exist        = $this->consultOrdersExist($code_id);
                 $order_init         = $order_exist->getFirstItem();
                 $orderId            = $order_init->getEntityId();
                 $order_load         = Mage::getModel('sales/order')->load($orderId);
                 $order_status       = $order_load->getState();
-                if($order_status === Mage_Sales_Model_Order::STATE_NEW && count($order_exist) === 1){
+                if ($order_status === Mage_Sales_Model_Order::STATE_NEW && count($order_exist) === 1) {
                     $order_trans_status  = $decode->resource->status->description;
-                    if($order_trans_status == "Cancelado"){
+                    if ($order_trans_status == "Cancelado") {
                         $this->cancelaPagamento($order_load);
-                        $this->setProfileState($code_id, "Cancelado"); 
+                        $this->setProfileState($code_id, "Cancelado");
                     } elseif ($order_trans_status == "Autorizado") {
                         $this->autorizaPagamento($order_load);
-                         $this->setProfileState($code_id, "Autorizado");
+                        $this->setProfileState($code_id, "Autorizado");
                     }
                     
                     return $this;
                 } else {
-                    
                     $new_order      = $this->createNewOrderRecurring($code_id, $order_load, $data_for_payment["resource"]);
                     $order_trans_status  = $decode->resource->status->description;
                     echo $order_trans_status;
@@ -60,17 +55,11 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
                     echo $new_order->getIncrementId();
                     echo " ".$new_order->getState();
                 }
-            }
-
-            elseif($order_event == 'payment.status_updated'){
-
-
-
-                
+            } elseif ($order_event == 'payment.status_updated') {
                 $code_id             = $decode->resource->subscription_code;
                 $order_trans_status  = $decode->resource->status->description;
                 $id                  = $decode->resource->id;
-                if($order_trans_status == "Autorizado"){
+                if ($order_trans_status == "Autorizado") {
                     $order_exist    = $this->consultOrdersExist($code_id);
 
                     $order_init     = $order_exist->getFirstItem();
@@ -78,21 +67,18 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
                     $order_load     = Mage::getModel('sales/order')->load($orderId);
                     $order_status   = $order_load->getState();
                    
-                    if($order_status === Mage_Sales_Model_Order::STATE_NEW && count($order_exist) === 1){
+                    if ($order_status === Mage_Sales_Model_Order::STATE_NEW && count($order_exist) === 1) {
                         $this->autorizaPagamento($order_load);
                         $this->setProfileState($code_id, "Autorizado");
-                       
                     } else {
-                      $order_transaction = $this->consultTransactionId($id);
-                      if($order_transaction['order_id']){
-                        $order    = Mage::getModel('sales/order')->load($order_transaction['order_id']);
-                        $this->autorizaPagamento($order);
-                        $this->setProfileState($code_id, "Autorizado");
-                      }
-                      
+                        $order_transaction = $this->consultTransactionId($id);
+                        if ($order_transaction['order_id']) {
+                            $order    = Mage::getModel('sales/order')->load($order_transaction['order_id']);
+                            $this->autorizaPagamento($order);
+                            $this->setProfileState($code_id, "Autorizado");
+                        }
                     }
-                  
-                } elseif($order_trans_status == "Cancelado") {
+                } elseif ($order_trans_status == "Cancelado") {
                     $order_exist    = $this->consultOrdersExist($code_id);
 
                     $order_init     = $order_exist->getFirstItem();
@@ -100,46 +86,41 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
                     $order_load     = Mage::getModel('sales/order')->load($orderId);
                     $order_status   = $order_load->getState();
                    
-                    if($order_status === Mage_Sales_Model_Order::STATE_NEW && count($order_exist) === 1){
+                    if ($order_status === Mage_Sales_Model_Order::STATE_NEW && count($order_exist) === 1) {
                         $this->cancelaPagamento($order_load);
                         $this->setProfileState($code_id, "Cancelado");
-                       
                     } else {
-                      $order_transaction = $this->consultTransactionId($id);
-                      if($order_transaction['order_id']){
-                        $order    = Mage::getModel('sales/order')->load($order_transaction['order_id']);
-                        $this->cancelaPagamento($order);
-                        $this->setProfileState($code_id, "Cancelado");
-                      }
-                      
+                        $order_transaction = $this->consultTransactionId($id);
+                        if ($order_transaction['order_id']) {
+                            $order    = Mage::getModel('sales/order')->load($order_transaction['order_id']);
+                            $this->cancelaPagamento($order);
+                            $this->setProfileState($code_id, "Cancelado");
+                        }
                     }
-
-
                 } else {
-                   echo "Não lerei essa info";
-                   return; 
+                    echo "Não lerei essa info";
+                    return;
                 }
-                
-                
             } else {
                 echo "Não lerei essa info";
-               return;
-            } 
-
+                return;
+            }
         }
     }
 
-    public function consultOrdersExist($code_id){
+    public function consultOrdersExist($code_id)
+    {
         $profile            = Mage::getModel('sales/recurring_profile')->load($code_id);
         $customer_id        = $profile->getCustomerId();
         $order              = Mage::getResourceModel('sales/order_collection')
                                 ->addFieldToFilter('customer_id', $customer_id)
                                 ->addRecurringProfilesFilter($profile->getProfileId())
                                 ->setOrder('entity_id', 'asc');
-        return $order; 
+        return $order;
     }
 
-    public function consultTransactionId($id){
+    public function consultTransactionId($id)
+    {
         $readConnection = Mage::getSingleton('core/resource')->getConnection('core_read');
         $table = (string) Mage::getConfig()->getTablePrefix().'sales_payment_transaction';
 
@@ -148,8 +129,8 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
         return $results[0];
     }
 
-    public function createNewOrderRecurring($code_id, $order, $data_for_payment){
-     
+    public function createNewOrderRecurring($code_id, $order, $data_for_payment)
+    {
         $content_parent     = !1;
         $profile            = Mage::getModel('sales/recurring_profile')->load($code_id);
         $customer_id        = $profile->getCustomerId();
@@ -239,7 +220,7 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
        
 
         $transaction->save();
-        if(!$this->isBundle($order)){
+        if (!$this->isBundle($order)) {
             $products    = $this->setInfoAddItemProduct($order);
             $new_order->addItem($products);
         }
@@ -254,7 +235,7 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
 
         $new_order_id = $new_order->getId();
        
-        if($this->isBundle($order)){
+        if ($this->isBundle($order)) {
             $products    = $this->setInfoAddItemProduct($order, $new_order_id);
             $new_order->addItem($products)->save();
         }
@@ -274,12 +255,13 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
         $transaction->setIsClosed(1);
         $transaction->save();
         $new_order->setState(Mage_Sales_Model_Order::STATE_NEW)->save();
-       return $new_order;
+        return $new_order;
     }
 
     
-    public function isBundle($order){
-        foreach($order->getAllItems() as $item) {
+    public function isBundle($order)
+    {
+        foreach ($order->getAllItems() as $item) {
             $load_parent         = Mage::getModel('sales/order_item')->load($item->getId());
             $parent_product_type = $load_parent->getProductType();
             if ($parent_product_type == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE) {
@@ -289,20 +271,20 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
         return !1;
     }
 
-    public function setInfoAddItemProduct($order, $new_order_id = null){
+    public function setInfoAddItemProduct($order, $new_order_id = null)
+    {
         $parent_id_order = "";
-        foreach($order->getAllItems() as $item) {
-            
-                $load_parent         = Mage::getModel('sales/order_item')->load($item->getId());
-                $parent_product_type = $load_parent->getProductType();
+        foreach ($order->getAllItems() as $item) {
+            $load_parent         = Mage::getModel('sales/order_item')->load($item->getId());
+            $parent_product_type = $load_parent->getProductType();
                 
-                $orderItem = Mage::getModel('sales/order_item')
+            $orderItem = Mage::getModel('sales/order_item')
                             
                             ->setIsNominal($item->getIsNominal())
                             ->setStoreId($item->getStoreId())
                             ->setQuoteItemId($item->getQuoteItemId())
                             ->setParentItemId($parent_id_order)
-                            ->setSku($item->getSku()) 
+                            ->setSku($item->getSku())
                             ->setProductType($item->getProductType())
                             ->setProductId($item->getProductId())
                             ->setQtyBackordered($item->getQtyBackordered())
@@ -325,27 +307,25 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
                             ->setRowTotal($item->getRowTotal())
                             ->setBaseRowTotal($item->getBaseRowTotal());
 
-                if($new_order_id){
-                    $orderItem->setOrderId($new_order_id);
-                    $orderItem->save();
-                } 
+            if ($new_order_id) {
+                $orderItem->setOrderId($new_order_id);
+                $orderItem->save();
+            }
                
-                if ($parent_product_type == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE) {
-                    $orderItem->setProductOptions($item->getProductOptions())->save();
-                    $parent_id_order = $orderItem->getItemId();
-                }
-                
-                
+            if ($parent_product_type == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE) {
+                $orderItem->setProductOptions($item->getProductOptions())->save();
+                $parent_id_order = $orderItem->getItemId();
+            }
         }
       
         return $orderItem;
     }
     
-    public function setProfileState($id_profile, $state){
-
-        if($state === "Cancelado"){
+    public function setProfileState($id_profile, $state)
+    {
+        if ($state === "Cancelado") {
             $state_profile      = Mage_Sales_Model_Recurring_Profile::STATE_PENDING;
-        } elseif($state === "Autorizado"){
+        } elseif ($state === "Autorizado") {
             $state_profile      = Mage_Sales_Model_Recurring_Profile::STATE_ACTIVE;
         }
 
@@ -355,9 +335,10 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
     }
     
     
-    public function set404(){
-        $this->getResponse()->setHeader('HTTP/1.1','404 Not Found');
-        $this->getResponse()->setHeader('Status','404 File not found');
+    public function set404()
+    {
+        $this->getResponse()->setHeader('HTTP/1.1', '404 Not Found');
+        $this->getResponse()->setHeader('Status', '404 File not found');
 
         $pageId = Mage::getStoreConfig(Mage_Cms_Helper_Page::XML_PATH_NO_ROUTE_PAGE);
         if (!Mage::helper('cms/page')->renderPage($this, $pageId)) {
@@ -365,10 +346,11 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
         }
     }
 
-    public function autorizaPagamento($order){
-        if($order->canUnhold()) {
+    public function autorizaPagamento($order)
+    {
+        if ($order->canUnhold()) {
             $order->unhold()->save();
-        } 
+        }
         $invoice = $order->prepareInvoice();
        
         $invoice->register()->capture();
@@ -382,12 +364,13 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
         } catch (Exception $exception) {
             return $this->set404();
         }
-     }
+    }
 
-    public function cancelaPagamento($order){
-        if($order->canUnhold()) {
+    public function cancelaPagamento($order)
+    {
+        if ($order->canUnhold()) {
             $order->unhold()->save();
-        } 
+        }
         $order->cancel()->save();
         
         try {
@@ -395,6 +378,5 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
         } catch (Exception $exception) {
             return $this->set404();
         }
-        
     }
-}   
+}

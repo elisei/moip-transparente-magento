@@ -1,20 +1,18 @@
 <?php
 
-class MOIP_Transparente_Model_Source_AttributesProduct {
-
+class MOIP_Transparente_Model_Source_AttributesProduct
+{
     public function getAllOptions()
     {
         $attributes=Mage::getSingleton('eav/config')->getEntityType(Mage_Catalog_Model_Product::ENTITY)->getAttributeCollection();
-        $attributes->setOrder('frontend_label','ASC');
+        $attributes->setOrder('frontend_label', 'ASC');
 
         $_options=array();
 
-        foreach ($attributes as $attr)
-        {
+        foreach ($attributes as $attr) {
             $label=$attr->getStoreLabel() ? $attr->getStoreLabel() : $attr->getFrontendLabel();
 
-            if ('' != $label)
-            {
+            if ('' != $label) {
                 $_options[]=array('label' => $label,'value' => $attr->getAttributeCode());
             }
         }
@@ -26,6 +24,4 @@ class MOIP_Transparente_Model_Source_AttributesProduct {
     {
         return $this->getAllOptions();
     }
-
 }
-

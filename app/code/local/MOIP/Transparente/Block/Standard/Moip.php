@@ -3,8 +3,6 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
 {
     public function __construct()
     {
-        
-       
         parent::__construct();
         return $this;
     }
@@ -17,7 +15,8 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
         return $api;
     }
 
-    public function initState($value){
+    public function initState($value)
+    {
         return Mage::getSingleton('transparente/standard')->getConfigData($value);
     }
 
@@ -36,10 +35,11 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
 
     public function getUrlAmbiente()
     {
-        if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste")
+        if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
             $url = "https://desenvolvedor.moip.com.br/sandbox/";
-        else
+        } else {
             $url = "https://www.moip.com.br/";
+        }
         return $url;
     }
 
@@ -60,16 +60,16 @@ class MOIP_Transparente_Block_Standard_Moip extends Mage_Checkout_Block_Onepage_
     public function getChildTemplate()
     {
         $order = $this->getOrder();
-        if($order){
+        if ($order) {
             $info  = $order->getPayment()->getMethodInstance()->getCode();
-            if ($info == "moip_boleto")
+            if ($info == "moip_boleto") {
                 return $this->getChildHtml('transparente.boleto');
-            elseif ($info == "moip_tef")
+            } elseif ($info == "moip_tef") {
                 return $this->getChildHtml('transparente.transferencia');
-            elseif ($info == "moip_cc")
+            } elseif ($info == "moip_cc") {
                 return $this->getChildHtml('transparente.cartao');
+            }
         }
-        
     }
 
     protected function getCheckout()
