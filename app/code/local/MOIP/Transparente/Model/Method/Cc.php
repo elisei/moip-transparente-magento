@@ -578,7 +578,12 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
        
         if (!$parcela==0) {
             $juros = $address->getFeeMoip();
-            $installment =  Mage::helper('transparente')->getCalcInstallment($total);
+            if(!Mage::getStoreConfig('payment/moip_cc/parcelas_avancadas')){
+                $installment =  Mage::helper('transparente')->getCalcInstallment($total);
+            } else {
+                $installment =  Mage::helper('transparente')->getComplexCalcInstallment($total);   
+            }
+
             if ($installment && $parcela) {
                 $balance        = $installment[$parcela]['total_interest'];
                 $address->setFeeMoip($balance);

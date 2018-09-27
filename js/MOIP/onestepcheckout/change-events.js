@@ -1,5 +1,4 @@
 (function($) {
-
 validateOnBlur = function(form){
 	jQuery('#'+form+' :input:not([type="checkbox"]):not([type="submit"]):not([type="button"])').blur(function() {
 		if(jQuery(this).attr('id')) {
@@ -8,16 +7,13 @@ validateOnBlur = function(form){
 	      	};		
 		}
   	});
-}
-
+};
 SetUniquePassword = function() {
 	jQuery('#confirmation').val(jQuery('#password').val());
-}
-
+};
 gobackemail = function(){
 	location.href = url_clear_identify;
-}
-
+};
 IdentifyUser = function(){
 	var identify = new VarienForm('onestep_form_identify', true);
     if (identify.validator.validate()) 
@@ -33,7 +29,6 @@ IdentifyUser = function(){
 			success: function(result) {
 				visibilyloading("end");
 				if(result.is_user){
-
 					jQuery('#isCustomer').html(result.html);
 					var target = jQuery("#create-loggin");  
 					jQuery(target).css('right','-'+jQuery(window).width()+'px');   
@@ -43,7 +38,6 @@ IdentifyUser = function(){
 					jQuery('#identifique').removeClass('active', 'in');
 					jQuery('#login-email').val(jQuery('#checked-login').val());
 					jQuery('#login-password').password();
-					
 				} else {
 					jQuery('#not-isCustomer').html(result.html);
 					var target = jQuery("#create-account");  
@@ -57,8 +51,7 @@ IdentifyUser = function(){
 			},
 		});
 	}
-}
-
+};
 Authenticate = function(){
 	var identify = new VarienForm('form-loggin', true);
     if (identify.validator.validate()) 
@@ -80,8 +73,7 @@ Authenticate = function(){
 			},
 		});
 	}
-}
-
+};
 getErroDescription = function(){
 	error = null;
 	jQuery(".erros_cadastro_valores").html('');
@@ -96,24 +88,21 @@ getErroDescription = function(){
 		} 
 	});
 	return this;
-}
+};
 loadingInButton = function(type){
-
 		if(type != 'stop'){
 			jQuery('.moip-place-order').addClass('progress-bar progress-bar-striped active').css('width','100%').prop('disabled', true);
 		} else {
 			jQuery('.moip-place-order').removeClass('progress-bar progress-bar-striped active').prop('disabled', false);
 		}
-	
-}
+};
 visibilyloading  = function(type){
 	if(type != 'end'){
 		jQuery("#modal-loading-process").modal({backdrop: 'static', keyboard: false});	
 	} else {
 		jQuery("#modal-loading-process").modal("toggle");
 	}
-}
-
+};
 savePaymentMethod = function() {
 	jQuery.ajax({
 		url: url_save_payment_metthod,
@@ -136,8 +125,7 @@ savePaymentMethod = function() {
 		},
 	});
 	return this;
-}
-
+};
 saveShippingMethod = function(){
 	jQuery.ajax({
 		type: "POST",
@@ -149,7 +137,6 @@ saveShippingMethod = function(){
 			jQuery("#payment-progress").removeClass('hidden-it');
 			jQuery("#co-payment-form").addClass('hidden-it');
 			loadingInButton('start');
-
 		},
 		success: function(result){
 			jQuery("#payment-progress").addClass('hidden-it');
@@ -171,11 +158,10 @@ saveShippingMethod = function(){
 			jQuery("#payment-progress").addClass('hidden-it');
 			jQuery("#co-payment-form").removeClass('hidden-it');
 			loadingInButton('stop');
-		},
-	})
+		}
+	});
 	return this;
-}
-
+};
 saveShipping = function(){
 	jQuery("#shipping-progress").removeClass('hidden-it');
 	jQuery.ajax({
@@ -196,10 +182,9 @@ saveShipping = function(){
 				}, 2000);
 			}
 		}
-	})
+	});
 	return this;
-}
-
+};
 viewAddressBilling = function(value){
 	if(value == false){
 		jQuery(".address-billing-view").removeClass("no-display");
@@ -207,110 +192,56 @@ viewAddressBilling = function(value){
 		jQuery(".address-billing-view").addClass("no-display");
 	}
 	return this;
-}
-
+};
+CreateAccount = function(){
+	var save = new VarienForm('form-new-address', true);
+    if (save.validator.validate()) 
+	{
+		visibilyloading();
+		jQuery("#form-new-address").submit();
+	}
+};
+NewAddress = function(context){
+	var save = new VarienForm('form-new-address', true);
+    if (save.validator.validate()) 
+	{	
+		
+			visibilyloading();
+			jQuery.ajax({
+				type: "POST",
+				url: form_post_address,
+				data: jQuery("#form-new-address").serialize(),
+				evalScripts:true,
+				dataType: "json",
+				success: function(result) {
+						window.location.reload();
+				}
+			});
+		
+	}
+};
 SaveAddress = function(id, context){
+	console.log("chama a função");
     var save = new VarienForm('form-new-address', true);
     if (save.validator.validate()) 
 	{	
-		if(id != 0) {
-			//edit address existente update...
-			if(context == "billing" || context == 'shipping'){
-				visibilyloading();
-				jQuery.ajax({
-					type: "POST",
-					url: form_post_address+'id/'+id,
-					data: jQuery("#form-new-address").serialize(),
-					evalScripts:true,
-					dataType: "json",
-					success: function(result) {
-						if(result.success)
-						{    
-							if(result.update == "billing"){
-								jQuery('#endereco-de-cobranca').html(result.html);
-							} else{
-								jQuery('#endereco-de-envio').html(result.html);
-								saveShipping();
-							}
-							
-							jQuery("#new-address").modal('toggle');
-							visibilyloading('end');
-							
-						} else {
-							visibilyloading('end');
-							window.location.reload();
-						}
-					}
-				});
-			} else if(context == "edit") {
-				visibilyloading();
-				jQuery.ajax({
-					type: "POST",
-					url: form_post_address+'id/'+id,
-					data: jQuery("#form-new-address").serialize(),
-					evalScripts:true,
-					dataType: "json",
-					success: function(result) {
-						visibilyloading('end');
-						if(result.success)
-						{    
-							if(!result.update){
-								window.location.href = encodeURI(result.redirect);
-							} 
-							
-							
-						} else {
-							visibilyloading('end');
-							window.location.reload();
-						}
-					}
-				});
-			
-			}
-
-		} else {
-			if(context == "billing" || context == 'shipping' ){			
-				visibilyloading();
-				jQuery.ajax({
-					type: "POST",
-					url: form_post_address,
-					data: jQuery("#form-new-address").serialize(),
-					evalScripts:true,
-					dataType: "json",
-					success: function(result) {
-						if(result.success)
-						{    
-							if(result.update == "billing"){
-								jQuery('#endereco-de-cobranca').html(result.html);
-							} else if (result.update == "billing"){
-								jQuery('#endereco-de-envio').html(result.html);
-								saveShipping();
-							} else {
-								window.location.reload();
-							}
-							visibilyloading('end');
-							jQuery("#new-address").modal('toggle');
-							
-						} else {
-							
-							visibilyloading('end');
-							window.location.reload();
-						}
-					}
-				});
-			} else if(context == "edit" || context == 'new'){
-				visibilyloading();
-				jQuery("#form-new-address").submit();
-			} else {
-				//criação da conta
-				jQuery("#form-new-address").submit();
-			}
-		}
+		
+			visibilyloading();
+			jQuery.ajax({
+				type: "POST",
+				url: form_post_address+'id/'+id,
+				data: jQuery("#form-new-address").serialize(),
+				evalScripts:true,
+				dataType: "json",
+				success: function(result) {
+					visibilyloading('end');
+					window.location.href = encodeURI(url_success_action_redirect);
+				}
+			});
 		
 	}
 	return this;
-}
-
+};
 EditAddress = function(isEdit, context) {
 	if(isEdit != 0){
 		if(context == "shipping"){
@@ -372,7 +303,6 @@ EditAddress = function(isEdit, context) {
 		        }
 		    });
 		} else {
-			
 			jQuery.ajax({
 		       	type: "POST",
 		        url: url_new_address,
@@ -389,9 +319,7 @@ EditAddress = function(isEdit, context) {
 		        }
 		    });
 		}
-		
 	}  else {
-		
 		jQuery.ajax({
 	        type: 'POST',
 	        url: url_new_address,
@@ -404,8 +332,7 @@ EditAddress = function(isEdit, context) {
 	        }
 	    });
 	}
-}
-
+};
 checkEmailExists = function(v){
 	jQuery.ajax({
         type: "POST",
@@ -428,9 +355,7 @@ checkEmailExists = function(v){
              return customerExists;
         }
     });
-   
-}
-
+};
 setTypePersona = function(type){
 	var type = jQuery(type).attr('data-typepersona');
 	if(type == "Jurídica"){
@@ -442,8 +367,7 @@ setTypePersona = function(type){
 		jQuery('#cnpj').removeClass('validate-cnpj');
 		jQuery('.dados-pj input:not([type=radio])').removeClass('required-entry validation-passed validation-failed');
 	}
-}
-
+};
 validateTypeDocument = function(cpf,pType){
 		var cpf_filtrado="",valor_1=" ",valor_2=" ",ch="";var valido=false;for(i=0;i<cpf.length;i++){ch=cpf.substring(i,i+1);if(ch>="0"&&ch<="9"){cpf_filtrado=cpf_filtrado.toString()+ch.toString()
 		valor_1=valor_2;valor_2=ch;}
@@ -452,21 +376,18 @@ validateTypeDocument = function(cpf,pType){
 		if(pType==1){if((cpf_filtrado.substring(9,11)==checkCPF(cpf_filtrado.substring(0,9)))&&(cpf_filtrado.substring(11,12)=="")){return true;}}
 		if(pType==2){if(cpf_filtrado.length>=14){if(cpf_filtrado.substring(12,14)==checkCNPJ(cpf_filtrado.substring(0,12))){return true;}}}
 	return false;
-}
-
+};
 checkCPF = function(vCPF){
 		var mControle=""
 		var mContIni=2,mContFim=10,mDigito=0;for(j=1;j<=2;j++){mSoma=0;for(i=mContIni;i<=mContFim;i++)
 		mSoma=mSoma+(vCPF.substring((i-j-1),(i-j))*(mContFim+1+j-i));if(j==2)mSoma=mSoma+(2*mDigito);mDigito=(mSoma*10)%11;if(mDigito==10)mDigito=0;mControle1=mControle;mControle=mDigito;mContIni=3;mContFim=11;}
 	return((mControle1*10)+mControle);
-}
-
+};
 checkCNPJ =function(vCNPJ){
 		var mControle="";var aTabCNPJ=new Array(5,4,3,2,9,8,7,6,5,4,3,2);for(i=1;i<=2;i++){mSoma=0;for(j=0;j<vCNPJ.length;j++)
 		mSoma=mSoma+(vCNPJ.substring(j,j+1)*aTabCNPJ[j]);if(i==2)mSoma=mSoma+(2*mDigito);mDigito=(mSoma*10)%11;if(mDigito==10)mDigito=0;mControle1=mControle;mControle=mDigito;aTabCNPJ=new Array(6,5,4,3,2,9,8,7,6,5,4,3);}
 	return((mControle1*10)+mControle);
-}
-
+};
 Setmask = function(){
 	jQuery('#moip_cc_number').mask("0000 0000 0000 0000 0000");
 	jQuery('#moip_cc_cid').mask("000Z", {translation: {'Z': {pattern: /[0-9]/, optional: true}}});
@@ -476,8 +397,7 @@ Setmask = function(){
 	jQuery('#credito_portador_cpf').mask("000.000.000-00", {placeholder: "___.___.___-__"});
 	jQuery('#taxvat').mask("000.000.000-00", {placeholder: "___.___.___-__"});
 	jQuery('#cnpj').mask("00.000.000/0000-00", {placeholder: "__.___.___/____-__"});
-}
-
+};
 AddValidateFormCreate = function(){
 	Validation.add('validate-cpf', 'O CPF informado é inválido', function(v){
             return validateTypeDocument(v,1);
@@ -488,11 +408,9 @@ AddValidateFormCreate = function(){
     Validation.add('validate-tel-brazil', 'Entre com telefone válido: (99)9999-9999 ou caso tenha o 9º digito (99)9999-99999', function(v) {
             return Validation.get('IsEmpty').test(v) || /^([()])([0-9]){2}([)])([0-9]){4,5}([-])([0-9]){3,4}$/.test(v);
         });
-   
     Validation.add('validate-zip-br', 'Entre com um cep válido: 99999-999', function(v) {
         return Validation.get('IsEmpty').test(v) || /^([0-9]){5}([-])([0-9]){3}$/.test(v);
     });
-
     Validation.add('validate-if-email-exist', '', function(v) {
                 var isNewCustomer = false;
                 new Ajax.Request(url_indetify, {
@@ -512,8 +430,7 @@ AddValidateFormCreate = function(){
                     });
                 return isNewCustomer;
         });
-}
-
+};
 FixedButtonPlace = function(){
 	var top_header = jQuery("#checkout-moip-header").outerHeight(true);
 	var meio_pg_altura = jQuery("#meio-de-pagamento").outerHeight(true);
@@ -525,14 +442,10 @@ FixedButtonPlace = function(){
 	var footer_bootom = jQuery("#footer-inbootom").offset().top;
 	var stop = footer_bootom;
 	var start = parseInt(review_itens_top) + parseInt(review_itens_altura);
-	
 	if(review_itens_altura < meio_pg_altura){
 		jQuery(".actions-fixed").affix({offset: {top: start, bottom: 240} });	
 	}
-	
-}
-
-
+};
 PaymentFormActive = function(){
 	jQuery("input[name='payment[method]']").change(function(){
 		code_method = jQuery(this).val();
@@ -542,7 +455,6 @@ PaymentFormActive = function(){
 
 	});
 };
-
 removeProductId = function(product_id){
 	if(confirm("Tem certeza que deseja remover o produto?")){
 		removeProduct(product_id);
@@ -610,8 +522,7 @@ UpdataQtyReview = function(){
 	            e.preventDefault();
 	        }
 	});
-}
-
+};
 updateOrderMethod = function() {
 	jQuery.ajax({
 		type: "POST",
@@ -645,18 +556,14 @@ ChangeEvents = function(){
 	UpdataQtyReview();
 	saveShipping();
 	validateOnBlur("onestep_form");
-	
 	jQuery("#onestep_form_identify").submit(function(e) {
 		e.preventDefault();
 		IdentifyUser();
 	});
-
 	jQuery("#form-loggin").submit(function(e) {
 		e.preventDefault();
 		Authenticate();
 	});
-	
-	
 	jQuery('#allow_gift_messages').bind({
 		click: function() {
 			if (jQuery(this).is(':checked')) {
@@ -683,17 +590,14 @@ ChangeEvents = function(){
 		}
 	});
 };
-
 buscarEndereco = function(whatform) {
 	jQuery(".hide-zip-code").addClass("show-zip-code");
-
 	postcode 	= jQuery('#postcode').val();
 	street_1 	= jQuery('#street1');
 	street_2 	= jQuery('#street2');
 	street_4 	= jQuery('#street4');
 	city 		= jQuery('#city');
 	region 		= jQuery('#region_id');
-
 	jQuery.ajax({
 		type:'GET',
 		url:  url_busca_cep+'meio/cep/cep/' + postcode.replace(/[^\d\.]/g, ''),
@@ -704,33 +608,27 @@ buscarEndereco = function(whatform) {
 		},
 		success: function(addressData){
 			if(!addressData.error){
-					street_1.val(addressData.logradouro);
-					street_4.val(addressData.bairro);
-					city.val(addressData.cidade);
-					region.val(addressData.ufid);
-					street_1.focus();
-					street_4.focus();
-					city.focus();
-					region.focus();
+					street_1.val(addressData.logradouro).focus();
+					street_4.val(addressData.bairro).focus();
+					city.val(addressData.cidade).focus();
+					region.val(addressData.ufid).focus();
 					street_2.focus();
 			} else {
-				street_1.val('');
-				street_4.val('');
-				city.val('');
-				region.val('');
-				street_1.focus();
+				street_1.attr('placeholder', '').val('');
+				street_4.attr('placeholder', '').val('');
+				cit.attr('placeholder', '').val('');
+				region.attr('placeholder', '').val('');
 			}
 		},
 		error: function(){
-			street_1.val('');
-			street_4.val('');
-			city.val('');
-			region.val('');
+			street_1.attr('placeholder', '').val('');
+			street_4.attr('placeholder', '').val('');
+			city.attr('placeholder', '').val('');
+			region.attr('placeholder', '').val('');
 			street_1.focus();
 		},
 	});
-}
-
+};
 RemoveCupom = function(){
 	jQuery.ajax({
 			type: "POST",
@@ -743,8 +641,7 @@ RemoveCupom = function(){
 				location.reload();
 			},
 		});
-}
-
+};
 updateCoupon = function() {
 	visibilyloading();
 	jQuery.ajax({
@@ -759,7 +656,6 @@ updateCoupon = function() {
 		},
 	});
 };
-
 removeProduct = function(id) {
 	jQuery.ajax({
 		type: "POST",
@@ -772,13 +668,11 @@ removeProduct = function(id) {
 			location.reload();
 		}
 	});
-}
-
+};
 logined = function()
 {
 	return customer_status;
-}
-
+};
 checkedLoginStep = function(val){
 	jQuery.ajax({
 			// async:false,
@@ -797,8 +691,7 @@ checkedLoginStep = function(val){
 					}
 			}
 		});
-}
-
+};
 updateQty = function(){
 			visibilyloading();
             jQuery.ajax({
@@ -808,8 +701,7 @@ updateQty = function(){
                         	location.reload();
                     }
             });
-}
-
+};
 PayamentChange = function(){
 	var payment = new Payment('co-payment-form', set_payment_form);
        	payment.init();
@@ -825,12 +717,8 @@ PayamentChange = function(){
         savePaymentMethod();
     });
     jQuery('[data-toggle="popover"]').popover();
-}
-
+};
 startTimeShipping = function(){
 	
-}
-
-
-
+};
 })(jQuery);

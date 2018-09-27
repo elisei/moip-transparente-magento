@@ -39,9 +39,11 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form
     {
         $ammout = $this->getQuote()->getGrandTotal();
         if ($ammout) {
-            $installment =  Mage::helper('transparente')->getCalcInstallment($ammout);
-        
-
+            if(!Mage::getStoreConfig('payment/moip_cc/parcelas_avancadas')){
+                $installment =  Mage::helper('transparente')->getCalcInstallment($ammout);
+            } else {
+                $installment =  Mage::helper('transparente')->getComplexCalcInstallment($ammout);   
+            }
             $installments = array();
          
             foreach ($installment as $key => $_installment):

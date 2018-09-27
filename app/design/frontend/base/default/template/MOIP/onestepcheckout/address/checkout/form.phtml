@@ -151,7 +151,7 @@
     <button type="button" class="btn btn-secondary" data-dismiss="modal">
       <?php echo Mage::helper('onestepcheckout')->__('Cancelar'); ?>
     </button>
-    <button type="button" onclick="SaveAddress('<?php echo  $this->htmlEscape($this->getAddress()->getId()) ?>', '<?php echo  $this->htmlEscape($this->getAddress()->getData("typeform")) ?>');" class="btn btn-success">
+    <button type="button" onclick="NewAddress('<?php echo  $this->htmlEscape($this->getAddress()->getId()) ?>', '<?php echo  $this->htmlEscape($this->getAddress()->getData("typeform")) ?>');" class="btn btn-success">
       <?php echo Mage::helper('onestepcheckout')->__('Salvar Endereço'); ?>
     </button>
 </div>
