@@ -583,15 +583,27 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
             } else {
                 $installment =  Mage::helper('transparente')->getComplexCalcInstallment($total);   
             }
-
             if ($installment && $parcela) {
                 $balance        = $installment[$parcela]['total_interest'];
                 $address->setFeeMoip($balance);
                 $address->setBaseFeeMoip($balance);
-                $address->setGrandTotal($address->getGrandTotal() + $balance);
-                $address->setBaseGrandTotal($address->getBaseGrandTotal() + $balance);
+                if($balance > 0){
+                    $address->setGrandTotal($address->getGrandTotal() + $balance);
+                    $address->setBaseGrandTotal($address->getBaseGrandTotal() + $balance);
+                } elseif($balance < 0) {
+                    $address->setGrandTotal($address->getGrandTotal() -  ($balance*-1));
+                    $address->setBaseGrandTotal($address->getBaseGrandTotal() - ($balance*-1));
+                } else {
+
+                }
+               
                 $address->save();
             }
+        } else {
+            $address->setFeeMoip(0);
+            $address->setBaseFeeMoip(0);
+            $address->setGrandTotal($address->getGrandTotal());
+            $address->setBaseGrandTotal($address->getBaseGrandTotal());
         }
         return $this;
     }

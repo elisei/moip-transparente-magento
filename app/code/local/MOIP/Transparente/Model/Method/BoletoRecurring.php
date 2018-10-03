@@ -108,7 +108,7 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
             $profile->setReferenceId($moip_code);
             $payment->setSkipTransactionCreation(true);
             
-            if ((float) $profile->getInitAmount()) {
+            /*if ((float) $profile->getInitAmount()) {
                 $productItemInfo = new Varien_Object;
                 $productItemInfo->setPaymentType(Mage_Sales_Model_Recurring_Profile::PAYMENT_TYPE_INITIAL);
                 $productItemInfo->setPrice($profile->getInitAmount()-$profile->getShippingAmount());
@@ -130,7 +130,7 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
                 $transaction->setIsClosed(1);
                 $transaction->save();
                 $order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
-            }
+            }*/
             
             $this->chargeRecurringProfile($profile, $response_moip);
             

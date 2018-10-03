@@ -19,6 +19,21 @@ class MOIP_Transparente_Block_Form_Recurring extends Mage_Payment_Block_Form
         return $this->setTemplate('MOIP/transparente/form/recurring.phtml');
     }
     
+    protected function _prepareLayout()
+    {
+        if ($this->getLayout()->getBlock('head')) {
+            if (Mage::getStoreConfig('moipall/config/enable_jquery')) {
+                $this->getLayout()->getBlock('head')->addJs('MOIP/core/jquery.js');
+                $this->getLayout()->getBlock('head')->addJs('MOIP/core/jquery_noconflict.js');
+            }
+            $this->getLayout()->getBlock('head')->addJs('MOIP/transparente/moip.js');
+            $this->getLayout()->getBlock('head')->addCss('MOIP/transparente/css/form.css');
+            $block = $this->getLayout()->createBlock('core/template')->setTemplate('MOIP/transparente/form/external_js.phtml');
+            $this->getLayout()->getBlock('content')->append($block);
+        }
+        
+        return parent::_prepareLayout();
+    }
     
     public function getDateCard($select)
     {

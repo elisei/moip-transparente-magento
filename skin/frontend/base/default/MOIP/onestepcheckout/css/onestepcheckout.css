@@ -1,4 +1,7 @@
 /* Itens gerais para CreateAccount e onepage */
+.no-display {
+  display: none;
+}
 #footer-inbootom {
     width: 100%;
     text-align: center;

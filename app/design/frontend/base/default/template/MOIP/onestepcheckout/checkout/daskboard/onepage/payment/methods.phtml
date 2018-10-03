@@ -10,6 +10,7 @@
         <?php foreach($this->getQuote()->getAllItems() as $_item){
            if($_item->getProduct()->isRecurring()){
              $is_recurring = 1;
+             $temp = "moip_ccrecurring";
            } else {
              $is_recurring = !1;
            }
@@ -28,11 +29,14 @@
                             "default" => '<span class="glyphicon glyphicon-usd" aria-hidden="true"></span>'
                             );
                     ?>
-                        <label class="btn btn-block btn-group btn-default btn-payment-available <?php echo ($_code == $temp ? "active" : "") ?> <?php echo ($_code == "moip_ccrecurring"? "active" : "") ?>">
+                        <label class="btn btn-block btn-group btn-default btn-payment-available <?php echo ($_code == $temp ? "active" : "") ?> <?php echo ($_code == "moip_ccrecurring" ? "active" : "") ?>">
                             <?php if( sizeof($this->getMethods()) > 1 ): ?>
                                 <input id="p_method_<?php echo $_code ?>"  value="<?php echo $_code ?>" type="radio" name="payment[method]" title="Meio de Pagamento" onclick="payment.switchMethod('<?php echo $_code ?>');" class="radio payment_method_handle validate-one-required-by-name" <?php echo ($_code == $temp ? "checked" : "") ?> <?php echo ($_code == "moip_ccrecurring"? "checked" : "") ?>/>
                             <?php else: ?>
-                                <span class="no-display"><input id="p_method_<?php echo $_code ?>"  value="<?php echo $_code ?>" type="radio" name="payment[method]"  class="radio payment_method_handle validate-one-required-by-name" /></span>
+                               
+                               
+                                     <input id="p_method_<?php echo $_code ?>"  value="<?php echo $_code ?>" type="radio" name="payment[method]" title="Meio de Pagamento" onclick="payment.switchMethod('<?php echo $_code ?>');" class="radio payment_method_handle validate-one-required-by-name"  <?php echo ($_code == $temp ? "checked" : "") ?> <?php echo ($_code == "moip_ccrecurring"? "checked" : "") ?>/>
+                               
                             <?php endif; ?>
                             
                                <div class="icon-payment"><?php echo(isset($icon_method[$_code])? $icon_method[$_code] : $icon_method['default']) ?></div>

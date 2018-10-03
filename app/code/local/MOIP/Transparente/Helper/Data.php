@@ -56,7 +56,7 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract
         $plotlist   = array();
 
         foreach ($interest as $key => $_interest) {
-            if ($key > 0 && $key <= $limit) {
+            if ($key > 1 && $key <= $limit) {
                 if ($_interest > 0) {
                     if (Mage::getStoreConfig('payment/moip_cc/tipodejuros') == 1) {
                         $plotValue =  $this->getJurosComposto($ammount, $_interest, $key);
@@ -80,6 +80,17 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract
                                         'total_interest' =>  $totalInterest,
                                         'interest' => $_interest
                                     );
+            } else {
+                if($_interest < 0){
+                    $calc_discount =  $ammount*($_interest/100);
+                    $plotlist[$key] =  array(
+                                        'installment' => Mage::helper('core')->currency($calc_discount, true, false),
+                                        'total_installment' =>  Mage::helper('core')->currency(($ammount - ($calc_discount *-1)), true, false),
+                                        'total_interest' =>  $calc_discount,
+                                        'interest' => $_interest
+
+                                         );
+                }
             }
         }
         return $plotlist;
@@ -192,7 +203,7 @@ class MOIP_Transparente_Helper_Data extends Mage_Core_Helper_Abstract
 
         $interest['0'] = 0;
 
-        $interest['1'] = 0;
+        $interest['1'] = Mage::getStoreConfig('payment/moip_cc/parcela1');
 
         $interest['2'] =  Mage::getStoreConfig('payment/moip_cc/parcela2');
 

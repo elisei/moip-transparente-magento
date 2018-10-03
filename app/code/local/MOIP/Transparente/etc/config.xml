@@ -285,6 +285,7 @@
                 <title>Cartão de Crédito</title>
                 <parcelamento>1</parcelamento>
                 <valor_minimo>5</valor_minimo>
+                <parcela1>0</parcela1>
                 <parcela2>4.50</parcela2>
                 <parcela3>5.00</parcela3>
                 <parcela4>5.50</parcela4>
