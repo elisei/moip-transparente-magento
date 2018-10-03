@@ -199,6 +199,17 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </title_juros>
+                         <parcela1 translate="label">
+                            <label>Aplicar desconto a compra avista:</label>
+                           
+                            <comment>Use ponto não vírgula e para desconto usar valor negativo exemplo -5.00</comment>
+                            <validate>validate-percents required-entry</validate>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>17</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </parcela1>
                         <parcela2 translate="label">
                             <label>Juros da 2ª parcela:</label>
                            
