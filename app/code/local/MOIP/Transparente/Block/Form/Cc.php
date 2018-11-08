@@ -44,6 +44,8 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form
             } else {
                 $installment =  Mage::helper('transparente')->getComplexCalcInstallment($ammout);   
             }
+        
+
             $installments = array();
          
             foreach ($installment as $key => $_installment):
@@ -57,7 +59,15 @@ class MOIP_Transparente_Block_Form_Cc extends Mage_Payment_Block_Form
             if ($key >=2) {
                 $installments[]= $this->__('<option value="%s">%sx de %s%s</option>', $key, $key, $_installment['installment'], $text_interest);
             } else {
-                $installments[]= $this->__('<option value="1">À vista no valor total %s</option>', Mage::helper('core')->currency($ammout, true, false));
+
+
+                if($_installment['interest'] < 0){
+                    $info_discount = ($_installment['interest']*1).'%';
+                    $installments[]= $this->__('<option value="1">À vista no total de %s com desconto de %s </option>', $_installment['total_installment'], $info_discount);
+                } else {
+                    $installments[]= $this->__('<option value="1">À vista no valor total %s</option>', Mage::helper('core')->currency($ammout, true, false));
+                }
+                
             }
             endforeach;
 

@@ -5,15 +5,12 @@ class Moip_Transparente_Model_Cron
     {
         $api                        = $this->getApi();
         $to                         = now();
-        $moip_boleto_vencimento     =  Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto') + 7;
-        $time_boleto                = '-'.(int)$moip_boleto_vencimento.' day';
-        $from_boleto                = date('Y-m-d', (strtotime($time_boleto, strtotime($to))));
-        $from_date                  = date('Y-m-d H:i:s', strtotime("$from_boleto 00:00:00"));
-        $to_date                    = date('Y-m-d H:i:s', strtotime("$from_boleto 23:59:59"));
+        $time_consult               = '-2 day';
+        $time_limit                 = date('Y-m-d', (strtotime($time_consult, strtotime($to))));
+        $to_date                    = date('Y-m-d H:i:s', strtotime("$time_limit 23:59:59"));
 
         $api->generateLog("------- Set no state -------", 'MOIP_StateAll.log');
-        $api->generateLog($time_boleto, 'MOIP_StateAll.log');
-        $api->generateLog($from_date, 'MOIP_StateAll.log');
+      
         $api->generateLog($to_date, 'MOIP_StateAll.log');
             
             
@@ -22,7 +19,7 @@ class Moip_Transparente_Model_Cron
                                     'main_table.entity_id=payment.parent_id',
                                     array('payment_method' => 'payment.method')
                                 );
-        $orders->addFieldToFilter('created_at', array('gteq' => $from_date))
+        $orders
                          ->addFieldToFilter('created_at', array('lteq' => $to_date))
                          ->addAttributeToFilter(
                              'state',
@@ -38,12 +35,15 @@ class Moip_Transparente_Model_Cron
                                                 )
                          ->addAttributeToFilter('payment.method', array(array('eq' => 'moip_cc'), array('eq' => 'moip_boleto'), array('eq' => 'moip_tef')));
 
-        foreach ($orders as $order) {
+         foreach ($orders as $order) {
+
+           
+
             $order =  Mage::getModel('sales/order')->load($order->getEntityId());
                  
             if ($order->getExtOrderId()) {
                 $moip_ord = $order->getExtOrderId();
-                $payment = $order->getPayment();
+               
                 $state = $order->getState();
                 $order_id = $order->getIncrementId();
                 $order_state = $order->getState();
@@ -70,59 +70,27 @@ class Moip_Transparente_Model_Cron
                 $info_curl = curl_getinfo($ch);
                 curl_close($ch);
                 $response_decode = json_decode($responseBody, true);
-                if ($response_decode['status'] == "PAID") {
-                    if ($state == Mage_Sales_Model_Order::STATE_NEW) {
-                        $this->_getSession()->addSuccess($this->__('O status do pedido %s será atualizado para autorizado.', $order_id));
-                        $change_status = 1;
-                    } elseif ($state == Mage_Sales_Model_Order::STATE_HOLDED) {
-                        $this->_getSession()->addSuccess($this->__('Você precisa liberar o %s antes de atualizar.', $order_id));
-                        $change_status = 0;
-                    } elseif ($state == Mage_Sales_Model_Order::STATE_PROCESSING) {
-                        $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
-                        $change_status = 0;
-                    } elseif ($state == Mage_Sales_Model_Order::STATE_COMPLETE) {
-                        $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
-                        $change_status = 0;
-                    } elseif ($state == Mage_Sales_Model_Order::STATE_CLOSED) {
-                        $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
-                        $change_status = 0;
-                    } elseif ($state == Mage_Sales_Model_Order::STATE_CANCELED) {
-                        $this->_getSession()->addError($this->__('O pedido %s se encontra como cancelado em sua loja, no entanto ela está aprovada do moip, será necessário realizar ação manual de reorder e autorizar o novo pedido.', $order_id));
-                        $change_status = 0;
-                    } else {
-                        $this->_getSession()->addError($this->__('Erro, não foi possível analisar o status do pedido %s, por favor verefique no link: https://conta.moip.com.br/orders/%s e atualize manualmente.', $order_id, $moip_ord));
-                    }
+                $api->generateLog($order_id. " state moip " .$response_decode['status'], 'MOIP_StateAll.log');
 
-                    if ($change_status) {
-                        $payment->getMethodInstance()->authorize($payment, $amout_moip);
-                    }
-                } elseif ($response_decode['status'] == "NOT_PAID") {
-                    if ($state == Mage_Sales_Model_Order::STATE_NEW) {
-                        $this->_getSession()->addSuccess($this->__('O status do pedido %s será atualizado para autorizado.', $order_id));
-                        $change_status = 1;
-                    } elseif ($state == Mage_Sales_Model_Order::STATE_HOLDED) {
-                        $change_status = 0;
-                    } elseif ($state == Mage_Sales_Model_Order::STATE_PROCESSING) {
-                        $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
-                        $change_status = 0;
-                    } elseif ($state == Mage_Sales_Model_Order::STATE_COMPLETE) {
-                        $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
-                        $change_status = 0;
-                    } elseif ($state == Mage_Sales_Model_Order::STATE_CLOSED) {
-                        $this->_getSession()->addNotice($this->__('O status do pedido %s já está atualizado.', $order_id));
-                        $change_status = 0;
-                    } elseif ($state == Mage_Sales_Model_Order::STATE_CANCELED) {
-                        $this->_getSession()->addSuccess($this->__('O status do pedido %s será atualizado para cancelado.', $order_id));
-                        $change_status = 1;
-                    } else {
-                        $this->_getSession()->addError($this->__('Erro, não foi possível analisar o status do pedido %s, por favor verefique no link: https://conta.moip.com.br/orders/%s e atualize manualmente.', $order_id, $moip_ord));
-                    }
+                if($response_decode['status'] == "PAID"){
+                     $payment = $order->getPayment();
+                     $payment->getMethodInstance()->authorize($payment,  $order->getGrandTotal());
+                     $api->generateLog($order_id. " state apos ação moip " .$order->getState(), 'MOIP_StateAll.log');
 
-                    if ($change_status) {
-                        $payment->getMethodInstance()->cancel($payment);
+
+                } elseif($response_decode['status'] == "NOT_PAID"){
+                     if ($order->canCancel()) {
+                        $details_cancel = "Indefinido";
+                        $order->cancel()->save();
+                        Mage::getModel('transparente/email_cancel')->sendEmail($order, $details_cancel);
+                        $translate_details = Mage::helper('transparente')->__($details_cancel);
+                        $msg               = Mage::helper('transparente')->__('Email de cancelamento enviado ao cliente. Motivo real: %s, motivo exibido ao cliente: %s', $details_cancel, $translate_details);
+                        $order->addStatusHistoryComment($msg);
+                        $order->save();
+
+                        $api->generateLog($order_id. " state apos ação moip " .$order->getState(), 'MOIP_StateAll.log');
+                        
                     }
-                } else {
-                    return $this;
                 }
             }
         }

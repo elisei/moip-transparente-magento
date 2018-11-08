@@ -26,12 +26,11 @@ class MOIP_Transparente_Block_Product_View_Parcelas extends Mage_Catalog_Block_P
                 $text_interest = $this->__(' sem juros');
             }
             if ($key >=0) {
-                if($_installment['total_interest'] >= 0){
-                    $installments[]= $this->__('em até <strong>%sx</strong> de %s%s', $key, $_installment['installment'], $text_interest);    
+                if ($_installment['total_interest'] >= 0) {
+                    $installments[]= $this->__('em até <strong>%sx</strong> de %s%s', $key, $_installment['installment'], $text_interest);
                 } else {
-                     $installments[]= $this->__('À vista no valor %s com desconto de <strong>%s</strong>',$_installment['total_installment'], $_installment['installment']); 
+                    $installments[]= $this->__('À vista no valor %s com desconto de <strong>%s</strong>', $_installment['total_installment'], $_installment['installment']);
                 }
-                
             } else {
                 $installments[]= $this->__('À vista no valor total <strong>%s</strong>', Mage::helper('core')->currency($price, true, false));
             }

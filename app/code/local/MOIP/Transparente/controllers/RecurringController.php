@@ -252,7 +252,7 @@ class MOIP_Transparente_RecurringController extends Mage_Core_Controller_Front_A
         );
        
         $transaction->setOrderPaymentObject($new_order->getPayment());
-        $transaction->setIsClosed(1);
+        $transaction->setIsClosed(0);
         $transaction->save();
         $new_order->setState(Mage_Sales_Model_Order::STATE_NEW)->save();
         return $new_order;

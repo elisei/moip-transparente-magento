@@ -132,7 +132,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
         } elseif ($status_moip == "CANCELLED" || $status_moip == "NOT_PAID") {
             if ($order_state != Mage_Sales_Model_Order::STATE_CANCELED) {
                 $transactionAuth = $payment->getMethodInstance()->cancel($payment);
-                if ($transactionAuth) {
+                /*if ($transactionAuth) {*/
                     if ($order->canCancel()) {
                         $order->cancel()->save();
                         Mage::getModel('transparente/email_cancel')->sendEmail($order, $details_cancel);
@@ -149,9 +149,9 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
                     } else {
                         return $this->set404();
                     }
-                } else {
+                /*} else {
                     return $this->set404();
-                }
+                }*/
             }
         } else {
             return $this->set404();

@@ -112,15 +112,15 @@ class MOIP_Transparente_Model_Method_BoletoRecurring extends Mage_Payment_Model_
                 $productItemInfo = new Varien_Object;
                 $productItemInfo->setPaymentType(Mage_Sales_Model_Recurring_Profile::PAYMENT_TYPE_INITIAL);
                 $productItemInfo->setPrice($profile->getInitAmount()-$profile->getShippingAmount());
-                
+
                 $order    = $profile->createOrder($productItemInfo);
-                
+
                 $payment = $order->getPayment();
                 $payment->setTransactionId($moip_code)->setIsTransactionClosed(1);
-               
+
                 $profile->addOrderRelation($order->getId());
-                
-                
+
+
                 $transaction = Mage::getModel('sales/order_payment_transaction');
                 $transaction->setTxnId($moip_code);
                 $transaction->setTxnType(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);

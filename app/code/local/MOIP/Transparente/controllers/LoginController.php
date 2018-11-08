@@ -74,13 +74,44 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
             $result 			= $getRequestCode['result'];
             $result_decode 		= json_decode($result, 'true');
             $MPA 				= $result_decode['moipAccount']['id'];
+
+            $session  = Mage::getSingleton('customer/session');
+            $session->clear();
+            $form_key = Mage::getSingleton('core/session', array('name' => 'frontend'))->getFormKey();
+            $this->getRequest()->setParams(array('form_key' => $form_key));
+            $session->start();
+
             $accountInfo 		= $this->getAccountInfo($MPA);
-            $statusCustomer 	= $this->getClientMage($accountInfo);
+            $statusCustomer 	= $this->getClientMage($accountInfo, $session);
 
-            $this->ClearAndAddProductCart();
+            $websiteId  = Mage::app()->getWebsite()->getId();
 
-            $checkout			= Mage::getUrl('checkout/onepage/');
-            Mage::app()->getResponse()->setRedirect($checkout, 301)->sendHeaders();
+            if($statusCustomer->getId()){
+               
+                $customer   = Mage::getModel('customer/customer');
+                $customer->setWebsiteId($websiteId);
+                $customer->load($statusCustomer->getId());
+                if($customer->getId()){
+                    $session  = Mage::getSingleton('customer/session');
+                   
+                    $session->start();
+                    $email      = $customer->getEmail();
+                    $session->login($email, md5($MPA));
+                    $session->setCustomerAsLoggedIn($session->getCustomer());
+                if($session->isLoggedIn()){
+                    $cart    = $this->ClearAndAddProductCart(2, 1, $form_key, $customer->getId());
+                    $this->_redirect('checkout/onepage/');
+                } else {
+                    echo "errooo";
+                }
+                    
+                    #$this->_redirect('customer/account/');
+                }  
+            }
+            
+
+
+          
         }
     }
 
@@ -94,45 +125,26 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
     }
 
 
-    public function ClearAndAddProductCart()
-    {
-        $product_id = 2;
-        $qty 		= 1;
-        $cart = Mage::helper('checkout/cart')->getCart();
-        $items = $cart->getItems();
-        $itemCount = count($items);
-        if ($itemCount > 1) {
-            $i = 0;
-            foreach ($items as $item) {
-                $i++;
-                if ($i == $itemCount) {
-                    if ($item->getProduct()->getId() == $product_id) {
-                        $itemId = $item->getItemId();
-                        $cart->removeItem($itemId)->save();
-                    }
-                }
-            }
-        } else {
-            foreach ($items as $item) {
-                if ($item->getProduct()->getId() == $product_id) {
-                    try {
-                        $quote = Mage::getSingleton('checkout/session')->getQuote();
-                        $quote->removeAllItems();
-                        $quote->save();
-                    } catch (Exception $e) {
-                        Mage::log('Failed to remove item from cart'.$e.'.');
-                    }
-                }
-            }
-        }
-       
-        
-        
-        $product = Mage::getModel('catalog/product')->load($product_id);
-        $quote = Mage::getSingleton('checkout/session')->getQuote();
-        $quote->addProduct($product, $qty);
-        $quote->collectTotals()->save();
+    public function ClearAndAddProductCart($product_id, $qty, $form_key, $customer_id){
+            
+            $store_id = Mage::app()->getStore()->getId();
+            $customerObj = Mage::getModel('customer/customer')->load($customer_id);
+            $quoteObj = Mage::getModel('sales/quote')->assignCustomer($customerObj);
+            $storeObj = $quoteObj->getStore()->load($store_id);
+            $quoteObj->setStore($storeObj);
+            $productModel = Mage::getModel('catalog/product');
+            $productObj = $productModel->load($product_id);
+            $quoteItem = Mage::getModel('sales/quote_item')->setProduct($productObj);
+            $quoteItem->setQuote($quoteObj);
+            $quoteItem->setQty('1');
+            $quoteItem->setStoreId($store_id);
+            $quoteObj->addItem($quoteItem);
+            $quoteObj->setStoreId($store_id);
+            $quoteObj->collectTotals();
+            $quoteObj->save();
+
     }
+
     
     public function getAcesstoken($code)
     {
@@ -218,23 +230,27 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
         return $result;
     }
 
-    public function getClientMage($DataMoip)
+    public function getClientMage($DataMoip, $session)
     {
-        $email 		= $DataMoip->email->address;
-        $mpa 		= $DataMoip->id;
-        $websiteId 	= Mage::app()->getWebsite()->getId();
-        $customer 	= Mage::getModel('customer/customer');
-            
+        $email      = $DataMoip->email->address;
+        $mpa        = $DataMoip->id;
+        $websiteId  = Mage::app()->getWebsite()->getId();
+        $customer   = Mage::getModel('customer/customer');
+        
         $customer->setWebsiteId($websiteId);
         $customer->loadByEmail($email);
 
         if ($customer->getId()) {
-            $this->loginUser($email, $mpa);
-            return;
+            $session->login($email, md5($mpa));
+            $session->setCustomerAsLoggedIn($session->getCustomer());
+            $customer = Mage::getSingleton('customer/session')->getCustomer();
+            return $customer;
         } else {
-            $this->setRegistreCustomer($DataMoip);
-            $this->loginUser($email, $mpa);
-            return;
+            $createCustomer = $this->setRegistreCustomer($DataMoip);
+            $session->login($email, md5($mpa));
+            $session->setCustomerAsLoggedIn($session->getCustomer());
+            $customer = Mage::getSingleton('customer/session')->getCustomer();
+            return  $customer;
         }
     }
 
@@ -278,6 +294,7 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
                     ->setDob($dob)
                     ->setPassword($password_hash);
         if (isset($DataMoip->company)) {
+            $documento      = $DataMoip->company->taxDocument->number;
             $company 		= $DataMoip->company;
             $tipopessoa 	= 0;
             $razaosocial 	= $company->businessName;
@@ -286,6 +303,8 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
             $insestadual	= "Isento";
             $customer->setTipopessoa(0)->setRazaosocial($razaosocial)->setNomefantasia($nomefantasia)->setInsestadual($insestadual)->setCnpj($cnpj);
         } else {
+            $razaosocial    = "";
+            $documento      = $DataMoip->person->taxDocument->number;
             $customer->setTipopessoa(1);
         }
 
@@ -302,6 +321,8 @@ class MOIP_Transparente_LoginController extends Mage_Core_Controller_Front_Actio
                                                         '2' => $address_user->complement,
                                                         '3' => $address_user->district,
                                                     ),
+                                                    'company' => $razaosocial,
+                                                    'vat_id' => $documento,
                                                     'city' => $address_user->city,
                                                     'region_id' => $state,
                                                     'region' => $address_user->state,
