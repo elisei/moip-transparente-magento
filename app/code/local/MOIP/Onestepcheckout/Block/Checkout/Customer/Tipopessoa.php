@@ -53,4 +53,23 @@ class MOIP_Onestepcheckout_Block_Checkout_Customer_Tipopessoa extends Mage_Custo
         $allOptions = $attribute->getSource()->getAllOptions(true, true);
         return $allOptions;
     }
+
+    
+    public function getFormData()
+    {
+        $data = $this->getData('form_data');
+        if (is_null($data)) {
+            $formData = Mage::getSingleton('checkout/session')->getCustomerFormData(true);
+            $data = new Varien_Object();
+            if ($formData) {
+                $data->addData($formData);
+                $data->setCustomerData(1);
+            }
+            if (isset($data['region_id'])) {
+                $data['region_id'] = (int)$data['region_id'];
+            }
+            $this->setData('form_data', $data);
+        }
+        return $data;
+    }
 }

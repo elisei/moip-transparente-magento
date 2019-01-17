@@ -318,24 +318,31 @@ class MOIP_Transparente_Model_Api
 
         $taxvat        = $order->getCustomerTaxvat();
         $taxvat        = preg_replace("/[^0-9]/", "", $taxvat);
+
         if (strlen($taxvat) > 11) {
             $document_type = "CNPJ";
         } else {
             $document_type = "CPF";
         }
 
-        if ($order->getCustomerTipopessoa() == 0 && $order->getCustomerNomefantasia()) {
+        if ($order->getCustomer()->getCnpj()) {
+
             if (!$a->getCompany()) {
-                $nome = $order->getCustomerRazaosocial(). " ".$order->getCustomerCnpj();
+                $nome = $order->getCustomerRazaosocial(). " - ".$order->getCustomerCnpj();
             } else {
-                $nome = $a->getCompany()." ".$order->getCustomerCnpj();
+                $nome = $a->getCompany()." - ".$order->getCustomer()->getCnpj();
+            }
+
+            if($document_type != "CNPJ"){
+                $taxvat = $order->getCustomer()->getCnpj();
+                $document_type = "CNPJ";  
             }
             
-            $document_type = "CNPJ";
-            $taxvat = $order->getCustomerCnpj();
         } else {
             $nome =  $b->getFirstname() . ' ' . $b->getLastname();
         }
+      
+
         $website_id    = Mage::app()->getWebsite()->getId();
         $website_name  = Mage::app()->getWebsite()->getName();
         $store_name    = Mage::app()->getStore()->getName();

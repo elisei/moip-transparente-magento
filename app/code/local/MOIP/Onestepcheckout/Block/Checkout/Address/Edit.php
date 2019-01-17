@@ -116,7 +116,7 @@ class MOIP_Onestepcheckout_Block_Checkout_Address_Edit extends Mage_Directory_Bl
     {
         $data = $this->getData('form_data');
         if (is_null($data)) {
-            $formData = Mage::getSingleton('customer/session')->getCustomerFormData(true);
+            $formData = Mage::getSingleton('checkout/session')->getCustomerFormData(true);
             $data = new Varien_Object();
             if ($formData) {
                 $data->addData($formData);
