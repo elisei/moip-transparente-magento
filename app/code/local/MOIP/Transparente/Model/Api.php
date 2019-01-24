@@ -319,24 +319,28 @@ class MOIP_Transparente_Model_Api
         $taxvat        = $order->getCustomerTaxvat();
         $taxvat        = preg_replace("/[^0-9]/", "", $taxvat);
 
-        if (strlen($taxvat) > 11) {
+        if (strlen($taxvat) === 14) {
             $document_type = "CNPJ";
         } else {
             $document_type = "CPF";
         }
+        
+        // atributo exclusivo do checkout moip.
+        if(isset($order->getCustomer()->getCnpj())){
+            $document_type = "CNPJ";
+            $flagMoip   = true;
+            $taxvat = $order->getCustomer()->getCnpj();
+        }
+        
+        if ( $document_type == "CNPJ") {
 
-        if ($order->getCustomer()->getCnpj()) {
-
-            if (!$a->getCompany()) {
-                $nome = $order->getCustomerRazaosocial(). " - ".$order->getCustomerCnpj();
+            if (!isset($flagMoip) {
+                $nome = $b->getFirstname(). " - ".$taxvat;
             } else {
                 $nome = $a->getCompany()." - ".$order->getCustomer()->getCnpj();
+                $taxvat = $order->getCustomer()->getCnpj();
             }
 
-            if($document_type != "CNPJ"){
-                $taxvat = $order->getCustomer()->getCnpj();
-                $document_type = "CNPJ";  
-            }
             
         } else {
             $nome =  $b->getFirstname() . ' ' . $b->getLastname();
