@@ -324,23 +324,19 @@ class MOIP_Transparente_Model_Api
         } else {
             $document_type = "CPF";
         }
-        
-        // atributo exclusivo do checkout moip.
-        if(isset($order->getCustomer()->getCnpj())){
-            $document_type = "CNPJ";
-            $flagMoip   = true;
-            $taxvat = $order->getCustomer()->getCnpj();
-        }
-        
-        if ( $document_type == "CNPJ") {
 
-            if (!isset($flagMoip) {
-                $nome = $b->getFirstname(). " - ".$taxvat;
+        if ($order->getCustomer()->getCnpj()) {
+
+            if (!$a->getCompany()) {
+                $nome = $order->getCustomerRazaosocial(). " - ".$order->getCustomerCnpj();
             } else {
                 $nome = $a->getCompany()." - ".$order->getCustomer()->getCnpj();
-                $taxvat = $order->getCustomer()->getCnpj();
             }
 
+            if($document_type != "CNPJ"){
+                $taxvat = $order->getCustomer()->getCnpj();
+                $document_type = "CNPJ";  
+            }
             
         } else {
             $nome =  $b->getFirstname() . ' ' . $b->getLastname();
