@@ -616,7 +616,7 @@ buscarEndereco = function(whatform) {
 			} else {
 				street_1.attr('placeholder', '').val('');
 				street_4.attr('placeholder', '').val('');
-				cit.attr('placeholder', '').val('');
+				city.attr('placeholder', '').val('');
 				region.attr('placeholder', '').val('');
 			}
 		},
