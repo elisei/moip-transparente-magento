@@ -114,10 +114,12 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
                 }
             } catch (Mage_Core_Exception $e) {
                 $msg = "";
+
                 if ($this->_getSession()->getUseNotice(true)) {
                     $msg = $e->getMessage();
                 } else {
                     $messages = array_unique(explode("\n", $e->getMessage()));
+
                     foreach ($messages as $message) {
                         $msg .= $message . '<br/>';
                     }
@@ -218,6 +220,7 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
                     $msg = $e->getMessage();
                 } else {
                     $messages = array_unique(explode("\n", $e->getMessage()));
+
                     foreach ($messages as $message) {
                         $msg .= $message . '<br/>';
                     }

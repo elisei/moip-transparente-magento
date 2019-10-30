@@ -1,59 +1,68 @@
 <?php
+
 class MOIP_Transparente_Model_Api
 {
-    const TOKEN_TEST            = "8OKLQFT5XQZXU7CKXX43GPJOMIJPMSMF";
-    const KEY_TEST              = "NT0UKOXS4ALNSVOXJVNXVKRLEOQCITHI5HDKW3LI";
-    const ENDPOINT_TEST         = "https://sandbox.moip.com.br/v2/";
-    const TOKEN_PROD            = "EVCHBAUMKM0U4EE4YXIA8VMC0KBEPKN2";
-    const KEY_PROD              = "4NECP62EKI8HRSMN3FGYOZNVYZOMBDY0EQHK9MHO";
-    const ENDPOINT_PROD         = "https://api.moip.com.br/v2/";
-    const ENDPOINTOAUTHPROD     = "https://connect.moip.com.br/oauth/authorize";
-    const ENDPOINTOAUTHDEV      = "https://connect-sandbox.moip.com.br/oauth/authorize";
-    const SCOPE_APP             = "RECEIVE_FUNDS,REFUND,MANAGE_ACCOUNT_INFO,DEFINE_PREFERENCES,RETRIEVE_FINANCIAL_INFO";
-    const RESPONSETYPE          = "code";
-    const ACCOUNT_TEST          = "https://conta-sandbox.moip.com.br/";
-    const ACCOUNT_PROD          = "https://conta.moip.com.br/";
-    const MOIP_AUTHORIZED       = "AUTHORIZED";
-    const MOIP_PRE_AUTHORIZED   = "PRE_AUTHORIZED";
-    const MOIP_CANCELLED        = "CANCELLED";
-    const MOIP_WAITING          = "WAITING";
-    
+    const TOKEN_TEST = "8OKLQFT5XQZXU7CKXX43GPJOMIJPMSMF";
+    const KEY_TEST = "NT0UKOXS4ALNSVOXJVNXVKRLEOQCITHI5HDKW3LI";
+    const ENDPOINT_TEST = "https://sandbox.moip.com.br/v2/";
+    const TOKEN_PROD = "EVCHBAUMKM0U4EE4YXIA8VMC0KBEPKN2";
+    const KEY_PROD = "4NECP62EKI8HRSMN3FGYOZNVYZOMBDY0EQHK9MHO";
+    const ENDPOINT_PROD = "https://api.moip.com.br/v2/";
+    const ENDPOINTOAUTHPROD = "https://connect.moip.com.br/oauth/authorize";
+    const ENDPOINTOAUTHDEV = "https://connect-sandbox.moip.com.br/oauth/authorize";
+    const SCOPE_APP = "RECEIVE_FUNDS,REFUND,MANAGE_ACCOUNT_INFO,DEFINE_PREFERENCES,RETRIEVE_FINANCIAL_INFO";
+    const RESPONSETYPE = "code";
+    const ACCOUNT_TEST = "https://conta-sandbox.moip.com.br/";
+    const ACCOUNT_PROD = "https://conta.moip.com.br/";
+    const MOIP_AUTHORIZED = "AUTHORIZED";
+    const MOIP_PRE_AUTHORIZED = "PRE_AUTHORIZED";
+    const MOIP_CANCELLED = "CANCELLED";
+    const MOIP_WAITING = "WAITING";
+
     public function getPayment()
     {
         return $this->getQuote()->getPayment();
     }
+
     public function getSession()
     {
         return Mage::getSingleton('transparente/session');
     }
+
     public function getCheckout()
     {
         return Mage::getSingleton('checkout/session');
     }
+
     public function getQuote()
     {
         return $this->getCheckout()->getQuote();
     }
+
     public function getEnvirommentUrl()
     {
+        $urlapi = self::ENDPOINT_PROD;
+
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
             $urlapi = self::ENDPOINT_TEST;
-        } else {
-            $urlapi = self::ENDPOINT_PROD;
         }
+
         return $urlapi;
     }
+
     public function getHeaderAuthorization()
     {
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
-            $header = "Authorization: OAuth " . $oauth;
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
         } else {
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
-            $header = "Authorization: OAuth " . $oauth;
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
         }
+
+        $header = "Authorization: OAuth " . $oauth;
+
         return $header;
     }
+
     public function getAppId($type)
     {
         if ($type == "prod") {
@@ -68,6 +77,7 @@ class MOIP_Transparente_Model_Api
             return "APP-9MUFQ39Y4CQU";
         }
     }
+
     public function getClienteSecret($type)
     {
         if ($type == "prod") {
@@ -86,11 +96,13 @@ class MOIP_Transparente_Model_Api
     public function normalizeComissao($comissionados)
     {
         $_i = 0;
+        $controle_sellers_repeat = [];
+
         foreach ($comissionados as $key => $value) {
             if (!is_null($value["moipAccount"]["id"])) {
                 $id_sellers[] = $value["moipAccount"]["id"];
                 $amount_sellers[] = $value["amount"]["fixed"];
-                   
+
                 if (in_array($value["moipAccount"]["id"], $controle_sellers_repeat)) {
                     $repeat = true;
                 } else {
@@ -102,152 +114,157 @@ class MOIP_Transparente_Model_Api
             } else {
                 unset($comissionados[$_i]);
             }
+
             $_i++;
         }
-        
-                
+
         if ($repeat) {
             $unique = array_unique($id_sellers);
             $duplicates = array_diff_assoc($id_sellers, $unique);
             $duplicate_keys = array_keys(array_intersect($id_sellers, $duplicates));
 
             foreach ($duplicate_keys as $key => $value) {
-                $seller_id_temp             = $comissionados[$value]["moipAccount"]["id"];
+                $seller_id_temp = $comissionados[$value]["moipAccount"]["id"];
+
                 unset($comissionados[$value]);
+
                 if (!array_key_exists($seller_id_temp, $temp_comissionado)) {
-                    $amount_for_seller[$seller_id_temp]     = $amount_sellers[$value] + $amount_for_seller[$seller_id_temp];
-                    $temp_comissionados[$seller_id_temp]    = array(
-                                                                        'moipAccount' => array(
-                                                                                                'id' => $seller_id_temp
-                                                                                                ),
-                                                                        'type' => 'SECONDARY',
-                                                                        'amount' => array(
-                                                                                            'fixed' => $amount_for_seller[$seller_id_temp]
-                                                                                        )
-                                                                    );
+                    $amount_for_seller[$seller_id_temp] = $amount_sellers[$value] + $amount_for_seller[$seller_id_temp];
+                    $temp_comissionados[$seller_id_temp] = array(
+                        'moipAccount' => array(
+                            'id' => $seller_id_temp
+                        ),
+                        'type' => 'SECONDARY',
+                        'amount' => array(
+                            'fixed' => $amount_for_seller[$seller_id_temp]
+                        )
+                    );
                 }
             }
 
             foreach ($temp_comissionados as $key => $value) {
                 $new_sellers[] = $value;
             }
+
             $comissionados = array_merge($comissionados, $new_sellers);
         }
+
         return $comissionados;
     }
 
     public function getListaComissoesAvancadas($order)
     {
-        $items     = $order->getAllVisibleItems();
+        $items = $order->getAllVisibleItems();
         $itemcount = count($items);
-        $produtos  = array();
-        $storeId   = Mage::app()->getStore()->getStoreId();
+        $produtos = array();
+        $storeId = Mage::app()->getStore()->getStoreId();
 
-        $split_type             = Mage::getStoreConfig('moipall/mktplacet_config/split_type');
+        $split_type = Mage::getStoreConfig('moipall/mktplacet_config/split_type');
 
         if ($split_type != "fullstoreview") {
-            $comissionados[0] =  array(
-                                'moipAccount' => array('id' => Mage::getStoreConfig('moipall/mktplacet_config/mpa')),
-                                'type' => "PRIMARY",
-                            );
+            $comissionados[0] = array(
+                'moipAccount' => array('id' => Mage::getStoreConfig('moipall/mktplacet_config/mpa')),
+                'type' => "PRIMARY",
+            );
         }
 
         if ($split_type == 'attributeproduct') {
-            $attribute_mpa          = Mage::getStoreConfig('moipall/mktplacet_config/mpa_forprod');
-            $attribute_commisao     = Mage::getStoreConfig('moipall/mktplacet_config/value_forprod');
-    
-            
+            $attribute_mpa = Mage::getStoreConfig('moipall/mktplacet_config/mpa_forprod');
+            $attribute_commisao = Mage::getStoreConfig('moipall/mktplacet_config/value_forprod');
+
             foreach ($items as $key => $item) {
-                $mpa_secundary  = null;
+                $mpa_secundary = null;
                 $valor_comissao_comprado = null;
-                $product                     = Mage::getModel('catalog/product')->load($item->getProductId());
-                $mpa_secundary               = $product->getAttributeText($attribute_mpa);
-                $valor_comissao_comprado     = $product->getData($attribute_commisao);
-                
-                $valor_comissao              = $valor_comissao_comprado / 100;
-                $comissao_valor     = $item->getPrice() - ($item->getPrice() * $valor_comissao);
-                $comissao_toJson    = $comissao_valor*$item->getQtyOrdered();
+
+                $product = Mage::getModel('catalog/product')->load($item->getProductId());
+                $mpa_secundary = $product->getAttributeText($attribute_mpa);
+                $valor_comissao_comprado = $product->getData($attribute_commisao);
+                $valor_comissao = $valor_comissao_comprado / 100;
+                $comissao_valor = $item->getPrice() - ($item->getPrice() * $valor_comissao);
+                $comissao_toJson = $comissao_valor * $item->getQtyOrdered();
+
                 $this->generateLog($item->getProductId(), 'MOIP_Comissioesdois.log');
-                $this->generateLog("MPA ".is_null($mpa_secundary)." setado ".isset($mpa_secundary)." mpa é ".$mpa_secundary, 'MOIP_Comissioesdois.log');
-                $this->generateLog("comissao ".$valor_comissao_comprado, 'MOIP_Comissioesdois.log');
-                if ((string)$mpa_secundary  != "") {
-                    $comissionados[]    = array(
-                                                'moipAccount' => array('id' => $mpa_secundary),
-                                                'type' => "SECONDARY",
-                                                'amount' => array('fixed' => number_format($comissao_toJson, 2, '', ''))
-                                            );
+                $this->generateLog("MPA " . is_null($mpa_secundary) . " setado " . isset($mpa_secundary) . " mpa é " . $mpa_secundary, 'MOIP_Comissioesdois.log');
+                $this->generateLog("comissao " . $valor_comissao_comprado, 'MOIP_Comissioesdois.log');
+
+                if ((string)$mpa_secundary != "") {
+                    $comissionados[] = array(
+                        'moipAccount' => array('id' => $mpa_secundary),
+                        'type' => "SECONDARY",
+                        'amount' => array('fixed' => number_format($comissao_toJson, 2, '', ''))
+                    );
                 }
             }
         } elseif ($split_type == 'perstoreview') {
-            $attribute_mpa          = Mage::app()->getWebsite()->getConfig('moipall/mktplacet_config/mpa_store');
-            $attribute_commisao     = Mage::app()->getWebsite()->getConfig('moipall/mktplacet_config/value_store');
-    
+            $attribute_mpa = Mage::app()->getWebsite()->getConfig('moipall/mktplacet_config/mpa_store');
+            $attribute_commisao = Mage::app()->getWebsite()->getConfig('moipall/mktplacet_config/value_store');
 
             foreach ($items as $key => $item) {
-                $product                     = Mage::getModel('catalog/product')->load($item->getProductId());
-                $valor_comissao_comprado     = $attribute_commisao;
-                $mpa_secundary               = $attribute_mpa;
-                $valor_comissao              = $valor_comissao_comprado / 100;
-                $comissao_valor     = $item->getPrice() - ($item->getPrice() * $valor_comissao);
-                $comissao_toJson    = $comissao_valor*$item->getQtyOrdered();
+                $product = Mage::getModel('catalog/product')->load($item->getProductId());
+                $valor_comissao_comprado = $attribute_commisao;
+                $mpa_secundary = $attribute_mpa;
+                $valor_comissao = $valor_comissao_comprado / 100;
+                $comissao_valor = $item->getPrice() - ($item->getPrice() * $valor_comissao);
+                $comissao_toJson = $comissao_valor * $item->getQtyOrdered();
+
                 if ($mpa_secundary) {
-                    $comissionados[]    = array(
-                            'moipAccount' => array('id' => $mpa_secundary),
-                            'type' => "SECONDARY",
-                            'amount' => array('fixed' => number_format($comissao_toJson, 2, '', ''))
-                        );
+                    $comissionados[] = array(
+                        'moipAccount' => array('id' => $mpa_secundary),
+                        'type' => "SECONDARY",
+                        'amount' => array('fixed' => number_format($comissao_toJson, 2, '', ''))
+                    );
                 }
             }
         } elseif ($split_type == 'fullstoreview') {
-            $mpa_secundary     = Mage::app()->getWebsite()->getConfig('moipall/mktplacet_config/mpa_store');
-          
-            $comissionados[]    = array(
-                    'moipAccount' => array('id' => $mpa_secundary),
-                    'type' => "SECONDARY",
-                    'amount' => array('fixed' => number_format($order->getGrandTotal(), 2, '', '')),
-                    'feePayor' => "true"
-                );
+            $mpa_secundary = Mage::app()->getWebsite()->getConfig('moipall/mktplacet_config/mpa_store');
+
+            $comissionados[] = array(
+                'moipAccount' => array('id' => $mpa_secundary),
+                'type' => "SECONDARY",
+                'amount' => array('fixed' => number_format($order->getGrandTotal(), 2, '', '')),
+                'feePayor' => "true"
+            );
         } else {
             // Você pode personalizar seu método de split. falso evento eu mudei o que envio por favor válide... @Denis Barboni
 
-
             $splitdata = new Varien_Object(array('order' => $order, 'comissionados' => $comissionados));
-            Mage::dispatchEvent('moip_insert_custom_split', array('splitdata' => $splitdata)) ;
+
+            Mage::dispatchEvent('moip_insert_custom_split', array('splitdata' => $splitdata));
+
             $comissionados = $splitdata->getComissionados();
         }
-        
 
         return $comissionados;
     }
-    
+
     public function getAuditOrder($order)
     {
         $grandTotalProd = null;
-       
-        $items     = $order->getAllVisibleItems();
+
+        $items = $order->getAllVisibleItems();
         $itemcount = count($items);
-        $produtos  = array();
+        $produtos = array();
+
         foreach ($items as $itemId => $item) {
             if ($item->getPrice() > 0) {
                 $grandTotalProd += $item->getPrice() * $item->getQtyOrdered(); //300
             }
         }
 
-       
         $shipping_amout = $order->getShippingAmount(); //30
-        $grandTotal     = $order->getGrandTotal(); //270
-        $total_cal      = $grandTotalProd + $shipping_amout;
+        $grandTotal = $order->getGrandTotal(); //270
+        $total_cal = $grandTotalProd + $shipping_amout;
 
         if ($total_cal != $grandTotal) {
             if ($total_cal > $grandTotal) {
-                $diff          = ($shipping_amout + $grandTotalProd) - $grandTotal;
+                $diff = ($shipping_amout + $grandTotalProd) - $grandTotal;
                 $return_values = array(
                     "shipping" => number_format($shipping_amout, 2, '', ''),
                     "discount" => number_format($diff, 2, '', ''),
                     "addition" => 0,
                 );
             } else {
-                $diff          = $grandTotal - $shipping_amout - $grandTotalProd;
+                $diff = $grandTotal - $shipping_amout - $grandTotalProd;
                 $return_values = array(
                     "shipping" => number_format($shipping_amout, 2, '', ''),
                     "discount" => 0,
@@ -261,13 +278,16 @@ class MOIP_Transparente_Model_Api
                 "addition" => 0
             );
         }
+
         return $return_values;
     }
+
     public function getListaProdutos($order)
     {
-        $items     = $order->getallvisibleitems();
+        $items = $order->getallvisibleitems();
         $itemcount = count($items);
-        $produtos  = array();
+        $produtos = array();
+
         foreach ($items as $itemId => $item) {
             if ($item->getPrice() > 0) {
                 $produtos[] = array(
@@ -278,13 +298,14 @@ class MOIP_Transparente_Model_Api
                 );
             }
         }
+
         return $produtos;
     }
+
     public function setDataMoip($order)
     {
         $id_proprio = $order->getIncrementId();
-      
-        
+
         if ($order->getShippingAddress()) {
             $a = $order->getShippingAddress();
             $b = $order->getBillingAddress();
@@ -293,31 +314,40 @@ class MOIP_Transparente_Model_Api
             $a = $b = $order->getBillingAddress();
             $this->generateLog($b->Debug(), 'MOIP_OrderDebug.log');
         }
-        $email         = $order->getCustomerEmail();
+
+        $email = $order->getCustomerEmail();
         $currency_code = Mage::app()->getStore()->getCurrentCurrencyCode();
-        $cep           = substr(preg_replace("/[^0-9]/", "", $b->getPostcode()) . '00000000', 0, 8);
-        $billing_cep   = substr(preg_replace("/[^0-9]/", "", $a->getPostcode()) . '00000000', 0, 8);
-        $dob           = Mage::app()->getLocale()->date($order->getCustomerDob(), null, null, true)->toString('Y-MM-dd');
+        $cep = substr(preg_replace("/[^0-9]/", "", $b->getPostcode()) . '00000000', 0, 8);
+        $billing_cep = substr(preg_replace("/[^0-9]/", "", $a->getPostcode()) . '00000000', 0, 8);
+        $dob = Mage::app()->getLocale()->date($order->getCustomerDob(), null, null, true)->toString('Y-MM-dd');
+
         if (!$order->getCustomerDob()) {
             $dob = date('Y-m-d', strtotime($dob . ' -1 day'));
         }
-        $dob           = explode('-', $dob);
+
+        $dob = explode('-', $dob);
         $dob_day = $dob[2];
+
         if (is_null($dob_day)) {
             $dob_day = 01;
         }
+
         $dob_month = $dob[1];
+
         if (is_null($dob_month)) {
             $dob_month = 01;
         }
+
         $dob_year = $dob[0];
+
         if ($dob_year < 1900) {
             $dob_year += 1900;
         }
-        $dob = $dob_year."-".$dob_month."-".$dob_day;
 
-        $taxvat        = $order->getCustomerTaxvat();
-        $taxvat        = preg_replace("/[^0-9]/", "", $taxvat);
+        $dob = $dob_year . "-" . $dob_month . "-" . $dob_day;
+
+        $taxvat = $order->getCustomerTaxvat();
+        $taxvat = preg_replace("/[^0-9]/", "", $taxvat);
 
         if (strlen($taxvat) === 14) {
             $document_type = "CNPJ";
@@ -326,27 +356,24 @@ class MOIP_Transparente_Model_Api
         }
 
         if ($order->getCustomer()->getCnpj()) {
-
             if (!$a->getCompany()) {
-                $nome = $order->getCustomerRazaosocial(). " - ".$order->getCustomerCnpj();
+                $nome = $order->getCustomerRazaosocial() . " - " . $order->getCustomerCnpj();
             } else {
-                $nome = $a->getCompany()." - ".$order->getCustomer()->getCnpj();
+                $nome = $a->getCompany() . " - " . $order->getCustomer()->getCnpj();
             }
 
-            if($document_type != "CNPJ"){
+            if ($document_type != "CNPJ") {
                 $taxvat = $order->getCustomer()->getCnpj();
-                $document_type = "CNPJ";  
+                $document_type = "CNPJ";
             }
-            
         } else {
-            $nome =  $b->getFirstname() . ' ' . $b->getLastname();
+            $nome = $b->getFirstname() . ' ' . $b->getLastname();
         }
-      
 
-        $website_id    = Mage::app()->getWebsite()->getId();
-        $website_name  = Mage::app()->getWebsite()->getName();
-        $store_name    = Mage::app()->getStore()->getName();
-        $data          = array(
+        $website_id = Mage::app()->getWebsite()->getId();
+        $website_name = Mage::app()->getWebsite()->getName();
+        $store_name = Mage::app()->getStore()->getName();
+        $data = array(
             'nome' => $nome,
             'email' => strtolower($email),
             'ddd' => $this->getNumberOrDDD($b->getTelephone(), true),
@@ -375,10 +402,10 @@ class MOIP_Transparente_Model_Api
             'data_nascimento' => $dob,
             'frete' => number_format($b->getShippingAmount(), 2, '', '')
         );
+
         $autida_values = $this->getAuditOrder($order);
 
-        
-        $json_order    = array(
+        $json_order = array(
             "ownId" => $id_proprio,
             "amount" => array(
                 "currency" => "BRL",
@@ -403,7 +430,7 @@ class MOIP_Transparente_Model_Api
                     "countryCode" => "55",
                     "areaCode" => $data['mobile_ddd'],
                     "number" => $data['mobile']
-                    ),
+                ),
                 "shippingAddress" => array(
                     "street" => $data['shipping_logradouro'],
                     "streetNumber" => $data['shipping_numero'],
@@ -425,54 +452,56 @@ class MOIP_Transparente_Model_Api
                     "zipCode" => $data['billing_cep']
                 )
             ),
-           
-           
         );
+
         $use_split = Mage::getStoreConfig('moipall/mktplacet_config/enable_split');
+
         if ($use_split) {
             $comissoes = $this->getListaComissoesAvancadas($order);
             $normalize = $this->normalizeComissao($comissoes);
             $array_receivers = array("receivers" => $normalize);
             $json_order = array_merge($json_order, $array_receivers);
         }
-        $json_order    = json_encode($json_order);
+
+        $json_order = json_encode($json_order);
+
         $this->generateLog("------ Geração da order #{$id_proprio} ------", 'MOIP_Order.log');
         $this->generateLog("------ Json Enviado da order ------", 'MOIP_Order.log');
         $this->generateLog($json_order, 'MOIP_Order.log');
+
         return $json_order;
     }
 
     public function setMoipOrder($json_order)
     {
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-            $url    = self::ENDPOINT_TEST."orders/";
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_TEST . "orders/";
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
         } else {
-            $url    = self::ENDPOINT_PROD."orders/";
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_PROD . "orders/";
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
         }
 
+        $header = "Authorization: OAuth " . $oauth;
         $documento = 'Content-Type: application/json; charset=utf-8';
 
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => $url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_SSLVERSION => 6,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => $json_order,
-          CURLOPT_HTTPHEADER => array(
-                                        $header,
-                                        $documento
-                                    ),
-          CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSLVERSION => 6,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $json_order,
+            CURLOPT_HTTPHEADER => array(
+                $header,
+                $documento
+            ),
+            CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
         ));
 
         $response = curl_exec($curl);
@@ -486,6 +515,7 @@ class MOIP_Transparente_Model_Api
             $this->generateLog($err, 'MOIP_Order.log');
             $this->generateLog($info_curl, 'MOIP_Order.log');
             $this->generateLog($response, 'MOIP_Order.log');
+
             return $err;
         } else {
             $this->generateLog($header, 'MOIP_Order.log');
@@ -493,6 +523,7 @@ class MOIP_Transparente_Model_Api
             $this->generateLog($response, 'MOIP_Order.log');
             $this->generateLog("------ CurlInfo de MOIP_Order ------", 'MOIP_Order.log');
             $this->generateLog(json_encode($info_curl), 'MOIP_Order.log');
+
             return json_decode($response, true);
         }
     }
@@ -500,33 +531,33 @@ class MOIP_Transparente_Model_Api
     public function setMoipPayment($json, $IdMoip)
     {
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-            $url    = self::ENDPOINT_TEST."orders/{$IdMoip}/payments";
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_TEST . "orders/{$IdMoip}/payments";
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
         } else {
-            $url    = self::ENDPOINT_PROD."orders/{$IdMoip}/payments";
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_PROD . "orders/{$IdMoip}/payments";
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
         }
+
+        $header = "Authorization: OAuth " . $oauth;
         $documento = 'Content-Type: application/json; charset=utf-8';
 
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => $url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_SSLVERSION => 6,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => $json,
-          CURLOPT_HTTPHEADER => array(
-                                        $header,
-                                        $documento
-                                    ),
-          CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSLVERSION => 6,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $json,
+            CURLOPT_HTTPHEADER => array(
+                $header,
+                $documento
+            ),
+            CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
         ));
 
         $response = curl_exec($curl);
@@ -540,6 +571,7 @@ class MOIP_Transparente_Model_Api
             $this->generateLog($err, 'MOIP_Order.log');
             $this->generateLog($response, 'MOIP_Order.log');
             $this->generateLog($info_curl, 'MOIP_Order.log');
+
             return $err;
         } else {
             $this->generateLog($header, 'MOIP_Order.log');
@@ -549,38 +581,40 @@ class MOIP_Transparente_Model_Api
             $this->generateLog($response, 'MOIP_Order.log');
             $this->generateLog("------ CurlInfo de setMoipPayment ------", 'MOIP_Order.log');
             $this->generateLog(json_encode($info_curl), 'MOIP_Order.log');
+
             return json_decode($response, true);
         }
     }
 
     public function getMoipOrder($moip_order_id)
     {
-        $documento = 'Content-Type: application/json; charset=utf-8';
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-            $url    = self::ENDPOINT_TEST."orders/".$moip_order_id;
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_TEST . "orders/" . $moip_order_id;
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
         } else {
-            $url    = self::ENDPOINT_PROD."orders/".$moip_order_id;
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_PROD . "orders/" . $moip_order_id;
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
         }
+
+        $header = "Authorization: OAuth " . $oauth;
+        $documento = 'Content-Type: application/json; charset=utf-8';
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => $url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_SSLVERSION => 6,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "GET",
-          CURLOPT_HTTPHEADER => array(
-                                        $header,
-                                        $documento
-                                    ),
-          CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSLVERSION => 6,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                $header,
+                $documento
+            ),
+            CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
         ));
 
         $response = curl_exec($curl);
@@ -594,6 +628,7 @@ class MOIP_Transparente_Model_Api
             $this->generateLog($err, 'MOIP_Order.log');
             $this->generateLog($info_curl, 'MOIP_Order.log');
             $this->generateLog($response, 'MOIP_Order.log');
+
             return $err;
         } else {
             $this->generateLog($header, 'MOIP_Order.log');
@@ -601,38 +636,40 @@ class MOIP_Transparente_Model_Api
             $this->generateLog($response, 'MOIP_Order.log');
             $this->generateLog("------ CurlInfo de getMoipOrder ------", 'MOIP_Order.log');
             $this->generateLog(json_encode($info_curl), 'MOIP_Order.log');
+
             return json_decode($response, true);
         }
     }
 
     public function getMoipPayment($moip_order_id)
     {
-        $documento = 'Content-Type: application/json; charset=utf-8';
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-            $url    = self::ENDPOINT_TEST."payments/".$moip_order_id;
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_TEST . "payments/" . $moip_order_id;
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
         } else {
-            $url    = self::ENDPOINT_PROD."payments/".$moip_order_id;
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_PROD . "payments/" . $moip_order_id;
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
         }
+
+        $header = "Authorization: OAuth " . $oauth;
+        $documento = 'Content-Type: application/json; charset=utf-8';
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => $url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_SSLVERSION => 6,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "GET",
-          CURLOPT_HTTPHEADER => array(
-                                        $header,
-                                        $documento
-                                    ),
-          CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSLVERSION => 6,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                $header,
+                $documento
+            ),
+            CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
         ));
 
         $response = curl_exec($curl);
@@ -645,6 +682,7 @@ class MOIP_Transparente_Model_Api
             $this->generateLog("------ Resposta de GetPayment ------", 'MOIP_Order.log');
             $this->generateLog($info_curl, 'MOIP_Order.log');
             $this->generateLog($response, 'MOIP_Order.log');
+
             return $err;
         } else {
             $this->generateLog($header, 'MOIP_Order.log');
@@ -652,6 +690,7 @@ class MOIP_Transparente_Model_Api
             $this->generateLog($response, 'MOIP_Order.log');
             $this->generateLog("------ CurlInfo de GetPayment ------", 'MOIP_Order.log');
             $this->generateLog(json_encode($info_curl), 'MOIP_Order.log');
+
             return json_decode($response, true);
         }
     }
@@ -659,35 +698,35 @@ class MOIP_Transparente_Model_Api
     public function getRefundMoip($moip_order_id, $amount)
     {
         $post_fields = array('amount' => number_format($amount, 2, '', ''));
-        $documento = 'Content-Type: application/json; charset=utf-8';
+
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-            $url    = self::ENDPOINT_TEST."orders/".$moip_order_id."/refunds";
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_TEST . "orders/" . $moip_order_id . "/refunds";
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
         } else {
-            $url    = self::ENDPOINT_PROD."orders/".$moip_order_id."/refunds";
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_PROD . "orders/" . $moip_order_id . "/refunds";
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
         }
-        
-       
+
+        $header = "Authorization: OAuth " . $oauth;
+        $documento = 'Content-Type: application/json; charset=utf-8';
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => $url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_SSLVERSION => 6,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => json_encode($post_fields),
-          CURLOPT_HTTPHEADER => array(
-                                        $header,
-                                        $documento
-                                    ),
-          CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSLVERSION => 6,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode($post_fields),
+            CURLOPT_HTTPHEADER => array(
+                $header,
+                $documento
+            ),
+            CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
         ));
 
         $response = curl_exec($curl);
@@ -699,6 +738,7 @@ class MOIP_Transparente_Model_Api
         if ($err) {
             $this->generateLog("------ Resposta de RefundMoip ------", 'MOIP_RefundMoipError.log');
             $this->generateLog($response, 'MOIP_RefundMoipError.log');
+
             return $err;
         } else {
             $this->generateLog($header, 'MOIP_RefundMoip.log');
@@ -708,39 +748,41 @@ class MOIP_Transparente_Model_Api
             $this->generateLog($response, 'MOIP_CaptureMoip.log');
             $this->generateLog("------ CurlInfo de RefundMoip ------", 'MOIP_RefundMoip.log');
             $this->generateLog(json_encode($info_curl), 'MOIP_RefundMoip.log');
+
             return $response;
         }
     }
-    
+
     public function setMoipCapture($moip_order_id)
     {
-        $documento = 'Content-Type: application/json; charset=utf-8';
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-            $url    = self::ENDPOINT_TEST."payments/".$moip_order_id."/capture";
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_TEST . "payments/" . $moip_order_id . "/capture";
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
         } else {
-            $url    = self::ENDPOINT_PROD."payments/".$moip_order_id."/capture";
-            $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
-            $header = "Authorization: OAuth " . $oauth;
+            $url = self::ENDPOINT_PROD . "payments/" . $moip_order_id . "/capture";
+            $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
         }
+
+        $header = "Authorization: OAuth " . $oauth;
+        $documento = 'Content-Type: application/json; charset=utf-8';
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => $url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_SSLVERSION => 6,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => "",
-          CURLOPT_HTTPHEADER => array(
-                                        $header,
-                                        $documento
-                                    ),
-          CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSLVERSION => 6,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "",
+            CURLOPT_HTTPHEADER => array(
+                $header,
+                $documento
+            ),
+            CURLOPT_USERAGENT => 'MoipMagento/2.0.0'
         ));
 
         $response = curl_exec($curl);
@@ -752,6 +794,7 @@ class MOIP_Transparente_Model_Api
         if ($err) {
             $this->generateLog("------ Resposta de CaptureMoip ------", 'MOIP_CaptureMoipError.log');
             $this->generateLog($response, 'MOIP_CaptureMoipError.log');
+
             return $err;
         } else {
             $this->generateLog($header, 'MOIP_CaptureMoip.log');
@@ -759,84 +802,100 @@ class MOIP_Transparente_Model_Api
             $this->generateLog($response, 'MOIP_CaptureMoip.log');
             $this->generateLog("------ CurlInfo de CaptureMoip ------", 'MOIP_CaptureMoip.log');
             $this->generateLog(json_encode($info_curl), 'MOIP_CaptureMoip.log');
+
             return json_decode($response);
         }
     }
-    
 
     public function getNumEndereco($endereco, $enderecob)
     {
         $numEnderecoDefault = '0';
+
         if (!$endereco) {
             $endereco = $enderecob;
         } else {
             $endereco = $endereco;
         }
+
         $numEndereco = trim(preg_replace("/[^0-9]/", "", $endereco));
+
         if ($numEndereco) {
             return ($numEndereco);
-        } else {
-            return ($numEnderecoDefault);
         }
+
+        return ($numEnderecoDefault);
     }
+
     public function getPosSeparador($endereco)
     {
         $posSeparador = strpos($endereco, ',');
+
         if ($posSeparador === false) {
             $posSeparador = strpos($endereco, '-');
         }
+
         return ($posSeparador);
     }
+
     public function getNumberOrDDD($param_telefone, $param_ddd = false)
     {
-        $cust_ddd       = '11';
+        $cust_ddd = '11';
         $cust_telephone = preg_replace("/[^0-9]/", "", $param_telefone);
+
         if (strlen($cust_telephone) == 11) {
-            $st             = strlen($cust_telephone) - 9;
-            $indice         = 9;
+            $st = strlen($cust_telephone) - 9;
+            $indice = 9;
         } else {
-            $st             = strlen($cust_telephone) - 8;
-            $indice         = 8;
+            $st = strlen($cust_telephone) - 8;
+            $indice = 8;
         }
-        
+
         if ($st > 0) {
-            $cust_ddd       = substr($cust_telephone, 0, 2);
+            $cust_ddd = substr($cust_telephone, 0, 2);
             $cust_telephone = substr($cust_telephone, $st, $indice);
         }
+
         if ($param_ddd === false) {
             $retorno = $cust_telephone;
         } else {
             $retorno = $cust_ddd;
         }
+
         return $retorno;
     }
+
     public function setJsonCc($info, $order)
     {
         $additionaldata = unserialize($info->getAdditionalData());
-        $dob           = Mage::app()->getLocale()->date($order->getCustomerDob(), null, null, false)->toString('Y-MM-dd');
-        $dob           = explode('-', $dob);
+        $dob = Mage::app()->getLocale()->date($order->getCustomerDob(), null, null, false)->toString('Y-MM-dd');
+        $dob = explode('-', $dob);
         $dob_day = $dob[2];
+
         if (is_null($dob_day)) {
             $dob_day = 01;
         }
+
         $dob_month = $dob[1];
+
         if (is_null($dob_month)) {
             $dob_month = 01;
         }
+
         $dob_year = $dob[0];
+
         if ($dob_year < 1900) {
             $dob_year += 1900;
         }
-        
+
         $b = $order->getBillingAddress();
-        $dob = $dob_year."-".$dob_month."-".$dob_day;
-        $ddd  = $this->getNumberOrDDD($b->getTelephone(), true);
+        $dob = $dob_year . "-" . $dob_month . "-" . $dob_day;
+        $ddd = $this->getNumberOrDDD($b->getTelephone(), true);
         $telefone = $this->getNumberOrDDD($b->getTelephone());
+
         if ($additionaldata['use_cofre'] == 0) {
             $json = array(
                 "installmentCount" => $additionaldata['installmentcount_moip'],
                 "statementDescriptor" => substr(Mage::getStoreConfig('payment/moip_transparente_standard/apelido'), 0, 13),
-                
                 "fundingInstrument" => array(
                     "method" => "CREDIT_CARD",
                     "creditCard" => array(
@@ -860,7 +919,7 @@ class MOIP_Transparente_Model_Api
                 "device" => array(
                     "ip" => $order->getRemoteIp(),
                     "userAgent" => Mage::helper('core/http')->getHttpUserAgent()
-                    )
+                )
             );
         } elseif ($additionaldata['use_cofre'] == 1) {
             $json = array(
@@ -877,17 +936,20 @@ class MOIP_Transparente_Model_Api
                 "device" => array(
                     "ip" => $order->getRemoteIp(),
                     "userAgent" => Mage::helper('core/http')->getHttpUserAgent()
-                    )
+                )
             );
         }
+
         $json = json_encode($json);
+
         return $json;
     }
+
     public function setJsonBoleto($order)
     {
         $NDias = Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto');
         $diasUteis = Mage::getStoreConfig('payment/moip_boleto/vcmentoboleto_diasuteis');
-        $json           = array(
+        $json = array(
             "statementDescriptor" => substr(Mage::getStoreConfig('payment/moip_transparente_standard/apelido'), 0, 13),
             "fundingInstrument" => array(
                 "method" => "BOLETO",
@@ -900,20 +962,23 @@ class MOIP_Transparente_Model_Api
                     )
                 )
             ),
-                "device" => array(
-                    "ip" => $order->getRemoteIp(),
-                    "userAgent" => Mage::helper('core/http')->getHttpUserAgent()
-                    )
+            "device" => array(
+                "ip" => $order->getRemoteIp(),
+                "userAgent" => Mage::helper('core/http')->getHttpUserAgent()
+            )
         );
-        $json           = json_encode($json);
+
+        $json = json_encode($json);
+
         return $json;
     }
+
     public function setJsonTef($info, $order)
     {
         $additionaldata = unserialize($info->getAdditionalData());
         $NDias = Mage::getStoreConfig('payment/moip_boleto/vcmentotef');
         $diasUteis = Mage::getStoreConfig('payment/moip_boleto/vcmentotef_diasuteis');
-        $json           = array(
+        $json = array(
             "statementDescriptor" => substr(Mage::getStoreConfig('payment/moip_transparente_standard/apelido'), 0, 13),
             "fundingInstrument" => array(
                 "method" => "ONLINE_BANK_DEBIT",
@@ -923,45 +988,53 @@ class MOIP_Transparente_Model_Api
                     "returnUri" => Mage::getBaseUrl()
                 )
             ),
-                "device" => array(
-                    "ip" => $order->getRemoteIp(),
-                    "userAgent" => Mage::helper('core/http')->getHttpUserAgent()
-                    )
+            "device" => array(
+                "ip" => $order->getRemoteIp(),
+                "userAgent" => Mage::helper('core/http')->getHttpUserAgent()
+            )
         );
-        $json           = json_encode($json);
+
+        $json = json_encode($json);
+
         return $json;
     }
+
     public function getDataVencimento($NDias, $diasUteis)
     {
         $DataAct = date("Ymd");
-        $d       = new DateTime($DataAct);
-        $t       = $d->getTimestamp();
-        if ((bool) $diasUteis) {
+        $d = new DateTime($DataAct);
+        $t = $d->getTimestamp();
+
+        if ((bool)$diasUteis) {
             for ($i = 0; $i < $NDias; $i++) {
                 $addDay = 86400;
                 $nextDay = date('w', ($t + $addDay));
+
                 if ($nextDay == 0 || $nextDay == 6) {
                     $i--;
                 }
+
                 $t = $t + $addDay;
             }
         } else {
             $t += 86400 * $NDias;
         }
+
         $d->setTimestamp($t);
+
         return $d->format('Y-m-d');
     }
-    
+
     public function generateLog($variable, $name_log)
     {
         if (Mage::getSingleton('transparente/standard')->getConfigData('log') == 1) {
-            $dir_log = Mage::getBaseDir('var').'/log/MOIP/';
+            $dir_log = Mage::getBaseDir('var') . '/log/MOIP/';
+
             if (!file_exists($dir_log)) {
                 mkdir($dir_log, 0755, true);
             }
 
-            Mage::log($variable, null, 'MOIP/'.$name_log, true);
-        } else {
+            Mage::log($variable, null, 'MOIP/' . $name_log, true);
         }
     }
 }

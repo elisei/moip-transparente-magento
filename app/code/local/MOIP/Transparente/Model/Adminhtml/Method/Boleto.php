@@ -1,7 +1,9 @@
 <?php
+
 class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Abstract
 {
     const METHOD_CODE = 'moip_boleto';
+
     protected $_code = self::METHOD_CODE;
     protected $_formBlockType = 'transparente/adminhtml_form_boleto';
     protected $_infoBlockType = 'transparente/info_boleto';
@@ -24,70 +26,87 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
         if (!($data instanceof Varien_Object)) {
             $data = new Varien_Object($data);
         }
-        $info           = $this->getInfoInstance();
+
+        $info = $this->getInfoInstance();
         $additionaldata = array();
         $info->setAdditionalData(serialize($additionaldata))->save()->setAdditionalInformation(serialize($additionaldata))->save();
+
         return $this;
     }
+
     public function prepareSave()
     {
         $info = $this->getInfoInstance();
         return $this;
     }
+
     public function prepare()
     {
-        $info           = $this->getInfoInstance();
+        $info = $this->getInfoInstance();
         $additionaldata = unserialize($info->getAdditionalData());
-        $session        = Mage::getSingleton('checkout/session');
+        $session = Mage::getSingleton('checkout/session');
         $session->setMoipData($additionaldata);
     }
+
     public function validate()
     {
         parent::validate();
-        $info          = $this->getInfoInstance();
+
+        $info = $this->getInfoInstance();
         $currency_code = Mage::app()->getStore()->getCurrentCurrencyCode();
-        $errorMsg      = false;
+        $errorMsg = false;
+
         if ($errorMsg === false) {
             if (!in_array($currency_code, $this->_allowCurrencyCode)) {
                 Mage::throwException(Mage::helper('transparente')->__('O Moip Não pode Transacionar pedidos feitos em  (' . $currency_code . ') verifique as configurações de Moeda do seu magento.'));
             }
         }
+
         if ($errorMsg) {
             Mage::throwException($errorMsg);
         }
+
         return $this;
     }
+
     public function getApi()
     {
         $api = Mage::getModel('transparente/api');
         return $api;
     }
+
     public function getOrderPlaceRedirectUrl()
     {
-        $info                = $this->getInfoInstance();
-        $quote               = $info->getQuote();
-        $additionaldata      = unserialize($info->getAdditionalData());
-        $json_order          = $this->getApi()->getDados($quote);
-        $IdMoip              = $this->getApi()->getOrderIdMoip($json_order);
-        $json_payment        = $this->getApi()->getPaymentJsonBoleto($info, $quote);
-        $payment             = $this->getApi()->generatePayment($json_payment, $IdMoip);
+        $info = $this->getInfoInstance();
+        $quote = $info->getQuote();
+        $additionaldata = unserialize($info->getAdditionalData());
+        $json_order = $this->getApi()->getDados($quote);
+        $IdMoip = $this->getApi()->getOrderIdMoip($json_order);
+        $json_payment = $this->getApi()->getPaymentJsonBoleto($info, $quote);
+        $payment = $this->getApi()->generatePayment($json_payment, $IdMoip);
         $additionaldataAfter = array(
             'token_moip' => $json_order,
             'response_moip' => $payment,
-            'order_moip' => (string) $IdMoip
+            'order_moip' => (string)$IdMoip
         );
-        $additionaldata      = array_merge($additionaldata, $additionaldataAfter);
+
+        $additionaldata = array_merge($additionaldata, $additionaldataAfter);
         $info->setAdditionalData(serialize($additionaldataAfter))->save()->setAdditionalInformation(serialize($additionaldataAfter))->save();
-        
+
         $this->prepare();
+
         if (isset($payment->errors)) {
+            $erros = '';
+
             foreach ($payment->errors as $key => $value) {
-                $erros = (string) $value->description . " " . $erros;
+                $erros = (string)$value->description . " " . $erros;
             }
+
             $session = Mage::getSingleton('checkout/session');
             $session->setMoipError($erros);
-            $this->getApi()->generateLog("Erro payment - ".$json_payment, 'MOIP_PaymentError.log');
-            $this->getApi()->generateLog("Erro payment - ".$payment, 'MOIP_PaymentError.log');
+            $this->getApi()->generateLog("Erro payment - " . $json_payment, 'MOIP_PaymentError.log');
+            $this->getApi()->generateLog("Erro payment - " . $payment, 'MOIP_PaymentError.log');
+
             return Mage::getUrl('transparente/standard/cancel', array(
                 '_secure' => true
             ));

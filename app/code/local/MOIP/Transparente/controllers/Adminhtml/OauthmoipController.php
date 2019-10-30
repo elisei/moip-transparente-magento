@@ -68,14 +68,13 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends Mage_Adminhtml_Con
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
             $url = "https://sandbox.moip.com.br/v2/preferences/notifications/";
             $oauth = trim(Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev'));
-            $header = "Authorization: OAuth {$oauth}";
-            $documento = "Content-Type: application/json";
         } else {
             $url = "https://api.moip.com.br/v2/preferences/notifications/";
             $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
-            $header = "Authorization: OAuth {$oauth}";
-            $documento = "Content-Type: application/json";
         }
+
+        $documento = "Content-Type: application/json";
+        $header = "Authorization: OAuth {$oauth}";
 
         $json = json_encode($webhooks);
 
@@ -91,6 +90,7 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends Mage_Adminhtml_Con
         $res = curl_exec($ch);
         $info = curl_getinfo($ch);
         curl_close($ch);
+
         $responseBody = json_decode($res, true);
 
         $result = array('header' => array($header, $documento),
@@ -224,11 +224,11 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends Mage_Adminhtml_Con
 
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
             $url = "https://sandbox.moip.com.br/v2/keys/";
-            $header = "Authorization: OAuth " . $oauth;
         } else {
             $url = "https://api.moip.com.br/v2/keys/";
-            $header = "Authorization: OAuth " . $oauth;
         }
+
+        $header = "Authorization: OAuth " . $oauth;
 
         $result = array();
         $ch = curl_init();
