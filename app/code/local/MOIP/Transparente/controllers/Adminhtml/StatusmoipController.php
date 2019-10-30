@@ -38,12 +38,12 @@ class MOIP_Transparente_Adminhtml_StatusmoipController extends Mage_Adminhtml_Co
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
             $url = "https://sandbox.moip.com.br/v2/orders/{$moip_ord}";
             $oauth = trim(Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev'));
-            $header = "Authorization: OAuth {$oauth}";
         } else {
             $url = "https://api.moip.com.br/v2/orders/{$moip_ord}";
             $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
-            $header = "Authorization: OAuth {$oauth}";
         }
+
+        $header = "Authorization: OAuth {$oauth}";
 
         $result = array();
         $ch = curl_init();
