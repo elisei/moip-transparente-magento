@@ -632,7 +632,7 @@ class MOIP_Transparente_Model_Api
             return $err;
         } else {
             $this->generateLog($header, 'MOIP_Order.log');
-            $this->generateLog("------ Resposta de GetPayment ------", 'MOIP_Order.log');
+            $this->generateLog("------ Resposta de getMoipOrder ------", 'MOIP_Order.log');
             $this->generateLog($response, 'MOIP_Order.log');
             $this->generateLog("------ CurlInfo de getMoipOrder ------", 'MOIP_Order.log');
             $this->generateLog(json_encode($info_curl), 'MOIP_Order.log');
