@@ -289,8 +289,6 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
                 $order->setIsInProcess(true)->save();
 
                 $payment->addTransaction($transactionType, null, false, $message);
-
-                return $this;
             } else {
                 Mage::throwException(Mage::helper('transparente')->__('Ocorreu um erro ao consultar pedido %s: Msg de erro: %s', $order->getIncrementId(), $consult['error']));
             }

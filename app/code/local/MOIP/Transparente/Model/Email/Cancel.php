@@ -58,7 +58,6 @@ class MOIP_Transparente_Model_Email_Cancel extends Mage_Core_Model_Email_Templat
         return $this;
     }
 
-
     public function sendCancelOrderEmail($customerEmail, $customerName, $emailTemplateVariables = array(), $storeId = null)
     {
         $copyTo = $this->_getExplodeEmails(self::XML_PATH_EMAIL_COPY_TO);

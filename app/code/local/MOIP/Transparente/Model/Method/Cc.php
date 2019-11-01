@@ -200,11 +200,7 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
 
                 if (isset($capture['error'])) {
                     Mage::throwException(Mage::helper('transparente')->__('Ocorreu um erro ao capturar o pedido %s: Msg do erro: %s', $order->getIncrementId(), $capture['error']));
-                } else {
-                    return $this;
                 }
-            } else {
-                return $this;
             }
         } else {
             Mage::throwException(Mage::helper('transparente')->__('Pagamento não encontrado.'));
@@ -298,8 +294,6 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
                 $order->setIsInProcess(true)->save();
 
                 $payment->addTransaction($transactionType, null, false, $message);
-
-                return $this;
             } else {
                 Mage::throwException(Mage::helper('transparente')->__('Ocorreu um erro ao consultar pedido %s: Msg de erro: %s', $order->getIncrementId(), $consult['error']));
             }
