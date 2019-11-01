@@ -242,8 +242,6 @@ class MOIP_Transparente_Model_Admin
 
     public function getOrderMoip($json_order)
     {
-        $documento = 'Content-Type: application/json; charset=utf-8';
-
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
             $url = self::ENDPOINT_TEST . "orders/";
             $oauth = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
@@ -253,8 +251,10 @@ class MOIP_Transparente_Model_Admin
         }
 
         $header = "Authorization: OAuth " . $oauth;
+        $documento = 'Content-Type: application/json; charset=utf-8';
 
         $result = array();
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -269,12 +269,15 @@ class MOIP_Transparente_Model_Admin
         $responseBody = curl_exec($ch);
         $info_curl = curl_getinfo($ch);
         curl_close($ch);
+
         $decode = json_decode($responseBody);
+
         $this->generateLog($header, 'MOIP_Order.log');
         $this->generateLog("------ Resposta da Order ------", 'MOIP_Order.log');
         $this->generateLog($responseBody, 'MOIP_Order.log');
         $this->generateLog("------ CurlInfo da Order ------", 'MOIP_Order.log');
         $this->generateLog(json_encode($info_curl), 'MOIP_Order.log');
+
         return $decode;
     }
 

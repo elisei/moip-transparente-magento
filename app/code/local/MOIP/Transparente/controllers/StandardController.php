@@ -44,6 +44,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
             if ($order->getId()) {
                 $order->cancel()->save();
+
                 $state = Mage_Sales_Model_Order::STATE_CANCELED;
                 $status = 'canceled';
                 $comment = $session->getMoipError();
@@ -57,8 +58,7 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
 
     public function getApi()
     {
-        $api = Mage::getModel('transparente/api');
-        return $api;
+        return Mage::getModel('transparente/api');
     }
 
     public function successAction()
@@ -134,12 +134,13 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
         if (in_array($status_moip, ['AUTHORIZED', 'PAID'])) {
             if ($order_state != Mage_Sales_Model_Order::STATE_PROCESSING) {
                 if ($order->canInvoice()) {
-                    $test = $payment->getMethodInstance()->authorize($payment, $amount);
-
                     try {
+                        $authorize = $payment->getMethodInstance()->authorize($payment, $amount);
+
                         return $order;
                     } catch (Exception $e) {
                         $api->generateLog("MOIP {$moip_order} não foi processada erro: " . $e, 'MOIP_WebHooksError.log');
+
                         return $this->set404();
                     }
                 } else {
@@ -151,16 +152,16 @@ class MOIP_Transparente_StandardController extends Mage_Core_Controller_Front_Ac
                 $transactionAuth = $payment->getMethodInstance()->cancel($payment);
 
                 if ($order->canCancel()) {
-                    $order->cancel()->save();
-
-                    Mage::getModel('transparente/email_cancel')->sendEmail($order, $details_cancel);
-
-                    $translate_details = Mage::helper('transparente')->__($details_cancel);
-                    $msg = Mage::helper('transparente')->__('Email de cancelamento enviado ao cliente. Motivo real: %s, motivo exibido ao cliente: %s', $details_cancel, $translate_details);
-                    $order->addStatusHistoryComment($msg);
-                    $order->save();
-
                     try {
+                        $order->cancel()->save();
+
+                        Mage::getModel('transparente/email_cancel')->sendEmail($order, $details_cancel);
+
+                        $translate_details = Mage::helper('transparente')->__($details_cancel);
+                        $msg = Mage::helper('transparente')->__('Email de cancelamento enviado ao cliente. Motivo real: %s, motivo exibido ao cliente: %s', $details_cancel, $translate_details);
+                        $order->addStatusHistoryComment($msg);
+                        $order->save();
+
                         return $order;
                     } catch (Exception $e) {
                         $api->generateLog("MOIP {$moip_order} não foi processada erro: " . $e, 'MOIP_WebHooksError.log');

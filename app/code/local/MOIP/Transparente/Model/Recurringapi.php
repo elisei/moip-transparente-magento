@@ -279,7 +279,6 @@ class Moip_Transparente_Model_Recurringapi
                     'expiration_month' => $payments->getCcExpMonth(),
                     'expiration_year' => $payments->getCcExpYear()
                 )
-
             );
 
             $data = json_encode($customer_plans);

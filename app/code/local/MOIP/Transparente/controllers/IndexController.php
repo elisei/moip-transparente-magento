@@ -16,10 +16,12 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
 
         if ($this->getRequest()->getParams()) {
             $data = $this->getRequest()->getParams();
+
             $model = Mage::getModel('transparente/transparente');
             $model->load($data['cofre_remove'], 'moip_card_id');
             $model->setMoipCardId(null);
             $model->save();
+
             $this->_redirect('*/*/');
 
             return true;
@@ -174,7 +176,6 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
 
                 $this->_getSession()->setCartWasUpdated(true);
 
-
                 Mage::dispatchEvent(
                     'checkout_cart_add_product_complete',
                     array('product' => $product, 'request' => $this->getRequest(), 'response' => $this->getResponse())
@@ -231,6 +232,7 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
             } catch (Exception $e) {
                 $response['_status'] = 'ERROR';
                 $response['message'] = $this->__('<h4 class="modal-title">Não foi possível adcionar o produto via oneclickbuy.</h4>');
+
                 Mage::logException($e);
             }
 
@@ -251,8 +253,6 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
         $address_billing = $this->getQuote()->getBillingAddress();
 
         $customerAddressbilling = $this->getQuote()->getBillingAddress();
-
-        #$address_billing->importCustomerAddress($customerAddressbilling);
 
         $storeId = Mage::app()->getStore()->getId();
 
@@ -318,11 +318,13 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
             $address = Mage::getModel('customer/address')->load($address_id);
             $applyrule = $this->getQuote()->getAppliedRuleIds();
             $applyaction = Mage::getModel('salesrule/rule')->load($applyrule)->getSimpleAction();
+
             $this->getQuote()->getShippingAddress()
                 ->setCountryId($address->getCountryId())
                 ->setPostcode($address->getPostcode())
                 ->setCollectShippingRates(true);
             $this->_getQuote()->save();
+
             $response['_status'] = 'SUCCESS';
             $response['mensage'] = $this->renderPayment();
         } catch (Exception $ex) {
