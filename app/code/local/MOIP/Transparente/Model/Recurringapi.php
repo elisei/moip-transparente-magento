@@ -143,7 +143,7 @@ class Moip_Transparente_Model_Recurringapi
         return $this->createCustomersPlans($customer_plans, $profile, $payments);
     }
 
-    public function updateBillingCard($data, $customer)
+    public function updateBillingCard($data, $customer_id)
     {
         $customer_plans = array(
             
@@ -157,7 +157,7 @@ class Moip_Transparente_Model_Recurringapi
         $data           = json_encode($customer_plans);
         $documento      = 'Content-Type: application/json; charset=utf-8';
         if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-            $url    = self::ENDPOINT_RECURRING_TEST . "customers/{$customer}/billing_infos";
+            $url    = self::ENDPOINT_RECURRING_TEST . "customers/{$customer_id}/billing_infos";
             $oauth  = Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
             $header = "Authorization: OAuth " . $oauth;
         } else {
