@@ -6,7 +6,13 @@
 				</reference>
 		</adminhtml_system_config_edit>
 		<adminhtml_sales_order_create_index>
-			<reference name="js">
+			<reference name="head">
+				<action method="addJs"><script>MOIP/core/jquery.js</script></action>
+				<action method="addJs"><script>MOIP/core/jquery_noconflict.js</script></action>
+				<action method="addJs"><script>MOIP/transparente/moip.js</script></action>
+				</reference>
+	
+				<reference name="js">
 				   <block type="core/text" name="moip.cdn">
 					<action method="setText">
 				    	<text>
