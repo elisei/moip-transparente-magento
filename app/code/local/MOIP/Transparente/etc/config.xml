@@ -2,7 +2,7 @@
 <config>
     <modules>
         <MOIP_Transparente>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </MOIP_Transparente>
     </modules>
     <global>
@@ -151,6 +151,24 @@
                         </transparente>
                     </observers>
                 </admin_system_config_changed_section_payment>
+                <!-- <sales_order_place_after>
+                    <observers>
+                        <fluxx_init_order>
+                            <class>transparente/observer</class>
+                            <method>initOrderFluxx</method>
+                            <type>singleton</type>
+                        </fluxx_init_order>
+                    </observers>
+                </sales_order_place_after>
+                <order_cancel_after>
+                    <observers>
+                        <fluxx_create_order>
+                            <class>transparente/observer</class>
+                            <method>createOrderFluxx</method>
+                            <type>singleton</type>
+                        </fluxx_create_order>
+                    </observers>
+                </order_cancel_after> -->
         </events>
         <payment>
             <groups>
@@ -317,6 +335,17 @@
                 <payment_action>order</payment_action>
                 <group>moip_transparente</group>
             </moip_tef>
+            <moip_fluxx>
+                <active>1</active>
+                <vcmentoboleto>3</vcmentoboleto>
+                <vcmentoboleto_diasuteis>1</vcmentoboleto_diasuteis>
+                <model>MOIP_Transparente_Model_Method_Fluxx</model>
+                <title>CDC Wirecard + Fluxx</title>
+                <min_order_total>5</min_order_total>
+                <order_status>pending</order_status>
+                <payment_action>order</payment_action>
+                <group>moip_transparente</group>
+            </moip_fluxx>
             <moip_ccrecurring>
                 <order_status>pending</order_status>
                 <model>MOIP_Transparente_Model_Method_CcRecurring</model>

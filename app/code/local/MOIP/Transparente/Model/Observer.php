@@ -7,6 +7,63 @@ class Moip_Transparente_Model_Observer
         return $api;
     }
 
+    public function getApiFluxx()
+    {
+        $api = Mage::getModel('transparente/fluxx_api');
+        return $api;
+    }
+
+    public function createOrderFluxx(Varien_Event_Observer $observer){
+
+        $order                      = $observer->getEvent()->getOrder();
+
+       
+        $order_id                   = $order->getIncrementId();
+       
+        $order_id_moip              = $order->getExtOrderId();
+        $payment                    = $order->getPayment();
+        $payment_method             = $payment->getMethodInstance();
+        $payment_code               = $payment_method->getCode();
+        
+        if($payment_code == "moip_cc"){
+            $payment_info               = $payment->getAdditionalData();
+            $additional_info            = unserialize($payment_info);
+            $moip_pay_id                = $additional_info['moip_pay_id'];
+            $pay_data_in_wirecard       = $this->getApiFluxx()->getPaymentInWirecard($moip_pay_id);
+
+            $sendPaymentCancelled       = $this->getApiFluxx()->setDataPaymentCancelled($pay_data_in_wirecard, $order_id);
+            if($sendPaymentCancelled) {
+               $apifluxx = $this->getApiFluxx()->sendPaymentDeniedFluxx($sendPaymentCancelled, $order_id_moip);
+            }
+        }
+       
+        return $this;
+    }
+
+    public function initOrderFluxx(Varien_Event_Observer $observer)
+    {
+        
+        $order          = $observer->getEvent()->getOrder();
+        $order_id_moip  = $order->getExtOrderId();
+        $payment                    = $order->getPayment();
+        $payment_method             = $payment->getMethodInstance();
+        $payment_code               = $payment_method->getCode();
+
+        if($payment_code == "moip_cc"){
+            $json_order     = $this->getApiFluxx()->setDataFluxx($order, $order_id_moip);
+            $sendOrder      =  $this->getApiFluxx()->setFluxxInitOrderByMoip($json_order);
+        } elseif($payment_code == "moip_fluxx") {
+            $order_id                   = $order->getIncrementId();
+            $payment_info               = $payment->getAdditionalData();
+            $additional_info            = unserialize($payment_info);
+            $dateToFluxx                = $this->getApiFluxx()->setDataForSendBoleto($additional_info, $order_id);
+            $this->getApiFluxx()->sendBoleto($dateToFluxx, $additional_info['moip_fluxx_id']);
+        }
+       
+        
+        return $this;
+    }
+
     public function addWidgetJs(Varien_Event_Observer $observer)
     {
         /*var_dump("olasrrrrr");die;*/

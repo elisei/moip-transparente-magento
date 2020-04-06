@@ -1,0 +1,35 @@
+
+	
+	<div class="box-content">
+		<?php $code_line = $this->getMoipLineCode(); ?>
+		<?php if(isset($code_line)): ?>	
+			<a  class="h3" title="Finalizar compra" href="<?php echo  $this->viewInFluxx()   ?>"  
+
+			onclick="
+	            popWin('<?php echo $this->viewInFluxx()  ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">
+	    		<?php echo Mage::helper('transparente')->__('Contratar o Crédito Direto ao Consumidor'); ?>
+	        </a>
+	        <h2>Dados do pagamento na Wirecard</h2>
+			<a  class="h3" title="Finalizar compra" href="<?php echo  $this->getMoipLinkPrint()   ?>"  
+
+			onclick="
+	            popWin('<?php echo $this->getMoipLinkPrint()  ?>', 'imprimir-boleto', 'width=750,height=750,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">
+	    		<?php echo Mage::helper('transparente')->__('Imprimir Boleto'); ?>
+	        </a>
+			<div>
+				<?php echo Mage::helper('transparente')->__('Código: %s', $this->getMoipLineCode()); ?>
+			</div>
+			<div>
+				<?php echo Mage::helper('transparente')->__('Vencimento: %s', $this->getExpirationDate()); ?>
+			</div>
+			
+			<div>
+				<a  class="h3" title="Finalizar compra" href="<?php echo  $this->viewInMoip()   ?>">
+					<?php echo Mage::helper('transparente')->__('Veja detalhes do pedido na conta Moip'); ?>
+				</a>
+			</div>
+		<?php else: ?>
+				<?php echo Mage::helper('transparente')->__('Não foi possível recuperar a informação do pagamento.'); ?>
+		<?php endif; ?>
+	</div>
+

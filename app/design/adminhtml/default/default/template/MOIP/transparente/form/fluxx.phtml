@@ -1,0 +1,10 @@
+<?php $_code=$this->getMethodCode() ?>
+<ul id="payment_form_<?php echo $_code ?>" class="form-list" style="display:none">
+	<div class="row">
+		<div class="col-md-12">
+		<label class="control-label label-moip-pg" for="<?php echo $_code ?>_id"><?php echo $this->__('Código de autorização') ?></label>
+		<input type="text" name="payment[<?php echo $_code ?>_id]" title="Código de autorização" class="form-control validate-required required-entry" id="<?php echo $_code ?>_id"  value="">
+		
+	</div>
+</div>
+</ul>

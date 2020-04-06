@@ -42,7 +42,7 @@ class MOIP_Transparente_Model_Sales_Quote_Address_Total_Fee extends Mage_Sales_M
                     'title'=>$this->getLabel(),
                     'value'=> $amt
             ));
-        } elseif($amount < 0) {
+        } elseif($amt < 0) {
              $address->addTotal(array(
                     'code'=>$this->getCode(),
                     'title'=>$this->getLabelDiscount(),

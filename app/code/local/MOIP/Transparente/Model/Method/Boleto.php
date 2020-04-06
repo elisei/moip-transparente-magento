@@ -285,7 +285,7 @@ class MOIP_Transparente_Model_Method_Boleto extends Mage_Payment_Model_Method_Ab
             $moip_boleto_expirationDate = $moip_payment['fundingInstrument']['boleto']['expirationDate'];
             $moip_boleto_lineCode = $moip_payment['fundingInstrument']['boleto']['lineCode'];
             
-            $additional_data = ['ambiente' => $ambiente, 'moip_order_id' => $moip_order_id, 'moip_pay_id' => $moip_pay_id, 'total' => $total, 'print_href' => $moip_boleto_printHref, 'expiration_date' => Mage::app()->getLocale()->date($moip_boleto_expirationDate, null, null, true)->toString('dd/MM/Y') , 'line_code' => $moip_boleto_lineCode];
+            $additional_data = ['ambiente' => $ambiente, 'moip_order_id' => $moip_order_id, 'moip_pay_id' => $moip_pay_id, 'total' => $total, 'print_href' => $moip_boleto_printHref, 'expiration_date' => Mage::app()->getLocale()->date($moip_boleto_expirationDate, null, null, true)->toString('d/m/Y') , 'line_code' => $moip_boleto_lineCode];
             $payment->setQuotePaymentId($moip_order_id)->setParentTransactionId($moip_order_id);
             $transaction = Mage::getModel('sales/order_payment_transaction');
             $transaction->setTxnId($moip_order_id)->setTxnType(Mage_Sales_Model_Order_Payment_Transaction::TYPE_ORDER)->setPaymentId($payment->getId())->setOrderId($order->getId())->setOrderPaymentObject($payment)->setIsClosed(0)->setAdditionalInformation(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $additional_data)->save();

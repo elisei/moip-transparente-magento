@@ -5,7 +5,7 @@ class Moip_Transparente_Model_Cron
     {
         $api                        = $this->getApi();
         $to                         = now();
-        $time_consult               = '-2 day';
+        $time_consult               = '-0 day';
         $time_limit                 = date('Y-m-d', (strtotime($time_consult, strtotime($to))));
         $to_date                    = date('Y-m-d H:i:s', strtotime("$time_limit 23:59:59"));
 

@@ -4,7 +4,7 @@
         <payment translate="label" module="payment">
             <groups>
                 <moip_transparente_standard translate="label">
-                    <label><![CDATA[Moip Transparente - Configuração Inicial]]></label>
+                    <label><![CDATA[Wirecard Transparente - Configuração Inicial]]></label>
                     <frontend_type>text</frontend_type>
                     
                     <sort_order>10000</sort_order>
@@ -51,7 +51,7 @@
                             <tooltip><![CDATA[Ambiente de teste exige outro login e senha diferente do ambiente de produção Moip. Caso queira usar o ambiente de teste você deferá criar uma conta.]]>
                             </tooltip>
                              <comment><![CDATA[
-                                        <p>Caso não conta tenha conta no Moip Sandbox (ambiente de teste Moip) e queira usar a função testes é necessário <a href="https://cadastro-sandbox.moip.com.br/">crie sua conta clicando aqui.</a></p>
+                                        <p>Caso não conta tenha conta no Moip Sandbox (ambiente de teste Moip) e queira usar a função testes é necessário <a href="https://bem-vindo-sandbox.wirecard.com.br/">crie sua conta clicando aqui.</a></p>
                                     ]]>
                             </comment>
                             <frontend_type>select</frontend_type>
@@ -118,7 +118,7 @@
                     </fields>
                 </moip_transparente_standard>
                 <moip_cc>
-                    <label><![CDATA[Moip Transparente - Cartão de Crédito]]></label>
+                    <label><![CDATA[Wirecard Transparente - Cartão de Crédito]]></label>
                     <frontend_type>text</frontend_type>
 
                     <sort_order>20000</sort_order>
@@ -517,8 +517,159 @@
                         </sort_order>
                     </fields>
                 </moip_cc>
+                <!-- <moip_fluxx>
+                    <label><![CDATA[Wirecard Transparente - CDC via Fluxx]]></label>
+                    <frontend_type>text</frontend_type>
+                    <comment><![CDATA[Definas as configurações para o recebimento por boleto]]></comment>
+                    <sort_order>30000</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Habilitar módulo</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </active>
+                        <title translate="label">
+                            <label>Título</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </title>
+                        <ambiente translate="label">
+                            <label>Ambiente Fluxx</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>MOIP_Transparente_Model_Source_Ambiente</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </ambiente>
+                        <user_dev>
+                            <label>Usuário para o ambiente de teste:</label>
+                            <depends>
+                                <ambiente>teste</ambiente>
+                            </depends>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </user_dev>
+                        <pass_dev>
+                            <label>Senha para o ambiente de teste:</label>
+                            <depends>
+                                <ambiente>teste</ambiente>
+                            </depends>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </pass_dev>
+                        <user_prod>
+                            <label>Usuário para o ambiente de produção:</label>
+                            <depends>
+                                <ambiente>producao</ambiente>
+                            </depends>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </user_prod>
+                        <pass_prod>
+                            <label>Senha para o ambiente de produção:</label>
+                            <depends>
+                                <ambiente>producao</ambiente>
+                            </depends>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </pass_prod>
+                        <vcmentoboleto translate="label">
+                            <label>Vencimento da transação:</label>
+                            <comment><![CDATA[Aqui você informar número de  dias de um pagamento.]]>
+                            </comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </vcmentoboleto>
+                        <vcmentoboleto_diasuteis translate="label">
+                            <label>Dias  úteis</label>
+                            <comment><![CDATA[Usar dias úteis para o vencimento do boleto.]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>85</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </vcmentoboleto_diasuteis>
+                        <title_regra_magento translate="label">
+                            <label>Definição regras convencionais do Magento</label>
+                           
+                            <frontend_model>transparente/adminhtml_fieldset_header</frontend_model>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </title_regra_magento>
+                         <min_order_total translate="label">
+                            <label>Minimum Order Total</label>
+                            <comment>O Moip não irá processar pagamentos abaixo de R$ 5.00</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </min_order_total>
+                        <max_order_total translate="label">
+                            <label>Maximum Order Total</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>111</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </max_order_total>
+                        <allowspecific translate="label">
+                            <label>Pagamento a partir de países aplicáveis</label>
+                            <frontend_type>allowspecific</frontend_type>
+                            <sort_order>171</sort_order>
+                            <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </allowspecific>
+                        <specificcountry translate="label">
+                            <label>Pagamento a partir de determinados países</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>172</sort_order>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </specificcountry>
+                        <sort_order>
+                           <label>Order de exibição:</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>172</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </sort_order>
+                    </fields>
+                </moip_fluxx> -->
                 <moip_boleto>
-                    <label><![CDATA[Moip Transparente - Boleto]]></label>
+                    <label><![CDATA[Wirecard Transparente - Boleto]]></label>
                     <frontend_type>text</frontend_type>
                     <comment><![CDATA[Definas as configurações para o recebimento por boleto]]></comment>
                     <sort_order>30000</sort_order>
@@ -619,7 +770,7 @@
                 </moip_boleto>
                
                 <moip_tef>
-                    <label><![CDATA[Moip Transparente - Transferência Bancária]]></label>
+                    <label><![CDATA[Wirecard Transparente - Transferência Bancária]]></label>
                     <frontend_type>text</frontend_type>
                     <comment><![CDATA[Definas as configurações para o recebimento por transferência]]></comment>
                     <sort_order>40000</sort_order>
@@ -864,7 +1015,7 @@
             </groups>
         </payment>
         <moipall translate="label" module="moipall">
-            <label><![CDATA[ <div style="height: 33px; "><img src="http://imagem.O2TI.com/transparente_moip.png" style="float:left; "/><div style="padding-top:8px;color:#2f3850">Moip Avançado!<sup style="float: right;">API V2</sup></div></div>]]></label>
+            <label><![CDATA[ <div style="height: 33px; "><img src="https://imagem.o2ti.com/transparente_moip.png" style="float:left; "/><div style="padding-top:8px;color:#2f3850">Wirecard for Dev!<sup style="float: right;">API V2</sup></div></div>]]></label>
             <tab>moip</tab>
             <frontend_type>text</frontend_type>
             <sort_order>200</sort_order>
