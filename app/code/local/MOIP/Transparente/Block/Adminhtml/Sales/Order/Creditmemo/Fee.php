@@ -11,7 +11,6 @@ class MOIP_Transparente_Block_Adminhtml_Sales_Order_Creditmemo_Fee extends Mage_
         parent::_initTotals();
         $orderid = $this->getSource()->getOrderId();
         $order = Mage::getModel('sales/order')->load($orderid);
-        $amount = FEE_MOIP;
         $shipping = $order->getShippingAmount();
 
         $amt = $order->getSubtotal() + $shipping;
