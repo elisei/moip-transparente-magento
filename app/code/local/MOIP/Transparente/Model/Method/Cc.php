@@ -383,7 +383,12 @@ class MOIP_Transparente_Model_Method_Cc extends Mage_Payment_Model_Method_Abstra
         $moip_card_fullname         = $moip_payment['fundingInstrument']['creditCard']['holder']['fullname'];
         $moip_card_installmentCount = $moip_payment['installmentCount'];
         $moip_card_brand            = $moip_payment['fundingInstrument']['creditCard']['brand'];
-        $moip_card_id               = $moip_payment['fundingInstrument']['creditCard']['id'];
+        if(array_key_exists("id",$moip_payment['fundingInstrument']['creditCard']){
+            $moip_card_id               = $moip_payment['fundingInstrument']['creditCard']['id'];
+        } else {
+            $moip_card_id               = null;
+        }
+        
 
         $additionaldata = unserialize($info->getAdditionalData());
 
